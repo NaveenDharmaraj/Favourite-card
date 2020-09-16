@@ -164,6 +164,8 @@ class FavouritesList extends React.Component {
                     {isMyProfile && !_isEmpty(currentPrivacyType)
                         && (
                             <ProfilePrivacySettings
+                                columnName='favourites_visibility'
+                                columnValue={favourites_visibility}
                                 iconName={currentPrivacyType}
                             />
                         )}

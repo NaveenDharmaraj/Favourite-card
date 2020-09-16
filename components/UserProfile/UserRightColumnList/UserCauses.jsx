@@ -31,6 +31,7 @@ import {
     getPrivacyType,
 } from '../../../helpers/profiles/utils';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
+import CharitableInterestsList from '../EditCharitableInterest';
 
 class UserCauses extends React.Component {
     constructor(props) {
@@ -91,7 +92,6 @@ class UserCauses extends React.Component {
         const isMyProfile = (profile_type === 'my_profile');
         const currentPrivacyType = getPrivacyType(causes_visibility);
         const dataArray = !_isEmpty(causesList) ? this.userCausesList() : '';
-        debugger;
         let initialList = !_isEmpty(dataArray) ? dataArray : '';
         if (!_isEmpty(dataArray) && dataArray.length > 10) {
             initialList = dataArray.slice(0, 10);
@@ -103,14 +103,15 @@ class UserCauses extends React.Component {
                         <Grid.Column computer={12} mobile={13} tablet={11}>
                             <div className="headerWrap">
                                 <Header>Causes and topics</Header>
-                                {/* TODO Edit causes */}
-                                {/* <EditCauseAndTopics/> */}
+                                <CharitableInterestsList />
                             </div>
                         </Grid.Column>
                         <Grid.Column computer={4} mobile={3} tablet={5}>
                             {isMyProfile && !_isEmpty(currentPrivacyType)
                             && (
                                 <ProfilePrivacySettings
+                                    columnName='causes_visibility'
+                                    columnValue={causes_visibility}
                                     iconName={currentPrivacyType}
                                 />
                             )}

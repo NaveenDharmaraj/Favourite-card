@@ -109,6 +109,7 @@ const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC_FRIEND,
     };
+    debugger;
     graphApi.get(`/recommendation/withProfileType/user`, {
         params: {
             dispatch,
@@ -470,7 +471,7 @@ const getMyCreditCards = (dispatch, userId, pageNumber, updatedCurrentActivePage
     });
 };
 
-const saveUserBasicProfile = (dispatch, userData, userId, email) => {
+const saveUserBasicProfile = (dispatch, userData, userId, email , isMyprofile = false) => {
     const fsa = {
         payload: {
         },
@@ -489,14 +490,19 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     if (userData.displayName !== '') {
         bodyData.display_name = userData.displayName;
     }
+    debugger;
     const basicResponse = securityApi.patch(`/update/user`, bodyData);
     basicResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
             };
-            getUserProfileBasic(dispatch, email, userId, userId);
-            getUser(dispatch, userId, null);
+            if (isMyprofile) {
+                getUserFriendProfile(dispatch, email, userId, userId);
+            } else {
+                getUserProfileBasic(dispatch, email, userId, userId);
+                getUser(dispatch, userId, null);
+            }
         },
     ).catch((error) => {
         fsa.error = error;
@@ -914,7 +920,7 @@ const savePrivacySetting = (dispatch, userId, email, columnName, columnValue) =>
             fsa.payload = {
                 data: result.data,
             };
-            getUserProfileBasic(dispatch, email, userId, userId);
+            getUserFriendProfile(dispatch, email, userId, userId);
         },
     ).catch((error) => {
         fsa.error = error;

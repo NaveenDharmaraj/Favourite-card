@@ -23,18 +23,15 @@ function SingleCause(props) {
         },
     } = cause;
     return (
-        <Grid.Column mobile={16} tablet={8} computer={4}>
-            <Button
-                basic
-                fluid
-                className={`select-btn color_${index} ${_.includes(userCauses, name) ? 'active' : ''}`}
-                id={name}
-                name={name}
-                onClick={parentHandleCauses}
-            >
-                {display_name}
-            </Button>
-        </Grid.Column>
+        <Button
+            basic
+            className={`select-btn ${_.includes(userCauses, name) ? 'active' : ''}`}
+            id={name}
+            name={name}
+            onClick={parentHandleCauses}
+        >
+            {display_name}
+        </Button>
     );
 }
 

@@ -100,6 +100,8 @@ class UserMemberGroupList extends React.Component {
                     {isMyProfile && !_isEmpty(currentPrivacyType)
                         && (
                             <ProfilePrivacySettings
+                                columnName='giving_group_member_visibility'
+                                columnValue={giving_group_member_visibility}
                                 iconName={currentPrivacyType}
                             />
                         )}

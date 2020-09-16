@@ -1,6 +1,4 @@
-import React, {
-    Fragment,
-} from 'react';
+import React from 'react';
 import {
     Popup,
     List,
@@ -10,24 +8,44 @@ import {
     connect,
 } from 'react-redux';
 import {
-    bool,
     func,
     string,
     number,
     PropTypes,
 } from 'prop-types';
-import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 
 import { withTranslation } from '../../../i18n';
+import {
+    savePrivacySetting,
+} from '../../../actions/userProfile';
+import {
+    getPrivacyType,
+} from '../../../helpers/profiles/utils';
 
 class ProfilePrivacySettings extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isPopUpOpen: false,
+            privacyType: getPrivacyType(props.columnValue),
         };
         this.openPopup = this.openPopup.bind(this);
         this.closePopup = this.closePopup.bind(this);
+        this.handlePrivacyChange = this.handlePrivacyChange.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            userFriendProfileData,
+            columnName,
+        } = this.props;
+        if (!_isEqual(prevProps.userFriendProfileData.attributes[columnName],
+            userFriendProfileData.attributes[columnName])) {
+            this.setState({
+                privacyType: getPrivacyType(userFriendProfileData.attributes[columnName]),
+            });
+        }
     }
 
     openPopup() {
@@ -42,14 +60,27 @@ class ProfilePrivacySettings extends React.Component {
         });
     }
 
+    handlePrivacyChange(value) {
+        const {
+            columnName,
+            dispatch,
+            currentUser: {
+                attributes: {
+                    email,
+                },
+                id: userId,
+            },
+        } = this.props;
+        savePrivacySetting(dispatch, userId, email, columnName, value).then(() => {
+            this.closePopup();
+        });
+    }
+
     render() {
         const {
             isPopUpOpen,
+            privacyType,
         } = this.state;
-        const {
-            iconName,
-        } = this.props;
-        debugger;
         return (
             <Popup
                 on="click"
@@ -64,7 +95,7 @@ class ProfilePrivacySettings extends React.Component {
                         className="privacySettingIcon"
                         onClick={this.openPopup}
                     >
-                        <Icon className={iconName} />
+                        <Icon className={privacyType} />
                         <Icon className="chevron down" />
                     </a>
                 )}
@@ -74,7 +105,7 @@ class ProfilePrivacySettings extends React.Component {
                     <List divided verticalAlign="middle" className="selectable-tick-list">
                         <List.Item>
                             <List.Content>
-                                <List.Header as="a">
+                                <List.Header as="a" onClick={() => this.handlePrivacyChange(0)}>
                                     <Icon className="globe" />
                                     Public
                                 </List.Header>
@@ -82,7 +113,7 @@ class ProfilePrivacySettings extends React.Component {
                         </List.Item>
                         <List.Item>
                             <List.Content>
-                                <List.Header as="a">
+                                <List.Header as="a" onClick={() => this.handlePrivacyChange(1)}>
                                     <Icon className="users" />
                                     Friends
                                 </List.Header>
@@ -90,7 +121,7 @@ class ProfilePrivacySettings extends React.Component {
                         </List.Item>
                         <List.Item>
                             <List.Content>
-                                <List.Header as="a">
+                                <List.Header as="a" onClick={() => this.handlePrivacyChange(2)}>
                                     <Icon className="lock" />
                                     Only me
                                 </List.Header>
@@ -104,16 +135,39 @@ class ProfilePrivacySettings extends React.Component {
 }
 
 ProfilePrivacySettings.defaultProps = {
-    iconName: '',
+    columnName: '',
+    columnValue: null,
+    currentUser: {
+        attributes: {
+            email: '',
+        },
+        id: null,
+    },
+    dispatch: () => {},
+    userFriendProfileData: {
+        attributes: {},
+    },
 };
 
 ProfilePrivacySettings.propTypes = {
-    iconName: string,
+    columnName: string,
+    columnValue: number,
+    currentUser: PropTypes.shape({
+        attributes: PropTypes.shape({
+            email: string,
+        }),
+        id: number,
+    }),
+    dispatch: func,
+    userFriendProfileData: PropTypes.shape({
+        attributes: PropTypes.shape({}),
+    }),
 };
 
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
     };
 }
 

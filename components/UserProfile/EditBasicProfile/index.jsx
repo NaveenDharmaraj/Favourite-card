@@ -1,14 +1,15 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Fragment } from 'react';
 import _ from 'lodash';
 import {
     Button,
     Form,
     Grid,
-    Popup,
-    Icon,
+    Responsive,
+    Header,
     Image,
-    Select
+    Select,
+    Modal,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -23,20 +24,19 @@ import {
 } from '../../../actions/userProfile';
 import { actionTypes } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
-import PrivacySetting from '../../shared/Privacy';
-const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
-    ssr: false
-});
+// const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
+//     ssr: false
+// });
 import {
     formatAmount,
     formatCurrency,
     isValidGivingGoalAmount,
 } from '../../../helpers/give/utils';
 import {
-    isInputBlank,
+    getLocation,
+} from '../../../helpers/profiles/utils';
+import {
     isAmountLessThanOneBillionDollars,
-    isAmountMoreThanOneDollor,
-    isValidPositiveNumber,
 } from '../../../helpers/give/giving-form-validation';
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 
@@ -49,31 +49,50 @@ class EditBasicProfile extends React.Component {
                 attributes: {
                     logoFileName,
                 }
-            }
+            },
+            userFriendProfileData: {
+                attributes: {
+                    city,
+                    province,
+                    description,
+                    display_name,
+                    first_name,
+                    last_name,
+                    giving_goal_amt,
+                },
+            },
         } = props;
-        const givingGoalAmount = (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '';
-        const userDataProvince = props.userData.province ? `${props.userData.city ? ', ' : ''}${props.userData.province}` : '';
-        const locationString = `${props.userData.city ? props.userData.city : ''}${userDataProvince}`;
-        const location = locationString ? locationString.trim() : null;
+        // const {
+            // currentUser: {
+            //     attributes: {
+            //         logoFileName,
+            //     }
+            // }
+        // } = props;
+        const givingGoalAmount = (!_.isEmpty(giving_goal_amt) ? formatAmount(Number(giving_goal_amt)) : '');
+        // const userDataProvince = props.userData.province ? `${props.userData.city ? ', ' : ''}${props.userData.province}` : '';
+        // const locationString = `${props.userData.city ? props.userData.city : ''}${userDataProvince}`;
+        const location = getLocation(city, province);
         this.state = {
+            showEditProfileModal: false,
             buttonClicked: true,
-            errorMessage: null,
+            // errorMessage: null,
             isImageChanged: false,
             isDefaultImage: logoFileName === null ? true : false,
             uploadImage: '',
             uploadImagePreview: '',
             searchQuery: (!_.isEmpty(location)) ? location : null,
             locationDropdownValue: '',
-            statusMessage: false,
-            successMessage: '',
+            // statusMessage: false,
+            // successMessage: '',
             userBasicDetails: {
-                about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
-                firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
+                about: description,
+                firstName: first_name,
                 givingGoal: givingGoalAmount,
-                lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
-                displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
-                formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
-                location,
+                lastName: last_name,
+                displayName: display_name,
+                formatedGoalAmount: formatCurrency(giving_goal_amt, 'en', 'USD'),
+                // location,
             },
             validity: this.intializeValidations(),
         };
@@ -82,43 +101,44 @@ class EditBasicProfile extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
-        this.handleRemovePreview = this.handleRemovePreview.bind(this);
+        // this.handleRemovePreview = this.handleRemovePreview.bind(this);
         this.handleRemoveProfilePhoto = this.handleRemoveProfilePhoto.bind(this);
         this.handleLocationSearchChange = this.handleLocationSearchChange.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
         this.handleCustomSearch = this.handleCustomSearch.bind(this);
+        this.handleAmount = this.handleAmount.bind(this);
     }
 
-    componentDidUpdate(prevProps) {
-        const {
-            currentUser,
-            userData,
-        } = this.props;
-        if (!_.isEqual(userData, prevProps.userData)) {
-            const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
-            const userDataProvince = userData.province ? `${userData.city ? ', ' : ''}${userData.province}` : '';
-            const locationString = `${userData.city ? userData.city : ''}${userDataProvince}`;
-            const location = locationString ? locationString.trim() : null;
-            this.setState({
-                searchQuery: (!_.isEmpty(location)) ? location : null,
-                locationDropdownValue: '',
-                userBasicDetails: {
-                    about: userData.description,
-                    firstName: userData.first_name,
-                    givingGoal: givingGoalAmount,
-                    lastName: userData.last_name,
-                    displayName: userData.display_name,
-                    formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
-                    location,
-                },
-            });
-        }
-        if (!_.isEqual(currentUser, prevProps.currentUser)) {
-            this.setState({
-                isDefaultImage: currentUser.attributes.logoFileName === null ? true : false,
-            });
-        }
-    }
+    // componentDidUpdate(prevProps) {
+    //     const {
+    //         currentUser,
+    //         userData,
+    //     } = this.props;
+    //     if (!_.isEqual(userData, prevProps.userData)) {
+    //         const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
+    //         const userDataProvince = userData.province ? `${userData.city ? ', ' : ''}${userData.province}` : '';
+    //         const locationString = `${userData.city ? userData.city : ''}${userDataProvince}`;
+    //         const location = locationString ? locationString.trim() : null;
+    //         this.setState({
+    //             searchQuery: (!_.isEmpty(location)) ? location : null,
+    //             locationDropdownValue: '',
+    //             userBasicDetails: {
+    //                 about: userData.description,
+    //                 firstName: userData.first_name,
+    //                 givingGoal: givingGoalAmount,
+    //                 lastName: userData.last_name,
+    //                 displayName: userData.display_name,
+    //                 formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
+    //                 location,
+    //             },
+    //         });
+    //     }
+    //     if (!_.isEqual(currentUser, prevProps.currentUser)) {
+    //         this.setState({
+    //             isDefaultImage: currentUser.attributes.logoFileName === null ? true : false,
+    //         });
+    //     }
+    // }
 
     handleAmount(amount) {
         const {
@@ -128,10 +148,10 @@ class EditBasicProfile extends React.Component {
             validity,
         } = this.state;
         userBasicDetails.givingGoal = formatAmount(amount);
-        userBasicDetails.formatedGoalAmount = _.replace(formatCurrency(userBasicDetails.givingGoal, 'en', 'USD'), '$', '');
+        userBasicDetails.formatedGoalAmount = formatCurrency(userBasicDetails.givingGoal, 'en', 'USD');
         this.setState({
             buttonClicked: false,
-            statusMessage: false,
+            // statusMessage: false,
             userBasicDetails: {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
@@ -154,6 +174,7 @@ class EditBasicProfile extends React.Component {
     }
 
     handleInputChange(event, data) {
+        debugger;
         const {
             name,
             options,
@@ -172,7 +193,7 @@ class EditBasicProfile extends React.Component {
         }
         this.setState({
             buttonClicked: false,
-            statusMessage: false,
+            // statusMessage: false,
             userBasicDetails: {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
@@ -181,6 +202,7 @@ class EditBasicProfile extends React.Component {
     }
 
     handleInputOnBlur(event, data) {
+        debugger;
         const {
             name,
             value,
@@ -194,7 +216,7 @@ class EditBasicProfile extends React.Component {
         if ((name === 'givingGoal') && !_.isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             userBasicDetails[name] = inputValue;
-            userBasicDetails.formatedGoalAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            userBasicDetails.formatedGoalAmount = formatCurrency(inputValue, 'en', 'USD');
         }
         validity = this.validateUserProfileBasicForm(name, inputValue, validity);
         this.setState({
@@ -206,7 +228,7 @@ class EditBasicProfile extends React.Component {
         });
     }
 
-    // eslint-disable-next-line class-methods-use-this
+    // // eslint-disable-next-line class-methods-use-this
     validateUserProfileBasicForm(field, value, validity) {
         switch (field) {
             case 'firstName':
@@ -253,7 +275,7 @@ class EditBasicProfile extends React.Component {
     handleSubmit() {
         this.setState({
             buttonClicked: true,
-            statusMessage: false,
+            // statusMessage: false,
         });
         const isValid = this.validateForm();
         if (isValid) {
@@ -270,20 +292,25 @@ class EditBasicProfile extends React.Component {
                 isImageChanged,
                 userBasicDetails,
             } = this.state;
-            saveUserBasicProfile(dispatch, userBasicDetails, id, email).then(() => {
+            saveUserBasicProfile(dispatch, userBasicDetails, id, email, true).then(() => {
                 this.setState({
-                    errorMessage: null,
-                    successMessage: 'Changes saved.',
-                    statusMessage: true,
+                    // errorMessage: null,
+                    // successMessage: 'Changes saved.',
+                    // statusMessage: true,
                     buttonClicked: true,
                 });
             }).catch((err) => {
                 this.setState({
-                    errorMessage: 'Error in saving the profile.',
-                    statusMessage: true,
+                    // errorMessage: 'Error in saving the profile.',
+                    // statusMessage: true,
                     buttonClicked: true,
                 });
+            }).finally(() => {
+                this.setState({
+                    showEditProfileModal: false,
+                });
             });
+
             if (isImageChanged) {
                 const {
                     currentUser: {
@@ -297,12 +324,12 @@ class EditBasicProfile extends React.Component {
                 uploadUserImage(dispatch, id, uploadImage).then(() => {
                     this.setState({
                         buttonClicked: true,
-                        uploadImagePreview: '',
+                        // uploadImagePreview: '',
                     });
                 }).catch((err) => {
                     this.setState({
                         buttonClicked: true,
-                        uploadImagePreview: '',
+                        // uploadImagePreview: '',
                     });
                 });
             }
@@ -328,7 +355,7 @@ class EditBasicProfile extends React.Component {
         this.setState({
             uploadImagePreview: '',
             isDefaultImage: true,
-        })
+        });
         this.getBase64(event.target.files[0], (result) => {
             this.setState({
                 isImageChanged: true,
@@ -339,19 +366,19 @@ class EditBasicProfile extends React.Component {
         });
     }
 
-    handleRemovePreview() {
-        const {
-            currentUser: {
-                attributes: {
-                    logoFileName,
-                }
-            },
-        } = this.props;
-        this.setState({
-            isDefaultImage: logoFileName === null ? true : false,
-            uploadImagePreview: '',
-        })
-    }
+    // handleRemovePreview() {
+    //     const {
+    //         currentUser: {
+    //             attributes: {
+    //                 logoFileName,
+    //             }
+    //         },
+    //     } = this.props;
+    //     this.setState({
+    //         isDefaultImage: logoFileName === null ? true : false,
+    //         uploadImagePreview: '',
+    //     })
+    // }
 
     handleRemoveProfilePhoto() {
         const {
@@ -362,21 +389,24 @@ class EditBasicProfile extends React.Component {
         } = this.props;
         removeProfilePhoto(dispatch, id).then(() => {
             this.setState({
-                errorMessage: null,
-                successMessage: 'Profile photo removed successfully.',
-                statusMessage: true,
+                // errorMessage: null,
+                // successMessage: 'Profile photo removed successfully.',
+                // statusMessage: true,
                 buttonClicked: true,
                 isDefaultImage: true,
             });
         }).catch((err) => {
             this.setState({
-                errorMessage: 'Error in removing profile photo.',
-                statusMessage: true,
+                // errorMessage: 'Error in removing profile photo.',
+                // statusMessage: true,
                 buttonClicked: true,
                 isDefaultImage: true,
             });
+        }).finally(() => {
+            showEditProfileModal: false;
         });
     }
+
     handleLocationChange(event, data) {
         const locationValue = event.target.innerText;
         const {
@@ -419,7 +449,7 @@ class EditBasicProfile extends React.Component {
                 dispatch,
             } = this.props;
         const params = { dispatch, searchValue: event.target.value};
-            this.debounceFunction(params, 300);
+        this.debounceFunction(params, 300);
         }
         if (event.target.value.length === 0) {
             const {
@@ -449,22 +479,21 @@ class EditBasicProfile extends React.Component {
             locationDropdownValue: '',
         });
     }
+
     handleCustomSearch = (options) => {
         return options
     }
     render() {
         const {
+            showEditProfileModal,
             buttonClicked,
-            errorMessage,
-            statusMessage,
-            successMessage,
             isDefaultImage,
             locationDropdownValue,
             userBasicDetails: {
                 firstName,
                 lastName,
                 about,
-                givingGoal,
+                // givingGoal,
                 displayName,
                 formatedGoalAmount,
             },
@@ -473,7 +502,7 @@ class EditBasicProfile extends React.Component {
             validity,
         } = this.state;
         const {
-            userData,
+            // userData,
             currentUser: {
                 attributes: {
                     avatar,
@@ -482,25 +511,199 @@ class EditBasicProfile extends React.Component {
             locationLoader,
             locationOptions,
         } = this.props;
-        const privacyColumn = 'giving_goal_visibility';
-        let aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
-        const userAvatar = (avatar === '') || (avatar === null) ? UserPlaceholder : avatar;
-        const imageView = uploadImagePreview !== '' ? uploadImagePreview : userAvatar;
-        const isPreview = uploadImagePreview !== '' ? true : false;
+        // const privacyColumn = 'giving_goal_visibility';
+        const aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
+        // const userAvatar = (avatar === '') || (avatar === null) ? UserPlaceholder : avatar;
+        // const imageView = uploadImagePreview !== '' ? uploadImagePreview : userAvatar;
+        // const isPreview = uploadImagePreview !== '' ? true : false;
         return (
-            <Grid>
-                {/* {
-                    statusMessage && (
-                        <Grid.Row>
-                            <Grid.Column width={16}>
-                                <ModalStatusMessage
-                                    message={!_.isEmpty(successMessage) ? successMessage : null}
-                                    error={!_.isEmpty(errorMessage) ? errorMessage : null}
+            <Fragment>
+            <Modal
+                size="tiny"
+                dimmer="inverted"
+                closeIcon
+                className="chimp-modal"
+                open={showEditProfileModal}
+                onClose={()=>{this.setState({showEditProfileModal: false})}}
+                trigger={
+                    <Button className='blue-bordr-btn-round-def' onClick={() => this.setState({ showEditProfileModal: true })}>
+                        Edit profile
+                    </Button>
+                }
+            >
+                <Modal.Header>Edit profile</Modal.Header>
+                <Modal.Content>
+                    <Responsive minWidth={767}>
+                        <Header as='h5'>Profile photo</Header>
+                    </Responsive>
+                    <input
+                        id="myInput"
+                        accept="image/png, image/jpeg, image/jpg"
+                        type="file"
+                        ref={(ref) => this.upload = ref}
+                        style={{ display: 'none' }}
+                        onChange={(e) => this.handleUpload(event)}
+                    />
+                    <div className='editProfileModal'>
+                        <div className='editProfilePhotoWrap'>
+                            <div className="userProfileImg">
+                                <Image src={avatar} />
+                            </div>
+                            <div className='editprflButtonWrap'>
+                                <Button
+                                    className='success-btn-rounded-def'
+                                    onClick={(e) => this.upload.click()}
+                                >
+                                    Change profile photo
+                                </Button>
+                                <a 
+                                    className='remvephoto'
+                                    onClick={this.handleRemoveProfilePhoto}
+                                    >Remove photo</a>
+                            </div>
+                        </div>
+                        <Form>
+                            <Grid>
+                                <Grid.Row>
+                                    <Grid.Column computer={8} mobile={16}>
+                                        <Form.Field>
+                                            <Form.Input
+                                                fluid
+                                                label="First name"
+                                                placeholder="First name"
+                                                id="firstName"
+                                                name="firstName"
+                                                maxLength="30"
+                                                onChange={this.handleInputChange}
+                                                onBlur={this.handleInputOnBlur}
+                                                error={!validity.isFirstNameNotNull}
+                                                value={firstName}
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition= {!validity.isFirstNameNotNull}
+                                                errorMessage="Please input your first name"
+                                            />
+                                        </Form.Field>
+                                    </Grid.Column>
+                                    <Grid.Column computer={8} mobile={16}>
+                                        <Form.Field>
+                                            <Form.Input
+                                                fluid
+                                                label="Last name"
+                                                id="lastName"
+                                                name="lastName"
+                                                placeholder="Last name"
+                                                maxLength="30"
+                                                onChange={this.handleInputChange}
+                                                onBlur={this.handleInputOnBlur}
+                                                error={!validity.isLastNameNotNull}
+                                                value={lastName}
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition= {!validity.isLastNameNotNull}
+                                                errorMessage= "Please input your last name"
+                                            />
+                                        </Form.Field>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                            <Form.Field>
+                                <Form.Input
+                                    fluid
+                                    label="Display Name"
+                                    id="displayName"
+                                    name="displayName"
+                                    placeholder="Display name"
+                                    maxLength="30"
+                                    onChange={this.handleInputChange}
+                                    onBlur={this.handleInputOnBlur}
+                                    error={!validity.isDisplayNameNotNull}
+                                    value={displayName}
                                 />
-                            </Grid.Column>
-                        </Grid.Row>
-                    )
-                } */}
+                                <FormValidationErrorMessage
+                                    condition={!validity.isDisplayNameNotNull}
+                                    errorMessage="Please input your display name"
+                                />
+                            </Form.Field>
+                            <Form.Field>
+                                <Form.TextArea
+                                    label="Bio"
+                                    placeholder="Bio..."
+                                    id="about"
+                                    name="about"
+                                    maxLength="1000"
+                                    onChange={this.handleInputChange}
+                                    onBlur={this.handleInputOnBlur}
+                                    value={about}
+                                />
+                                <div className="field-info">{aboutCharCount} of 1000 characters left</div>
+                            </Form.Field>
+                            <Form.Field>
+                                <label htmlFor="location">
+                                    Location
+                                </label>
+                                <Form.Field
+                                    single
+                                    control={Select}
+                                    className="locationSearchDropdown"
+                                    style={{minHeight : 'auto'}}
+                                    id="location"
+                                    name="location"
+                                    onClick = {()=>{
+                                        document.querySelector('#location input').focus()
+                                    }}
+                                    onChange={this.handleLocationChange}
+                                    onSearchChange={this.handleLocationSearchChange}
+                                    options={locationOptions}
+                                    search={this.handleCustomSearch}
+                                    selection
+                                    searchQuery={searchQuery}
+                                    placeholder="Search location"
+                                    loading={locationLoader}
+                                    value={locationDropdownValue}
+                                />
+                            </Form.Field>
+                            <div className="field">
+                                <label for='form-input-control-givingGoal'>
+                                    Giving goal
+                                </label>
+                                <div className='label-info'>
+                                    Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account throughout the calendar year. Goals are reset to $0 at the start of each year, and you can update your goal anytime.
+                                </div>
+                                <Form.Field>
+                                    <Form.Input
+                                        placeholder="Giving Goal"
+                                        id="givingGoal"
+                                        name="givingGoal"
+                                        maxLength="11"
+                                        onChange={this.handleInputChange}
+                                        onBlur={this.handleInputOnBlur}
+                                        value={formatedGoalAmount}
+                                        error={!isValidGivingGoalAmount(validity)}
+                                    />
+                                    <FormValidationErrorMessage
+                                        condition={!validity.isAmountLessThanOneBillion}
+                                        errorMessage="Please choose an amount less than one billion dollars"
+                                    />
+                                </Form.Field>
+                                <div className='price_btn'>
+                                    <Button basic size="tiny" onClick={() => this.handleAmount(100)}>$100</Button>
+                                    <Button basic size="tiny" onClick={() => this.handleAmount(500)}>$500</Button>
+                                    <Button basic size="tiny" onClick={() => this.handleAmount(1000)}>$1,000</Button>
+                                </div>
+                            </div>
+                            <Button
+                                    className="blue-btn-rounded-def save"
+                                    onClick={this.handleSubmit}
+                                    disabled={buttonClicked}
+                                >
+                                    Save
+                                </Button>
+                        </Form>
+                    </div>
+                </Modal.Content>
+            </Modal>
+            {/* <Grid>
                 <Grid.Row>
                     <Grid.Column mobile={16} tablet={12} computer={10}>
                         <Form>
@@ -657,12 +860,6 @@ class EditBasicProfile extends React.Component {
                                             />
                                         }
                                     />
-                                    <span className="font-w-normal ml--1-2">
-                                        <PrivacySetting
-                                            columnName={privacyColumn}
-                                            columnValue={userData.giving_goal_visibility}
-                                        />
-                                    </span>
                                 </label>
                                 <Form.Field>
                                     <Form.Input
@@ -701,7 +898,8 @@ class EditBasicProfile extends React.Component {
                         </Form>
                     </Grid.Column>
                 </Grid.Row>
-            </Grid>
+            </Grid> */}
+            </Fragment>
         );
     }
 }
@@ -711,6 +909,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         locationLoader: state.userProfile.locationLoader,
         locationOptions: state.userProfile.locationOptions,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }

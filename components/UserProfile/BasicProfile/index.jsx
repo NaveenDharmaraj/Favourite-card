@@ -45,6 +45,8 @@ import {
 } from '../../../helpers/profiles/utils';
 
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
+// import EditProfile from '../../../pages/user-profile/editProfile';
+import EditBasicProfile from '../EditBasicProfile';
 
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
     ssr: false
@@ -243,7 +245,6 @@ class UserBasicProfile extends React.Component {
                 attributes: {
                     avatar,
                     city,
-                    causes_visibility,
                     description,
                     first_name,
                     last_name,
@@ -251,6 +252,7 @@ class UserBasicProfile extends React.Component {
                     province,
                     profile_type,
                     friends_visibility,
+                    user_id,
                 },
             },
             // userData,
@@ -268,8 +270,11 @@ class UserBasicProfile extends React.Component {
             successMessage,
         } = this.state;
         const isMyProfile = (profile_type === 'my_profile');
-        const currentPrivacyType = getPrivacyType(friends_visibility);
+        // const currentPrivacyType = getPrivacyType(friends_visibility);
         const friendText = (number_of_friends > 1) ? 'friends' : 'friend';
+        const showUserFriends = (friends_visibility === 0 ||
+            (profile_type === 'friends_profile' && friends_visibility === 1) ||
+            isMyProfile);
         // const avatar = (typeof userData.avatar === 'undefined') || (userData.avatar === null) ? UserPlaceholder : userData.avatar;
         // const friendsVisibility = (typeof userData.friends_visibility === 'undefined') ? 0 : userData.friends_visibility;
         // let isBlocked = false;
@@ -312,19 +317,34 @@ class UserBasicProfile extends React.Component {
                     <Header className="usrName">{`${first_name} ${last_name}`}</Header>
                     <div className="userCity_friends">
                         <p>{getLocation(city,province)}</p>
-                        {(number_of_friends > 0)
+                        {((number_of_friends > 0) && showUserFriends)
                         && (
-                            <div className="userfriends">
-                                <Header as='h5'>{`${(number_of_friends) && number_of_friends} ${friendText}`}</Header>
-                                {isMyProfile && !_isEmpty(currentPrivacyType)
-                                && (
-                                    <ProfilePrivacySettings iconName={currentPrivacyType}/>
-                                )}
-                            </div>
+                                <div className="userfriends">
+                                    <Header as='h5'>{`${(number_of_friends) && number_of_friends} ${friendText}`}</Header>
+                                    {isMyProfile
+                                    && (
+                                        <ProfilePrivacySettings
+                                            columnName='friends_visibility'
+                                            columnValue={friends_visibility}
+                                            // iconName={currentPrivacyType}
+                                        />
+                                    )}
+                                </div>
                         )}
                     </div>
                     <p className='textAboutuser'>{description}</p>
                     <div className="userButtonsWrap">
+                        {isMyProfile
+                        && (
+                            <Fragment>
+                                <Button
+                                    className='blue-bordr-btn-round-def m-w-100'
+                                >
+                                View what others see
+                                </Button>
+                                <EditBasicProfile />
+                            </Fragment>
+                        )}
                         {/* TODO Buttons logic */}
                     </div>
                 </div>

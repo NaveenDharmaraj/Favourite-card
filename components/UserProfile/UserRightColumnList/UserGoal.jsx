@@ -63,6 +63,8 @@ const UserGoal = (props) => {
                         {isMyProfile && !_isEmpty(currentPrivacyType)
                         && (
                             <ProfilePrivacySettings
+                                columnName='giving_goal_visibility'
+                                columnValue={giving_goal_visibility}
                                 iconName={currentPrivacyType}
                             />
                         )}

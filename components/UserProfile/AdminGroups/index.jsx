@@ -97,6 +97,8 @@ class UserAdminGroupList extends React.Component {
                     {isMyProfile && !_isEmpty(currentPrivacyType)
                         && (
                             <ProfilePrivacySettings
+                                columnName='giving_group_manage_visibility'
+                                columnValue={giving_group_manage_visibility}
                                 iconName={currentPrivacyType}
                             />
                         )}
