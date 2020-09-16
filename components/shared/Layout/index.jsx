@@ -36,11 +36,6 @@ const {
     NEWRELIC_ENV,
 } = publicRuntimeConfig;
 
-const getWidth = () => {
-    const isSSR = typeof window === 'undefined';
-    return isSSR ? 1000 : window.innerWidth
-};
-
 class Layout extends React.Component {
     async componentDidMount() {
         const {
@@ -136,6 +131,15 @@ class Layout extends React.Component {
         window.scrollTo(0, 0);
     };
 
+    getDeviceWidth = () => {
+        const {
+            isMobile
+        } = this.props;
+        const isSSR = typeof window === 'undefined';
+        const ssrWidth = isMobile ? 990 : 1000;
+        return isSSR ? ssrWidth : window.innerWidth;
+    }
+
     renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader) => {
         if (authRequired && !isAuthenticated) {
             return null;
@@ -150,9 +154,12 @@ class Layout extends React.Component {
             disableMinHeight,
             isCharityPage,
         } = this.props;
-        const widthProp = (!isMobile) ? {getWidth: getWidth} : {};
+        
+        // const widthProp = (!isMobile) ? {getWidth: getWidth(isMobile)} : {};
+        const widthProp = {getWidth: this.getDeviceWidth};
+
         return (
-            <Responsive getWidth={getWidth}>
+            <Responsive getWidth={this.getDeviceWidth}>
                 <Head>
                     <title>
                        {title}
