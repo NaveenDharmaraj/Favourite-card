@@ -103,7 +103,10 @@ class UserCauses extends React.Component {
                         <Grid.Column computer={12} mobile={13} tablet={11}>
                             <div className="headerWrap">
                                 <Header>Causes and topics</Header>
-                                <CharitableInterestsList />
+                                {isMyProfile
+                                && (
+                                    <CharitableInterestsList />
+                                )}
                             </div>
                         </Grid.Column>
                         <Grid.Column computer={4} mobile={3} tablet={5}>
@@ -115,8 +118,6 @@ class UserCauses extends React.Component {
                                     iconName={currentPrivacyType}
                                 />
                             )}
-                            {/* TODO Privacy settings */}
-                            {/* <PrivacySettings iconName='lock'/> */}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
