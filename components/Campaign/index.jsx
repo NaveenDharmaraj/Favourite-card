@@ -151,6 +151,7 @@ class CampaignProfileWrapper extends React.Component {
                                                     <ProfilePageHead
                                                         pageDetails={campaignDetails}
                                                         dispatch={dispatch}
+                                                        hasActiveMatch={hasActiveMatch}
                                                     />
                                                 </ProfileTitle>
                                             )}

@@ -86,6 +86,7 @@ const GroupProfileWrapper = (props) => {
                                                 beneficiariesCount={beneficiariesCount}
                                                 pageDetails={groupDetails}
                                                 dispatch={dispatch}
+                                                hasActiveMatch={hasActiveMatch}
                                             />
                                         </ProfileTitle>
                                     </Grid>

@@ -85,6 +85,9 @@ class ActivityDetails extends React.Component {
     }
 
     updateInputValue(event) {
+        if (_isEmpty(event.target.value)) {
+            event.currentTarget.style.cssText = `height: ${0}px`;
+        };
         event.currentTarget.style.cssText = `height: ${event.currentTarget.scrollHeight}px`;
         this.setState({
             commentText: event.target.value,

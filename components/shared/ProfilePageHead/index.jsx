@@ -53,6 +53,7 @@ class ProfilePageHead extends React.Component {
 
     render() {
         const {
+            hasActiveMatch,
             beneficiariesCount,
             dispatch,
             pageDetails: {
@@ -104,7 +105,7 @@ class ProfilePageHead extends React.Component {
                                     {`${formatMessage('campaignProfile:editBtn')} ${profileButtonText}`}
                                 </Button>
                             </a>
-                            {balance > 0
+                            {balance > 0 && !hasActiveMatch
                                 ? (
                                     // <Link route={(`/give/to/${profileType}/${slug}/new`)}>
                                     //     {/* TODO need to add  functionality for givefromgroup and givefromcampaign */}
