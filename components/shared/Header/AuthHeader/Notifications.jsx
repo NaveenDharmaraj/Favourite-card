@@ -18,6 +18,8 @@ import eventApi from '../../../../services/eventApi';
 import {
     updateUserPreferences,
 } from '../../../../actions/userProfile';
+import { getParamStoreConfig } from '../../../../actions/user';
+import firebaseConfig from '../../../../Firebase/config';
 
 class Notifications extends React.Component {
     constructor(props) {
@@ -66,18 +68,19 @@ class Notifications extends React.Component {
         });
     }
 
-    componentWillMount() {
+    async componentDidMount() {
         const {
+            config,
             messages,
             userInfo,
             dispatch,
         } = this.props;
-        if (_isEmpty(messages)) {
+        if (_isEmpty(messages) && _isEmpty(firebaseConfig.firebaseEnvs)) {
+            const params = Object.values(firebaseConfig.firebaseEnvKeys) || [];
+            const firebaseConfigResponse = await dispatch(getParamStoreConfig(params));
+            firebaseConfig.firebaseConfigGetSet = firebaseConfigResponse;
             NotificationHelper.firebaseInitialLoad(userInfo, dispatch);
         }
-    }
-
-    componentDidMount() {
         window.addEventListener('scroll', () => {
             const {
                 classForMargin,
@@ -172,7 +175,7 @@ class Notifications extends React.Component {
             } else {
                 return null;
             }
-            if (this.state.deletedItems.indexOf(msg['id']) >= 0) {
+            if (this.state.deletedItems.indexOf(msg.id) >= 0) {
                 return list.push(
                     <List.Item key={`notification_msg_${msg._key}`} className="new">
                         <div className="blankImage" />
@@ -228,7 +231,7 @@ class Notifications extends React.Component {
             }
             case 'sendThankYou': {
                 // let thankyouNote = ctaOptions.msg[this.state.localeCode];
-                const userId = ctaOptions['user_id'];
+                const userId = ctaOptions.user_id;
                 Router.pushRoute(`/chats/${userId}`);
                 break;
             }
@@ -249,12 +252,12 @@ class Notifications extends React.Component {
                 break;
             }
             case 'goToGivingGroup': {
-                const givingGroupSlug = ctaOptions['group_slug'];
+                const givingGroupSlug = ctaOptions.group_slug;
                 Router.pushRoute(`/groups/${givingGroupSlug}`);
                 break;
             }
             case 'sayCongrats': {
-                const userId = ctaOptions['user_id'];
+                const userId = ctaOptions.user_id;
                 Router.pushRoute(`/chats/${userId}`);
                 break;
             }
@@ -263,7 +266,7 @@ class Notifications extends React.Component {
                 break;
             }
             case 'viewProfile': {
-                const userId = ctaOptions['user_id'];
+                const userId = ctaOptions.user_id;
                 Router.pushRoute(`/users/profile/${userId}`);
                 break;
             }
@@ -381,6 +384,7 @@ function mapStateToProps(state) {
         fr: 'fr_CA',
     };
     return {
+        config: state.firebase.config,
         messages: state.firebase.messages,
         lastSyncTime: state.firebase.lastSyncTime,
         localeCode: localeCodes[state.user.info.attributes.language ? state.user.info.attributes.language : 'en'],
@@ -388,5 +392,9 @@ function mapStateToProps(state) {
         userInfo: state.user.info,
     };
 }
-
+Notifications.defaultProps = {
+    config: {
+        FIREBASE_API_KEY: '',
+    },
+};
 export default withTranslation('notification')(connect(mapStateToProps)(Notifications));

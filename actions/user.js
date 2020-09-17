@@ -19,6 +19,9 @@ import storage from '../helpers/storage';
 const { publicRuntimeConfig } = getConfig();
 const {
     BASIC_AUTH_KEY,
+    PARAMSTORE_APP_NAME,
+    PARAMSTORE_ENV_NAME,
+    PARAMSTORE_NAME_SPACE
 } = publicRuntimeConfig;
 let BASIC_AUTH_HEADER = null;
 if (!_.isEmpty(BASIC_AUTH_KEY)) {
@@ -30,6 +33,7 @@ if (!_.isEmpty(BASIC_AUTH_KEY)) {
 }
 
 export const actionTypes = {
+    APPLICATION_ENV_CONFIG_VARIABLES: 'APPLICATION_ENV_CONFIG_VARIABLES',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
@@ -923,4 +927,29 @@ export const claimCharityErrorCondition = (message) => (dispatch) =>{
         },
         type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
     });
-}
+};
+
+export const getParamStoreConfig = (params = []) => async (dispatch) => {
+    try {
+        const paramStoreConfigResponse = await securityApi.post('/paramStore/readParams', {
+            appName: PARAMSTORE_APP_NAME,
+            envName: PARAMSTORE_ENV_NAME,
+            nameSpace: PARAMSTORE_NAME_SPACE,
+            ssmKey: [
+                ...params,
+            ],
+        });
+        let paramStoreConfigObj = {};
+        paramStoreConfigResponse.data.filter((item) => {
+            paramStoreConfigObj = {
+                ...paramStoreConfigObj,
+                [`${item.attributes.key}`]: item.attributes.value,
+            };
+        });
+        dispatch({
+            payload: paramStoreConfigObj,
+            type: 'APPLICATION_ENV_CONFIG_VARIABLES',
+        });
+        return paramStoreConfigObj;
+    } catch (err) { }
+};
