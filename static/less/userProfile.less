@@ -1206,6 +1206,7 @@
 .previewHeader{
   width: 100%;
   background-color: @purple;
+  margin-top: 10px;
   .ui.container{
     height: 100%;
     .ui.grid{
@@ -1312,8 +1313,10 @@
       }
     }
   }
+  @media only screen and (max-width:991px) {
+    margin-top: 0px;
+  }
   @media only screen and (max-width:767px) {
-    margin-top: -12px;
     .ui.container .ui.grid {
       .row{
         padding: 14px 0;
