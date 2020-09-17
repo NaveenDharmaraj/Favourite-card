@@ -18,7 +18,7 @@ const TransactionsCard = (props) => {
     return (
         <div className="boxGroup">
             <div className="Currentbox">
-                <Header as="h3" className={`${(field === 'balance') ? 'green' : ''}`}>{amount}</Header>
+                <Header as="h3">{amount}</Header>
                 <p>{headerText}</p>
             </div>
         </div>
