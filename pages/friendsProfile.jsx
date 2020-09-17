@@ -8,8 +8,8 @@ import {
     PropTypes,
 } from 'prop-types';
 
-import Layout from '../components/shared/Layout';
 import '../static/less/userProfile.less';
+import Layout from '../components/shared/Layout';
 import {
     getUserFriendProfile,
 } from '../actions/userProfile';
@@ -19,7 +19,9 @@ class FriendProfile extends React.Component {
     static async getInitialProps({ query }) {
         return {
             friendUserId: query.slug,
-            namespacesRequired: [],
+            namespacesRequired: [
+                'giveCommon',
+            ],
         };
     }
 
@@ -30,12 +32,12 @@ class FriendProfile extends React.Component {
                     email,
                 },
                 id: currentUserId,
-
             },
             dispatch,
             friendUserId,
         } = this.props;
-        getUserFriendProfile(dispatch, email, friendUserId, currentUserId);
+        const updatedFriendId = (friendUserId === 'myprofile') ? currentUserId : friendUserId;
+        getUserFriendProfile(dispatch, email, updatedFriendId, currentUserId);
     }
 
     render() {

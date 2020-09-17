@@ -241,6 +241,9 @@ class UserBasicProfile extends React.Component {
 
     render() {
         const {
+            previewMode: {
+                isPreviewMode,
+            },
             userFriendProfileData: {
                 attributes: {
                     avatar,
@@ -255,6 +258,8 @@ class UserBasicProfile extends React.Component {
                     user_id,
                 },
             },
+            handlePreviewPage,
+            hanldeFriendPage,
             // userData,
             // userProfileProfilelink,
         } = this.props;
@@ -274,7 +279,7 @@ class UserBasicProfile extends React.Component {
         const friendText = (number_of_friends > 1) ? 'friends' : 'friend';
         const showUserFriends = (friends_visibility === 0 ||
             (profile_type === 'friends_profile' && friends_visibility === 1) ||
-            isMyProfile);
+            (isMyProfile && !isPreviewMode));
         // const avatar = (typeof userData.avatar === 'undefined') || (userData.avatar === null) ? UserPlaceholder : userData.avatar;
         // const friendsVisibility = (typeof userData.friends_visibility === 'undefined') ? 0 : userData.friends_visibility;
         // let isBlocked = false;
@@ -319,8 +324,15 @@ class UserBasicProfile extends React.Component {
                         <p>{getLocation(city,province)}</p>
                         {((number_of_friends > 0) && showUserFriends)
                         && (
-                                <div className="userfriends">
-                                    <Header as='h5'>{`${(number_of_friends) && number_of_friends} ${friendText}`}</Header>
+                                <div
+                                    className="userfriends"
+                                >
+                                    <Header
+                                    as='h5'
+                                    onClick={hanldeFriendPage}
+                                    >
+                                        {`${(number_of_friends) && number_of_friends} ${friendText}`}
+                                    </Header>
                                     {isMyProfile
                                     && (
                                         <ProfilePrivacySettings
@@ -334,11 +346,12 @@ class UserBasicProfile extends React.Component {
                     </div>
                     <p className='textAboutuser'>{description}</p>
                     <div className="userButtonsWrap">
-                        {isMyProfile
+                        {(isMyProfile && !isPreviewMode)
                         && (
                             <Fragment>
                                 <Button
                                     className='blue-bordr-btn-round-def m-w-100'
+                                    onClick={handlePreviewPage}
                                 >
                                 View what others see
                                 </Button>
@@ -354,6 +367,9 @@ class UserBasicProfile extends React.Component {
 }
 
 UserBasicProfile.defaultProps = {
+    previewMode: {
+        isPreviewMode: false,
+    },
     userFriendProfileData: {
         attributes: {
             avatar: '',
@@ -370,6 +386,9 @@ UserBasicProfile.defaultProps = {
 }
 
 UserBasicProfile.propTypes = {
+    previewMode: PropTypes.shape({
+        isPreviewMode: bool,
+    }),
     userFriendProfileData: PropTypes.shape({
         attributes: PropTypes.shape({
             avatar: string,
@@ -390,6 +409,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileProfilelink: state.userProfile.userProfileProfilelink,
+        previewMode: state.userProfile.previewMode,
     };
 }
 

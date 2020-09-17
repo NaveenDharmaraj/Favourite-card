@@ -12,7 +12,7 @@ import {
 import _isEmpty from 'lodash/isEmpty';
 import {
     array,
-    func,
+    bool,
     string,
     number,
     PropTypes,
@@ -77,6 +77,9 @@ class UserAdminGroupList extends React.Component {
 
     render() {
         const {
+            previewMode: {
+                isPreviewMode,
+            },
             userProfileAdminGroupData: {
                 data: adminData,
             },
@@ -94,7 +97,7 @@ class UserAdminGroupList extends React.Component {
             <div className="userPrfl_tabSec">
                 <div className="tabHeader">
                     <Header>Managed Giving Groups</Header>
-                    {isMyProfile && !_isEmpty(currentPrivacyType)
+                    {(isMyProfile && !_isEmpty(currentPrivacyType) && !isPreviewMode)
                         && (
                             <ProfilePrivacySettings
                                 columnName='giving_group_manage_visibility'
@@ -120,6 +123,9 @@ class UserAdminGroupList extends React.Component {
 }
 
 UserAdminGroupList.defaultProps = {
+    previewMode: {
+        isPreviewMode: false,
+    },
     userFriendProfileData: {
         attributes: {
             giving_group_manage_visibility: null,
@@ -132,6 +138,9 @@ UserAdminGroupList.defaultProps = {
 };
 
 UserAdminGroupList.propTypes = {
+    previewMode: PropTypes.shape({
+        isPreviewMode: bool,
+    }),
     userFriendProfileData: PropTypes.shape({
         attributes: PropTypes.shape({
             giving_group_manage_visibility: number,
@@ -146,6 +155,7 @@ UserAdminGroupList.propTypes = {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        previewMode: state.userProfile.previewMode,
         userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileAdminGroupData: state.userProfile.userProfileAdminGroupData,
         userProfileAdminGroupsLoadStatus: state.userProfile.userProfileAdminGroupsLoadStatus,

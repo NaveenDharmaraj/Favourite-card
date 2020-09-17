@@ -35,6 +35,9 @@ import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 
 const UserGoal = (props) => {
     const {
+        previewMode: {
+            isPreviewMode,
+        },
         userFriendProfileData: {
             attributes: {
                 giving_goal_amt,
@@ -60,7 +63,7 @@ const UserGoal = (props) => {
                         <Header>Giving goal</Header>
                     </Grid.Column>
                     <Grid.Column computer={4} mobile={3} tablet={5}>
-                        {isMyProfile && !_isEmpty(currentPrivacyType)
+                        {(isMyProfile && !_isEmpty(currentPrivacyType) && !isPreviewMode)
                         && (
                             <ProfilePrivacySettings
                                 columnName='giving_goal_visibility'
@@ -91,6 +94,9 @@ const UserGoal = (props) => {
 };
 
 UserGoal.defaultProps = {
+    previewMode: {
+        isPreviewMode: false,
+    },
     userFriendProfileData: {
         attributes: {
             giving_goal_amt: '',
@@ -102,6 +108,9 @@ UserGoal.defaultProps = {
 };
 
 UserGoal.propTypes = {
+    previewMode: PropTypes.shape({
+        isPreviewMode: bool,
+    }),
     userFriendProfileData: PropTypes.shape({
         attributes: PropTypes.shape({
             giving_goal_amt: string,
@@ -115,6 +124,7 @@ UserGoal.propTypes = {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        previewMode: state.userProfile.previewMode,
         userFriendProfileData: state.userProfile.userFriendProfileData,
     };
 }

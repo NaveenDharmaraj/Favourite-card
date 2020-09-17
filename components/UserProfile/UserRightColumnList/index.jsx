@@ -31,6 +31,9 @@ import UserCauses from './UserCauses';
 const UserRightColumnList = (props) => {
     const {
         friendUserId,
+        previewMode: {
+            isPreviewMode,
+        },
         userFriendProfileData: {
             attributes: {
                 causes_visibility,
@@ -40,8 +43,8 @@ const UserRightColumnList = (props) => {
         },
     } = props;
     const isMyProfile = (profile_type === 'my_profile');
-    const showGivingGoal = (giving_goal_visibility === 0 || (profile_type === 'friends_profile' && giving_goal_visibility === 1) || isMyProfile);
-    const showCauses = (causes_visibility === 0 || (profile_type === 'friends_profile' && causes_visibility === 1) || isMyProfile);
+    const showGivingGoal = (giving_goal_visibility === 0 || (profile_type === 'friends_profile' && giving_goal_visibility === 1) || (isMyProfile && !isPreviewMode));
+    const showCauses = (causes_visibility === 0 || (profile_type === 'friends_profile' && causes_visibility === 1) || (isMyProfile && !isPreviewMode));
     return (
         <Fragment>
             {showGivingGoal
@@ -58,6 +61,9 @@ const UserRightColumnList = (props) => {
 
 UserRightColumnList.defaultProps = {
     friendUserId: '',
+    previewMode: {
+        isPreviewMode: false,
+    },
     userFriendProfileData: {
         attributes: {
             causes_visibility: null,
@@ -68,6 +74,9 @@ UserRightColumnList.defaultProps = {
 
 UserRightColumnList.propTypes = {
     friendUserId: string,
+    previewMode: PropTypes.shape({
+        isPreviewMode: bool,
+    }),
     userFriendProfileData: PropTypes.shape({
         attributes: PropTypes.shape({
             causes_visibility: number,
@@ -79,6 +88,7 @@ UserRightColumnList.propTypes = {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        previewMode: state.userProfile.previewMode,
         userFriendProfileData: state.userProfile.userFriendProfileData,
     };
 }

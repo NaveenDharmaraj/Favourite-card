@@ -228,6 +228,12 @@ const userProfile = (state = {}, action) => {
                 activeMonthlyDonations: action.payload.activeMonthlyDonations,
             };
             break;
+        case 'USER_PROFILE_PREVIEW_MODE':
+            newState = {
+                ...state,
+                previewMode: action.payload.previewMode,
+            };
+            break;
         default:
             break;
     }

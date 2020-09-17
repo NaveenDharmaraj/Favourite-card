@@ -20,6 +20,7 @@ import {
     string,
     number,
     PropTypes,
+    bool,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
@@ -76,6 +77,9 @@ class UserCauses extends React.Component {
 
     render() {
         const {
+            previewMode: {
+                isPreviewMode,
+            },
             userProfileCausesData: {
                 data: causesList,
             },
@@ -103,14 +107,14 @@ class UserCauses extends React.Component {
                         <Grid.Column computer={12} mobile={13} tablet={11}>
                             <div className="headerWrap">
                                 <Header>Causes and topics</Header>
-                                {isMyProfile
+                                {(isMyProfile && !isPreviewMode)
                                 && (
                                     <CharitableInterestsList />
                                 )}
                             </div>
                         </Grid.Column>
                         <Grid.Column computer={4} mobile={3} tablet={5}>
-                            {isMyProfile && !_isEmpty(currentPrivacyType)
+                            {(isMyProfile && !_isEmpty(currentPrivacyType) && !isPreviewMode)
                             && (
                                 <ProfilePrivacySettings
                                     columnName='causes_visibility'
@@ -151,6 +155,9 @@ class UserCauses extends React.Component {
 UserCauses.defaultProps = {
     dispatch: () => {},
     friendUserId: '',
+    previewMode: {
+        isPreviewMode: false,
+    },
     userFriendProfileData: {
         attributes: {
             causes_visibility: null,
@@ -165,6 +172,9 @@ UserCauses.defaultProps = {
 UserCauses.propTypes = {
     dispatch: func,
     friendUserId: string,
+    previewMode: PropTypes.shape({
+        isPreviewMode: bool,
+    }),
     userFriendProfileData: PropTypes.shape({
         attributes: PropTypes.shape({
             causes_visibility: number,
@@ -179,6 +189,7 @@ UserCauses.propTypes = {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        previewMode: state.userProfile.previewMode,
         userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileCausesData: state.userProfile.userProfileCausesData,
     };
