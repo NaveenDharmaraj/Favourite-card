@@ -3,6 +3,7 @@ import React from 'react'
 import { Image, Header } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
+import { formatCurrency } from '../../helpers/give/utils';
 import { renderTextByCharacter } from '../../helpers/utils';
 import { withTranslation } from '../../i18n';
 
@@ -17,6 +18,8 @@ function SupportingGroup(props) {
         causes,
         t: formatMessage,
     } = props;
+    const currency = 'USD';
+    const language = 'en';
     const entityShortName = renderTextByCharacter(entityName, 25);
     let locationDetails = '';
     if (_isEmpty(city) && !_isEmpty(province)) {
@@ -44,7 +47,7 @@ function SupportingGroup(props) {
                     <p>{locationDetails}</p>
                     <p>
                         {formatMessage('campaignProfile:totalAmountRaised', {
-                            amount: amountRaised,
+                            amount: formatCurrency(amountRaised, language, currency),
                         })}
                     </p>
                 </div>
