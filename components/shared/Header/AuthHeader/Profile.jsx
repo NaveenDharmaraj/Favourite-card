@@ -112,7 +112,7 @@ class Profile extends React.Component {
                     </Popup.Header>
                     <Popup.Content>
                         <List divided link>
-                            <Link route={accountUrl}>
+                            <Link route={'/user/favourites'}>
                                 <List.Item as="a">
                                     <List.Icon name='heart' />
                                     <List.Content>

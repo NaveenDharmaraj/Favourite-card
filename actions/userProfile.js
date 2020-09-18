@@ -109,7 +109,6 @@ const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC_FRIEND,
     };
-    debugger;
     graphApi.get(`/recommendation/withProfileType/user`, {
         params: {
             dispatch,
@@ -490,7 +489,6 @@ const saveUserBasicProfile = (dispatch, userData, userId, email , isMyprofile = 
     if (userData.displayName !== '') {
         bodyData.display_name = userData.displayName;
     }
-    debugger;
     const basicResponse = securityApi.patch(`/update/user`, bodyData);
     basicResponse.then(
         (result) => {

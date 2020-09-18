@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, {
     Fragment,
 } from 'react';
@@ -15,7 +16,7 @@ import {
     connect,
 } from 'react-redux';
 import {
-    bool,
+    array,
     func,
     string,
     number,
@@ -29,6 +30,11 @@ import {
     getMyFriendsList,
     getFriendsInvitations,
 } from '../../../actions/userProfile';
+import {
+    getLocation,
+} from '../../../helpers/profiles/utils';
+
+import FriendListCard from './friendListCard';
 
 class UserFriendList extends React.Component {
     constructor(props) {
@@ -36,25 +42,71 @@ class UserFriendList extends React.Component {
         this.state = {
             show: false,
         };
+        this.showFriendsList = this.showFriendsList.bind(this);
     }
 
     componentDidMount() {
         const {
             currentUser: {
-                attributes: {
-                    email,
-                },
+                id: UserId,
             },
             dispatch,
+            userFriendProfileData: {
+                attributes: {
+                    email_hash,
+                    user_id,
+                },
+            },
         } = this.props;
+        const isMyprofile = user_id === Number(UserId);
+        const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
+        debugger;
         getMyFriendsList(dispatch, email, 1);
-        getFriendsInvitations(dispatch, email, 1);
+        if (isMyprofile) {
+            getFriendsInvitations(dispatch, email, 1);
+        }
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    showFriendsList(dataArray, type) {
+        const friendListArray = [];
+        dataArray.map((data) => {
+            friendListArray.push(
+                <FriendListCard
+                    data={data.attributes}
+                    type={type}
+                />,
+            );
+        });
+        return friendListArray;
     }
 
     render() {
         const {
             hideFriendPage,
+            userFriendProfileData: {
+                attributes: {
+                    avatar,
+                    display_name,
+                    first_name,
+                    last_name,
+                    number_of_friends,
+                    profile_type,
+                    city,
+                    province,
+                    email_hash,
+                },
+            },
+            userFriendsInvitationsList: {
+                data: invitationData,
+            },
+            userMyFriendsList: {
+                data: friendData,
+            },
         } = this.props;
+        const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
+        const isMyProfile = (profile_type === 'my_profile');
+        const headerText = isMyProfile ? 'Your friends' : (`${display_name}'s friends`);
         return (
             <Container>
                 <div className="userProfileScreen">
@@ -62,15 +114,15 @@ class UserFriendList extends React.Component {
                     <div className="usercontentsecWrap">
                         <div className="userleftColumn">
                             <div className="userdetailsWrap">
-                                <div className='user_profileImage'>
-                                    <p>IMAGE</p>
+                                <div className="user_profileImage">
+                                    <Image src={avatar} />
                                 </div>
-                                <div className='user_profileDetails'>
-                                    <Header className="usrName">Tammy Tuba</Header>
+                                <div className="user_profileDetails">
+                                    <Header className="usrName">{`${first_name} ${last_name}`}</Header>
                                     <div className="userCity_friends">
-                                        <p>Vancouver, BC</p>
+                                        <p>{getLocation(city, province)}</p>
                                         <div className="userfriends">
-                                            <Header as='h5'>12 friends</Header>
+                                            <Header as='h5'>{number_of_friends} friends</Header>
                                         </div>
                                     </div>
                                     <div className="userButtonsWrap">
@@ -82,57 +134,38 @@ class UserFriendList extends React.Component {
                                         </Button>
                                     </div>
                                     <div className='userfriendsWrap'>
-                                        <Header as='h3'>Your friends</Header>
-                                        <div className='invitationsWrap'>
-                                            <Header as='h4'>Invitations</Header>
-                                            <List divided verticalAlign="middle" className="users_List">
-                                                <List.Item>
-                                                    <Image avatar src='../static/images/no-data-avatar-user-profile.png'/>
-                                                    <List.Content>
-                                                        <List.Header as='a'>Kiandra Lowe</List.Header>
-                                                        <List.Description >Vancouver, BC</List.Description>
-                                                    </List.Content>
-                                                    <List.Content floated="right">
-                                                        <Button
-                                                            className="blue-bordr-btn-round-def c-small"
-                                                        >
-                                                            Accept
-                                                        </Button>
-                                                        <Icon className="trash alternate outline"></Icon>
-                                                    </List.Content>
-                                                </List.Item>
-                                            </List>
-                                        </div>
-                                        <div className='friendsSearch'>
-                                            <Header as='h4'>Friends</Header>
-                                            <div className="searchBox">
-                                                <Input
-                                                    className="searchInput"
-                                                    placeholder="Search topics"
-                                                    fluid
-                                                />
-                                                <a
-                                                    className="search-btn"
-                                                >
-                                                </a>
+                                        <Header as='h3'>{headerText}</Header>
+                                        {(isMyProfile && !_isEmpty(invitationData))
+                                        && (
+                                            <div className='invitationsWrap'>
+                                                <Header as='h4'>Invitations</Header>
+                                                <List divided verticalAlign="middle" className="users_List">
+                                                    {this.showFriendsList(invitationData, 'invitation')}
+                                                </List>
                                             </div>
-                                        </div>
-                                        <List divided verticalAlign="middle" className="users_List">
-                                            <List.Item>
-                                                <Image avatar src='../static/images/no-data-avatar-user-profile.png'/>
-                                                <List.Content>
-                                                    <List.Header as='a'>Kiandra Lowe</List.Header>
-                                                    <List.Description >Vancouver, BC</List.Description>
-                                                </List.Content>
-                                                <List.Content floated="right">
-                                                    <Button
-                                                        className="blue-btn-rounded-def c-small"
-                                                    >
-                                                        Message
-                                                    </Button>
-                                                </List.Content>
-                                            </List.Item>
-                                        </List>
+                                        )}
+                                        {!_isEmpty(friendData)
+                                        && (
+                                            <Fragment>
+                                                <div className="friendsSearch">
+                                                    <Header as="h4">Friends</Header>
+                                                    <div className="searchBox">
+                                                        <Input
+                                                            className="searchInput"
+                                                            placeholder="Search topics"
+                                                            fluid
+                                                        />
+                                                        <a
+                                                            className="search-btn"
+                                                        >
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <List divided verticalAlign="middle" className="users_List">
+                                                    {this.showFriendsList(friendData, 'friends')}
+                                                </List>
+                                            </Fragment>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -145,21 +178,59 @@ class UserFriendList extends React.Component {
 }
 
 UserFriendList.defaultProps = {
-    dispatch: () => {},
     currentUser: {
+        id: '',
+    },
+    dispatch: () => {},
+    hideFriendPage: () => {},
+    userFriendProfileData: {
         attributes: {
-            email: '',
+            avatar: '',
+            city: '',
+            display_name: '',
+            email_hash: '',
+            first_name: '',
+            last_name: '',
+            number_of_friends: null,
+            profile_type: '',
+            province: '',
+            user_id: '',
         },
+    },
+    userFriendsInvitationsList: {
+        data: [],
+    },
+    userMyFriendsList: {
+        data: [],
     },
 };
 
 UserFriendList.propTypes = {
+    currentUser: PropTypes.shape({
+        id: string,
+    }),
     dispatch: func,
-    currentUser: {
-        attributes: {
-            email: string,
-        },
-    },
+    hideFriendPage: () => {},
+    userFriendProfileData: PropTypes.shape({
+        attributes: PropTypes.shape({
+            avatar: string,
+            city: string,
+            display_name: string,
+            email_hash: string,
+            first_name: string,
+            last_name: string,
+            number_of_friends: number,
+            profile_type: string,
+            province: string,
+            user_id: string,
+        }),
+    }),
+    userFriendsInvitationsList: PropTypes.shape({
+        data: array,
+    }),
+    userMyFriendsList: PropTypes.shape({
+        data: array,
+    }),
 };
 
 function mapStateToProps(state) {
