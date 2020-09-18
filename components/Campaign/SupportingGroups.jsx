@@ -132,7 +132,7 @@ class SupportingGroups extends React.Component {
                     city={subGroup.attributes.city}
                     province={subGroup.attributes.province}
                     causes={subGroup.attributes.causes}
-                    type="Giving Groups"
+                    type="GIVING GROUP"
                 />);
             });
         } else {
