@@ -14,7 +14,7 @@ const userProfile = (state = {}, action) => {
         case 'USER_PROFILE_BASIC_FRIEND':
             newState = {
                 ...state,
-                userFriendProfileData: Object.assign({}, action.payload.data[0]),
+                userFriendProfileData: Object.assign({}, action.payload.data),
             };
             break;
         case 'USER_PROFILE_CHARITABLE_INTERESTS':
@@ -67,7 +67,7 @@ const userProfile = (state = {}, action) => {
             break;
         case 'USER_PROFILE_RECOMMENDED_TAGS':
             newState = {
-                ...state,                
+                ...state,
                 userTagsRecommendedList: Object.assign({}, action.payload),
             };
             break;
@@ -232,6 +232,17 @@ const userProfile = (state = {}, action) => {
             newState = {
                 ...state,
                 previewMode: action.payload.previewMode,
+            };
+            break;
+        case 'USER_PROFILE_RESET_DATA':
+            newState = {
+                ...state,
+                userFriendProfileData: Object.assign({}, action.payload),
+                userFriendsInvitationsList: Object.assign({}, action.payload),
+                userMyFriendsList: Object.assign({}, action.payload),
+                userProfileAdminGroupData: Object.assign({}, action.payload),
+                userProfileCausesData: Object.assign({}, action.payload),
+                userProfileProfilelink: Object.assign({}, action.payload),
             };
             break;
         default:

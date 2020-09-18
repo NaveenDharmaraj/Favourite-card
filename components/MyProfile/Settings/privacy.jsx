@@ -18,6 +18,8 @@ import {
     getBlockedFriends,
     unblockFriend,
     updateUserPreferences,
+    savePrivacySetting,
+    getUserFriendProfile,
 } from '../../../actions/userProfile';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
@@ -27,6 +29,7 @@ const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage
 class Privacy extends React.Component {
     constructor(props) {
         super(props);
+        debugger;
         this.state = {
             buttonClicked: false,
             blockedUserListLoader: !props.userBlockedFriendsList,
@@ -34,23 +37,50 @@ class Privacy extends React.Component {
             errorMessage: null,
             statusMessage: false,
             successMessage: '',
+            privacyValues: {
+                friends_visibility: '',
+                giving_goal_visibility: '',
+                causes_visibility: '',
+                giving_group_manage_visibility: '',
+                giving_group_member_visibility: '',
+                favourites_visibility: '',
+            },
         };
         this.handleUserPreferenceChange = this.handleUserPreferenceChange.bind(this);
+        this.handlePrivacyChange = this.handlePrivacyChange.bind(this);
     }
 
     componentDidMount() {
         const {
             currentUser: {
-                id,
+                attributes: {
+                    email,
+                },
+                id: currentUserId,
             },
             dispatch,
+            userProfileBasicData,
         } = this.props;
-        getBlockedFriends(dispatch, id);
+        getBlockedFriends(dispatch, currentUserId);
+        if (!_.isEmpty(userProfileBasicData)) {
+            this.setState({
+                privacyValues: {
+                    friends_visibility: userProfileBasicData.data[0].attributes.friends_visibility,
+                    giving_goal_visibility: userProfileBasicData.data[0].attributes.giving_goal_visibility,
+                    causes_visibility: userProfileBasicData.data[0].attributes.causes_visibility,
+                    giving_group_manage_visibility: userProfileBasicData.data[0].attributes.giving_group_manage_visibility,
+                    giving_group_member_visibility: userProfileBasicData.data[0].attributes.giving_group_member_visibility,
+                    favourites_visibility: userProfileBasicData.data[0].attributes.favourites_visibility,
+                }
+            })
+        }
     }
 
     componentDidUpdate(prevProps) {
         const {
             userBlockedFriendsList,
+            userProfileBasicData,
+            userFriendProfileData,
         } = this.props;
         let {
             blockedUserListLoader,
@@ -58,6 +88,30 @@ class Privacy extends React.Component {
         if (!_.isEqual(userBlockedFriendsList, prevProps.userBlockedFriendsList)) {
             blockedUserListLoader = false;
             this.setState({ blockedUserListLoader });
+        }
+        if (!_.isEqual(userProfileBasicData, prevProps.userProfileBasicData)) {
+            this.setState({
+                privacyValues: {
+                    friends_visibility: userProfileBasicData.data[0].attributes.friends_visibility,
+                    giving_goal_visibility: userProfileBasicData.data[0].attributes.giving_goal_visibility,
+                    causes_visibility: userProfileBasicData.data[0].attributes.causes_visibility,
+                    giving_group_manage_visibility: userProfileBasicData.data[0].attributes.giving_group_manage_visibility,
+                    giving_group_member_visibility: userProfileBasicData.data[0].attributes.giving_group_member_visibility,
+                    favourites_visibility: userProfileBasicData.data[0].attributes.favourites_visibility,
+                }
+            });
+        }
+        if (!_.isEqual(userFriendProfileData, prevProps.userFriendProfileData)) {
+            this.setState({
+                privacyValues: {
+                    friends_visibility: userFriendProfileData.attributes.friends_visibility,
+                    giving_goal_visibility: userFriendProfileData.attributes.giving_goal_visibility,
+                    causes_visibility: userFriendProfileData.attributes.causes_visibility,
+                    giving_group_manage_visibility: userFriendProfileData.attributes.giving_group_manage_visibility,
+                    giving_group_member_visibility: userFriendProfileData.attributes.giving_group_member_visibility,
+                    favourites_visibility: userFriendProfileData.attributes.favourites_visibility,
+                }
+            });
         }
     }
 
@@ -129,7 +183,8 @@ class Privacy extends React.Component {
                 return (
                     <List.Item>
                         <List.Content floated="right" className='blockDateSec'>
-                            <span>Blocked on January 9, 2019</span>
+                            {/* TODO when api sends blocked date */}
+                            {/* <span>Blocked on January 9, 2019</span> */}
                             <Button
                                 className="blue-bordr-btn-round-def c-small"
                                 onClick={() => this.handleFriendUnblockClick(data.attributes.user_id)}
@@ -158,6 +213,33 @@ class Privacy extends React.Component {
         );
     }
 
+    handlePrivacyChange(event, data) {
+        const {
+            currentUser: {
+                attributes: {
+                    email,
+                },
+                id: userId,
+            },
+            dispatch,
+        } = this.props;
+        // const {
+        //     privacyValues: {
+        //         friends_visibility,
+        //         giving_goal_visibility,
+        //         causes_visibility,
+        //         giving_group_manage_visibility,
+        //         giving_group_member_visibility,
+        //         favourites_visibility,
+        //     }
+        // } = this.state;
+        const {
+            id: fieldName,
+            value,
+        } = data;
+        savePrivacySetting(dispatch, userId, email, fieldName, value);
+    }
+
     render() {
         const {
             errorMessage,
@@ -165,11 +247,19 @@ class Privacy extends React.Component {
             successMessage,
             blockedUserListLoader,
             discoverability,
+            privacyValues: {
+                friends_visibility,
+                giving_goal_visibility,
+                causes_visibility,
+                giving_group_manage_visibility,
+                giving_group_member_visibility,
+                favourites_visibility,
+            },
         } = this.state;
         const options = [
-            { key: 'Puplic', text: 'Puplic', value: 'Puplic' },
-            { key: 'Friends', text: 'Friends', value: 'Friends' },
-            { key: 'Only me', text: 'Only me', value: 'Only me' },
+            { key: 'Public', text: 'Public', value: 0 },
+            { key: 'Friends', text: 'Friends', value: 1 },
+            { key: 'Only me', text: 'Only me', value: 2 },
           ]
           
         return (
@@ -204,23 +294,63 @@ class Privacy extends React.Component {
                         <p>Choose what to share on your personal profile.</p>
                         <div className='privacyDropdown'>
                             <label>Your friends list</label>
-                            <Form.Select options={options} placeholder='Select' />
+                            <Form.Select
+                                options={options}
+                                placeholder='Text entered'
+                                id='friends_visibility'
+                                onChange={this.handlePrivacyChange}
+                                value={friends_visibility}
+                            />
+                        </div>
+                        <div className='privacyDropdown'>
+                            <label>Giving goal</label>
+                            <Form.Select
+                                options={options}
+                                placeholder='Text entered'
+                                id='giving_goal_visibility'
+                                onChange={this.handlePrivacyChange}
+                                value={giving_goal_visibility}
+                            />
                         </div>
                         <div className='privacyDropdown'>
                             <label>Causes</label>
-                            <Form.Select options={options} placeholder='Select' />
+                            <Form.Select
+                                options={options}
+                                placeholder='Text entered'
+                                id='causes_visibility'
+                                onChange={this.handlePrivacyChange}
+                                value={causes_visibility}
+                            />
                         </div>
                         <div className='privacyDropdown'>
                             <label>Managed Giving Groups</label>
-                            <Form.Select options={options} placeholder='Select' />
+                            <Form.Select
+                                options={options}
+                                placeholder='Text entered'
+                                id='giving_group_manage_visibility'
+                                onChange={this.handlePrivacyChange}
+                                value={giving_group_manage_visibility}
+                            />
                         </div>
                         <div className='privacyDropdown'>
                             <label>Joined Giving Groups</label>
-                            <Form.Select options={options} placeholder='Select' />
+                            <Form.Select
+                                options={options}
+                                placeholder='Text entered'
+                                id='giving_group_member_visibility'
+                                onChange={this.handlePrivacyChange}
+                                value={giving_group_member_visibility}
+                            />
                         </div>
                         <div className='privacyDropdown'>
                             <label>Favourites</label>
-                            <Form.Select options={options} placeholder='Select' />
+                            <Form.Select
+                                options={options}
+                                placeholder='Text entered'
+                                id='favourites_visibility'
+                                onChange={this.handlePrivacyChange}
+                                value={favourites_visibility}
+                            />
                         </div>
                     </div>
                     <div className="settingsDetailWraper">
@@ -254,6 +384,8 @@ class Privacy extends React.Component {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        userProfileBasicData: state.userProfile.userProfileBasicData,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
         userBlockedFriendsList: state.userProfile.userBlockedFriendsList,
     };
 }

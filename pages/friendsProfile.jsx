@@ -7,6 +7,8 @@ import {
     func,
     PropTypes,
 } from 'prop-types';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 
 import '../static/less/userProfile.less';
 import Layout from '../components/shared/Layout';
@@ -40,10 +42,38 @@ class FriendProfile extends React.Component {
         getUserFriendProfile(dispatch, email, updatedFriendId, currentUserId);
     }
 
+    componentDidUpdate(prevProps) {
+        const {
+            currentUser: {
+                attributes: {
+                    email,
+                },
+                id: currentUserId,
+            },
+            friendUserId,
+            dispatch,
+        } = this.props;
+        const updatedFriendId = (friendUserId === 'myprofile') ? currentUserId : friendUserId;
+        if (!_isEqual(friendUserId, prevProps.friendUserId)) {
+            dispatch({
+                payload: {
+                },
+                type: 'USER_PROFILE_RESET_DATA',
+            });
+            getUserFriendProfile(dispatch, email, updatedFriendId, currentUserId);
+        }
+    }
+
     render() {
+        const {
+            userFriendProfileData,
+        } = this.props;
         return (
             <Layout authRequired>
-                <UserProfileWrapper {...this.props} />
+                {!_isEmpty(userFriendProfileData)
+                && (
+                    <UserProfileWrapper {...this.props} />
+                )}
             </Layout>
         );
     }
@@ -59,6 +89,7 @@ FriendProfile.defaultProps = {
     },
     dispatch: () => {},
     friendUserId: '',
+    userFriendProfileData: {},
 };
 
 FriendProfile.propTypes = {
@@ -71,11 +102,13 @@ FriendProfile.propTypes = {
     }),
     dispatch: func,
     friendUserId: string,
+    userFriendProfileData: PropTypes.shape({}),
 };
 
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
     };
 }
 

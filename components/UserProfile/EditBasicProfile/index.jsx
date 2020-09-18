@@ -324,12 +324,12 @@ class EditBasicProfile extends React.Component {
                 uploadUserImage(dispatch, id, uploadImage).then(() => {
                     this.setState({
                         buttonClicked: true,
-                        // uploadImagePreview: '',
+                        uploadImagePreview: '',
                     });
                 }).catch((err) => {
                     this.setState({
                         buttonClicked: true,
-                        // uploadImagePreview: '',
+                        uploadImagePreview: '',
                     });
                 });
             }
@@ -513,9 +513,9 @@ class EditBasicProfile extends React.Component {
         } = this.props;
         // const privacyColumn = 'giving_goal_visibility';
         const aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
-        // const userAvatar = (avatar === '') || (avatar === null) ? UserPlaceholder : avatar;
-        // const imageView = uploadImagePreview !== '' ? uploadImagePreview : userAvatar;
-        // const isPreview = uploadImagePreview !== '' ? true : false;
+        const userAvatar = (avatar === '') || (avatar === null) ? UserPlaceholder : avatar;
+        const imageView = uploadImagePreview !== '' ? uploadImagePreview : userAvatar;
+        const isPreview = uploadImagePreview !== '' ? true : false;
         return (
             <Fragment>
             <Modal

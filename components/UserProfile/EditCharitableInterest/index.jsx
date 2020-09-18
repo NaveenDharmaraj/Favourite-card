@@ -16,6 +16,7 @@ import dynamic from 'next/dynamic';
 import {
     saveCharitableCauses,
     saveCharitableTags,
+    getUserCharitableInterests,
 } from '../../../actions/userProfile';
 
 import MyCauses from './causes';
@@ -116,53 +117,59 @@ class EditCharitableInterest extends React.Component {
             statusMessage: false,
             statusMessageTags: false,
         });
-            const {
-                currentUser: {
-                    id,
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+            userFriendProfileData: {
+                attributes: {
+                    user_id,
                 },
-                dispatch,
-            } = this.props;
-            const {
-                userCauses,
-                userTags,
-            } = this.state;
-            this.setState({ saveClicked: true });
-            saveCharitableCauses(dispatch, id, userCauses).then(() => {
-                this.setState({
-                    errorMessage: null,
-                    successMessage: 'Changes saved.',
-                    statusMessage: true,
-                    buttonClicked: true,
-                });
-            }).catch(() => {
-                this.setState({
-                    errorMessage: 'Error in saving the Causes.',
-                    statusMessage: true,
-                    buttonClicked: true,
-                });
-            }).finally(() => {
-                this.setState({
-                    showEditCauseModal: false,
-                });
+            },
+        } = this.props;
+        const {
+            userCauses,
+            userTags,
+        } = this.state;
+        this.setState({ saveClicked: true });
+        saveCharitableCauses(dispatch, id, userCauses).then(() => {
+            this.setState({
+                errorMessage: null,
+                successMessage: 'Changes saved.',
+                statusMessage: true,
+                buttonClicked: true,
             });
-            saveCharitableTags(dispatch, id, userTags).then(() => {
-                this.setState({
-                    errorMessage: null,
-                    successMessage: 'Changes saved.',
-                    statusMessage: true,
-                    buttonClicked: true,
-                });
-            }).catch(() => {
-                this.setState({
-                    errorMessageTag: 'Error in saving the Tags.',
-                    statusMessageTags: true,
-                    buttonClicked: true,
-                });
-            }).finally(() => {
-                this.setState({
-                    showEditCauseModal: false,
-                });
+        }).catch(() => {
+            this.setState({
+                errorMessage: 'Error in saving the Causes.',
+                statusMessage: true,
+                buttonClicked: true,
             });
+        }).finally(() => {
+            this.setState({
+                showEditCauseModal: false,
+            });
+        });
+        saveCharitableTags(dispatch, id, userTags).then(() => {
+            this.setState({
+                errorMessage: null,
+                successMessage: 'Changes saved.',
+                statusMessage: true,
+                buttonClicked: true,
+            });
+        }).catch(() => {
+            this.setState({
+                errorMessageTag: 'Error in saving the Tags.',
+                statusMessageTags: true,
+                buttonClicked: true,
+            });
+        }).finally(() => {
+            this.setState({
+                showEditCauseModal: false,
+            });
+            getUserCharitableInterests(dispatch, user_id);
+        });
     }
 
     resetSaveClicked(setValue) {
@@ -279,6 +286,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         userCausesList: state.userProfile.userCausesList,
         userTagsFollowedList: state.userProfile.userTagsFollowedList,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
     };
 }
 

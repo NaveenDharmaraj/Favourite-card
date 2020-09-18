@@ -120,7 +120,7 @@ const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
     }).then(
         (result) => {
             if (result && !_isEmpty(result.data)) {
-                fsa.payload.data = result.data;
+                fsa.payload.data = result.data[0];
                 dispatch(fsa);
             }
         },
@@ -323,7 +323,7 @@ const getMyFriendsList = (dispatch, email, pageNumber) => {
     };
     return graphApi.get(`/user/myfriends`, { params: {
         'page[number]': pageNumber,
-        'page[size]': 10,
+        'page[size]': 20,
         status: 'accepted',
         userid: email,
     } }).then(
@@ -1448,6 +1448,62 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
     }).catch().finally();
 };
 
+const rejectFriendInvite = (dispatch, currentUserId, friendUserId, email) => {
+    const payloadObj = {
+        relationship: 'IS_CHIMP_FRIEND_OF',
+        source: {
+            entity: 'user',
+            filters: {
+                user_id: Number(currentUserId),
+            },
+        },
+        target: {
+            entity: 'user',
+            filters: {
+                user_id: Number(friendUserId),
+            },
+        },
+    };
+    graphApi.post(`/users/deleterelationship`, payloadObj, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then((result) => {
+        getFriendsInvitations(dispatch, email, 1);
+        getMyFriendsList(dispatch, email, 1);
+    });
+};
+
+const searchMyfriend = (dispatch, userId, queryText) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_MY_FRIENDS,
+    }
+    const payloadObj = {
+        filter: [
+            {
+                field: 'friends_list.accepted',
+                value: [
+                    userId,
+                ],
+            },
+        ],
+        text: queryText,
+    };
+    return searchApi.post(`/users?page[number]=1&page[size]=10&user_id=${Number(userId)}`,
+        payloadObj).then((result) => {
+        console.log('result', result);
+        fsa.payload = {
+            count: result.meta.record_count,
+            data: result.data,
+            pageCount: result.meta.pageCount,
+        };
+        dispatch(fsa);
+    });
+};
+
 export {
     getPaymentInstrumentById,
     getUserProfileBasic,
@@ -1494,4 +1550,6 @@ export {
     setPrimaryUserEmailAddress,
     resendUserVerifyEmail,
     searchLocationByUserInput,
+    rejectFriendInvite,
+    searchMyfriend,
 };

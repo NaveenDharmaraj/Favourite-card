@@ -26,9 +26,9 @@ import _isEmpty from 'lodash/isEmpty';
 
 import { withTranslation } from '../../../i18n';
 import {
-    acceptFriendRequest,
     getMyFriendsList,
     getFriendsInvitations,
+    searchMyfriend,
 } from '../../../actions/userProfile';
 import {
     getLocation,
@@ -40,9 +40,12 @@ class UserFriendList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            show: false,
+            searchText: '',
+            searchClicked: false,
         };
         this.showFriendsList = this.showFriendsList.bind(this);
+        this.handleOnChangeSearch = this.handleOnChangeSearch.bind(this);
+        this.handleSearchFriendList = this.handleSearchFriendList.bind(this);
     }
 
     componentDidMount() {
@@ -60,25 +63,62 @@ class UserFriendList extends React.Component {
         } = this.props;
         const isMyprofile = user_id === Number(UserId);
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
-        debugger;
         getMyFriendsList(dispatch, email, 1);
         if (isMyprofile) {
             getFriendsInvitations(dispatch, email, 1);
         }
     }
 
-    // eslint-disable-next-line class-methods-use-this
     showFriendsList(dataArray, type) {
+        const {
+            hideFriendPage,
+        } = this.props;
         const friendListArray = [];
         dataArray.map((data) => {
             friendListArray.push(
                 <FriendListCard
                     data={data.attributes}
                     type={type}
+                    hideFriendPage={hideFriendPage}
                 />,
             );
         });
         return friendListArray;
+    }
+
+    handleOnChangeSearch(event, data) {
+        this.setState({
+            searchText: data.value,
+        });
+    }
+
+    handleSearchFriendList() {
+        const {
+            dispatch,
+            currentUser: {
+                id: UserId,
+            },
+            userFriendProfileData: {
+                attributes: {
+                    email_hash,
+                },
+            },
+        } = this.props;
+        const {
+            searchText,
+        } = this.state;
+        const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
+        if (!_isEmpty(searchText)) {
+            searchMyfriend(dispatch, UserId, searchText);
+        } else {
+            getMyFriendsList(dispatch, email, 1);
+        }
+        // this.setState({
+        //     searchText: '',
+        // });
+        this.setState({
+            searchClicked: true,
+        });
     }
 
     render() {
@@ -104,6 +144,10 @@ class UserFriendList extends React.Component {
                 data: friendData,
             },
         } = this.props;
+        const {
+            searchText,
+            searchClicked,
+        } = this.state;
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         const isMyProfile = (profile_type === 'my_profile');
         const headerText = isMyProfile ? 'Your friends' : (`${display_name}'s friends`);
@@ -144,28 +188,36 @@ class UserFriendList extends React.Component {
                                                 </List>
                                             </div>
                                         )}
-                                        {!_isEmpty(friendData)
-                                        && (
-                                            <Fragment>
-                                                <div className="friendsSearch">
-                                                    <Header as="h4">Friends</Header>
-                                                    <div className="searchBox">
-                                                        <Input
-                                                            className="searchInput"
-                                                            placeholder="Search topics"
-                                                            fluid
-                                                        />
-                                                        <a
-                                                            className="search-btn"
-                                                        >
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <List divided verticalAlign="middle" className="users_List">
-                                                    {this.showFriendsList(friendData, 'friends')}
-                                                </List>
-                                            </Fragment>
-                                        )}
+                                        <div className="friendsSearch">
+                                            <Header as="h4">Friends</Header>
+                                            <div className="searchBox">
+                                                <Input
+                                                    className="searchInput"
+                                                    placeholder="Search friends"
+                                                    fluid
+                                                    onChange={this.handleOnChangeSearch}
+                                                    value={searchText}
+                                                />
+                                                <a
+                                                    className="search-btn"
+                                                    onClick={this.handleSearchFriendList}
+                                                >
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <List divided verticalAlign="middle" className="users_List">
+                                            {(!_isEmpty(friendData))
+                                            && (
+                                                this.showFriendsList(friendData, 'friends')
+                                            )
+                                            }
+                                            {(_isEmpty(friendData) && searchClicked)
+                                            && (
+                                                <p>
+                                                    Sorry, there are no friends by that name.
+                                                </p>
+                                            )}
+                                        </List>
                                     </div>
                                 </div>
                             </div>
