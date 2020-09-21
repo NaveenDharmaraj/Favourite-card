@@ -87,8 +87,13 @@ const GivingGoal = (props) => {
         } else {
             goalText = `${fundraisingDaysRemaining}${daysText} ${formatMessage('groupProfile:toReachGoalText')}`;
         }
-    } else if (hasPreviousGoal && !_isEmpty(fundraisingEndDate)) {
-        goalText = `${formatMessage('groupProfile:goalExpiredOnText')} ${formatDateForGivingTools(fundraisingEndDate)}`;
+    } else if (hasPreviousGoal) {
+        if (!_isEmpty(fundraisingEndDate)) {
+            goalText = `${formatMessage('groupProfile:goalExpiredOnText')} ${formatDateForGivingTools(fundraisingEndDate)}`;
+        } else if (parseInt(goalAmountRaised, 10) >= parseInt(goal, 10)) {
+            goalText = formatMessage('groupProfile:reachedGoalText');
+            canSetGoal = isAdmin;
+        }
     }
     fundRaisingDuration = (
         <span className="badge white goalbtn topgoalbtn">
@@ -168,16 +173,15 @@ const GivingGoal = (props) => {
                             <div className="goalPercent">
                                 <Progress percent={fundraisingPercentage} />
                             </div>
-                            {!_isEmpty(fundraisingEndDate) && fundRaisingDuration}
+                            {!_isEmpty(goalText) && fundRaisingDuration}
                             {!_isEmpty(lastDonationAt)
                             && (
                                 <div className="lastGiftWapper">
                                     <p className="lastGiftText">{giftText}</p>
                                 </div>
                             )}
-                          
                             <Responsive minWidth={768}>
-                            <Divider />
+                                <Divider />
                                 {giveButton}
                             </Responsive>
                         </Fragment>

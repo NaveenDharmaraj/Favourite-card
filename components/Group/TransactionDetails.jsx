@@ -227,7 +227,6 @@ class TransactionDetails extends React.Component {
                 );
             });
         }
-
         return (
             <div>
                 <div className="btn_wrapper">
@@ -242,7 +241,7 @@ class TransactionDetails extends React.Component {
                         </a>
                     )
                     }
-                    {!_isEmpty(groupData)
+                    {(!_isEmpty(groupData) || (_isEmpty(groupData) && (selectedValue !== 'all')))
                     && (
                         <Menu compact className="dropdownRight">
                             <Dropdown
