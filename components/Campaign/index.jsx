@@ -35,13 +35,20 @@ class CampaignProfileWrapper extends React.Component {
         } = this.props;
         if (_isEmpty(deepLink)) {
             const {
+                currentUser: {
+                    id,
+                },
                 currentUser,
-                campaignDetails,
+                campaignDetails: {
+                    attributes: {
+                        groupId,
+                    }
+                },
                 dispatch,
             } = this.props;
-            let deepLinkApiUrl = `deeplink?profileType=campaignprofile&profileId=${campaignDetails.attributes.groupId}`;
-            if (currentUser && currentUser.id) {
-                deepLinkApiUrl += `sourceId=${currentUser.id}`;
+            let deepLinkApiUrl = `deeplink?profileType=campaignprofile&profileId=${groupId}`;
+            if (currentUser && id) {
+                deepLinkApiUrl += `&sourceId=${id}`;
             }
             generateDeepLink(deepLinkApiUrl, dispatch);
         }
@@ -155,24 +162,22 @@ class CampaignProfileWrapper extends React.Component {
                                                     />
                                                 </ProfileTitle>
                                             )}
-                                            <Grid.Column mobile={16}>
-                                                <Responsive minWidth={320} maxWidth={767}>
-                                                    {
-                                                        campaignDetails && (
-                                                            <CampaignDetails
-                                                                activeMatch={activeMatch}
-                                                                hasActiveMatch={hasActiveMatch}
-                                                                peopleInCampaign={peopleInCampaign}
-                                                                groupsCount={groupsCount}
-                                                                slug={slug}
-                                                                amountRaised={amountRaised}
-                                                                isAuthenticated={isAuthenticated}
-                                                                type={type}
-                                                            />
-                                                        )
-                                                    }
-                                                </Responsive>
-                                            </Grid.Column>
+                                            <Responsive minWidth={320} maxWidth={767}>
+                                                {
+                                                    campaignDetails && (
+                                                        <CampaignDetails
+                                                            activeMatch={activeMatch}
+                                                            hasActiveMatch={hasActiveMatch}
+                                                            peopleInCampaign={peopleInCampaign}
+                                                            groupsCount={groupsCount}
+                                                            slug={slug}
+                                                            amountRaised={amountRaised}
+                                                            isAuthenticated={isAuthenticated}
+                                                            type={type}
+                                                        />
+                                                    )
+                                                }
+                                            </Responsive>
                                         </Grid>
                                         {
                                             campaignDetails && (

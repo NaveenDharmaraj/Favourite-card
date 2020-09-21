@@ -5,7 +5,7 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     Button,
     Comment,
-    TextArea,
+    Input,
     Grid,
 } from 'semantic-ui-react';
 import {
@@ -116,10 +116,6 @@ class Activity extends React.Component {
     }
 
     updateInputValue(event) {
-        if (_isEmpty(event.target.value)) {
-            event.currentTarget.style.cssText = `height: ${0}px`;
-        };
-        event.currentTarget.style.cssText = `height: ${event.currentTarget.scrollHeight}px`;
         this.setState({
             commentText: event.target.value,
         });
@@ -174,32 +170,29 @@ class Activity extends React.Component {
                     <Grid.Row>
                         <Grid.Column mobile={16} tablet={16} computer={16}>
                             {isMember
-                        && (
-                            <div className="postinputBox">
-                                <div className="two-icon-brdr-btm-input">
-                                    <TextArea
-                                        rows={1}
-                                        value={commentText}
-                                        onChange={this.updateInputValue}
-                                        type="text"
-                                        placeholder={formatMessage('groupProfile:activityPlaceholderText')}
-                                        action
-                                        fluid
-                                        className="comment_Textarea"
-                                    />
-                                </div>
-                                <div className="postSendButton">
-                                    {(!_isEmpty(commentText))
-                                    && (
-                                        <Button
-                                            circular
-                                            icon="paper plane outline"
-                                            onClick={this.postComment}
-                                        />
-                                    )}
-                                </div>
-                            </div>
-                        )
+                                && (
+                                    <div className="postinputBox">
+                                        <div className="two-icon-brdr-btm-input">
+                                            <Input
+                                                value={commentText}
+                                                onChange={this.updateInputValue}
+                                                type="text"
+                                                placeholder={formatMessage('groupProfile:commentText')}
+                                                fluid
+                                            />
+                                        </div>
+                                        <div className="postSendButton">
+                                            {(!_isEmpty(commentText))
+                                                && (
+                                                    <Button
+                                                        circular
+                                                        icon="paper plane outline"
+                                                        onClick={this.postComment}
+                                                    />
+                                                )}
+                                        </div>
+                                    </div>
+                                )
                             }
                             {viewData}
                         </Grid.Column>
@@ -215,15 +208,15 @@ class Activity extends React.Component {
                     : actionData
                 }
                 {(activitiesLink)
-                && (
-                    <div className="text-center">
-                        <Button
-                            onClick={this.loadMore}
-                            className="blue-bordr-btn-round-def btn_w_More"
-                            content={formatMessage('groupProfile:viewMore')}
-                        />
-                    </div>
-                )
+                    && (
+                        <div className="text-center">
+                            <Button
+                                onClick={this.loadMore}
+                                className="blue-bordr-btn-round-def btn_w_More"
+                                content={formatMessage('groupProfile:viewMore')}
+                            />
+                        </div>
+                    )
                 }
             </Fragment>
         );
