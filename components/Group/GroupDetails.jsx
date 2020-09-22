@@ -32,6 +32,9 @@ import {
     leaveGroup,
 } from '../../actions/group';
 import {
+    resetFlowObject,
+} from '../../actions/give';
+import {
     generateDeepLink,
 } from '../../actions/profile';
 import LeaveModal from '../../components/shared/LeaveModal';
@@ -48,6 +51,7 @@ class GroupDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isGiveFromModalOpen: false,
             joinClicked: false,
             openLeaveModal: false,
             userJoinClicked: false,
@@ -56,6 +60,7 @@ class GroupDetails extends React.Component {
         this.handleUserJoin = this.handleUserJoin.bind(this);
         this.close = this.close.bind(this);
         this.callLeaveGroup = this.callLeaveGroup.bind(this);
+        this.toggleGiveFromGroupModal = this.toggleGiveFromGroupModal.bind(this);
     }
 
     componentDidMount() {
@@ -125,6 +130,17 @@ class GroupDetails extends React.Component {
         });
     }
 
+    toggleGiveFromGroupModal() {
+        const {
+            isGiveFromModalOpen,
+        } = this.state;
+        const {
+            dispatch,
+        } = this.props;
+        resetFlowObject('group', dispatch);
+        this.setState({ isGiveFromModalOpen: !isGiveFromModalOpen });
+    }
+
     open() {
         this.setState({
             openLeaveModal: true,
@@ -154,6 +170,7 @@ class GroupDetails extends React.Component {
         const {
             buttonLoader,
             beneficiariesCount,
+            dispatch,
             errorMessage,
             groupDetails: {
                 attributes: {
@@ -165,6 +182,7 @@ class GroupDetails extends React.Component {
                     slug,
                     isMember,
                     isAdmin,
+                    hasCampaignAccess,
                     liked,
                 },
                 id: groupId,
@@ -176,6 +194,7 @@ class GroupDetails extends React.Component {
             },
         } = this.props;
         const {
+            isGiveFromModalOpen,
             joinClicked,
             userJoinClicked,
             openLeaveModal,
@@ -210,7 +229,7 @@ class GroupDetails extends React.Component {
                 && (
                     <div className="buttonWraper">
                         <Link route={`/give/to/group/${slug}/new`}>
-                            <Button primary className="blue-btn-rounded">
+                            <Button onClick={() => { resetFlowObject('group', dispatch); }} primary className="blue-btn-rounded">
                             Give
                             </Button>
                         </Link>
@@ -232,24 +251,27 @@ class GroupDetails extends React.Component {
                     </div>
                 )
             );
-            giveFromGroupButton = (
-                (
-                    <div className="buttonWraper">
-                        {!_isEmpty(beneficiariesCount)
-                            ? (
-                                <Link route={`/give/to/charity/new?group_id=${groupId}&source_account_holder_id=${fundId}`}>
-                                    <Button
-                                        className="blue-bordr-btn-round"
-                                    >
-                                    Give from this Group
-                                    </Button>
-                                </Link>
-                            )
-                            : <GiveFromGroupModal />
-                        }
-                    </div>
-                )
-            );
+            if (fundId) {
+                giveFromGroupButton = (
+                    <Fragment>
+                        <Button
+                            className="blue-bordr-btn-round"
+                            onClick={this.toggleGiveFromGroupModal}
+                        >
+                            Give from this group
+                        </Button>
+                        <GiveFromGroupModal
+                            beneficiariesCount={beneficiariesCount}
+                            groupName={name}
+                            fundId={fundId}
+                            groupId={groupId}
+                            hasCampaignAccess={hasCampaignAccess}
+                            isGiveFromModalOpen={isGiveFromModalOpen}
+                            toggleGiveFromGroupModal={this.toggleGiveFromGroupModal}
+                        />
+                    </Fragment>
+                );
+            }
         } else {
             giveButton = (
                 <div className="buttonWraper">
@@ -306,7 +328,7 @@ class GroupDetails extends React.Component {
                             <Grid.Column mobile={16} tablet={13} computer={14}>
                                 <Grid stackable>
                                     <Grid.Row>
-                                        <Grid.Column mobile={16} tablet={16} computer={8}>
+                                        <Grid.Column mobile={16} tablet={16} computer={7}>
                                             <div className="ProfileHeaderWraper">
                                                 <Header as="h3">
                                                     {name}
@@ -322,8 +344,8 @@ class GroupDetails extends React.Component {
 
                                             </div>
                                         </Grid.Column>
-                                        <Grid.Column mobile={16} tablet={16} computer={8}>
-                                            <div className="gpRightButtons">
+                                        <Grid.Column mobile={16} tablet={16} computer={9}>
+                                            <div className="gpRightButtons grp-btns">
 
                                                 {!joinClicked && giveButton}
                                                 {!joinClicked && joinButton}
