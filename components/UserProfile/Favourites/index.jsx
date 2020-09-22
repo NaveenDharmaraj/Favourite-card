@@ -12,7 +12,7 @@ import {
 import _isEmpty from 'lodash/isEmpty';
 import {
     array,
-    func,
+    bool,
     string,
     number,
     PropTypes,
@@ -115,8 +115,16 @@ class FavouritesList extends React.Component {
 
     showMemberCard() {
         const {
+            userFriendProfileData: {
+                attributes: {
+                    profile_type,
+                },
+            },
             userProfileFavouritesData: {
                 data: favouritesData,
+            },
+            previewMode: {
+                isPreviewMode,
             },
         } = this.props;
         const memberArray = [];
@@ -134,7 +142,13 @@ class FavouritesList extends React.Component {
                         type={(favourite.attributes.type === 'group') ? 'GIVING GROUP' : 'CHARITY'}
                         name={favourite.attributes.name}
                         causes={!_isEmpty(favourite.attributes.groupType) ? favourite.attributes.groupType : ''}
+                        isMyProfile={(profile_type === 'my_profile')}
+                        isCampaign={!_isEmpty(favourite.attributes.is_campaign) ? favourite.attributes.is_campaign : false}
+                        Profiletype={!_isEmpty(favourite.attributes.type) ? favourite.attributes.type : 'group'}
                         location={locationDetails}
+                        slug={favourite.attributes.slug}
+                        isPreviewMode={isPreviewMode}
+                        canEdit={false}
                     />,
                 );
             });
@@ -144,6 +158,9 @@ class FavouritesList extends React.Component {
 
     render() {
         const {
+            previewMode: {
+                isPreviewMode,
+            },
             userFriendProfileData: {
                 attributes: {
                     favourites_visibility,
@@ -157,11 +174,31 @@ class FavouritesList extends React.Component {
         } = this.props;
         const isMyProfile = (profile_type === 'my_profile');
         const currentPrivacyType = getPrivacyType(favourites_visibility);
+        let noData = null;
+        if (isMyProfile) {
+            noData = <p>NO DATA MY PROFILE</p>;
+        } else {
+            noData = (
+                <div className="nodata-friendsprfl">
+                Nothing to show here yet
+                </div>
+            );
+        }
+        let dataElement = '';
+        if (!_isEmpty(favouritesData)) {
+            dataElement = (
+                <div className="cardwrap">
+                    {this.showMemberCard()}
+                </div>
+            );
+        } else {
+            dataElement = noData;
+        }
         return (
             <div className="userPrfl_tabSec">
                 <div className="tabHeader">
                     <Header>Favourites</Header>
-                    {isMyProfile && !_isEmpty(currentPrivacyType)
+                    {(isMyProfile && !isPreviewMode)
                         && (
                             <ProfilePrivacySettings
                                 columnName='favourites_visibility'
@@ -170,23 +207,20 @@ class FavouritesList extends React.Component {
                             />
                         )}
                 </div>
-                {!_isEmpty(favouritesData)
+                {userProfileFavouritesLoadStatus
                     ? (
-                        <div className="cardwrap">
-                            {this.showMemberCard()}
-                        </div>
+                        <PlaceholderGrid row={2} column={3} />
                     )
-                    : (
-                        <div className="nodata-friendsprfl">
-                        Nothing to show here yet
-                        </div>
-                    )}
+                    : dataElement}
             </div>
         );
     }
 }
 
 FavouritesList.defaultProps = {
+    previewMode: {
+        isPreviewMode: false,
+    },
     userFriendProfileData: {
         attributes: {
             favourites_visibility: null,
@@ -196,9 +230,13 @@ FavouritesList.defaultProps = {
     userProfileFavouritesData: {
         data: [],
     },
+    userProfileFavouritesLoadStatus: true,
 };
 
 FavouritesList.propTypes = {
+    previewMode: PropTypes.shape({
+        isPreviewMode: bool,
+    }),
     userFriendProfileData: PropTypes.shape({
         attributes: PropTypes.shape({
             favourites_visibility: number,
@@ -208,11 +246,13 @@ FavouritesList.propTypes = {
     userProfileFavouritesData: PropTypes.shape({
         data: array,
     }),
+    userProfileFavouritesLoadStatus: bool,
 };
 
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        previewMode: state.userProfile.previewMode,
         userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileFavouritesData: state.userProfile.userProfileFavouritesData,
         userProfileFavouritesLoadStatus: state.userProfile.userProfileFavouritesLoadStatus,

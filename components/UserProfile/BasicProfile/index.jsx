@@ -243,6 +243,7 @@ class UserBasicProfile extends React.Component {
         const {
             previewMode: {
                 isPreviewMode,
+                previewValue,
             },
             userFriendProfileData: {
                 attributes: {
@@ -256,12 +257,13 @@ class UserBasicProfile extends React.Component {
                     profile_type,
                     friends_visibility,
                     user_id,
+                    email_hash,
                 },
             },
             handlePreviewPage,
             hanldeFriendPage,
             // userData,
-            // userProfileProfilelink,
+            userProfileProfilelink,
         } = this.props;
         const {
             acceptButtonClicked,
@@ -274,18 +276,31 @@ class UserBasicProfile extends React.Component {
             statusMessage,
             successMessage,
         } = this.state;
+        let userProfileDeeplink = '';
         const isMyProfile = (profile_type === 'my_profile');
-        // const currentPrivacyType = getPrivacyType(friends_visibility);
         const friendText = (number_of_friends > 1) ? 'friends' : 'friend';
         const showUserFriends = (friends_visibility === 0 ||
             (profile_type === 'friends_profile' && friends_visibility === 1) ||
-            (isMyProfile && !isPreviewMode));
+            (isMyProfile && !isPreviewMode) || (isPreviewMode && friends_visibility === previewValue));
+        
+        if (!_.isEmpty(userProfileProfilelink)) {
+            userProfileDeeplink = userProfileProfilelink.data.attributes['short-link'];
+        }
         // const avatar = (typeof userData.avatar === 'undefined') || (userData.avatar === null) ? UserPlaceholder : userData.avatar;
         // const friendsVisibility = (typeof userData.friends_visibility === 'undefined') ? 0 : userData.friends_visibility;
-        // let isBlocked = false;
-        // let isFriendPending = false;
-        // let isFriend = false; let isLimited = false; let isProfileOut = false; let isProfileIn = false;
-        // let email = '';
+        let isBlocked = false;
+        let isFriendPending = false;
+        let isFriend = false;
+        let isLimited = false;
+        let isProfileOut = false;
+        let isProfileIn = false;
+        isBlocked = (profile_type.substring(0, 7) === 'blocked') ? true : false;
+        isFriendPending = (profile_type.substring(0, 7) === 'pending') ? true : false;
+        isFriend = (profile_type === 'friends_profile') ? true : false;
+        isLimited = (profile_type === 'limited_profile') ? true : false;
+        isProfileOut = (profile_type === 'pending_profile_out') ? true : false;
+        isProfileIn = (profile_type === 'pending_profile_in') ? true : false;
+        let email = ((!_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : ''));
         // let profileType = ''; let userProfileDeeplink = '';
         // let locationDetails = '';
         // let profileTypeValidation = '';
@@ -320,9 +335,97 @@ class UserBasicProfile extends React.Component {
                 </div>
                 <div className='user_profileDetails'>
                     <Header className="usrName">{`${first_name} ${last_name}`}</Header>
+                    <input
+                        ref={(textarea) => this.textArea = textarea}
+                        value={userProfileDeeplink}
+                        type="hidden"
+                        id="txtDeeplinkUser"
+                    />
+                    <div>
+                        <Modal
+                            size="tiny"
+                            dimmer="inverted"
+                            className="chimp-modal"
+                            closeIcon
+                            closeOnEscape={false}
+                            closeOnDimmerClick={false}
+                            open={confirmBlockModal}
+                            onClose={() => { this.setState({ confirmBlockModal: false }); }}
+                        >
+                            <Modal.Header>
+                                Block
+                                {' '}
+                                {first_name}
+                                {' '}
+                                {last_name}?
+                            </Modal.Header>
+                            <Modal.Content>
+                                <Modal.Description className="font-s-16">
+                                    They won't be able to find your profile or message you on Charitable Impact. We won't let them know you blocked them.
+                                </Modal.Description>
+                                <div className="btn-wraper pt-3 text-right">
+                                    <Button
+                                        className="danger-btn-rounded-def c-small"
+                                        onClick={() => this.handleBlockUser(user_id)}
+                                        disabled={blockButtonClicked}
+                                    >
+                                        Block
+                                    </Button>
+                                    <Button
+                                        className="blue-bordr-btn-round-def c-small"
+                                        onClick={this.handleBlockCancelClick}
+                                        disabled={blockButtonClicked}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </Modal.Content>
+                        </Modal>
+                    </div>
+                    <div>
+                        <Modal
+                            size="tiny"
+                            dimmer="inverted"
+                            className="chimp-modal"
+                            closeIcon
+                            closeOnEscape={false}
+                            closeOnDimmerClick={false}
+                            open={confirmUnfriendModal}
+                            onClose={() => { this.setState({ confirmUnfriendModal: false }); }}
+                        >
+                            <Modal.Header>
+                                Unfriend
+                                {' '}
+                                {first_name}
+                                {' '}
+                                {last_name}?
+                            </Modal.Header>
+                            <Modal.Content>
+                                <Modal.Description className="font-s-16">
+                                    Are you sure you want to unfriend this person?
+                                </Modal.Description>
+                                <div className="btn-wraper pt-3 text-right">
+                                    <Button
+                                        className="danger-btn-rounded-def c-small"
+                                        onClick={() => this.handleUnfriendUser(user_id)}
+                                        disabled={unfriendButtonClicked}
+                                    >
+                                        Unfriend
+                                    </Button>
+                                    <Button
+                                        className="blue-bordr-btn-round-def c-small"
+                                        onClick={this.handleUnfriendCancelClick}
+                                        disabled={unfriendButtonClicked}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </Modal.Content>
+                        </Modal>
+                    </div>
                     <div className="userCity_friends">
                         <p>{getLocation(city,province)}</p>
-                        {((number_of_friends > 0) && showUserFriends)
+                        {((number_of_friends > 0) && (showUserFriends))
                         && (
                                 <div
                                     className="userfriends"
@@ -333,7 +436,7 @@ class UserBasicProfile extends React.Component {
                                     >
                                         {`${(number_of_friends) && number_of_friends} ${friendText}`}
                                     </Header>
-                                    {isMyProfile
+                                    {(isMyProfile && !isPreviewMode)
                                     && (
                                         <ProfilePrivacySettings
                                             columnName='friends_visibility'
@@ -356,8 +459,146 @@ class UserBasicProfile extends React.Component {
                                 View what others see
                                 </Button>
                                 <EditBasicProfile />
+                                <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left'>
+                                    <Dropdown.Menu >
+                                        <Dropdown.Item
+                                            text='Copy profile URL'
+                                            onClick={this.handleCopyLink}
+                                        />
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </Fragment>
                         )}
+                        {isPreviewMode
+                        && (
+                            <Fragment>
+                            <Button
+                                className='blue-btn-rounded-def'
+                                disabled={true}
+                                >
+                                    Add Friend
+                            </Button>
+                            <Button
+                                className='blue-bordr-btn-round-def'
+                                disabled={true}
+                            >
+                                Give
+                            </Button>
+                            <Dropdown 
+                                className='userProfile_drpbtn threeDotBtn'
+                                direction='left'
+                                disabled={true}
+                            >
+                                    <Dropdown.Menu >
+                                        <Dropdown.Item
+                                            text='Copy profile URL'
+                                            onClick={this.handleCopyLink}
+                                        />
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </Fragment>
+                        )}
+                        {(!isMyProfile && !isFriendPending && !isFriend)
+                        && (
+                                <Button
+                                    className="blue-btn-rounded"
+                                    onClick={() => this.handleAddToFriends(user_id, email)}
+                                    disabled={addButtonClicked}
+                                    primary
+                                >
+                                    Add Friend
+                                </Button>
+                            )
+                        }
+                        {
+                            isProfileOut && (
+                                <Dropdown
+                                    className='userProfile_drpbtn'
+                                    icon='chevron down'
+                                    direction='left'
+                                    trigger={(
+                                        <Button
+                                            className="blue-bordr-btn-round-def"
+                                        >
+                                            Pending
+                                        </Button>
+                                    )} 
+                                >
+                                    <Dropdown.Menu >
+                                        <Dropdown.Item
+                                            text='Cancel friend request'
+                                        />
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            )
+                        }
+                        {
+                            isProfileIn && (
+                                <Dropdown 
+                                    className='userProfile_drpbtn m-w-100' 
+                                    icon='chevron down' 
+                                    direction='left'
+                                    trigger={(
+                                        <Button
+                                        className='blue-btn-rounded-def'
+                                >
+                                    Respond to friend request
+                                </Button>
+                                )} >
+                                    <Dropdown.Menu >
+                                        <Dropdown.Item
+                                            onClick={() => this.handleAcceptFriend(user_id, email)}
+                                            text='Accept'
+                                        />
+                                        <Dropdown.Item
+                                            text='Ignore'
+                                        />
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            )
+                        }
+                        {
+                            isFriend && (
+                                <Link className="lnkChange" route={`/chats/${user_id}`}>
+                                    <Button
+                                        className="blue-btn-rounded"
+                                        primary
+                                    >
+                                        Message
+                                    </Button>
+                                </Link>
+                            )
+                        }
+                        {!isMyProfile
+                        && (
+                            <Fragment>
+                                <Link className="lnkChange" route="/give/to/friend/new">
+                                    <Button
+                                        className="blue-bordr-btn-round"
+                                        onClick={() => this.giveButtonClick(email, `${first_name} ${last_name}`, avatar)}
+                                    >
+                                        Give
+                                    </Button>
+                                </Link>
+                                <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left'>
+                                    <Dropdown.Menu >
+                                        <Dropdown.Item
+                                            text='Copy profile URL'
+                                            onClick={this.handleCopyLink}
+                                        />
+                                        <Dropdown.Item
+                                            text='Unfriend'
+                                            onClick={this.handleUnfriendModal}
+                                        />
+                                        <Dropdown.Item
+                                            text='Block'
+                                            onClick={this.handleBlockModal}
+                                        />
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </Fragment>
+                        )
+                        }
                         {/* TODO Buttons logic */}
                     </div>
                 </div>

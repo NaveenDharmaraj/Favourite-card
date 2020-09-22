@@ -33,6 +33,7 @@ const UserRightColumnList = (props) => {
         friendUserId,
         previewMode: {
             isPreviewMode,
+            previewValue,
         },
         userFriendProfileData: {
             attributes: {
@@ -43,8 +44,14 @@ const UserRightColumnList = (props) => {
         },
     } = props;
     const isMyProfile = (profile_type === 'my_profile');
-    const showGivingGoal = (giving_goal_visibility === 0 || (profile_type === 'friends_profile' && giving_goal_visibility === 1) || (isMyProfile && !isPreviewMode));
-    const showCauses = (causes_visibility === 0 || (profile_type === 'friends_profile' && causes_visibility === 1) || (isMyProfile && !isPreviewMode));
+    const showGivingGoal = (giving_goal_visibility === 0
+        || (profile_type === 'friends_profile' && giving_goal_visibility === 1)
+        || (isMyProfile && !isPreviewMode)
+        || (isPreviewMode && giving_goal_visibility === previewValue));
+    const showCauses = (causes_visibility === 0
+        || (profile_type === 'friends_profile' && causes_visibility === 1)
+        || (isMyProfile && !isPreviewMode)
+        || (isPreviewMode && causes_visibility === previewValue));
     return (
         <Fragment>
             {showGivingGoal

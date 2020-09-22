@@ -7,6 +7,10 @@ import {
     func,
     PropTypes,
 } from 'prop-types';
+import {
+    Dimmer,
+    Loader,
+} from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
 
@@ -71,9 +75,14 @@ class FriendProfile extends React.Component {
         return (
             <Layout authRequired>
                 {!_isEmpty(userFriendProfileData)
-                && (
-                    <UserProfileWrapper {...this.props} />
-                )}
+                    ? (
+                        <UserProfileWrapper {...this.props} />
+                    )
+                    : (
+                        <Dimmer active inverted>
+                            <Loader />
+                        </Dimmer>
+                    )}
             </Layout>
         );
     }

@@ -62,6 +62,7 @@
               h5{
                 margin-bottom: 0;
                 margin-right: 13px;
+                cursor: pointer;
               }
             }
           }
@@ -176,10 +177,6 @@
             cursor: pointer;
           }
         }
-      }
-      .nodata{
-        margin-top: 20px;
-        font-family: 'ProximaNova-Medium';
       }
       .user-badge-group{
         margin: 20px 0;
@@ -519,6 +516,9 @@
           margin-bottom: 20px;
         }
       .causeselect-wraper{
+        min-height: 400px;
+        position: relative;
+        overflow: auto;
         .ui.button{
           &.select-btn{
             position: relative;
@@ -567,9 +567,27 @@
             }
           }
         }
+        .scrollContent{
+        max-height: 400px;
+        overflow: auto;
+        
+        &::-webkit-scrollbar {
+          appearance: none;
+          width: 5px;
+        }
+        &::-webkit-scrollbar-track {
+          background: #E3E8F0;
+          border-radius: 2.5px;
+        }
+        &::-webkit-scrollbar-thumb{
+          background: #78909C;
+        }
+        }
       }
       .user-badge-group{
         margin: 10px 0 7px;
+        max-height: 300px;
+        overflow: auto;
         .ui.button.user_badgeButton{
           &.active{
             position: relative;
@@ -596,6 +614,18 @@
               }
             }
           }
+        }
+       
+        &::-webkit-scrollbar {
+          appearance: none;
+          width: 5px;
+        }
+        &::-webkit-scrollbar-track {
+          background: #E3E8F0;
+          border-radius: 2.5px;
+        }
+        &::-webkit-scrollbar-thumb{
+          background: #78909C;
         }
       }
       .EditTopicseeMore{
@@ -641,6 +671,7 @@
       font-weight: 500;
       margin-top: 5px;
     }
+
     @media only screen and (max-width:767px) {
       .header-note{
         margin:6px 0 20px;
@@ -725,6 +756,26 @@
       }
   }
 }
+.findFriendsSearch{
+  max-width: 500px;
+  margin: auto;
+  .searchBox{
+    .ui.input.searchInput{
+      input{
+        height: 50px;       
+        border-radius: 25px;
+      }
+    }
+    .search-btn{
+      width: 40px;
+      height: 40px;
+      &::before{
+        height: 20px;
+        width: 20px;
+      }
+    }
+  }
+}
 .user-badge-group{
   margin: 20px 0 7px;
   .ui.button.user_badgeButton{
@@ -806,7 +857,7 @@
     .item{
       font-size: 16px;
       color: #262626;
-      padding: 0 15px 15px;
+      padding: 0 15px 15px; 
       margin: 0;
       &.active{
         .primeFont-semi-bold();
@@ -825,9 +876,24 @@
     border: 0;
     padding: 0;
   }
+  &.userfriendtab{
+    margin-top: 47px;
+    .ui.secondary.pointing.menu{
+      margin-bottom: 40px;
+      .item{
+        font-size: 14px;
+        padding: 0 20px 15px;
+        &:first-child{
+          padding-left: 20px;
+        }
+      }
+    }
+    @media only screen and (max-width:767px) {
+      margin-top: 30px;
+    }  
+  }
 }
 .userPrfl_tabSec{
-
   .tabHeader{
     display: flex;
     align-items: center;
@@ -864,6 +930,7 @@
         }
         .cardcontentWrap{
           margin-left: 14px;
+          width: 100%;
           h6{
             font-size: 10px;
             margin: 0 0 5px;
@@ -873,13 +940,16 @@
             &.charityClr{
               color: #ED803B;
             }
-
+            a.edit{
+              float: right;
+            }
           }
           h4{
             font-size: 14px;
             color: @font-color;
             margin: 0 0 5px;
             line-height: 22px;
+            cursor: pointer;
           }
           p{
             margin-bottom: 4px;
@@ -955,14 +1025,6 @@
   }
 }
 .userfriendsWrap{
-  h3.ui.header{
-    font-size: 24px !important;
-    color: @font-color;
-    padding: 38px 0;
-    margin: 40px 0 0;
-    border-top: 1px solid @border-light;
-    border-bottom: 1px solid @border-light;
-  }
   h4.ui.header{
     font-size: 20px !important;
     color: @font-color;
@@ -971,8 +1033,8 @@
   }
   .invitationsWrap{
     background-color: #F1F6FD;
-    margin: -1px 0 0 -55px;
-    padding:0 55px 26px 55px;
+    margin: 0px 0 0 0px;
+    padding:0 53px 26px 53px;
     .ui.placeholder, .ui.placeholder .image.header::after, .ui.placeholder .line, .ui.placeholder .line::after, .ui.placeholder > ::before{
       background-color: #F1F6FD;
     }
@@ -1048,10 +1110,36 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 53px;
     .searchBox{
       max-width: 335px;
       width: 100%;
       margin: 10px 0 0;
+    }
+    +.ui.list.users_List{
+      padding: 0 50px;
+    }
+  
+  }
+  .findFriendsWrap{
+    max-width: 450px;
+    padding: 0 15px;
+    margin: auto;
+    text-align: center;
+    .ui.image{
+      margin: 60px auto 30px;
+    }
+    .ui.header{
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+    .invite_text_1{
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+    .invite_text_2{
+      font-size: 10px;
+      margin-bottom: 30px;
     }
   }
   @media only screen and (max-width:767px) {
@@ -1065,8 +1153,14 @@
       margin: -1px -15px 5px -15px;
       padding:0 15px 26px 15px;
     }
-    .friendsSearch .searchBox{
-      max-width: 240px;
+    .friendsSearch {
+      padding: 0px;
+      .searchBox{
+        max-width: 240px;
+      }
+      +.ui.list.users_List{
+        padding: 0px;
+      }
     }
   }
   @media only screen and (max-width:340px) {
@@ -1206,7 +1300,6 @@
 .previewHeader{
   width: 100%;
   background-color: @purple;
-  margin-top: 10px;
   .ui.container{
     height: 100%;
     .ui.grid{
@@ -1313,10 +1406,8 @@
       }
     }
   }
-  @media only screen and (max-width:991px) {
-    margin-top: 0px;
-  }
   @media only screen and (max-width:767px) {
+    margin-top: -12px;
     .ui.container .ui.grid {
       .row{
         padding: 14px 0;

@@ -2,15 +2,16 @@
 import React from 'react';
 import _ from 'lodash';
 import {
-    Modal,
+    Dimmer,
     Button,
     Header,
     Grid,
-    Responsive,
+    Loader,
     Icon,
     Input,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     getUserProfileCauses,
@@ -103,6 +104,7 @@ class MyCauses extends React.Component {
     render() {
         const {
             userProfileBasicData,
+            userCausesList,
         } = this.props;
         let causesVisible = 0;
         if (!_.isEmpty(userProfileBasicData)) {
@@ -114,7 +116,13 @@ class MyCauses extends React.Component {
                 <Header as='h4'>Causes</Header>
                 <p>Causes represent broader areas of charitable interests.</p>
                 <div className='causeselect-wraper'>
-                    {this.renderCauses()}
+                    {!_isEmpty(userCausesList)
+                        ? this.renderCauses()
+                        : (
+                            <Dimmer active inverted>
+                                <Loader />
+                            </Dimmer>
+                        )}
                 </div>
             </div>
             // <div>

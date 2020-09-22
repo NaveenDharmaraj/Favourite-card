@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, {
     Fragment,
 } from 'react';
@@ -34,6 +35,7 @@ const ProfileDetails = (props) => {
         friendUserId,
         previewMode: {
             isPreviewMode,
+            previewValue,
         },
         userFriendProfileData: {
             attributes: {
@@ -47,15 +49,18 @@ const ProfileDetails = (props) => {
     const isMyProfile = (profile_type === 'my_profile');
     const showAdminGroups = (giving_group_manage_visibility === 0
         || (profile_type === 'friends_profile' && giving_group_manage_visibility === 1)
-        || (isMyProfile && !isPreviewMode));
+        || (isMyProfile && !isPreviewMode)
+        || (isPreviewMode && giving_group_manage_visibility === previewValue));
 
     const showMemberGroups = (giving_group_member_visibility === 0
             || (profile_type === 'friends_profile' && giving_group_member_visibility === 1)
-            || (isMyProfile && !isPreviewMode));
-    
+            || (isMyProfile && !isPreviewMode)
+            || (isPreviewMode && giving_group_member_visibility === previewValue));
+
     const showFavouriteGroups = (favourites_visibility === 0
         || (profile_type === 'friends_profile' && favourites_visibility === 1)
-        || (isMyProfile && !isPreviewMode));
+        || (isMyProfile && !isPreviewMode)
+        || (isPreviewMode && favourites_visibility === previewValue));
 
     let panes = [];
     if (showAdminGroups) {
@@ -77,7 +82,7 @@ const ProfileDetails = (props) => {
         panes = [
             ...panes,
             {
-                menuItem: 'Joined Giving Groups', 
+                menuItem: 'Joined Giving Groups',
                 render: () => (
                     <Tab.Pane>
                         <UserMemberGroupList
@@ -106,14 +111,17 @@ const ProfileDetails = (props) => {
     return (
         <Fragment>
             <Responsive minWidth={768}>
-                <Tab
-                    className="userprfleTab"
-                    menu={{
-                        pointing: true,
-                        secondary: true,
-                    }}
-                    panes={panes}
-                />
+                {(showAdminGroups || showMemberGroups || showFavouriteGroups)
+                && (
+                    <Tab
+                        className="userprfleTab"
+                        menu={{
+                            pointing: true,
+                            secondary: true,
+                        }}
+                        panes={panes}
+                    />
+                )}
             </Responsive>
             <Responsive minWidth={320} maxWidth={767}>
                 <UserRightColumnList

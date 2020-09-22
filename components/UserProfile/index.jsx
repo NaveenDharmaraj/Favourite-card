@@ -49,7 +49,7 @@ class UserProfileWrapper extends React.Component {
             payload: {
                 previewMode: {
                     isPreviewMode: true,
-                    previewValue: 'public',
+                    previewValue: 0,
                 },
             },
             type: 'USER_PROFILE_PREVIEW_MODE',
@@ -64,7 +64,7 @@ class UserProfileWrapper extends React.Component {
             payload: {
                 previewMode: {
                     isPreviewMode: false,
-                    previewValue: 'public',
+                    previewValue: 0,
                 },
             },
             type: 'USER_PROFILE_PREVIEW_MODE',
@@ -90,7 +90,7 @@ class UserProfileWrapper extends React.Component {
         dispatch({
             payload: {
                 previewMode: {
-                    isPreviewMode: false,
+                    isPreviewMode: true,
                     previewValue: data.value,
                 },
             },
@@ -130,7 +130,7 @@ class UserProfileWrapper extends React.Component {
                     Public
                     </span>
                 ),
-                value: 'public',
+                value: 0,
             },
             {
                 key: 'Friends',
@@ -140,7 +140,7 @@ class UserProfileWrapper extends React.Component {
                     Friends
                     </span>
                 ),
-                value: 'friends',
+                value: 1,
             },
         ];
         return (

@@ -123,9 +123,7 @@ const PlaceholderGrid = (props) => {
                     {columnComponent(column, placeholderType)}
                 </Grid.Row>,
             );
-        }
-
-        else {
+        } else {
             placeHolderComponent.push(
                 <Grid.Row>
                     {columnComponent(column)}

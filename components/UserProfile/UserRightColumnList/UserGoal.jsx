@@ -63,7 +63,7 @@ const UserGoal = (props) => {
                         <Header>Giving goal</Header>
                     </Grid.Column>
                     <Grid.Column computer={4} mobile={3} tablet={5}>
-                        {(isMyProfile && !_isEmpty(currentPrivacyType) && !isPreviewMode)
+                        {(isMyProfile && !isPreviewMode)
                         && (
                             <ProfilePrivacySettings
                                 columnName='giving_goal_visibility'

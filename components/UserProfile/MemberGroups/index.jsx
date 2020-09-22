@@ -13,7 +13,7 @@ import {
 import _isEmpty from 'lodash/isEmpty';
 import {
     array,
-    func,
+    bool,
     string,
     number,
     PropTypes,
@@ -57,8 +57,16 @@ class UserMemberGroupList extends React.Component {
 
     showMemberCard() {
         const {
+            userFriendProfileData: {
+                attributes: {
+                    profile_type,
+                },
+            },
             userProfileMemberGroupData: {
                 data: memberData,
+            },
+            previewMode: {
+                isPreviewMode,
             },
         } = this.props;
         const memberArray = [];
@@ -70,7 +78,13 @@ class UserMemberGroupList extends React.Component {
                         type="Giving Group"
                         name={admin.attributes.name}
                         causes={admin.attributes.groupType}
+                        isMyProfile={(profile_type === 'my_profile')}
+                        isCampaign={!_isEmpty(admin.attributes.is_campaign) ? admin.attributes.is_campaign : false}
+                        Profiletype={!_isEmpty(admin.attributes.type) ? admin.attributes.type : 'group'}
                         location={getLocation(admin.attributes.city, admin.attributes.province)}
+                        slug={admin.attributes.slug}
+                        isPreviewMode={isPreviewMode}
+                        canEdit={false}
                     />,
                 );
             });
@@ -80,6 +94,9 @@ class UserMemberGroupList extends React.Component {
 
     render() {
         const {
+            previewMode: {
+                isPreviewMode,
+            },
             userFriendProfileData: {
                 attributes: {
                     giving_group_member_visibility,
@@ -93,11 +110,31 @@ class UserMemberGroupList extends React.Component {
         } = this.props;
         const isMyProfile = (profile_type === 'my_profile');
         const currentPrivacyType = getPrivacyType(giving_group_member_visibility);
+        let noData = null;
+        if (isMyProfile) {
+            noData = <p>NO DATA MY PROFILE</p>;
+        } else {
+            noData = (
+                <div className="nodata-friendsprfl">
+                Nothing to show here yet
+                </div>
+            );
+        }
+        let dataElement = '';
+        if (!_isEmpty(memberData)) {
+            dataElement = (
+                <div className="cardwrap">
+                    {this.showMemberCard()}
+                </div>
+            );
+        } else {
+            dataElement = noData;
+        }
         return (
             <div className='userPrfl_tabSec'>
                 <div className="tabHeader">
                     <Header>Joined Giving Groups</Header>
-                    {isMyProfile && !_isEmpty(currentPrivacyType)
+                    {(isMyProfile && !isPreviewMode)
                         && (
                             <ProfilePrivacySettings
                                 columnName='giving_group_member_visibility'
@@ -106,23 +143,19 @@ class UserMemberGroupList extends React.Component {
                             />
                         )}
                 </div>
-                {!_isEmpty(memberData)
-                    ? (
-                        <div className="cardwrap">
-                            {this.showMemberCard()}
-                        </div>
-                    )
-                    : (
-                        <div className="nodata-friendsprfl">
-                    Nothing to show here yet
-                        </div>
-                    )}
+                {userProfileMemberGroupsLoadStatus
+                    ? <PlaceholderGrid row={2} column={3} />
+                    : dataElement
+                }
             </div>
         );
     }
 }
 
 UserMemberGroupList.defaultProps = {
+    previewMode: {
+        isPreviewMode: false,
+    },
     userFriendProfileData: {
         attributes: {
             giving_group_member_visibility: null,
@@ -132,9 +165,13 @@ UserMemberGroupList.defaultProps = {
     userProfileMemberGroupData: {
         data: [],
     },
+    userProfileMemberGroupsLoadStatus: true,
 };
 
 UserMemberGroupList.propTypes = {
+    previewMode: PropTypes.shape({
+        isPreviewMode: bool,
+    }),
     userFriendProfileData: PropTypes.shape({
         attributes: PropTypes.shape({
             giving_group_member_visibility: number,
@@ -144,11 +181,13 @@ UserMemberGroupList.propTypes = {
     userProfileMemberGroupData: PropTypes.shape({
         data: array,
     }),
+    userProfileMemberGroupsLoadStatus: bool,
 };
 
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        previewMode: state.userProfile.previewMode,
         userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileMemberGroupData: state.userProfile.userProfileMemberGroupData,
         userProfileMemberGroupsLoadStatus: state.userProfile.userProfileMemberGroupsLoadStatus,
