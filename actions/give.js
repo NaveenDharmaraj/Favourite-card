@@ -1027,28 +1027,28 @@ export const resetFlowObject = (type, dispatch) => {
 };
 
 export const fetchGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId) => (dispatch) => {
-    const bodyData = {
-        data: {
-            attributes: {
-                amount: giveAmount,
-            },
-            relationships: {
-                destinationFund: {
-                    data: {
-                        id: giveToFundId,
-                        type: 'accountHolders',
-                    },
-                },
-                fund: {
-                    data: {
-                        id: giveFromFundId,
-                        type: 'accountHolders',
-                    },
-                },
-            },
-        },
-    };
-    coreApi.post('/groupAllocations/fetchMatchAmount', bodyData).then((result) => {
+    // const bodyData = {
+    //     data: {
+    //         attributes: {
+    //             amount: giveAmount,
+    //         },
+    //         relationships: {
+    //             destinationFund: {
+    //                 data: {
+    //                     id: giveToFundId,
+    //                     type: 'accountHolders',
+    //                 },
+    //             },
+    //             fund: {
+    //                 data: {
+    //                     id: giveFromFundId,
+    //                     type: 'accountHolders',
+    //                 },
+    //             },
+    //         },
+    //     },
+    // };
+    coreApi.get(`/groupAllocations/fetchMatchAmount?destinationFund=${giveToFundId}&fund=${giveFromFundId}&amount=${giveAmount}`).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             const matchingData = result.data;
             matchingData.giveFromFund = giveFromFundId;
