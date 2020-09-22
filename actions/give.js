@@ -499,6 +499,17 @@ const setUserDefaultCreditCard = (paymentInstrumentId) => {
     return coreApi.patch(`/paymentInstruments/${Number(paymentInstrumentId)}/set_as_default`);
 };
 
+const checkForDuplicateCcError = (error) => {
+
+    if (!_.isEmpty(error) && error.length === 1) {
+        const checkCcError = error[0];
+        if (!_.isEmpty(checkCcError.title) && (checkCcError.title === 'This credit card number has already been added.')) {
+            return true;
+        }
+    }
+    return false;
+}
+
 export const addNewCardAndLoad = (flowObject, isDefaultCard) => {
     return (dispatch) => {
         dispatch({
@@ -566,7 +577,14 @@ export const addNewCardAndLoad = (flowObject, isDefaultCard) => {
             }
             return addedCreditCard;
         }).catch((err) => {
-            triggerUxCritialErrors(err.errors || err, dispatch);
+            if (checkForDuplicateCcError(err.errors)) {
+                const duplicateError = [{
+                    detail: 'This credit card number has already been added.',
+                }];
+                triggerUxCritialErrors(duplicateError, dispatch);
+            } else {
+                triggerUxCritialErrors(err.errors || err, dispatch);
+            }
             return Promise.reject(err);
         }).finally(() => {
             dispatch({
