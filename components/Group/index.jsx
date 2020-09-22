@@ -103,7 +103,7 @@ class GroupProfileWrapper extends Component {
                         <div className="ch_headerImage greenBg greenBgnew" />
                         <Grid.Row>
                             <Grid>
-                                <Grid.Column mobile={16} tablet={10} computer={12}>
+                                <Grid.Column mobile={16} tablet={10} computer={11}>
                                     <Grid.Row>
                                         <Grid>
                                             <ProfileTitle
@@ -144,7 +144,7 @@ class GroupProfileWrapper extends Component {
                                     <AboutGroup />
                                     <ProfileDetails />
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={6} computer={4}>
+                                <Grid.Column mobile={16} tablet={6} computer={5}>
                                     <Responsive minWidth={767}>
                                         <GroupRightColumnList
                                             activeMatch={activeMatch}
