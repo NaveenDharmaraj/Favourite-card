@@ -1263,7 +1263,7 @@ const populateDonationReviewPage = (giveData, data, displayName, currency, forma
         } else {
             const selectedData = _.find(companiesAccountsData, { id: giveTo.id });
             if (!_.isEmpty(selectedData)) {
-                state.mainDisplayText = selectedData.attributes.companyFundName;
+                state.mainDisplayText = `To ${selectedData.attributes.companyFundName}`;
                 state.accountType = 'company';
             }
         }
