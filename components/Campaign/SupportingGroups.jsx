@@ -87,40 +87,45 @@ class SupportingGroups extends React.Component {
         dispatch(getCampaignSupportGroups(campaignId, searchKey));
     }
 
-    noDataSupportingGroups = (slug, formatMessage) => {
-        return (
-            <Grid.Column width={16} className="c-w-100">
-                <div className="givingGroup noData mt-1 mb-2">
-                    <Grid verticalAlign="middle">
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={8} computer={8}>
-                                <Image src={noDataImgCampain} className="noDataLeftImg" />
-                            </Grid.Column>
-                            <Grid.Column mobile={16} tablet={8} computer={8}>
-                                <div className="givingGroupNoDataContent">
-                                    <Header as="h4">
-                                        <Header.Content>
-                                            {formatMessage('campaignProfile:supportNoDataHeader')}
-                                            <Header.Subheader>
-                                                {formatMessage('campaignProfile:supportNoDataSubHeader')}
-                                            </Header.Subheader>
-                                        </Header.Content>
-                                    </Header>
-                                    <div>
-                                        <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
-                                            <Button className="success-btn-rounded-def">{formatMessage('campaignProfile:createGivingGroupBtn')}</Button>
-                                        </a>
+    noDataSupportingGroups = (slug, formatMessage, searchData) => {
+        if (searchData) {
+            return (<p className="noResult">No results found</p>)
+        }
+        else {
+            return (
+                <Grid.Column width={16} className="c-w-100">
+                    <div className="givingGroup noData mt-1 mb-2">
+                        <Grid verticalAlign="middle">
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={8} computer={8}>
+                                    <Image src={noDataImgCampain} className="noDataLeftImg" />
+                                </Grid.Column>
+                                <Grid.Column mobile={16} tablet={8} computer={8}>
+                                    <div className="givingGroupNoDataContent">
+                                        <Header as="h4">
+                                            <Header.Content>
+                                                {formatMessage('campaignProfile:supportNoDataHeader')}
+                                                <Header.Subheader>
+                                                    {formatMessage('campaignProfile:supportNoDataSubHeader')}
+                                                </Header.Subheader>
+                                            </Header.Content>
+                                        </Header>
+                                        <div>
+                                            <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
+                                                <Button className="success-btn-rounded-def">{formatMessage('campaignProfile:createGivingGroupBtn')}</Button>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                </div>
-            </Grid.Column>
-        );
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </div>
+                </Grid.Column>
+            );
+        }
     };
 
-    renderGroups(campaignSubGroupDetails, slug, formatMessage) {
+    renderGroups(campaignSubGroupDetails, slug, formatMessage, searchData) {
         let groupCards = [];
         if ((typeof campaignSubGroupDetails === 'object') && (campaignSubGroupDetails.length > 0)) {
             campaignSubGroupDetails.map((subGroup) => {
@@ -137,7 +142,7 @@ class SupportingGroups extends React.Component {
                 />);
             });
         } else {
-            groupCards = this.noDataSupportingGroups(slug, formatMessage);
+            groupCards = this.noDataSupportingGroups(slug, formatMessage, searchData);
         }
         return groupCards;
     };
@@ -151,6 +156,7 @@ class SupportingGroups extends React.Component {
             subGroupListLoader,
             viewMoreFn,
             t: formatMessage,
+            searchData,
         } = this.props;
         return (
             <Fragment>
@@ -180,7 +186,7 @@ class SupportingGroups extends React.Component {
                 <div className="supportingcardWapper">
                     {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
                         <div className="custom_Grid">
-                            {this.renderGroups(campaignSubGroupDetails, slug, formatMessage)}
+                            {this.renderGroups(campaignSubGroupDetails, slug, formatMessage, searchData)}
                         </div>
                     )}
                 </div>
