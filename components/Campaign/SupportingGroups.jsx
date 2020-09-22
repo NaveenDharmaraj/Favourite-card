@@ -126,6 +126,7 @@ class SupportingGroups extends React.Component {
             campaignSubGroupDetails.map((subGroup) => {
                 const groupImg = subGroup.attributes.avatar;
                 groupCards.push(<SupportingGroup
+                    subgroupSlug={subGroup.attributes.slug}
                     entityName={subGroup.attributes.name}
                     placeholder={(groupImg) || placeholder}
                     amountRaised={subGroup.attributes.totalMoneyRaised}

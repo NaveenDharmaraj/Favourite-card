@@ -2,7 +2,9 @@
 import React from 'react'
 import { Image, Header } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import _map from 'lodash/map';
 
+import { Link } from '../../routes';
 import { formatCurrency } from '../../helpers/give/utils';
 import { renderTextByCharacter } from '../../helpers/utils';
 import { withTranslation } from '../../i18n';
@@ -16,6 +18,7 @@ function SupportingGroup(props) {
         amountRaised,
         type,
         causes,
+        subgroupSlug,
         t: formatMessage,
     } = props;
     const currency = 'USD';
@@ -30,29 +33,31 @@ function SupportingGroup(props) {
         locationDetails = `${city}, ${province}`;
     }
     let causesNames = '';
-    const causesNameList = _.map(causes, 'display_name');
+    const causesNameList = _map(causes, 'display_name');
     causesNames = causesNameList.join(',');
     return (
-        <div className="col-sm-6">
-            <div className="campaignCard">
-                <div className="CardProfile">
-                    <Image src={placeholder} />
-                </div>
-                <div className="CardgiveGroupDetails">
-                    <Header as="h4">{type}</Header>
-                    <Header as="h2">
-                        {entityShortName}
-                    </Header>
-                    <p>{causesNames}</p>
-                    <p>{locationDetails}</p>
-                    <p>
-                        {formatMessage('campaignProfile:totalAmountRaised', {
-                            amount: formatCurrency(amountRaised, language, currency),
-                        })}
-                    </p>
+        <Link route={subgroupSlug ? `/groups/${subgroupSlug}` : ''}>
+            <div className="col-sm-6">
+                <div className="campaignCard">
+                    <div className="CardProfile">
+                        <Image src={placeholder} />
+                    </div>
+                    <div className="CardgiveGroupDetails">
+                        <Header as="h4">{type}</Header>
+                        <Header as="h2">
+                            {entityShortName}
+                        </Header>
+                        <p>{causesNames}</p>
+                        <p>{locationDetails}</p>
+                        <p>
+                            {formatMessage('campaignProfile:totalAmountRaised', {
+                                amount: formatCurrency(amountRaised, language, currency),
+                            })}
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Link>
     )
 }
 
