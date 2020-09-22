@@ -29,13 +29,6 @@ import ProfileDetails from './ProfileDetails';
 import GroupRightColumnList from './GroupRightColumnList';
 
 class GroupProfileWrapper extends Component {
-
-    constructor(props) {
-        super(props)
-
-        this.state = {}
-    }
-
     componentDidMount() {
         const {
             deepLink,
@@ -45,14 +38,13 @@ class GroupProfileWrapper extends Component {
                 currentUser: {
                     id,
                 },
-                currentUser,
                 groupDetails: {
                     id: profileId,
                 },
                 dispatch,
             } = this.props;
             let deepLinkApiUrl = `deeplink?profileType=groupprofile&profileId=${profileId}`;
-            if (currentUser && id) {
+            if (!_isEmpty(id)) {
                 deepLinkApiUrl += `&sourceId=${id}`;
             }
             generateDeepLink(deepLinkApiUrl, dispatch);
@@ -159,11 +151,14 @@ class GroupProfileWrapper extends Component {
                     </Container>
                 </div>
             </Fragment>
-        )
+        );
     }
-};
+}
 
 GroupProfileWrapper.defaultProps = {
+    currentUser: {
+        id: '',
+    },
     dispatch: () => { },
     groupBeneficiaries: {
         data: [],
@@ -187,6 +182,9 @@ GroupProfileWrapper.defaultProps = {
 };
 
 GroupProfileWrapper.propTypes = {
+    currentUser: PropTypes.shape({
+        id: string,
+    }),
     dispatch: func,
     groupBeneficiaries: PropTypes.shape({
         data: array,
