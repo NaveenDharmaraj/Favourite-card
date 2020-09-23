@@ -264,7 +264,7 @@ class TransactionDetails extends React.Component {
                 </Table>
                 {!_isEmpty(groupData) && pageCount > 1
                     && (
-                        <div className="paginationWraper">
+                        <div className="paginationWraper group_pagination">
                             <div className="db-pagination">
                                 <PaginationComponent
                                     activePage={activePage}

@@ -533,7 +533,7 @@
                                         font-family: 'ProximaNova-Semibold'; 
                                         @media only screen and (max-width:767px) {
                                             padding-left:0px !important;
-                                            text-align: right;
+                                            text-align: right !important;
                                         }
                                         .btnFrinend{
                                             padding: 7px 20px;
@@ -2705,4 +2705,16 @@
 }
 .ui.button.white-btn-rounded-def.goalbtn.golbtnDon+.blueHistory{
 margin-top: 10px;
+}
+.MyGallery .GroupPurpose img{
+    max-width: 100% !important;
+}
+.paginationWraper.group_pagination {
+    @media only screen and (max-width:767px){
+    text-align: center;
+    margin: auto;
+    .menu .item > i.icon {
+        display: block;
+    }
+    }
 }
