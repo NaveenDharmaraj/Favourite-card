@@ -7,6 +7,14 @@ import {
     Grid,
     Responsive,
 } from 'semantic-ui-react';
+import {
+    string, 
+    bool,
+    array, 
+    func,
+    object,
+    PropTypes,
+} from 'prop-types';
 
 import {
     campaignSubGroupSeeMore,
@@ -38,17 +46,16 @@ class CampaignProfileWrapper extends React.Component {
                 currentUser: {
                     id,
                 },
-                currentUser,
                 campaignDetails: {
                     attributes: {
-                        groupId,
+                        id: profileId,
                     }
                 },
                 dispatch,
             } = this.props;
-            let deepLinkApiUrl = `deeplink?profileType=campaignprofile&profileId=${groupId}`;
-            if (currentUser && id) {
-                deepLinkApiUrl += `&sourceId=${id}`;
+            let deepLinkApiUrl = `deeplink?profileType=campaignprofile&profileId=${profileId}`;
+            if (!_isEmpty(id)) {
+                deepLinkApiUrl += `sourceId=${id}`;
             }
             generateDeepLink(deepLinkApiUrl, dispatch);
         }
@@ -230,5 +237,81 @@ class CampaignProfileWrapper extends React.Component {
         );
     }
 }
+
+CampaignProfileWrapper.defaultProps = {
+    campaignDetails: {
+        attributes: {
+            about: '',
+            avatar: '',
+            causes: [],
+            city: '',
+            liked: false,
+            groupId: '',
+            name: '',
+            province: '',
+            banner: '',
+            peopleInCampaign: '',
+            groupsCount: '',
+            slug: '',
+            amountRaised: '',
+            hasActiveMatch: false,
+            activeMatch: false,
+            videoPlayerLink: '',
+            formattedShort: '',
+            formattedImpact: '',
+        },
+        id: '',
+        type: '',
+    },
+    campaignImageGallery: [],
+    campaignSubGroupDetails: [],
+    campaignSubGroupsShowMoreUrl: '',
+    currentUser: PropTypes.shape({
+        id: '',
+    }),
+    deepLink: {},
+    dispatch: () => { },
+    isAuthenticated: false,
+    seeMoreLoaderStatus: false,
+    subGroupListLoader: false,
+};
+
+CampaignProfileWrapper.PropTypes = {
+    campaignDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            about: string,
+            avatar: string,
+            causes: object,
+            city: string,
+            liked: false,
+            groupId: string,
+            name: string,
+            province: string,
+            banner: string,
+            peopleInCampaign: string,
+            groupsCount: string,
+            slug: string,
+            amountRaised: string,
+            hasActiveMatch: false,
+            activeMatch: false,
+            videoPlayerLink: string,
+            formattedShort: string,
+            formattedImpact: string,
+        }),
+        type: string,
+        id: string,
+    }),
+    campaignImageGallery: array,
+    campaignSubGroupDetails: array,
+    campaignSubGroupsShowMoreUrl: string,
+    currentUser: PropTypes.shape({
+        id: string,
+    }),
+    deepLink: object,
+    dispatch: func,
+    isAuthenticated: bool,
+    seeMoreLoaderStatus: bool,
+    subGroupListLoader: bool,
+};
 
 export default CampaignProfileWrapper;

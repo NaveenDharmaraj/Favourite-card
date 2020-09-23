@@ -29,7 +29,7 @@ const MoneyRaised = (props) => {
         <div className="charityInfowrap fullwidth">
             <div className="charityInfo">
                 <Header as="h4">{formatMessage('campaignProfile:totalMoneyRaised')}</Header>
-                <Header as="h2">{formattedAmount.slice(0, -3)}</Header>
+                <Header as="h2">{formattedAmount}</Header>
                 <Responsive minWidth={768}>
                     {!_isEmpty(isAuthenticated) && isAuthenticated ?
                         (
