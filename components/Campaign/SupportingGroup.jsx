@@ -16,13 +16,15 @@ function SupportingGroup(props) {
         province,
         placeholder,
         amountRaised,
+        i18n: {
+            language,
+        },
         type,
         causes,
         subgroupSlug,
         t: formatMessage,
     } = props;
     const currency = 'USD';
-    const language = 'en';
     const entityShortName = renderTextByCharacter(entityName, 25);
     let locationDetails = '';
     if (_isEmpty(city) && !_isEmpty(province)) {
@@ -36,7 +38,7 @@ function SupportingGroup(props) {
     const causesNameList = _map(causes, 'display_name');
     causesNames = causesNameList.join(',');
     return (
-        <Link route={subgroupSlug ? `/groups/${subgroupSlug}` : ''}>
+        <Link route={(`/groups/${subgroupSlug}`)}>
             <div className="col-sm-6">
                 <div className="campaignCard">
                     <div className="CardProfile">
