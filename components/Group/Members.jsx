@@ -141,7 +141,7 @@ class Members extends React.Component {
                                 {(!_isEmpty(membersData))
                                         && this.renderMembers()}
                             </Table>
-                            <div className="paginationWraper">
+                            <div className="paginationWraper group_pagination">
                                 <div className="db-pagination">
                                     {
                                         !_isEmpty(membersData) && pageCount > 1 && (
