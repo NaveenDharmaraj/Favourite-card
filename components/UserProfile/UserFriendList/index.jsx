@@ -10,7 +10,9 @@ import {
     List,
     Button,
     Input,
+    Tab,
     Modal,
+    Form,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -42,10 +44,13 @@ class UserFriendList extends React.Component {
         this.state = {
             searchText: '',
             searchClicked: false,
+            inviteModalStatus: false,
         };
         this.showFriendsList = this.showFriendsList.bind(this);
         this.handleOnChangeSearch = this.handleOnChangeSearch.bind(this);
         this.handleSearchFriendList = this.handleSearchFriendList.bind(this);
+        this.showInviteModal = this.showInviteModal.bind(this);
+        this.hideInviteModal = this.hideInviteModal.bind(this);
     }
 
     componentDidMount() {
@@ -69,7 +74,7 @@ class UserFriendList extends React.Component {
         }
     }
 
-    showFriendsList(dataArray, type) {
+    showFriendsList(dataArray, type, isMyProfile) {
         const {
             hideFriendPage,
         } = this.props;
@@ -80,6 +85,7 @@ class UserFriendList extends React.Component {
                     data={data.attributes}
                     type={type}
                     hideFriendPage={hideFriendPage}
+                    isMyProfile={isMyProfile}
                 />,
             );
         });
@@ -121,6 +127,18 @@ class UserFriendList extends React.Component {
         });
     }
 
+    showInviteModal() {
+        this.setState({
+            inviteModalStatus: true,
+        });
+    }
+
+    hideInviteModal() {
+        this.setState({
+            inviteModalStatus: false,
+        });
+    }
+
     render() {
         const {
             hideFriendPage,
@@ -147,10 +165,136 @@ class UserFriendList extends React.Component {
         const {
             searchText,
             searchClicked,
+            inviteModalStatus,
         } = this.state;
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         const isMyProfile = (profile_type === 'my_profile');
         const headerText = isMyProfile ? 'Your friends' : (`${display_name}'s friends`);
+        let panes = [
+            {
+                menuItem: 'Your friends',
+                render: () => (
+                    <Tab.Pane>
+                        {(isMyProfile && !_isEmpty(invitationData))
+                        && (
+                            <div className="invitationsWrap">
+                                <Header as="h4">Invitations</Header>
+                                <List divided verticalAlign="middle" className="users_List">
+                                    {this.showFriendsList(invitationData, 'invitation', isMyProfile)}
+                                </List>
+                            </div>
+                        )}
+                        <div className="friendsSearch">
+                            <Header as="h4">Friends</Header>
+                            <div className="searchBox">
+                                <Input
+                                    className="searchInput"
+                                    placeholder="Search friends"
+                                    fluid
+                                    onChange={this.handleOnChangeSearch}
+                                    value={searchText}
+                                />
+                                <a
+                                    className="search-btn"
+                                    onClick={this.handleSearchFriendList}
+                                >
+                                </a>
+                            </div>
+                        </div>
+                        <List divided verticalAlign="middle" className="users_List">
+                            {(!_isEmpty(friendData))
+                            && (
+                                this.showFriendsList(friendData, 'friends', isMyProfile)
+                            )
+                            }
+                            {(_isEmpty(friendData) && searchClicked)
+                            && (
+                                <p>
+                                    Sorry, there are no friends by that name.
+                                </p>
+                            )}
+                        </List>
+                    </Tab.Pane>
+                ),
+            },
+        ];
+
+        if (isMyProfile) {
+            panes = [
+                ...panes,
+                {
+                    menuItem: 'Find friends',
+                    render: () => (
+                        <Tab.Pane>
+                            <div className='findFriendsWrap'>
+                                <Image src="../static/images/find-friends.png" />
+                                <Header>Find friends, send them charitable dollars, and give together.</Header>
+                                <p className='invite_text_1'>You can find friends by name, and they can search for your personal profile too. You can also invite friends not yet on Charitable Impact.</p>
+                                <p className='invite_text_2'>Your discoverability can be changed in Account Settings.</p>
+                                <Button className='blue-btn-rounded-def' onClick={this.showInviteModal}>
+                                    Invite friends
+                                </Button>
+                                <Modal
+                                    size="tiny"
+                                    dimmer="inverted"
+                                    closeIcon
+                                    className="chimp-modal inviteModal"
+                                    open={inviteModalStatus}
+                                    onClose={this.hideInviteModal}
+                                >
+                                    <Modal.Header>Invite friends to join you on Charitable Impact</Modal.Header>
+                                    <Modal.Content>
+                                    
+                                        <div className='inviteField'>
+                                            <label>Enter as many email addresses as you like, separated by a comma:</label>
+                                            <div className='fieldWrap'>
+                                                <div className='label-input-wrap'>
+                                                    <div className="email-labels">
+                                                        {/* <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label>
+                                                        <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label>
+                                                        <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label>
+                                                        <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label>
+                                                        <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label>
+                                                        <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label>
+                                                        <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label>
+                                                        <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label>
+                                                        <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label>
+                                                        <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label>
+                                                        <label className="label">abc@jkl.xyz <Icon className='delete'></Icon></label> */}
+                                                    </div>
+                                                    <Form.Input/> 
+                                                </div>
+                                                <Button className='blue-btn-rounded-def'>Invite</Button>
+                                            </div>
+                                        </div>
+                                        <div className='inviteField copylink'>
+                                            <label>Or share a link:</label>
+                                            <div className='fieldWrap'>
+                                                <div className='label-input-wrap'>
+                                                    <Form.Input value='https://charitableimpact.com/share-this-awesome-link'/> 
+                                                </div>
+                                                <Button className='blue-bordr-btn-round-def'>Copy link</Button>
+                                            </div>
+                                        </div>
+                
+                                        <div className='socailLinks'>
+                                            <a>
+                                                <Icon className='twitter'/>
+                                            </a>
+                                            <a>
+                                                <Icon className='facebook'/>
+                                            </a>
+                                        </div>
+                                    
+                                </Modal.Content>
+                            </Modal>
+                            </div>
+                        </Tab.Pane>
+                    ),
+                },
+            ];
+        }
+
         return (
             <Container>
                 <div className="userProfileScreen">
@@ -177,7 +321,55 @@ class UserFriendList extends React.Component {
                                             Return to profile
                                         </Button>
                                     </div>
-                                    <div className='userfriendsWrap'>
+                                    <div className="userfriendsWrap">
+                                        {isMyProfile
+                                            ? (
+                                                <Tab
+                                                    className="userprfleTab userfriendtab"
+                                                    menu={{
+                                                        secondary: true,
+                                                        pointing: true,
+                                                    }}
+                                                    panes={panes}
+                                                />
+                                            )
+                                            : (
+                                                <Fragment>
+                                                    <div className="friendsSearch">
+                                                        <Header as="h4">Friends</Header>
+                                                        <div className="searchBox">
+                                                            <Input
+                                                                className="searchInput"
+                                                                placeholder="Search friends"
+                                                                fluid
+                                                                onChange={this.handleOnChangeSearch}
+                                                                value={searchText}
+                                                            />
+                                                            <a
+                                                                className="search-btn"
+                                                                onClick={this.handleSearchFriendList}
+                                                            >
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <List divided verticalAlign="middle" className="users_List">
+                                                        {(!_isEmpty(friendData))
+                                                        && (
+                                                            this.showFriendsList(friendData, 'friends', isMyProfile)
+                                                        )
+                                                        }
+                                                        {(_isEmpty(friendData) && searchClicked)
+                                                        && (
+                                                            <p>
+                                                                Sorry, there are no friends by that name.
+                                                            </p>
+                                                        )}
+                                                    </List>
+                                                </Fragment>
+                                            )}
+                                        
+                                    </div>
+                                    {/* <div className='userfriendsWrap'>
                                         <Header as='h3'>{headerText}</Header>
                                         {(isMyProfile && !_isEmpty(invitationData))
                                         && (
@@ -218,7 +410,7 @@ class UserFriendList extends React.Component {
                                                 </p>
                                             )}
                                         </List>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

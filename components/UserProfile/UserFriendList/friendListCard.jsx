@@ -92,8 +92,9 @@ class FriendListCard extends React.Component {
             },
             type,
             hideFriendPage,
+            isMyProfile,
         } = this.props;
-        const isMyProfile = (user_id === Number(UserId));
+        // const isMyProfile = (user_id === Number(UserId));
         let buttonText = '';
         let buttonClass = 'blue-btn-rounded-def';
         let searchFriendStatus = (!_isEmpty(friend_status) ? friend_status : '');
@@ -128,7 +129,7 @@ class FriendListCard extends React.Component {
                     </List.Header>
                     <List.Description>{getLocation(city, province)}</List.Description>
                 </List.Content>
-                {!isMyProfile
+                {isMyProfile
                 && (
                     <List.Content floated="right">
                         {(!_isEmpty(updatedStatus) && updatedStatus === 'ACCEPTED')

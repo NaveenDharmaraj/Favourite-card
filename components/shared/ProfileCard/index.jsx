@@ -21,6 +21,9 @@ import _isEmpty from 'lodash/isEmpty';
 
 import { Link } from '../../../routes';
 import { withTranslation } from '../../../i18n';
+import {
+    formatCurrency,
+} from '../../../helpers/give/utils';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -40,8 +43,12 @@ const ProfileCard = (props) => {
         slug,
         isPreviewMode,
         canEdit,
+        totalMoneyRaised,
+        isFavourite,
     } = props;
     let route = 'charities';
+    const currency = 'USD';
+    const language = 'en';
     let editLink = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
     if (Profiletype === 'group') {
         route = (isCampaign) ? 'campaigns' : 'groups';
@@ -62,16 +69,23 @@ const ProfileCard = (props) => {
                         <Header as="h6" className={`${(Profiletype === 'group' ? 'groupClr' : 'charityClr')}`}>
                             {type}
                             {(isMyProfile && (Profiletype === 'group') && !isPreviewMode && canEdit)
-                        && (
-                            <a className="edit" href={editLink}>Edit</a>
-                        )}
+                            && (
+                                <a className="edit" href={editLink}>Edit</a>
+                            )}
+                            {isFavourite
+                            && (
+                                <i aria-hidden="true" class="heart icon" />
+                            )}
                         </Header>
                         <Link className="lnkChange" route={`/${route}/${slug}`} passHref>
                             <Header as="h4">{name}</Header>
                         </Link>
                         <p>{causes}</p>
                         <p>{location}</p>
-                        {/* <p>Total Raised: $2,000.00</p> */}
+                        {!_isEmpty(totalMoneyRaised)
+                        && (
+                            <p>{`Total Raised: ${formatCurrency(totalMoneyRaised, language, currency)}`}</p>
+                        )}
                     </div>
                     {/* </Link> */}
                 </Fragment>
@@ -86,12 +100,14 @@ ProfileCard.defaultProps = {
     canEdit: false,
     causes: '',
     isCampaign: false,
+    isFavourite: false,
     isMyProfile: false,
     isPreviewMode: false,
     location: '',
     name: '',
     Profiletype: '',
     slug: '',
+    totalMoneyRaised: '',
     type: '',
 };
 
@@ -100,12 +116,14 @@ ProfileCard.propTypes = {
     canEdit: bool,
     causes: string,
     isCampaign: bool,
+    isFavourite: bool,
     isMyProfile: bool,
     isPreviewMode: bool,
     location: string,
     name: string,
     Profiletype: string,
     slug: string,
+    totalMoneyRaised: string,
     type: string,
 };
 

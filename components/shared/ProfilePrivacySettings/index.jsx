@@ -103,7 +103,7 @@ class ProfilePrivacySettings extends React.Component {
                 <Popup.Header>Visible to:</Popup.Header>
                 <Popup.Content>
                     <List divided verticalAlign="middle" className="selectable-tick-list">
-                        <List.Item>
+                        <List.Item className={`${(privacyType === 'globe') ? 'active' : ''}`}>
                             <List.Content>
                                 <List.Header as="a" onClick={() => this.handlePrivacyChange(0)}>
                                     <Icon className="globe" />
@@ -111,7 +111,7 @@ class ProfilePrivacySettings extends React.Component {
                                 </List.Header>
                             </List.Content>
                         </List.Item>
-                        <List.Item>
+                        <List.Item className={`${(privacyType === 'users') ? 'active' : ''}`}>
                             <List.Content>
                                 <List.Header as="a" onClick={() => this.handlePrivacyChange(1)}>
                                     <Icon className="users" />
@@ -119,7 +119,7 @@ class ProfilePrivacySettings extends React.Component {
                                 </List.Header>
                             </List.Content>
                         </List.Item>
-                        <List.Item>
+                        <List.Item className={`${(privacyType === 'lock') ? 'active' : ''}`}>
                             <List.Content>
                                 <List.Header as="a" onClick={() => this.handlePrivacyChange(2)}>
                                     <Icon className="lock" />

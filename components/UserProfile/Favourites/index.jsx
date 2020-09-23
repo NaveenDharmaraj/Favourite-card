@@ -149,6 +149,7 @@ class FavouritesList extends React.Component {
                         slug={favourite.attributes.slug}
                         isPreviewMode={isPreviewMode}
                         canEdit={false}
+                        isFavourite
                     />,
                 );
             });

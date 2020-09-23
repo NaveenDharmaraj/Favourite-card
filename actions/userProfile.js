@@ -175,7 +175,7 @@ const getUserMemberGroup = (dispatch, userId, sourceUserId) => {
         },
         type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
     });
-    coreApi.get(`/users/${Number(sourceUserId)}/friendGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType&page[number]=1&page[size]=9`).then(
+    coreApi.get(`/users/${Number(sourceUserId)}/friendGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType,totalMoneyRaised&page[number]=1&page[size]=9`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -208,7 +208,7 @@ const getUserAdminGroup = (dispatch, userId, sourceUserId) => {
         type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
     });
 
-    coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType&page[number]=1&page[size]=9`).then(
+    coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType,totalMoneyRaised&page[number]=1&page[size]=9`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -1472,6 +1472,7 @@ const rejectFriendInvite = (dispatch, currentUserId, friendUserId, email) => {
     }).then((result) => {
         getFriendsInvitations(dispatch, email, 1);
         getMyFriendsList(dispatch, email, 1);
+        getUserFriendProfile(dispatch, email, friendUserId, currentUserId);
     });
 };
 

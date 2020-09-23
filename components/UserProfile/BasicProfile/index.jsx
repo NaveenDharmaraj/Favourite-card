@@ -34,6 +34,7 @@ import {
     removeFriend,
     generateDeeplinkUserProfile,
     acceptFriend,
+    rejectFriendInvite,
 } from '../../../actions/userProfile';
 import {
     storeEmailIdToGive,
@@ -77,6 +78,7 @@ class UserBasicProfile extends React.Component {
         this.handleBlockCancelClick = this.handleBlockCancelClick.bind(this);
         this.handleUnfriendCancelClick = this.handleUnfriendCancelClick.bind(this);
         this.handleCopyLink = this.handleCopyLink.bind(this);
+        this.handleRejectRequest = this.handleRejectRequest.bind(this);
     }
 
     componentDidMount() {
@@ -237,6 +239,24 @@ class UserBasicProfile extends React.Component {
             successMessage: 'Copied to clipboard',
             statusMessage: true,
         })
+    }
+
+    handleRejectRequest() {
+        const {
+            currentUser: {
+                attributes: {
+                    email,
+                },
+                id: currentUserId,
+            },
+            dispatch,
+            userFriendProfileData: {
+                attributes: {
+                    user_id: friendUserId,
+                },
+            },
+        } = this.props;
+        rejectFriendInvite(dispatch, currentUserId, friendUserId, email);
     }
 
     render() {
@@ -498,7 +518,7 @@ class UserBasicProfile extends React.Component {
                                 </Dropdown>
                             </Fragment>
                         )}
-                        {(!isMyProfile && !isFriendPending && !isFriend)
+                        {(!isMyProfile && !isFriendPending && !isFriend && !isBlocked)
                         && (
                                 <Button
                                     className="blue-btn-rounded"
@@ -527,6 +547,7 @@ class UserBasicProfile extends React.Component {
                                     <Dropdown.Menu >
                                         <Dropdown.Item
                                             text='Cancel friend request'
+                                            onClick={this.handleRejectRequest}
                                         />
                                     </Dropdown.Menu>
                                 </Dropdown>
@@ -551,6 +572,7 @@ class UserBasicProfile extends React.Component {
                                             text='Accept'
                                         />
                                         <Dropdown.Item
+                                            onClick={this.handleRejectRequest}
                                             text='Ignore'
                                         />
                                     </Dropdown.Menu>
@@ -569,31 +591,51 @@ class UserBasicProfile extends React.Component {
                                 </Link>
                             )
                         }
+                        {isBlocked
+                        && (
+                            <Button
+                                    className="grey-btn-rounded-def"
+                                    // onClick={() => this.handleAddToFriends(user_id, email)}
+                                    disabled={true}
+                                    primary
+                                >
+                                    Block
+                                </Button>
+                        )}
                         {!isMyProfile
                         && (
                             <Fragment>
-                                <Link className="lnkChange" route="/give/to/friend/new">
-                                    <Button
-                                        className="blue-bordr-btn-round"
-                                        onClick={() => this.giveButtonClick(email, `${first_name} ${last_name}`, avatar)}
-                                    >
-                                        Give
-                                    </Button>
+                                {!isBlocked
+                                && (
+                                    <Link className="lnkChange" route="/give/to/friend/new">
+                                        <Button
+                                            className="blue-bordr-btn-round"
+                                            onClick={() => this.giveButtonClick(email, `${first_name} ${last_name}`, avatar)}
+                                        >
+                                            Give
+                                        </Button>
                                 </Link>
+                                )}
                                 <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left'>
                                     <Dropdown.Menu >
                                         <Dropdown.Item
                                             text='Copy profile URL'
                                             onClick={this.handleCopyLink}
                                         />
+                                        {isFriend
+                                        && (
                                         <Dropdown.Item
                                             text='Unfriend'
                                             onClick={this.handleUnfriendModal}
                                         />
+                                        )}
+                                        {!isBlocked
+                                        && (
                                         <Dropdown.Item
                                             text='Block'
                                             onClick={this.handleBlockModal}
                                         />
+                                        )}
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </Fragment>

@@ -83,6 +83,7 @@ class UserAdminGroupList extends React.Component {
                         slug={admin.attributes.slug}
                         isPreviewMode={isPreviewMode}
                         canEdit
+                        totalMoneyRaised={admin.attributes.totalMoneyRaised}
                     />,
                 );
             });
