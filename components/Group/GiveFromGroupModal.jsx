@@ -39,7 +39,7 @@ const GiveFromGroupModal = (props) => {
     const divTextForCharity = 'A charity your group supports';
     const divTextForCampaign = 'The Campaign your group supports';
     let modalLeftSectionDouble;
-    let giveUrl;
+    let giveUrl = `/give/to/charity/new?group_id=${groupId}`;
     let imgClass;
     let bgImage;
     let divText;
@@ -85,7 +85,7 @@ const GiveFromGroupModal = (props) => {
         bgImage = leftmodelimg;
         divText = divTextForCharity;
         imgClass = "charityImg";
-        divClassName = 'ModelLeftBox graybox';
+        divClassName = 'ModelLeftBox graybox isDisabled';
         disabledDivText = 'Your group hasn\'t yet set any charities to support';
     }
     const modalLeftSectionSingle = (

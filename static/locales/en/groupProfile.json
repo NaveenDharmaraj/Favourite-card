@@ -7,7 +7,7 @@
     "goalExpiredOnText": "Giving goal expired on",
     "saveNewGoalText": "Save new Giving Goal",
     "totalRaised": "Total raised",
-    "raisedGoalText": "Raised on current giving goal",
+    "raisedGoalText": "Raised towards giving goal",
     "ofGoalAmount": "of {{formattedgoal}} giving goal",
     "transactionHeader": "Highlights",
     "viewTransaction": "View all gifts received and given from this group.",
@@ -63,5 +63,6 @@
     "matchingDaysBetweenText": "Between {{startDate}} and {{endDate}},",
     "expiredMatchedText": "generously matched each gift to this group dollar for dollar.",
     "expiredMatchProvidedText": "of {{formattedTotalFund}} provided was matched by",
-    "expireMatchedByText": "was matched by"
+    "expireMatchedByText": "was matched by",
+    "commentText": "Write a post..."
 }

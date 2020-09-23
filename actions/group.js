@@ -486,6 +486,7 @@ export const joinGroup = (groupSlug, groupId, loadMembers) => (dispatch) => {
         (result) => {
             if (result && !_isEmpty(result.data)) {
                 fsa.payload.groupDetails = result.data;
+                dispatch(getGroupActivities(groupId, null, true));
                 if (loadMembers) {
                     dispatch(getDetails(groupId, 'members'));
                 }

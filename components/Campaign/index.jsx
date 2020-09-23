@@ -148,7 +148,7 @@ class CampaignProfileWrapper extends React.Component {
                         />
                         <Grid.Row>
                             <Grid>
-                                <Grid.Column mobile={16} tablet={10} computer={12}>
+                                <Grid.Column mobile={16} tablet={10} computer={11}>
                                     <Grid.Row>
                                         <Grid>
                                             {campaignDetails && (
@@ -169,24 +169,22 @@ class CampaignProfileWrapper extends React.Component {
                                                     />
                                                 </ProfileTitle>
                                             )}
-                                            <Grid.Column mobile={16}>
-                                                <Responsive minWidth={320} maxWidth={767}>
-                                                    {
-                                                        campaignDetails && (
-                                                            <CampaignDetails
-                                                                activeMatch={activeMatch}
-                                                                hasActiveMatch={hasActiveMatch}
-                                                                peopleInCampaign={peopleInCampaign}
-                                                                groupsCount={groupsCount}
-                                                                slug={slug}
-                                                                amountRaised={amountRaised}
-                                                                isAuthenticated={isAuthenticated}
-                                                                type={type}
-                                                            />
-                                                        )
-                                                    }
-                                                </Responsive>
-                                            </Grid.Column>
+                                            <Responsive minWidth={320} maxWidth={767}>
+                                                {
+                                                    campaignDetails && (
+                                                        <CampaignDetails
+                                                            activeMatch={activeMatch}
+                                                            hasActiveMatch={hasActiveMatch}
+                                                            peopleInCampaign={peopleInCampaign}
+                                                            groupsCount={groupsCount}
+                                                            slug={slug}
+                                                            amountRaised={amountRaised}
+                                                            isAuthenticated={isAuthenticated}
+                                                            type={type}
+                                                        />
+                                                    )
+                                                }
+                                            </Responsive>
                                         </Grid>
                                         {
                                             campaignDetails && (
@@ -213,7 +211,7 @@ class CampaignProfileWrapper extends React.Component {
                                         }
                                     </Grid.Row>
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={6} computer={4} >
+                                <Grid.Column mobile={16} tablet={6} computer={5} >
                                     <Responsive minWidth={768}>
                                         {
                                             campaignDetails && (

@@ -116,6 +116,7 @@ class ActivityDetails extends React.Component {
         dispatch(postComment(groupId, eventId, msg, userDetails));
         this.setState({
             commentText: '',
+            isReplyClicked: false,
         });
     }
 
