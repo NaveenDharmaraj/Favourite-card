@@ -18,7 +18,7 @@ import _isEmpty from 'lodash/isEmpty';
 import Activity from './Activity';
 import Members from './Members';
 import TransactionDetails from './TransactionDetails';
-import MatchingHistory from './MatchingHistory';
+import MatchingHistory from '../../components/shared/MatchingHistory';
 
 class ProfileDetails extends React.Component {
     constructor(props) {

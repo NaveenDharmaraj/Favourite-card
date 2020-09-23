@@ -7,6 +7,7 @@ import {
     Button,
     Input,
     Icon,
+    Divider,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
@@ -14,6 +15,7 @@ import _isEqual from 'lodash/isEqual';
 import { connect } from 'react-redux';
 import { withTranslation } from '../../i18n';
 import PlaceholderGrid from '../shared/PlaceHolder';
+import { MatchingHistory } from '../../components/shared/MatchingHistory';
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
 import SupportingGroup from '../Campaign/SupportingGroup';
 import noDataImgCampain from '../../static/images/campaignprofile_nodata_illustration.png';
@@ -36,6 +38,7 @@ class SupportingGroups extends React.Component {
         this.renderGroups = this.renderGroups.bind(this);
         this.searchClick = this.searchClick.bind(this);
         this.searchOnChange = this.searchOnChange.bind(this);
+        this.renderMatchHistory = this.renderMatchHistory.bind(this);
     }
 
     campaignGroups() {
@@ -147,11 +150,25 @@ class SupportingGroups extends React.Component {
         return groupCards;
     };
 
+
+    renderMatchHistory(matchHistory) {
+        if (!_isEmpty(matchHistory)) {
+            return (
+                <Fragment>
+                    <Divider className="mt-2 mobHideDivider" />
+                    <MatchingHistory />
+                </Fragment>
+            )
+        }
+        return null;
+    };
+
     render() {
         const {
             slug,
             campaignSubGroupDetails,
             campaignSubGroupsShowMoreUrl,
+            matchHistory,
             seeMoreLoaderStatus,
             subGroupListLoader,
             viewMoreFn,
@@ -202,6 +219,7 @@ class SupportingGroups extends React.Component {
                     </div>
                 ) : ''
                 }
+                {this.renderMatchHistory(matchHistory)}
             </Fragment>
         )
     }

@@ -16,6 +16,7 @@ import {
     getCampaignSupportGroups,
     getCampaignGalleryImages,
 } from '../actions/profile';
+import { getMatchingHistory } from '../actions/group';
 import Layout from '../components/shared/Layout';
 import CampaignProfileWrapper from '../components/Campaign';
 import storage from '../helpers/storage';
@@ -54,23 +55,26 @@ class CampaignProfile extends React.Component {
 
     componentDidMount() {
         const {
+            currentUser:{
+                id: userId,
+            },
             currentUser,
             dispatch,
             slugApiErrorStats,
             campaignDetails: {
                 id,
             },
-            req,
         } = this.props;
         if (slugApiErrorStats) {
             Router.pushRoute('/dashboard');
         } else {
-            if (currentUser && currentUser.id) {
-                getGroupsAndCampaigns(dispatch, `/users/${currentUser.id}/groupsWithOnlyMemberships?sort=-id`, 'groupsWithMemberships', false);
+            if (currentUser && userId) {
+                getGroupsAndCampaigns(dispatch, `/users/${userId}/groupsWithOnlyMemberships?sort=-id`, 'groupsWithMemberships', false);
             }
             dispatch(getCampaignBeneficiariesCount(id));
             dispatch(getCampaignSupportGroups(id));
             dispatch(getCampaignGalleryImages(id));
+            dispatch(getMatchingHistory(id));
         }
     }
 
@@ -148,7 +152,13 @@ CampaignProfile.defaultProps = {
             slug: '',
         },
     },
+    currentUser:{
+        id: '',
+    },
+    dispatch: () => {},
+    isAuthenticated: false,
     slug: '',
+    slugApiErrorStats: false,
 };
 
 CampaignProfile.propTypes = {
@@ -161,7 +171,13 @@ CampaignProfile.propTypes = {
             slug: PropTypes.string,
         },
     },
+    currentUser:{
+        id: PropTypes.string,
+    },
+    dispatch: PropTypes.func,
+    isAuthenticated: PropTypes.bool,
     slug: PropTypes.string,
+    slugApiErrorStats: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
@@ -173,6 +189,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         deepLinkUrl: state.profile.deepLinkUrl,
         disableFollow: state.profile.disableFollow,
+        groupMatchingHistory: state.group.groupMatchingHistory,
         isAuthenticated: state.auth.isAuthenticated,
         seeMoreLoaderStatus: state.profile.seeMoreLoaderStatus,
         slugApiErrorStats: state.profile.slugApiErrorStats,

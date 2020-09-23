@@ -113,6 +113,9 @@ class CampaignProfileWrapper extends React.Component {
                 id,
             },
             dispatch,
+            groupMatchingHistory: {
+                data: matchHistory,
+            },
         } = this.props;
         const bannerStyle = {};
         let campaignBannerClassName = 'ch_headerImage greenBg';
@@ -181,6 +184,7 @@ class CampaignProfileWrapper extends React.Component {
                                                             amountRaised={amountRaised}
                                                             isAuthenticated={isAuthenticated}
                                                             type={type}
+                                                            matchHistory={matchHistory}
                                                         />
                                                     )
                                                 }
@@ -205,6 +209,7 @@ class CampaignProfileWrapper extends React.Component {
                                                         seeMoreLoaderStatus={seeMoreLoaderStatus}
                                                         subGroupListLoader={subGroupListLoader}
                                                         viewMoreFn={this.viewMoreFn}
+                                                        matchHistory={matchHistory}
                                                     />
                                                 </React.Fragment>
                                             )
@@ -224,6 +229,7 @@ class CampaignProfileWrapper extends React.Component {
                                                     amountRaised={amountRaised}
                                                     isAuthenticated={isAuthenticated}
                                                     type={type}
+                                                    matchHistory={matchHistory}
                                                 />
                                             )
                                         }
@@ -271,6 +277,9 @@ CampaignProfileWrapper.defaultProps = {
     }),
     deepLink: {},
     dispatch: () => { },
+    groupMatchingHistory: {
+        data: [],
+    },
     isAuthenticated: false,
     seeMoreLoaderStatus: false,
     subGroupListLoader: false,
@@ -309,6 +318,9 @@ CampaignProfileWrapper.PropTypes = {
     }),
     deepLink: object,
     dispatch: func,
+    groupMatchingHistory: PropTypes.shape({
+        data: array,
+    }),
     isAuthenticated: bool,
     seeMoreLoaderStatus: bool,
     subGroupListLoader: bool,

@@ -5,7 +5,7 @@ import {
     array,
 } from 'prop-types';
 
-import MatchingHistoryCard from './MatchingHistoryCard';
+import MatchingHistoryCard from '../MatchingHistoryCard';
 
 const MatchingHistory = (props) => {
     const {

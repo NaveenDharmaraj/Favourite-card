@@ -34,6 +34,7 @@ const CampaignDetails = (props) => {
                         activeMatch={activeMatch}
                         type={type}
                         hasActiveMatch={hasActiveMatch}
+                        hasMatchingHistory={hasMatchingHistory}
                     />
                 )}
             {(!hasActiveMatch && hasMatchingHistory)

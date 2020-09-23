@@ -41,19 +41,20 @@ const ActiveMatchBlock = (props) => {
         const formattedBalance = formatCurrency(balance, language, currency);
         const formattedmaxMatchAmount = formatCurrency(maxMatchAmount, language, currency);
         const formattedtotalMatch = formatCurrency(totalMatch, language, currency);
-        const canSeeMatchingHistory = (isAuthenticated && (type === 'groups') && hasMatchingHistory);
+        const canSeeMatchingHistory = (isAuthenticated && (type === 'groups' || type === 'campaigns') && hasMatchingHistory);
         const updateIndex = () => {
             const {
                 dispatch,
                 scrollOffset,
             } = props;
-
-            dispatch({
-                payload: {
-                    activeIndex: 3,
-                },
-                type: 'GET_GROUP_TAB_INDEX',
-            });
+            if (type === 'groups') {
+                dispatch({
+                    payload: {
+                        activeIndex: 3,
+                    },
+                    type: 'GET_GROUP_TAB_INDEX',
+                });
+            }
             window.scrollTo(0, scrollOffset);
         };
 

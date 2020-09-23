@@ -13,8 +13,8 @@ import {
 import {
     formatCurrency,
     formatDateForGivingTools,
-} from '../../helpers/give/utils';
-import { withTranslation } from '../../i18n';
+} from '../../../helpers/give/utils';
+import { withTranslation } from '../../../i18n';
 
 const MatchingHistoryCard = (props) => {
     const {
