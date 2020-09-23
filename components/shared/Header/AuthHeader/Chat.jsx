@@ -21,7 +21,7 @@ class Chat extends React.Component {
             userDetails: {},
             groupFeeds: {},
             showBackImage: false,
-            classForMargin:'chat-popup',
+            classForMargin: 'chat-popup',
         }
         // this.onMessagesListLoad.bind(this);
         this.loadFriendsList.bind(this);
@@ -60,12 +60,14 @@ class Chat extends React.Component {
         const pageSize = 999;
         const pageNumber = 1;
         const email = this.state.userInfo.attributes.email;
-        graphApi.get(`/user/myfriends`, { params: {
-            'page[number]': pageNumber,
-            'page[size]': pageSize,
-            status: 'accepted',
-            userid: email,
-        } }).then(
+        graphApi.get(`/user/myfriends`, {
+            params: {
+                'page[number]': pageNumber,
+                'page[size]': pageSize,
+                status: 'accepted',
+                userid: email,
+            }
+        }).then(
             (result) => {
                 let userDetails = self.state.userDetails;
                 let friendsList = result.data;
@@ -103,35 +105,37 @@ class Chat extends React.Component {
 
     async loadRecentMessages() {
         let self = this;
-        applozicApi.get("/message/v2/list", { params: { startIndex: 0, mainPageSize: 5, pageSize: 5 } }).then(function (response) {
-            let userDetails = self.state.userDetails;
-            _.forEach(response.response.userDetails, function (userDetail) {
-                if (!userDetails[userDetail.userId]) {
-                    userDetails[userDetail.userId] = userDetail;
-                }
-                userDetails[userDetail.userId].unreadCount = userDetail.unreadCount;
-            });
-            let groupFeeds = self.state.groupFeeds;
-            _.forEach(response.response.groupFeeds, function (groupFeed) {
-                groupFeeds[groupFeed.id] = groupFeed;
-            });
-
-            self.setState({ messagesList: response.response.message, userDetails: userDetails, groupFeeds: groupFeeds });
-        })
-            .catch(function (error) {
-                self.props.dispatch({
-                    payload: {
-                        mesageListLoader: false,
-                        messages: [],
-                    },
-                    type: actionTypes.LOAD_CONVERSATION_LIST,
+        if (window.Applozic && window.SetAppLogicRegister) {
+            applozicApi.get("/message/v2/list", { params: { startIndex: 0, mainPageSize: 5, pageSize: 5 } }).then(function (response) {
+                let userDetails = self.state.userDetails;
+                _.forEach(response.response.userDetails, function (userDetail) {
+                    if (!userDetails[userDetail.userId]) {
+                        userDetails[userDetail.userId] = userDetail;
+                    }
+                    userDetails[userDetail.userId].unreadCount = userDetail.unreadCount;
                 });
-                self.setState({ messages: [] });
+                let groupFeeds = self.state.groupFeeds;
+                _.forEach(response.response.groupFeeds, function (groupFeed) {
+                    groupFeeds[groupFeed.id] = groupFeed;
+                });
+
+                self.setState({ messagesList: response.response.message, userDetails: userDetails, groupFeeds: groupFeeds });
             })
-            .finally(function () {
-                // always executed 
-                // console.log("Chat Load Done!");
-            });
+                .catch(function (error) {
+                    // self.props.dispatch({
+                    //     payload: {
+                    //         mesageListLoader: false,
+                    //         messages: [],
+                    //     },
+                    //     type: actionTypes.LOAD_CONVERSATION_LIST,
+                    // });
+                    self.setState({ messages: [] });
+                })
+                .finally(function () {
+                    // always executed 
+                    // console.log("Chat Load Done!");
+                });
+        }
     }
 
     async componentDidMount() {
@@ -261,7 +265,7 @@ class Chat extends React.Component {
                                         <List.Content>
                                             <List.Header>
                                                 <Link route={`/chats/` + (msg.groupId ? msg.groupId : msg.contactIds)}>
-                                                    <a className="header"><span className={`name ${conversationHead.info.unreadCount > 0  ? "newMessage" : ""}`}>{conversationHead.title}</span> <span className="time">{self.timeString(msg.createdAtTime, true)}</span></a>
+                                                    <a className="header"><span className={`name ${conversationHead.info.unreadCount > 0 ? "newMessage" : ""}`}>{conversationHead.title}</span> <span className="time">{self.timeString(msg.createdAtTime, true)}</span></a>
                                                 </Link>
                                             </List.Header>
                                             <List.Description>

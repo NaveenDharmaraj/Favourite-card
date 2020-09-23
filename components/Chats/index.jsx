@@ -11,6 +11,9 @@ import ChatInboxList from './ChatInboxList';
 import ChatMessages from './ChatMessages';
 import { loadFriendsList, loadConversations, loadMuteUserList } from '../../actions/chat';
 import { defaultSelectedConversation } from '../../helpers/chat/utils';
+import configObj from '../../helpers/configEnv';
+import { getParamStoreConfig } from '../../actions/user';
+import registerAppLozic from '../../helpers/initApplozic'
 
 class ChatWrapper extends React.Component {
     constructor(props) {
@@ -26,8 +29,34 @@ class ChatWrapper extends React.Component {
             userInfo,
             msgId,
             friendListLoaded,
+            isAuthenticated
         } = this.props;
-        await dispatch(loadMuteUserList());
+        if (window !== 'undefined' && window.SetAppLogicRegister === undefined && isAuthenticated) {
+            window.SetAppLogicRegister = 'SetAppLogicRegister';
+            let id = this.props.userInfo && this.props.userInfo.id ? this.props.userInfo.id : '';
+            const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
+            const userAvatar = this.props.userInfo ? this.props.userInfo.attributes.avatar : "";
+            const userDisplayName = this.props.userInfo ? this.props.userInfo.attributes.displayName : "";
+            const userFirstName = this.props.userInfo ? this.props.userInfo.attributes.firstName : "";
+            const userLastName = this.props.userInfo ? this.props.userInfo.attributes.lastName : "";
+            window.userEmail = userEmail
+            window.userAvatar = userAvatar
+            window.userDisplayName = userDisplayName
+            window.userFirstName = userFirstName
+            window.userLastName = userLastName;
+            try {
+                const applozicConfig = await dispatch(getParamStoreConfig(["APPLOZIC_APP_KEY", "APPLOZIC_BASE_URL", "APPLOZIC_WS_URL"]))
+                configObj.envVariable = applozicConfig;
+                window.APPLOZIC_BASE_URL = applozicConfig['APPLOZIC_BASE_URL']
+                window.APPLOZIC_WS_URL = applozicConfig['APPLOZIC_WS_URL']
+                window.APPLOZIC_APP_KEY = applozicConfig['APPLOZIC_APP_KEY'];
+                await registerAppLozic(id);
+            }
+            catch (err) { }
+        }
+        try {
+            await dispatch(loadMuteUserList());
+        } catch (err) { }
         //This conidition make sure this is called once even when redux state gets changes and dom rebuilds once again.
         if (!friendListLoaded) {
             dispatch({
@@ -90,7 +119,7 @@ class ChatWrapper extends React.Component {
                 msgId: '',
             },
             type: actionTypes.CHAT_MESSAGE_ID
-        }) 
+        })
     }
     resize = () => {
         this.setState({
@@ -142,6 +171,7 @@ function mapStateToProps(state) {
         currentMsgId: state.chat.currentMsgId,
         userDetails: state.chat.userDetails,
         groupFeeds: state.chat.groupFeeds,
+        isAuthenticated: state.auth.isAuthenticated,
         messages: state.chat.messages,
 
     };
