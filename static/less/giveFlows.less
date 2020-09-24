@@ -1375,6 +1375,22 @@ body{
 }
 .ui.button.fluid.floating.selection.dropdown.creditCardDropDown{
     text-align:left;
+    &.active{
+        .menu{
+            &.visible{
+                @media only screen and (max-width:767px) {
+                    overflow-y: auto;
+                    &::-webkit-scrollbar {
+                        width: 7px;
+                    }
+                }
+            }
+            >.item{
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
 }
 .taxReceiptDropDown >.text >span{
     display:block
@@ -2574,6 +2590,23 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     >.header{
         font-family: 'ProximaNova-semibold';
         color: #263238;
+    }
+    @media only screen and (max-width: 767px){
+        .selection{
+            &.dropdown{
+                &.ui{
+                    .menu{
+                        min-height: 220px;
+                        &.visible{
+                            overflow-y: auto;
+                            &::-webkit-scrollbar {
+                                width: 7px !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     .ui{
         &.form{
