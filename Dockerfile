@@ -27,9 +27,10 @@ COPY . .
 #RUN cat ./static/less/_variables.less
 
 #ARG LESS_FILE_NAME_SOURCE_ARG=$LESS_FILE_NAME
-#ARG LESS_FILE_NAME_SOURCE_ARG=static/less/s3_envs/variables-dev.less
-RUN echo "File Name ${LESS_FILE_NAME}"
-COPY ${LESS_FILE_NAME} ./static/less/_variables.less
+ARG LESS_FILE_NAME_SOURCE_ARG=static/less/s3_envs/variables-stg.less
+#RUN echo "File Name ${LESS_FILE_NAME}"
+COPY ${LESS_FILE_NAME_SOURCE_ARG} ./static/less/_variables.less
+#COPY ${LESS_FILE_NAME} ./static/less/_variables.less
 #RUN ls static/less
 #RUN cat ./static/less/_variables.less
 
