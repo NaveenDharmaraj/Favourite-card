@@ -48,7 +48,7 @@ class CampaignProfileWrapper extends React.Component {
                 },
                 campaignDetails: {
                     attributes: {
-                        id: profileId,
+                        groupId: profileId,
                     }
                 },
                 dispatch,
