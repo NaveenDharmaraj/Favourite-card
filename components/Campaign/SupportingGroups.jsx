@@ -15,7 +15,7 @@ import _isEqual from 'lodash/isEqual';
 import { connect } from 'react-redux';
 import { withTranslation } from '../../i18n';
 import PlaceholderGrid from '../shared/PlaceHolder';
-import { MatchingHistory } from '../../components/shared/MatchingHistory';
+import { MatchingHistory } from '../shared/MatchingHistory';
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
 import SupportingGroup from '../Campaign/SupportingGroup';
 import noDataImgCampain from '../../static/images/campaignprofile_nodata_illustration.png';
