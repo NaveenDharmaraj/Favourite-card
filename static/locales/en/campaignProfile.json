@@ -17,7 +17,7 @@
     "supportCampaignHeader": "Giving Groups supporting this campaign",
     "totalAmountRaised": "Total Raised: {{amount}}",
     "popupCurrentBalanceText": "The current {{Profiletype}} balance is {{balance}}.",
-    "popupMatchingText": "You cannot give from this group until matching expires",
+    "popupMatchingText": "You cannot give from this {{Profiletype}} until matching expires",
     "campaignButtonText": "Campaign",
     "groupButtonText": "Group"
 }

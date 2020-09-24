@@ -157,7 +157,6 @@ class ProfilePageHead extends React.Component {
                                             position="bottom center"
                                             inverted
                                             content={hasActiveMatch ? formatMessage('campaignProfile:popupMatchingText', {
-                                                balance: formatCurrency(balance, language, currency),
                                                 Profiletype: profileButtonText.toLowerCase(),
                                             }) : formatMessage('campaignProfile:popupCurrentBalanceText', {
                                                 balance: formatCurrency(balance, language, currency),
