@@ -220,7 +220,7 @@ class SupportingGroups extends React.Component {
                 </div>
                 <div className="supportingcardWapper">
                     {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
-                        <div className="custom_Grid">
+                        <div className="custom_Grid" ref={this.tabRef}>
                             {this.renderGroups(campaignSubGroupDetails, slug, formatMessage, searchData)}
                         </div>
                     )}
