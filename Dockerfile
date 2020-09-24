@@ -1,5 +1,6 @@
 FROM node:10-alpine
 
+ARG LESS_FILE_NAME
 ENV FC_LANG en-US
 ENV LC_CTYPE en_US.UTF-8
 ARG NODE_ENV=dev
@@ -33,7 +34,7 @@ COPY ${LESS_FILE_NAME_SOURCE_ARG} ./static/less/_variables.less
 
 
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-#RUN npm install --silent && mv node_modules ./
-#RUN npm run build
+RUN npm install --silent && mv node_modules ./
+RUN npm run build
 CMD ["npm", "run","start"]
 EXPOSE ${PORT}
