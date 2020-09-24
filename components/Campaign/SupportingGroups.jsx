@@ -15,7 +15,7 @@ import _isEqual from 'lodash/isEqual';
 import { connect } from 'react-redux';
 import { withTranslation } from '../../i18n';
 import PlaceholderGrid from '../shared/PlaceHolder';
-import { MatchingHistory } from '../shared/MatchingHistory';
+import MatchingHistory  from '../shared/MatchingHistory';
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
 import SupportingGroup from '../Campaign/SupportingGroup';
 import noDataImgCampain from '../../static/images/campaignprofile_nodata_illustration.png';
@@ -35,10 +35,28 @@ class SupportingGroups extends React.Component {
         this.state = {
             searchKey: '',
         };
+        this.tabRef = React.createRef();
         this.renderGroups = this.renderGroups.bind(this);
         this.searchClick = this.searchClick.bind(this);
         this.searchOnChange = this.searchOnChange.bind(this);
         this.renderMatchHistory = this.renderMatchHistory.bind(this);
+    }
+
+    componentDidMount() {
+        const {
+            dispatch,
+        } = this.props;
+        const {
+            current: {
+                offsetTop,
+            },
+        } = this.tabRef;
+        dispatch({
+            payload: {
+                scrollOffset: offsetTop,
+            },
+            type: 'GET_GROUP_TAB_OFFSET',
+        });
     }
 
     campaignGroups() {
@@ -202,7 +220,7 @@ class SupportingGroups extends React.Component {
                 </div>
                 <div className="supportingcardWapper">
                     {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
-                        <div className="custom_Grid">
+                        <div className="custom_Grid" ref={this.tabRef}>
                             {this.renderGroups(campaignSubGroupDetails, slug, formatMessage, searchData)}
                         </div>
                     )}
