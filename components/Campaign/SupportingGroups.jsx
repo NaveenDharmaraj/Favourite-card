@@ -240,7 +240,7 @@ class SupportingGroups extends React.Component {
                     )}
                 </div>
                 {(campaignSubGroupsShowMoreUrl) ? (
-                    <div className={matchHistory ? "supportingMatchHistory" : "supportingcardShowMore"}>
+                    <div className={!_isEmpty(matchHistory) ? "supportingMatchHistory" : "supportingcardShowMore"}>
                         <Button
                             className="btnMore blue-bordr-btn-round-def"
                             onClick={viewMoreFn}
