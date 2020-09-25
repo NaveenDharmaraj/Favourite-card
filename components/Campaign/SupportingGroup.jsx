@@ -88,9 +88,9 @@ SupportingGroup.PropTypes = {
     province: PropTypes.string,
     placeholder: PropTypes.string,
     amountRaised: PropTypes.string,
-    i18n: {
+    i18n: PropTypes.shape({
         language: PropTypes.string,
-    },
+    }),
     type: PropTypes.string,
     causes: PropTypes.array,
     subgroupSlug: PropTypes.string,
