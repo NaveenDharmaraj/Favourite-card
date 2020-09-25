@@ -4,6 +4,9 @@ import _isEmpty from 'lodash/isEmpty';
 
 import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 import ExpiredMatchBlock from '../shared/ExpiredMatchBlock';
+import {
+    PropTypes,
+} from 'prop-types';
 
 import MoneyRaised from './MoneyRaised';
 import CampaignSupporters from './CampaignSupporters';
@@ -52,5 +55,30 @@ const CampaignDetails = (props) => {
         </Fragment>
     );
 };
+
+CampaignDetails.defaultProps = {
+    activeMatch: false,
+    hasActiveMatch: false,
+    peopleInCampaign: '',
+    groupsCount: '',
+    slug: '',
+    amountRaised: '',
+    isAuthenticated: false,
+    type: '',
+    matchHistory: [],
+}
+
+// eslint-disable-next-line react/no-typos
+CampaignDetails.PropTypes = {
+    activeMatch: PropTypes.bool,
+    hasActiveMatch: PropTypes.bool,
+    peopleInCampaign: PropTypes.string,
+    groupsCount: PropTypes.string,
+    slug: PropTypes.string,
+    amountRaised: PropTypes.string,
+    isAuthenticated: PropTypes.bool,
+    type: PropTypes.string,
+    matchHistory: PropTypes.array,
+}
 
 export default CampaignDetails;

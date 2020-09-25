@@ -9,6 +9,9 @@ import {
     Icon,
     Divider,
 } from 'semantic-ui-react';
+import {
+    PropTypes,
+} from 'prop-types';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
@@ -42,21 +45,25 @@ class SupportingGroups extends React.Component {
         this.renderMatchHistory = this.renderMatchHistory.bind(this);
     }
 
-    componentDidMount() {
+    componentDidUpdate(prevProps) {
         const {
             dispatch,
+            matchHistory,
+            scrollOffset,
         } = this.props;
         const {
             current: {
                 offsetTop,
             },
         } = this.tabRef;
-        dispatch({
-            payload: {
-                scrollOffset: offsetTop,
-            },
-            type: 'GET_GROUP_TAB_OFFSET',
-        });
+        if(!_isEmpty(matchHistory) && !_isEqual(scrollOffset, offsetTop)) {
+            dispatch({
+                payload: {
+                    scrollOffset: offsetTop,
+                },
+                type: 'GET_GROUP_TAB_OFFSET',
+            });
+        }
     }
 
     campaignGroups() {
@@ -256,7 +263,41 @@ function mapStateToProps(state) {
     return {
         searchData: state.profile.searchData,
         isAuthenticated: state.auth.isAuthenticated,
+        scrollOffset: state.group.scrollOffset,
     };
+}
+
+SupportingGroups.defaultProps = {
+    slug: '',
+    campaignSubGroupDetails: [],
+    campaignSubGroupsShowMoreUrl: '',
+    isAuthenticated: false,
+    matchHistory: [],
+    seeMoreLoaderStatus: false,
+    subGroupListLoader: false,
+    viewMoreFn: () => {},
+    t: () => {},
+    searchData: '',
+    dispatch: () => {},
+    campaignId: '',
+    scrollOffset: 0,
+}
+
+// eslint-disable-next-line react/no-typos
+SupportingGroups.PropTypes = {
+    slug: PropTypes.string,
+    campaignSubGroupDetails: PropTypes.array,
+    campaignSubGroupsShowMoreUrl: PropTypes.string,
+    isAuthenticated: PropTypes.bool,
+    matchHistory: PropTypes.array,
+    seeMoreLoaderStatus: PropTypes.bool,
+    subGroupListLoader: PropTypes.bool,
+    viewMoreFn: PropTypes.func,
+    t: PropTypes.func,
+    searchData: PropTypes.string,
+    dispatch: PropTypes.func,
+    campaignId:  PropTypes.string,
+    scrollOffset: PropTypes.number,
 }
 
 export default withTranslation('campaignProfile')(connect(mapStateToProps)(SupportingGroups));

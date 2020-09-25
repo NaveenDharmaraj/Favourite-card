@@ -55,7 +55,10 @@ const ActiveMatchBlock = (props) => {
                     type: 'GET_GROUP_TAB_INDEX',
                 });
             }
-            window.scrollTo(0, scrollOffset);
+            window.scrollTo({
+                behavior: 'smooth',
+                top: scrollOffset,
+            });
         };
 
         return (
