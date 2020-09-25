@@ -49,9 +49,9 @@
             align-items: center;
             font-size: 14px;
             color:@font-color;
-            margin-bottom: 22px;
+            margin-bottom: 26px;
             p{
-              padding-right: 48px;
+              padding-right: 40px;
               margin-bottom: 0;
             }
             .userfriends{
@@ -67,7 +67,7 @@
             }
           }
           .textAboutuser{
-            margin-bottom: 20px;
+            margin-bottom: 22px;
             white-space: pre-line;
           }
           .userButtonsWrap{
@@ -128,13 +128,13 @@
         }
       }
       >.ui.header{       
-        margin: 10px 0 0px;
+        margin: 6px 0 0px;
         font-size: 28px; 
         color: @font-color;     
       }
       >p{
         font-size: 14.2px;
-        margin: 5px 0 10px;
+        margin: 0px 0 10px;
         line-height: 22px;
         span{
           .primeFont-semi-bold()
@@ -180,7 +180,7 @@
         }
       }
       .user-badge-group{
-        margin: 20px 0;
+        margin: 20px 0 7px;
         max-height: 334px;
         overflow: auto;
         &::-webkit-scrollbar {
@@ -391,6 +391,7 @@
   }
 }
 .ui.modals.dimmer .chimp-modal.ui.modal > .content{
+  padding: 23px 35px 30px !important;
   .editProfileModal{
     .editProfilePhotoWrap{
       display: flex;
@@ -413,8 +414,8 @@
         margin-top: 25px;
         .ui.button{
           &.success-btn-rounded-def{
-            padding: 7px 21px;
-            margin-bottom: 12px;
+            padding: 7.2px 19.75px;
+            margin-bottom: 10px;
           }
         }
         .remvephoto{
@@ -455,19 +456,29 @@
         margin-top: 10px;
         .ui.button.basic{
           .primeFont();
+          font-size: 14px;
           height: 30px ;
           width: 65px ;
           padding: 7px 10px 6px ;      
           color: @font-color !important;
           margin-right: 10px; 
           box-shadow: 0 0 0 1px rgba(34,36,38,.15) inset !important;
+          border-radius: 5px;
+          &.selected{
+            box-shadow:none !important;
+            background-color: #F1F6FD !important;
+            border: 1px solid #DDDDDD;
+          }
         }
       }
-      .ui.button.save{
-        width: 165px;
-        margin-top: 30px;
-        height: 40px;
-      }
+      .btnWrp{
+        text-align: right;
+        .ui.button.save{
+          width: 91px;
+          margin-top: 30px;
+          height: 40px;
+        }
+      }     
     }
   }
   @media only screen and (min-width:767px) and (max-width:992px) {
@@ -579,7 +590,7 @@
         .ui.button.user_badgeButton{
           &.active{
             position: relative;
-            padding-right: 30px;
+            // padding-right: 30px;
 
             .icon.delete{
               cursor: pointer;
@@ -617,6 +628,7 @@
         }
       }
       .EditTopicseeMore{
+        cursor: pointer;
         .icon{
           margin-right:10px ;
           position: relative;
@@ -954,14 +966,14 @@
   
 }
 .userprfleTab{
-  margin-top: 42px;
+  margin-top: 30px;
   .ui.secondary.pointing.menu{
-    margin-bottom: 30px; 
+    margin-bottom: 33px; 
     border-bottom: 1px solid @border-light;
     .item{
       font-size: 16px;
       color: #262626;
-      padding: 0 15px 15px; 
+      padding: 11px 15px 15px; 
       margin: 0;
       &.active{
         .primeFont-semi-bold();
@@ -1001,7 +1013,7 @@
   .tabHeader{
     display: flex;
     align-items: center;
-    padding: 0px 0 30px;
+    padding: 0px 0 32px;
     .ui.header{
       font-size: 20px;
       margin-right: 13px;
@@ -1017,7 +1029,7 @@
     margin-right: -10px;
     margin-left: -10px;
     .ui.card{
-      max-width: 360px;
+      max-width: 390px;
       margin: 0 10px 20px 10px;
       flex: auto;
       .content{
@@ -1057,12 +1069,12 @@
           h4{
             font-size: 14px;
             color: @font-color;
-            margin: 0 0 5px;
+            margin: 0 0 2px;
             line-height: 22px;
             cursor: pointer;
           }
           p{
-            margin-bottom: 4px;
+            margin-bottom: 2px;
           }
         }
         .edit{
@@ -1177,7 +1189,7 @@
       .content{
         padding-left: 13px;
         width: 50%;
-        a.header{
+        .header>a{
           color: @font-color !important;
           margin-bottom: 2px;
         }
@@ -1410,8 +1422,9 @@
 }
 .block-unfriend-Modal-buttons{
   text-align: right;
-  margin: 28px 0 15px;
+  margin: 36px 0 0px;
   .ui.button{
+    padding: 12.2px 29.1px;
     &.red-btn-rounded-def{
       color: #ffffff;
       background-color: @chimpRed;
@@ -1532,7 +1545,6 @@
     }
   }
   @media only screen and (max-width:767px) {
-    margin-top: -12px;
     .ui.container .ui.grid {
       .row{
         padding: 14px 0;
