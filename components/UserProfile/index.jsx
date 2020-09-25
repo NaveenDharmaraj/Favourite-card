@@ -104,6 +104,7 @@ class UserProfileWrapper extends React.Component {
                 id: currentUserId,
             },
             friendUserId,
+            friendPageStep,
             previewMode: {
                 isPreviewMode,
                 previewValue,
@@ -119,6 +120,7 @@ class UserProfileWrapper extends React.Component {
         const {
             showFriendsPage,
         } = this.state;
+        const isMyFriendsPage = (friendPageStep === 'myfriends');
         const updatedFriendId = (friendUserId === 'myprofile') ? currentUserId : friendUserId;
         const isSingleColumnLayout = (profile_type !== 'my_profile' && causes_visibility === 2 && giving_goal_visibility === 2);
         const options = [
@@ -180,7 +182,7 @@ class UserProfileWrapper extends React.Component {
                         </Container>
                     </div>
                 )}
-                {!showFriendsPage
+                {(!showFriendsPage && !isMyFriendsPage)
                     ? (
                         <Container>
                             <div className="userProfileScreen">
@@ -214,6 +216,7 @@ class UserProfileWrapper extends React.Component {
                     : (
                         <UserFriendList
                             hideFriendPage={this.hideFriendPage}
+                            isMyFriendsPage={isMyFriendsPage}
                         />
                     )}
             </Fragment>

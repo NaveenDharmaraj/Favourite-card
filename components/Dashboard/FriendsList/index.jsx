@@ -176,7 +176,7 @@ class FriendsList extends React.Component {
         if (friendsData && friendsData.count > 6) {
             viewAllDiv = (
                 <div className="text-right">
-                    <Link className="lnkChange" route="/user/profile/friends/myfriends">
+                    <Link className="lnkChange" route="/users/profile/myprofile/myfriends">
                         <a className="viewAll">
                             View all
                             {/* (

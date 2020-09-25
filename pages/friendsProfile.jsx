@@ -28,6 +28,7 @@ class FriendProfile extends React.Component {
             namespacesRequired: [
                 'giveCommon',
             ],
+            friendPageStep: query.step,
         };
     }
 
