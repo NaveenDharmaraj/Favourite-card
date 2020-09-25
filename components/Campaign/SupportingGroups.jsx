@@ -195,7 +195,7 @@ class SupportingGroups extends React.Component {
         } = this.props;
         return (
             <Fragment>
-                <div className="supportingWithsearch">
+                <div className="supportingWithsearch" ref={this.tabRef}>
                     <Header as="h3">{formatMessage('campaignProfile:supportCampaignHeader')}</Header>
                 </div>
                 <div className="search-banner campaignSearchBanner">
@@ -220,7 +220,7 @@ class SupportingGroups extends React.Component {
                 </div>
                 <div className="supportingcardWapper">
                     {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
-                        <div className="custom_Grid" ref={this.tabRef}>
+                        <div className="custom_Grid">
                             {this.renderGroups(campaignSubGroupDetails, slug, formatMessage, searchData)}
                         </div>
                     )}
