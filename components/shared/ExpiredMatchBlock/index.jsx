@@ -131,6 +131,7 @@ ExpiredMatchBlock.defaultProps = {
         totalMatched: '',
     },
     scrollOffset: 0,
+    type: '',
     t: () => {},
 };
 
@@ -146,6 +147,7 @@ ExpiredMatchBlock.propTypes = {
         totalMatched: string,
     }),
     scrollOffset: number,
+    type: string,
     t: func,
 };
 
