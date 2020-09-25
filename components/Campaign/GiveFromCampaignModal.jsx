@@ -7,6 +7,9 @@ import {
     Responsive,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import {
+    PropTypes,
+} from 'prop-types';
 
 import {
     Link,
@@ -163,4 +166,26 @@ function mapStateToProps(state) {
         groupsWithMemberships: state.user.groupsWithMemberships,
     };
 }
+
+GiveFromCampaignModal.defaultProps = {
+    campaignId: '',
+    campaignName: '',
+    campaignRelatedBeneficiariesCount: null,
+    fundId: null,
+    groupsWithMemberships: {},  
+    isGiveFromModalOpen: false,
+    toggleGiveFromGroupModal: () => { },
+}
+
+// eslint-disable-next-line react/no-typos
+GiveFromCampaignModal.PropTypes = {
+    campaignId: PropTypes.string,
+    campaignName: PropTypes.string,
+    campaignRelatedBeneficiariesCount: PropTypes.number,
+    fundId: PropTypes.number,
+    groupsWithMemberships: PropTypes.object,
+    isGiveFromModalOpen: PropTypes.bool,
+    toggleGiveFromGroupModal: PropTypes.func,
+}
+
 export default connect(mapStateToProps)(GiveFromCampaignModal);

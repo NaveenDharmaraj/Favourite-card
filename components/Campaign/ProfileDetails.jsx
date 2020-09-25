@@ -8,6 +8,9 @@ import {
     Divider,
 } from 'semantic-ui-react';
 import ReactHtmlParser from 'react-html-parser';
+import {
+    PropTypes,
+} from 'prop-types';
 
 import { withTranslation } from '../../i18n';
 import ImageGallery from '../shared/ImageGallery';
@@ -119,6 +122,25 @@ function ProfileDetails(props) {
             </div>
         </div>
     );
+}
+
+ProfileDetails.defaultProps = {
+    about: '',
+    videoPlayerLink: '',
+    formattedShort: '',
+    formattedImpact: '',
+    campaignImageGallery: [],
+    t: () => {},
+}
+
+// eslint-disable-next-line react/no-typos
+ProfileDetails.PropTypes = {
+    about: PropTypes.string,
+    videoPlayerLink: PropTypes.string,
+    formattedShort: PropTypes.string,
+    formattedImpact: PropTypes.string,
+    campaignImageGallery: PropTypes.array,
+    t: PropTypes.func,
 }
 
 export default withTranslation('claimProfile')(ProfileDetails);

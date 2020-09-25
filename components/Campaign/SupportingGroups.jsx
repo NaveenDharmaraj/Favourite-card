@@ -9,6 +9,9 @@ import {
     Icon,
     Divider,
 } from 'semantic-ui-react';
+import {
+    PropTypes,
+} from 'prop-types';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
@@ -42,21 +45,25 @@ class SupportingGroups extends React.Component {
         this.renderMatchHistory = this.renderMatchHistory.bind(this);
     }
 
-    componentDidMount() {
+    componentDidUpdate(prevProps) {
         const {
             dispatch,
+            matchHistory,
+            scrollOffset,
         } = this.props;
         const {
             current: {
                 offsetTop,
             },
         } = this.tabRef;
-        dispatch({
-            payload: {
-                scrollOffset: offsetTop,
-            },
-            type: 'GET_GROUP_TAB_OFFSET',
-        });
+        if(!_isEmpty(matchHistory) && !_isEqual(scrollOffset, offsetTop)) {
+            dispatch({
+                payload: {
+                    scrollOffset: offsetTop,
+                },
+                type: 'GET_GROUP_TAB_OFFSET',
+            });
+        }
     }
 
     campaignGroups() {
@@ -170,12 +177,18 @@ class SupportingGroups extends React.Component {
 
 
     renderMatchHistory(matchHistory) {
+        const {
+            t: formatMessage,
+        } = this.props;
         if (!_isEmpty(matchHistory)) {
             return (
-                <Fragment>
+                <div className="GroupTab">
                     <Divider className="mt-2 mobHideDivider" />
+                    <div className="supportingWithsearch">
+                        <Header as="h3">{formatMessage('campaignProfile:matchingCampaignHeader')}</Header>
+                    </div>
                     <MatchingHistory />
-                </Fragment>
+                </div>
             )
         }
         return null;
@@ -186,6 +199,7 @@ class SupportingGroups extends React.Component {
             slug,
             campaignSubGroupDetails,
             campaignSubGroupsShowMoreUrl,
+            isAuthenticated,
             matchHistory,
             seeMoreLoaderStatus,
             subGroupListLoader,
@@ -218,7 +232,7 @@ class SupportingGroups extends React.Component {
                         </Grid>
                     </div>
                 </div>
-                <div className="supportingcardWapper" ref={this.tabRef}>
+                <div className="supportingcardWapper">
                     {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
                         <div className="custom_Grid">
                             {this.renderGroups(campaignSubGroupDetails, slug, formatMessage, searchData)}
@@ -226,7 +240,7 @@ class SupportingGroups extends React.Component {
                     )}
                 </div>
                 {(campaignSubGroupsShowMoreUrl) ? (
-                    <div className="supportingcardShowMore">
+                    <div className={!_isEmpty(matchHistory) ? "supportingMatchHistory" : "supportingcardShowMore"}>
                         <Button
                             className="btnMore blue-bordr-btn-round-def"
                             onClick={viewMoreFn}
@@ -237,7 +251,9 @@ class SupportingGroups extends React.Component {
                     </div>
                 ) : ''
                 }
-                {this.renderMatchHistory(matchHistory)}
+                <div ref={this.tabRef}>
+                {isAuthenticated && this.renderMatchHistory(matchHistory)}
+                </div>
             </Fragment>
         )
     }
@@ -246,7 +262,42 @@ class SupportingGroups extends React.Component {
 function mapStateToProps(state) {
     return {
         searchData: state.profile.searchData,
+        isAuthenticated: state.auth.isAuthenticated,
+        scrollOffset: state.group.scrollOffset,
     };
+}
+
+SupportingGroups.defaultProps = {
+    slug: '',
+    campaignSubGroupDetails: [],
+    campaignSubGroupsShowMoreUrl: '',
+    isAuthenticated: false,
+    matchHistory: [],
+    seeMoreLoaderStatus: false,
+    subGroupListLoader: false,
+    viewMoreFn: () => {},
+    t: () => {},
+    searchData: '',
+    dispatch: () => {},
+    campaignId: '',
+    scrollOffset: 0,
+}
+
+// eslint-disable-next-line react/no-typos
+SupportingGroups.PropTypes = {
+    slug: PropTypes.string,
+    campaignSubGroupDetails: PropTypes.array,
+    campaignSubGroupsShowMoreUrl: PropTypes.string,
+    isAuthenticated: PropTypes.bool,
+    matchHistory: PropTypes.array,
+    seeMoreLoaderStatus: PropTypes.bool,
+    subGroupListLoader: PropTypes.bool,
+    viewMoreFn: PropTypes.func,
+    t: PropTypes.func,
+    searchData: PropTypes.string,
+    dispatch: PropTypes.func,
+    campaignId:  PropTypes.string,
+    scrollOffset: PropTypes.number,
 }
 
 export default withTranslation('campaignProfile')(connect(mapStateToProps)(SupportingGroups));

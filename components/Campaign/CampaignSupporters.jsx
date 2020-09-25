@@ -2,6 +2,9 @@
 import React from 'react';
 import { Header, Button } from 'semantic-ui-react';
 import getConfig from 'next/config';
+import {
+    PropTypes,
+} from 'prop-types';
 
 import { withTranslation } from '../../i18n';
 
@@ -42,6 +45,21 @@ const CampaignSupporters = (props) => {
             </div>
         </div>
     )
+}
+
+CampaignSupporters.defaultProps = {
+    groupsCount: '',
+    peopleInCampaign: '',
+    slug: '',
+    t: () => { },
+}
+
+// eslint-disable-next-line react/no-typos
+CampaignSupporters.PropTypes = {
+    groupsCount: PropTypes.string,
+    peopleInCampaign: PropTypes.string,
+    slug: PropTypes.string,
+    t: PropTypes.func,
 }
 
 export default withTranslation('campaignProfile')(CampaignSupporters);

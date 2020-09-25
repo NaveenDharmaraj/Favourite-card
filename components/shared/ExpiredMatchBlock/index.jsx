@@ -13,17 +13,18 @@ import {
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
-import { withTranslation } from '../../i18n';
+import { withTranslation } from '../../../i18n';
 import {
     formatCurrency,
     formatDateForGivingTools,
-} from '../../helpers/give/utils';
+} from '../../../helpers/give/utils';
 
 const ExpiredMatchBlock = (props) => {
     const {
         isAuthenticated,
         matchHistory,
         t: formatMessage,
+        type,
     } = props;
     const {
         companyAvatar,
@@ -46,14 +47,18 @@ const ExpiredMatchBlock = (props) => {
             dispatch,
             scrollOffset,
         } = props;
-
-        dispatch({
-            payload: {
-                activeIndex: 3,
-            },
-            type: 'GET_GROUP_TAB_INDEX',
+        if (type === 'groups') {
+            dispatch({
+                payload: {
+                    activeIndex: 3,
+                },
+                type: 'GET_GROUP_TAB_INDEX',
+            });
+        }
+        window.scrollTo({
+            behavior: 'smooth',
+            top: scrollOffset,
         });
-        window.scrollTo(0, scrollOffset);
     };
 
     return (
@@ -129,6 +134,7 @@ ExpiredMatchBlock.defaultProps = {
         totalMatched: '',
     },
     scrollOffset: 0,
+    type: '',
     t: () => {},
 };
 
@@ -144,6 +150,7 @@ ExpiredMatchBlock.propTypes = {
         totalMatched: string,
     }),
     scrollOffset: number,
+    type: string,
     t: func,
 };
 

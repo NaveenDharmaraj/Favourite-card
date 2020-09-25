@@ -62,6 +62,9 @@ class CampaignProfile extends React.Component {
             dispatch,
             slugApiErrorStats,
             campaignDetails: {
+                attributes: {
+                    groupId,
+                },
                 id,
             },
         } = this.props;
@@ -74,7 +77,7 @@ class CampaignProfile extends React.Component {
             dispatch(getCampaignBeneficiariesCount(id));
             dispatch(getCampaignSupportGroups(id));
             dispatch(getCampaignGalleryImages(id));
-            dispatch(getMatchingHistory(id));
+            dispatch(getMatchingHistory(groupId));
         }
     }
 
@@ -152,7 +155,7 @@ CampaignProfile.defaultProps = {
             slug: '',
         },
     },
-    currentUser:{
+    currentUser: {
         id: '',
     },
     dispatch: () => {},
@@ -162,18 +165,18 @@ CampaignProfile.defaultProps = {
 };
 
 CampaignProfile.propTypes = {
-    campaignDetails: {
-        attributes: {
+    campaignDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
             about: PropTypes.string,
             avatar: PropTypes.string,
             causes: PropTypes.array,
             name: PropTypes.string,
             slug: PropTypes.string,
-        },
-    },
-    currentUser:{
+        }),
+    }),
+    currentUser: PropTypes.shape({
         id: PropTypes.string,
-    },
+    }),
     dispatch: PropTypes.func,
     isAuthenticated: PropTypes.bool,
     slug: PropTypes.string,

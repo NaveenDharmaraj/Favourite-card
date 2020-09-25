@@ -19,5 +19,6 @@
     "popupCurrentBalanceText": "The current {{Profiletype}} balance is {{balance}}.",
     "popupMatchingText": "You cannot give from this {{Profiletype}} until matching expires",
     "campaignButtonText": "Campaign",
-    "groupButtonText": "Group"
+    "groupButtonText": "Group",
+    "matchingCampaignHeader": "Matching History"
 }

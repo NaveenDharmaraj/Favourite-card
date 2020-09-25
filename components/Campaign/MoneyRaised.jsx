@@ -3,6 +3,9 @@ import React from 'react';
 import { Header, Button, Responsive } from 'semantic-ui-react';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
+import {
+    PropTypes,
+} from 'prop-types';
 
 import { Link } from '../../routes';
 import { withTranslation } from '../../i18n';
@@ -48,6 +51,21 @@ const MoneyRaised = (props) => {
             </div>
         </div>
     );
+}
+
+MoneyRaised.defaultProps = {
+    amountRaised: '',
+    isAuthenticated: false,
+    slug: '',
+    t: () => {},
+}
+
+// eslint-disable-next-line react/no-typos
+MoneyRaised.PropTypes = {
+    amountRaised: PropTypes.string,
+    isAuthenticated: PropTypes.bool,
+    slug: PropTypes.string,
+    t: PropTypes.func,
 }
 
 export default withTranslation('campaignProfile')(MoneyRaised);

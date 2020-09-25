@@ -3,6 +3,9 @@ import React from 'react'
 import { Image, Header } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import _map from 'lodash/map';
+import {
+    PropTypes,
+} from 'prop-types';
 
 import { Link } from '../../routes';
 import { formatCurrency } from '../../helpers/give/utils';
@@ -61,6 +64,37 @@ function SupportingGroup(props) {
             </div>
         </Link>
     )
+}
+
+SupportingGroup.defaultProps = {
+    entityName: '',
+    city: '',
+    province: '',
+    placeholder: '',
+    amountRaised: '',
+    i18n: {
+        language: '',
+    },
+    type: '',
+    causes: [],
+    subgroupSlug: '',
+    t: () => {},
+}
+
+// eslint-disable-next-line react/no-typos
+SupportingGroup.PropTypes = {
+    entityName: PropTypes.string,
+    city: PropTypes.string,
+    province: PropTypes.string,
+    placeholder: PropTypes.string,
+    amountRaised: PropTypes.string,
+    i18n: PropTypes.shape({
+        language: PropTypes.string,
+    }),
+    type: PropTypes.string,
+    causes: PropTypes.array,
+    subgroupSlug: PropTypes.string,
+    t: PropTypes.func,
 }
 
 export default withTranslation('claimProfile')(SupportingGroup);
