@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import _findIndex from 'lodash/findIndex';
 
 const userProfile = (state = {}, action) => {
     let newState = {
@@ -124,10 +125,20 @@ const userProfile = (state = {}, action) => {
             };
             break;
         case 'USER_PROFILE_FRIEND_REQUEST':
+            const friendIndex = _findIndex(state.userFindFriendsList.data, (data) => data.attributes.user_id === action.payload.userId);
+            const friendsArray = state.userFindFriendsList.data;
+            friendsArray[friendIndex].attributes.friend_status = action.payload.status;
             newState = {
                 ...state,
-                userAddFriendRequestData: Object.assign({}, action.payload),
+                userFindFriendsList: {
+                    ...state.userFindFriendsList,
+                    data: friendsArray,
+                },
             };
+            // newState = {
+            //     ...state,
+            //     userAddFriendRequestData: Object.assign({}, action.payload),
+            // };
             break;
         case 'USER_PROFILE_FRIEND_ACCEPT':
             newState = {
@@ -234,6 +245,12 @@ const userProfile = (state = {}, action) => {
                 previewMode: action.payload.previewMode,
             };
             break;
+        case 'USER_PROFILE_FRIEND_TYPE_AHEAD_SEARCH':
+            newState = {
+                ...state,
+                friendTypeAheadData: action.payload.data,
+            };
+            break;
         case 'USER_PROFILE_RESET_DATA':
             newState = {
                 ...state,
@@ -243,6 +260,18 @@ const userProfile = (state = {}, action) => {
                 userProfileAdminGroupData: Object.assign({}, action.payload),
                 userProfileCausesData: Object.assign({}, action.payload),
                 userProfileProfilelink: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_FIND_DROPDOWN_FRIENDS':
+            const selectedFriendIndex = _findIndex(state.userFindFriendsList.data, (data) => data.attributes.user_id === action.payload.userId);
+            const selectedFriendsArray = state.userFindFriendsList.data;
+            selectedFriendsArray[selectedFriendIndex].attributes.friend_status = action.payload.status;
+            newState = {
+                ...state,
+                userFindFriendsList: {
+                    ...state.userFindFriendsList,
+                    data: selectedFriendsArray,
+                },
             };
             break;
         default:

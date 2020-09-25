@@ -256,7 +256,7 @@ class UserBasicProfile extends React.Component {
                 },
             },
         } = this.props;
-        rejectFriendInvite(dispatch, currentUserId, friendUserId, email);
+        rejectFriendInvite(dispatch, currentUserId, friendUserId, email, 'myProfile');
     }
 
     render() {
@@ -380,19 +380,19 @@ class UserBasicProfile extends React.Component {
                                 {last_name}?
                             </Modal.Header>
                             <Modal.Content>
-                                <Modal.Description className="font-s-16">
+                                <Modal.Description>
                                     They won't be able to find your profile or message you on Charitable Impact. We won't let them know you blocked them.
                                 </Modal.Description>
                                 <div className="btn-wraper pt-3 text-right">
                                     <Button
-                                        className="danger-btn-rounded-def c-small"
+                                        className="danger-btn-rounded-def"
                                         onClick={() => this.handleBlockUser(user_id)}
                                         disabled={blockButtonClicked}
                                     >
                                         Block
                                     </Button>
                                     <Button
-                                        className="blue-bordr-btn-round-def c-small"
+                                        className="blue-bordr-btn-round-def"
                                         onClick={this.handleBlockCancelClick}
                                         disabled={blockButtonClicked}
                                     >
@@ -597,7 +597,6 @@ class UserBasicProfile extends React.Component {
                                     className="grey-btn-rounded-def"
                                     // onClick={() => this.handleAddToFriends(user_id, email)}
                                     disabled={true}
-                                    primary
                                 >
                                     Block
                                 </Button>

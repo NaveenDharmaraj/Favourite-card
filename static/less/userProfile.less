@@ -798,33 +798,15 @@
     >input{
       padding: 16.6px 15px;
     }
-    .search.icon{
-      width: 40px;
-      height: 40px;
-      padding: 0;
+    .dropdown.icon{
+      padding: 0 !important;
       position: absolute;
-      right: 5px;
+      right: 0;
+      width: 40px;
+      height: 40px !important;
+      margin: auto;
       top: 0;
       bottom: 0;
-      margin: auto;
-      background-color: #EEEEEE;
-      border-radius: 30px;
-      cursor: pointer;
-      &:before{
-        content: "";
-        background-image: url('../images/icons/icon-search.svg') !important;
-        background-repeat: no-repeat !important;
-        background-size: contain !important;
-        background-position: center !important;
-        height: 20px;
-        width: 20px;
-        position: absolute;
-        margin: auto !important;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-      }
     }
     .text{
       width: 100%;
@@ -838,7 +820,6 @@
           position: absolute;
           right: 15px;
           &::before{
-
           }
         }
       }
@@ -865,6 +846,34 @@
       background-repeat: no-repeat !important;
       margin: auto;
     bottom: 0;
+    }
+  }
+  .search.icon{
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0;
+    position: absolute;
+    right: 5px !important;
+    top: 0 !important;
+    bottom: 0;
+    margin: auto !important;
+    background-color: #EEEEEE;
+    border-radius: 30px;
+    cursor: pointer;
+    &:before{
+      content: "";
+      background-image: url('../images/icons/icon-search.svg') !important;
+      background-repeat: no-repeat !important;
+      background-size: contain !important;
+      background-position: center !important;
+      height: 18px;
+      width: 18px;
+      position: absolute;
+      margin: auto !important;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
     }
   }
 }
@@ -1675,4 +1684,22 @@
   border: 1px solid #DDDDDD;
   font-size: 14px;
   width: 126px;
+}
+.findFriendsSearch{
+  .ui.input{
+    width: 500px;
+    .icon.delete{
+      right: 39px !important;
+      width: 1.671429em !important;
+      pointer-events: auto !important;
+    }
+    .icon.search{
+      pointer-events: auto !important;
+    }
+  }
+  .results.transition{
+    .image{
+      float: left !important;
+    }
+  }
 }

@@ -53,11 +53,13 @@ export const actionTypes = {
     USER_PROFILE_DEFAULT_TAX_RECEIPT: 'USER_PROFILE_DEFAULT_TAX_RECEIPT',
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
     USER_PROFILE_FAVOURITES_LOAD_STATUS: 'USER_PROFILE_FAVOURITES_LOAD_STATUS',
+    USER_PROFILE_FIND_DROPDOWN_FRIENDS: 'USER_PROFILE_FIND_DROPDOWN_FRIENDS',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
     USER_PROFILE_FIND_TAGS: 'USER_PROFILE_FIND_TAGS',
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
     USER_PROFILE_FRIEND_ACCEPT: 'USER_PROFILE_FRIEND_ACCEPT',
     USER_PROFILE_FRIEND_REQUEST: 'USER_PROFILE_FRIEND_REQUEST',
+    USER_PROFILE_FRIEND_TYPE_AHEAD_SEARCH: 'USER_PROFILE_FRIEND_TYPE_AHEAD_SEARCH',
     USER_PROFILE_GET_EMAIL_LIST: 'USER_PROFILE_GET_EMAIL_LIST',
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
     USER_PROFILE_INVITE_FRIENDS: 'USER_PROFILE_INVITE_FRIENDS',
@@ -519,22 +521,23 @@ function searchFriendsObj(friendList, toSearch) {
     return friendList;
 }
 
-const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstName, displayName, userData, searchWord, pageNumber, userFindFriendsList) => {
+const sendFriendRequest = (dispatch, requestObj) => { //sourceUserId, sourceEmail, avatar, firstName, displayName, userData, searchWord, pageNumber, userFindFriendsList) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_FRIEND_REQUEST,
     };
+
     const bodyData = {
         data: {
             attributes: {
-                recipient_email_id: Buffer.from(userData.attributes.email_hash, 'base64').toString('ascii'),
-                recipient_user_id: Number(userData.attributes.user_id),
-                requester_avatar_link: avatar,
-                requester_display_name: displayName,
-                requester_email_id: sourceEmail,
-                requester_first_name: firstName,
-                requester_user_id: Number(sourceUserId),
+                recipient_email_id: requestObj.recipientEmail,
+                recipient_user_id: requestObj.recipientUserId,
+                requester_avatar_link: requestObj.requesterAvatar,
+                requester_display_name: requestObj.requesterDisplayName,
+                requester_email_id: requestObj.requesterEmail,
+                requester_first_name: requestObj.requesterFirstName,
+                requester_user_id: requestObj.requesterUserId,
                 source: 'web',
             },
         },
@@ -542,26 +545,31 @@ const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstNam
     const sendFriendRequestResponse = eventApi.post(`/friend/request`, bodyData);
     sendFriendRequestResponse.then(
         (result) => {
-            fsa.payload = {
-                data: result.data,
-            };
-            const newFriendList = searchFriendsObj(userFindFriendsList, Number(userData.attributes.user_id));
-            const friendListFsa = {
-                payload: {
-                },
-                type: actionTypes.USER_PROFILE_FIND_FRIENDS,
-            };
-            friendListFsa.payload = {
-                count: newFriendList.record_count,
-                data: newFriendList.data,
-            };
-            dispatch(friendListFsa);
-            // getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
+            if (result && !_isEmpty(result.data)) {
+                fsa.payload.userId = requestObj.recipientUserId;
+                fsa.payload.status = 'PENDING_OUT';
+                dispatch(fsa);
+            }
+            // fsa.payload = {
+            //     data: result.data,
+            // };
+            // const newFriendList = searchFriendsObj(userFindFriendsList, Number(userData.attributes.user_id));
+            // const friendListFsa = {
+            //     payload: {
+            //     },
+            //     type: actionTypes.USER_PROFILE_FIND_FRIENDS,
+            // };
+            // friendListFsa.payload = {
+            //     count: newFriendList.record_count,
+            //     data: newFriendList.data,
+            // };
+            // dispatch(friendListFsa);
+            // // getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
         },
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
-        dispatch(fsa);
+        // dispatch(fsa);
     });
     return sendFriendRequestResponse;
 };
@@ -1448,7 +1456,11 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
     }).catch().finally();
 };
 
-const rejectFriendInvite = (dispatch, currentUserId, friendUserId, email) => {
+const rejectFriendInvite = (dispatch, currentUserId, friendUserId, email, type = '') => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.USER_PROFILE_FIND_DROPDOWN_FRIENDS,
+    };
     const payloadObj = {
         relationship: 'IS_CHIMP_FRIEND_OF',
         source: {
@@ -1469,10 +1481,18 @@ const rejectFriendInvite = (dispatch, currentUserId, friendUserId, email) => {
             dispatch,
             ignore401: true,
         },
-    }).then((result) => {
-        getFriendsInvitations(dispatch, email, 1);
-        getMyFriendsList(dispatch, email, 1);
-        getUserFriendProfile(dispatch, email, friendUserId, currentUserId);
+    }).then((result) => { //friendSearch
+        if (type === 'invitation') {
+            getFriendsInvitations(dispatch, email, 1);
+            getMyFriendsList(dispatch, email, 1);
+            getUserFriendProfile(dispatch, email, friendUserId, currentUserId);
+        } else if (type === 'friendSearch') {
+            fsa.payload.userId = friendUserId;
+            fsa.payload.status = '';
+            dispatch(fsa);
+        } else if (type === 'myProfile') {
+            getUserFriendProfile(dispatch, email, friendUserId, currentUserId);
+        }
     });
 };
 
@@ -1503,6 +1523,28 @@ const searchMyfriend = (dispatch, userId, queryText) => {
         };
         dispatch(fsa);
     });
+};
+
+const searchFriendByUserInput = (searchText, UserId) => (dispatch) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.USER_PROFILE_FRIEND_TYPE_AHEAD_SEARCH,
+    };
+
+    return searchApi.get('/autocomplete/users', {
+        params: {
+            dispatch,
+            'page[size]': 8,
+            query: searchText,
+            user_id: UserId,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result) {
+            fsa.payload.data = result.data;
+            dispatch(fsa);
+        }
+    }).finally();
 };
 
 export {
@@ -1553,4 +1595,5 @@ export {
     searchLocationByUserInput,
     rejectFriendInvite,
     searchMyfriend,
+    searchFriendByUserInput,
 };

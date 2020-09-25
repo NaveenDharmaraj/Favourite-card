@@ -547,10 +547,11 @@ class EditBasicProfile extends React.Component {
                     <div className='editProfileModal'>
                         <div className='editProfilePhotoWrap'>
                             <div className="userProfileImg">
-                                <Image src={avatar} />
+                                <Image src={imageView} height="125px" width="125px"/>
                             </div>
                             <div className='editprflButtonWrap'>
                                 <Button
+                                    as="a"
                                     className='success-btn-rounded-def'
                                     onClick={(e) => this.upload.click()}
                                 >
