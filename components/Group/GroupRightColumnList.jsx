@@ -14,7 +14,7 @@ import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 import GivingGoal from './GivingGoal';
 import TransactionsBlock from './TransactionsBlock';
 import CharitySupport from './CharitySupport';
-import ExpiredMatchBlock from './ExpiredMatchBlock';
+import ExpiredMatchBlock from '../shared/ExpiredMatchBlock';
 
 const GroupRightColumnList = (props) => {
     const {

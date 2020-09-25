@@ -3,7 +3,7 @@ import React, { Fragment } from 'react';
 import _isEmpty from 'lodash/isEmpty';
 
 import ActiveMatchBlock from '../shared/ActiveMatchBlock';
-import ExpiredMatchBlock from '../../components/Group/ExpiredMatchBlock';
+import ExpiredMatchBlock from '../shared/ExpiredMatchBlock';
 
 import MoneyRaised from './MoneyRaised';
 import CampaignSupporters from './CampaignSupporters';
@@ -41,6 +41,7 @@ const CampaignDetails = (props) => {
                 && (
                     <ExpiredMatchBlock
                         matchHistory={matchHistory[0]}
+                        type={type}
                     />
                 )}
             <CampaignSupporters
