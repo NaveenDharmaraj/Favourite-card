@@ -146,18 +146,18 @@ class CampaignProfile extends React.Component {
 }
 
 CampaignProfile.defaultProps = {
-    campaignDetails: {
-        attributes: {
+    campaignDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
             about: '',
             avatar: '',
             causes: [],
             name: '',
             slug: '',
-        },
-    },
-    currentUser:{
+        }),
+    }),
+    currentUser: PropTypes.shape({
         id: '',
-    },
+    }),
     dispatch: () => {},
     isAuthenticated: false,
     slug: '',
@@ -165,18 +165,18 @@ CampaignProfile.defaultProps = {
 };
 
 CampaignProfile.propTypes = {
-    campaignDetails: {
-        attributes: {
+    campaignDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
             about: PropTypes.string,
             avatar: PropTypes.string,
             causes: PropTypes.array,
             name: PropTypes.string,
             slug: PropTypes.string,
-        },
-    },
-    currentUser:{
+        }),
+    }),
+    currentUser: PropTypes.shape({
         id: PropTypes.string,
-    },
+    }),
     dispatch: PropTypes.func,
     isAuthenticated: PropTypes.bool,
     slug: PropTypes.string,
