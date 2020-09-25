@@ -109,36 +109,36 @@ class EditBasicProfile extends React.Component {
         this.handleAmount = this.handleAmount.bind(this);
     }
 
-    // componentDidUpdate(prevProps) {
-    //     const {
-    //         currentUser,
-    //         userData,
-    //     } = this.props;
-    //     if (!_.isEqual(userData, prevProps.userData)) {
-    //         const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
-    //         const userDataProvince = userData.province ? `${userData.city ? ', ' : ''}${userData.province}` : '';
-    //         const locationString = `${userData.city ? userData.city : ''}${userDataProvince}`;
-    //         const location = locationString ? locationString.trim() : null;
-    //         this.setState({
-    //             searchQuery: (!_.isEmpty(location)) ? location : null,
-    //             locationDropdownValue: '',
-    //             userBasicDetails: {
-    //                 about: userData.description,
-    //                 firstName: userData.first_name,
-    //                 givingGoal: givingGoalAmount,
-    //                 lastName: userData.last_name,
-    //                 displayName: userData.display_name,
-    //                 formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
-    //                 location,
-    //             },
-    //         });
-    //     }
-    //     if (!_.isEqual(currentUser, prevProps.currentUser)) {
-    //         this.setState({
-    //             isDefaultImage: currentUser.attributes.logoFileName === null ? true : false,
-    //         });
-    //     }
-    // }
+    componentDidUpdate(prevProps) {
+        const {
+            currentUser,
+            userData,
+        } = this.props;
+        // if (!_.isEqual(userData, prevProps.userData)) {
+        //     const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
+        //     const userDataProvince = userData.province ? `${userData.city ? ', ' : ''}${userData.province}` : '';
+        //     const locationString = `${userData.city ? userData.city : ''}${userDataProvince}`;
+        //     const location = locationString ? locationString.trim() : null;
+        //     this.setState({
+        //         searchQuery: (!_.isEmpty(location)) ? location : null,
+        //         locationDropdownValue: '',
+        //         userBasicDetails: {
+        //             about: userData.description,
+        //             firstName: userData.first_name,
+        //             givingGoal: givingGoalAmount,
+        //             lastName: userData.last_name,
+        //             displayName: userData.display_name,
+        //             formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
+        //             location,
+        //         },
+        //     });
+        // }
+        if (!_.isEqual(currentUser, prevProps.currentUser)) {
+            this.setState({
+                isDefaultImage: currentUser.attributes.logoFileName === null ? true : false,
+            });
+        }
+    }
 
     handleAmount(amount) {
         const {
@@ -394,6 +394,7 @@ class EditBasicProfile extends React.Component {
                 // statusMessage: true,
                 buttonClicked: true,
                 isDefaultImage: true,
+                buttonClicked: false,
             });
         }).catch((err) => {
             this.setState({
@@ -403,7 +404,9 @@ class EditBasicProfile extends React.Component {
                 isDefaultImage: true,
             });
         }).finally(() => {
-            showEditProfileModal: false;
+            // this.setState({
+            //     showEditProfileModal: false,
+            // });
         });
     }
 
@@ -557,10 +560,14 @@ class EditBasicProfile extends React.Component {
                                 >
                                     Change profile photo
                                 </Button>
-                                <a 
-                                    className='remvephoto'
-                                    onClick={this.handleRemoveProfilePhoto}
-                                    >Remove photo</a>
+                                {!isDefaultImage
+                                && (
+                                    <a 
+                                        className='remvephoto'
+                                        onClick={this.handleRemoveProfilePhoto}
+                                        >Remove photo
+                                    </a>
+                                )}
                             </div>
                         </div>
                         <Form>
