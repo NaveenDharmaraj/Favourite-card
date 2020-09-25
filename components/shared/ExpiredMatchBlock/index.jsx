@@ -47,7 +47,6 @@ const ExpiredMatchBlock = (props) => {
             dispatch,
             scrollOffset,
         } = props;
-        debugger;
         if (type === 'groups') {
             dispatch({
                 payload: {
