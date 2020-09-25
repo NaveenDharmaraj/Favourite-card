@@ -192,6 +192,7 @@ class SupportingGroups extends React.Component {
             slug,
             campaignSubGroupDetails,
             campaignSubGroupsShowMoreUrl,
+            isAuthenticated,
             matchHistory,
             seeMoreLoaderStatus,
             subGroupListLoader,
@@ -244,7 +245,7 @@ class SupportingGroups extends React.Component {
                 ) : ''
                 }
                 <div ref={this.tabRef}>
-                {this.renderMatchHistory(matchHistory)}
+                {isAuthenticated && this.renderMatchHistory(matchHistory)}
                 </div>
             </Fragment>
         )
@@ -254,6 +255,7 @@ class SupportingGroups extends React.Component {
 function mapStateToProps(state) {
     return {
         searchData: state.profile.searchData,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 
