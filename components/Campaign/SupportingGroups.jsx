@@ -170,12 +170,18 @@ class SupportingGroups extends React.Component {
 
 
     renderMatchHistory(matchHistory) {
+        const {
+            t: formatMessage,
+        } = this.props;
         if (!_isEmpty(matchHistory)) {
             return (
-                <Fragment>
+                <div className="GroupTab">
                     <Divider className="mt-2 mobHideDivider" />
+                    <div className="supportingWithsearch">
+                        <Header as="h3">{formatMessage('campaignProfile:matchingCampaignHeader')}</Header>
+                    </div>
                     <MatchingHistory />
-                </Fragment>
+                </div>
             )
         }
         return null;
@@ -218,7 +224,7 @@ class SupportingGroups extends React.Component {
                         </Grid>
                     </div>
                 </div>
-                <div className="supportingcardWapper" ref={this.tabRef}>
+                <div className="supportingcardWapper">
                     {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
                         <div className="custom_Grid">
                             {this.renderGroups(campaignSubGroupDetails, slug, formatMessage, searchData)}
@@ -226,7 +232,7 @@ class SupportingGroups extends React.Component {
                     )}
                 </div>
                 {(campaignSubGroupsShowMoreUrl) ? (
-                    <div className="supportingcardShowMore">
+                    <div className={matchHistory ? "supportingMatchHistory" : "supportingcardShowMore"}>
                         <Button
                             className="btnMore blue-bordr-btn-round-def"
                             onClick={viewMoreFn}
@@ -237,7 +243,9 @@ class SupportingGroups extends React.Component {
                     </div>
                 ) : ''
                 }
+                <div ref={this.tabRef}>
                 {this.renderMatchHistory(matchHistory)}
+                </div>
             </Fragment>
         )
     }

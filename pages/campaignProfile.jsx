@@ -62,6 +62,9 @@ class CampaignProfile extends React.Component {
             dispatch,
             slugApiErrorStats,
             campaignDetails: {
+                attributes: {
+                    groupId,
+                },
                 id,
             },
         } = this.props;
@@ -74,7 +77,7 @@ class CampaignProfile extends React.Component {
             dispatch(getCampaignBeneficiariesCount(id));
             dispatch(getCampaignSupportGroups(id));
             dispatch(getCampaignGalleryImages(id));
-            dispatch(getMatchingHistory(id));
+            dispatch(getMatchingHistory(groupId));
         }
     }
 
