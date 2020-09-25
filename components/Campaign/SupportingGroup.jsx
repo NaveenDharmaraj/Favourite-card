@@ -72,9 +72,9 @@ SupportingGroup.defaultProps = {
     province: '',
     placeholder: '',
     amountRaised: '',
-    i18n: PropTypes.shape({
+    i18n: {
         language: '',
-    }),
+    },
     type: '',
     causes: [],
     subgroupSlug: '',
