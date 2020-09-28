@@ -109,7 +109,7 @@ class AboutGroup extends React.Component {
                                                 </a>
                                             )}
                                         </div>
-                                        <Divider className="mb-2" />
+                                        <Divider className="mb-2 mobile_btm" />
                                     </Responsive>
                                 </Grid.Column>
                             </Grid.Row>

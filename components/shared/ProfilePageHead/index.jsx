@@ -98,7 +98,7 @@ class ProfilePageHead extends React.Component {
                     buttonLink = (
                         <span className="btn_wrapperTop">
                             <a href={(linkAddress)}>
-                                <Button className="blue-bordr-btn-round-def CampaignBtn">
+                                <Button className={`blue-bordr-btn-round-def CampaignBtn ${(type === 'campaigns') ? 'campaign_btn_padding' : ''}`}>
                                     <span>
                                         <i aria-hidden="true" className="edit icon" />
                                     </span>
@@ -121,7 +121,7 @@ class ProfilePageHead extends React.Component {
                                     <Fragment>
                                         <Button
                                             onClick={this.toggleGiveFromGroupModal}
-                                            className="blue-bordr-btn-round-def CampaignBtn">
+                                            className={`blue-bordr-btn-round-def CampaignBtn ${(type === 'campaigns') ? 'campaign_btn_padding' : ''}`}>
                                             <span>
                                                 <i aria-hidden="true" className="bell icon" />
                                             </span>
@@ -164,7 +164,7 @@ class ProfilePageHead extends React.Component {
                                             })}
                                             trigger={
                                                 (
-                                                    <Button className="blue-bordr-btn-round-def CampaignBtn hover_disabled">
+                                                    <Button className={`blue-bordr-btn-round-def CampaignBtn hover_disabled ${(type === 'campaigns') ? 'campaign_btn_padding' : ''}`}>
                                                         <span>
                                                             <i aria-hidden="true" className="bell icon" />
                                                         </span>

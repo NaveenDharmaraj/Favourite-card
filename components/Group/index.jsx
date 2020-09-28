@@ -127,7 +127,7 @@ class GroupProfileWrapper extends Component {
                                                 />
                                             </Responsive>
                                         </Grid.Column>
-                                        <Divider className="mt-2" />
+                                        <Divider className="mt-2 mobile_border" />
                                         <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
                                             <GroupAdmins />
                                         </Grid.Column>
