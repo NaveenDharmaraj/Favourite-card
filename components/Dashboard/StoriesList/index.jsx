@@ -17,7 +17,7 @@ import {
 } from '../../../actions/dashboard';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import { Link } from '../../../routes';
-import logger from '../../../helpers/logger'
+import logger from '../../../helpers/logger';
 
 class StoriesList extends React.Component {
     constructor(props) {
@@ -31,11 +31,49 @@ class StoriesList extends React.Component {
         const {
             dispatch,
         } = this.props;
-        const url =    `/blogs/newBlogs?size=7`;
+        const url = `/blogs/newBlogs?size=7`;
         getStoriesList(dispatch, url);
+        this.lazyLoadImage();
     }
 
-    componentDidUpdate(prevProps) {
+    lazyLoadImage = () => {
+        const options = {
+            root: null,
+            threshold: 0,
+            rootMargin: '0px 0px 200px 0px',
+        };
+        const _imageElements = document.querySelectorAll('.story-lazyLoad');
+        if ('IntersectionObserver' in window) {
+            // LazyLoad images using IntersectionObserver
+            const imgObserver = new IntersectionObserver(((entries, imgObserver) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) {
+                        return
+                    } else {
+                        this.preloadImage(entry.target);
+                        imgObserver.unobserve(entry.target);
+                    }
+                });
+            }), options);
+            _imageElements.forEach((element) => {
+                imgObserver.observe(element);
+            });
+        } else {
+            // Load all images at once
+            _imageElements.forEach((element) => {
+                this.preloadImage(element)
+            });
+        }
+    };
+
+    preloadImage = (img) => {
+        const src = img.getAttribute('data-src');
+        if (!src) {
+            return;
+        }
+        img.style.backgroundImage = `url(${src})`;
+    };
+    componentDidUpdate(prevProps, prevState) {
         const {
             storiesData,
         } = this.props;
@@ -49,6 +87,9 @@ class StoriesList extends React.Component {
             this.setState({
                 storiesListLoader,
             });
+        }
+        if (!_.isEqual(this.state.storiesListLoader, prevState.storiesListLoader)) {
+            this.lazyLoadImage();
         }
     }
 
@@ -69,9 +110,16 @@ class StoriesList extends React.Component {
 
                 return (
                     <Grid.Column key={index}>
-                        <Card as="a" href={data.blog_URL} target="_blank" className="tips-card" style={{ backgroundImage: `url(${data.blog_image_URL})` }}>
+                        <Card
+                            as="a"
+                            href={data.blog_URL}
+                            target="_blank"
+                            className="tips-card story-lazyLoad"
+                            data-src={data.blog_image_URL}
+                        // style={{ backgroundImage: `url(${data.blog_image_URL})` }}
+                        >
                             <Card.Content>
-                                <Card.Header>{ ReactHtmlParser(blogTitle) }</Card.Header>
+                                <Card.Header>{ReactHtmlParser(blogTitle)}</Card.Header>
                             </Card.Content>
                         </Card>
                     </Grid.Column>
@@ -99,7 +147,7 @@ class StoriesList extends React.Component {
         let viewAllDiv = null;
         if (storiesData && storiesData.count > 7) {
             viewAllDiv = (
-                <Link route={`/user/stories`}>
+                <Link route="/user/stories">
                     <a className="viewAll">
                         View all
                         {/* (
@@ -117,7 +165,7 @@ class StoriesList extends React.Component {
                             <Grid.Column mobile={10} tablet={12} computer={12}>
                                 <Header as="h3">
                                     <Header.Content>
-                                    Stories and tips
+                                        Stories and tips
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>
@@ -128,7 +176,7 @@ class StoriesList extends React.Component {
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
-                    { storiesListLoader ? <PlaceholderGrid row={1} column={7} /> : (
+                    {storiesListLoader ? <PlaceholderGrid row={1} column={7} /> : (
                         this.storiesList()
                     )}
                 </Container>
