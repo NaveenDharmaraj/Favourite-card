@@ -45,12 +45,13 @@
         margin          : -58px 0px 0 10px;
         width           : 147px;
         height          : 147px;
-        background-color: #ed7f3b;
+        background: #fff;
 
         .ui.image {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 100%;
         }
     }
 }
@@ -95,6 +96,7 @@
                 font-size  : 12px;
                 margin-top : 5px;
                 font-weight: normal;
+                font-family: 'ProximaNova-Regular';
             }
         }
     }
@@ -389,6 +391,7 @@
             .borderprofile{
                 margin: auto;
                 text-align: center;
+                background-color: #fff;
             }
             p{
                 font-size: 14px;
@@ -420,7 +423,7 @@
                 }
             }
             .MessagestwapperText{
-                width: calc(100% - 250px);
+                width: calc(100% - 228px);
                 padding-left: 20px;
                 padding-right: 15px;
                 @media only screen and (max-width:992px) {
@@ -432,9 +435,6 @@
                    margin-top: 10px;
                    margin-bottom: 10px;
                 }
-            }
-            .Messagestwapper{
-                width: 200px;
             }
         }
         .white-btn-rounded-def{
@@ -590,7 +590,6 @@
             }
         }
         .Currentbox{
-            width: 80%;
             display: inline-block;
             h3 {
                 &.ui {
@@ -609,24 +608,6 @@
                 font-size: 12px;
                 color: #263238;
                 line-height: 15px;
-            }
-        }
-        .Currentboxpop{
-            width: 20%;
-            display: inline-block;
-            float: right;
-            i{
-                &.icon{
-                    &.question{
-                        float: right;
-                        color: #BBBBBB;
-                        font-size: 14px;
-                        font-weight: normal;
-                        &:hover{
-                            cursor: pointer;
-                        }
-                    }
-                }
             }
         }
     }
@@ -839,7 +820,6 @@
         padding: 8px 9px 8px 14px;
         margin-bottom: 10px;
         .Currentbox{
-            width: 80%;
             display: inline-block;
             h3 {
                 &.ui {
@@ -858,24 +838,6 @@
                 font-size: 12px;
                 color: #263238;
                 line-height: 15px;
-            }
-        }
-        .Currentboxpop{
-            width: 20%;
-            display: inline-block;
-            float: right;
-            i{
-                &.icon{
-                    &.question{
-                        float: right;
-                        color: #BBBBBB;
-                        font-size: 14px;
-                        font-weight: normal;
-                        &:hover{
-                            cursor: pointer;
-                        }
-                    }
-                }
             }
         }
     }
@@ -1829,7 +1791,6 @@
 .MatchingPartnerWapper{
     margin:20px 0px;
     display: flex;
-    align-items: center;
     width: 100%;
     &.margingWapper{
         margin-bottom: 0px !important;
@@ -1847,6 +1808,7 @@
             box-shadow: 2px 2px 7px 0 rgba(105,146,203,0.3);
             border: 5px solid #F5F8FC;
             width: 100%;
+            background-color: #fff;
         }
         img{
             border-radius: 100%;
@@ -1867,6 +1829,7 @@
                     line-height: 22px;
                     color: #263238;
                     margin-bottom: 2px;
+                    cursor: pointer;
                 }
             }
         }
@@ -2044,6 +2007,7 @@
                         width: 135px !important;
                         height: 135px !important;
                         border-radius: 4px !important;
+                        background-color: #fff;
                         img{
                         width: 100% !important;
                         height: 100%!important;
@@ -2530,8 +2494,6 @@
           }
           }
           .item{
-            border-radius: 6px !important;
-            background-color: #EEEEEE !important;
             .text{
                 font-family: 'ProximaNova-Semibold';
                 font-size: 14px;
@@ -2568,6 +2530,11 @@
                             border-bottom: 1px solid rgba(0,0,0,.1);
                             display: block;
                         }
+                    }
+                        &:first-child{
+                            td{
+                            border-top: 1px solid #EEEEEE;
+                            }       
                     }
                         td{
                             @media only screen and (max-width:767px){
@@ -2685,7 +2652,7 @@
             }
             .content{
                 .header{
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: normal;
                 }
             }
