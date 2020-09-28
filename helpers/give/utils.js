@@ -1413,7 +1413,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                     matchingHeading: (state.isRecurring) ? `Match amount from ${company} today` : `Match amount from ${company}`,
                     matchingSubHeading: (state.isRecurring) ? `(continues until matching funds run out or expire)` : '',
                     popUpMessage: `For every $1.00 you give to this ${(giveTo.isCampaign) ? 'Campaign' : 'Group'}, ${company} will match your gift with $1.00 up to maximum of ${formatCurrency(maxMatchAmount, language, currency)} per donor, until the matching funds run out or expire.`,
-                    subHeading: `(From ${giveFrom.text})`,
+                    subHeading: `(from ${giveFrom.text})`,
                     totalAmount: formatCurrency(sumAmount, language, currency),
                     totalHeading: `Total with matching`,
                 };

@@ -65,12 +65,27 @@ const MatchingPolicyModal = ({
                 <Modal.Header>Your gift will be matched!</Modal.Header>
                 <Modal.Content>
                     <p>
-                        For every $1.00 you give to this {isCampaign ? 'campaign' : 'group'},
-                <span className="bold">&nbsp;{company}&nbsp;</span>
-                        will match your gift with $1.00 up to
-                <span className="bold">&nbsp;{formattedmaxMatchAmount}&nbsp;</span>
-                        per gift, until the matching funds run out or expire.
-            </p>
+                        When you give to this
+                        {isCampaign ? ' campaign' : ' group'}
+                        ,
+                        <span className="bold">
+                            &nbsp;
+                            {company}
+                            &nbsp;
+                        </span>
+                        will match your gift $1.00 for $1.00.
+                    </p>
+                    <p>
+                        Gifts to this
+                        {isCampaign ? ' campaign ' : ' group '}
+                        will be matched up to a maximum of
+                        <span className="bold">
+                            &nbsp;
+                            {formattedmaxMatchAmount}
+                            &nbsp;
+                        </span>
+                            per donor until matching funds run out or expire.
+                    </p>
                     <div className="matching-fund-modal-wrapper">
                         <div className="matching-fund-modal-inner-wrapper">
                             <div className="matching-progress-wrapper">
@@ -85,7 +100,7 @@ const MatchingPolicyModal = ({
                                     {formattedBalance}
                                     <Header.Subheader>
                                         matching funds remaining
-                            </Header.Subheader>
+                                    </Header.Subheader>
                                 </Header>
                                 <p>
                                     of {formattedtotalMatch}
