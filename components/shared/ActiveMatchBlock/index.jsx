@@ -12,6 +12,7 @@ import {
     func,
 } from 'prop-types';
 import { connect } from 'react-redux';
+import _isEmpty from 'lodash/isEmpty';
 
 import { withTranslation } from '../../../i18n';
 import {
@@ -106,7 +107,7 @@ const ActiveMatchBlock = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className="MatchingPartnerWapper">
+                    <div className={_isEmpty(matchClose) && canSeeMatchingHistory === false ? "MatchingPartnerWapper margingWapper" : "MatchingPartnerWapper"}>
                         <div className="h_profileMatching borderprofile">
                             <Image src={companyAvatar} />
                         </div>

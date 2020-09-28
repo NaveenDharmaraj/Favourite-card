@@ -71,6 +71,7 @@ const ExpiredMatchBlock = (props) => {
                         startDate: formatDateForGivingTools(startDate),
                     })}
                     <b>
+                        &nbsp;
                         {companyName}
                     </b>
                     &nbsp;
