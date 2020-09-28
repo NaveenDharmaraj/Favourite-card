@@ -1055,7 +1055,6 @@ class Group extends React.Component {
             },
             reviewBtnFlag,
         } = this.state;
-        console.log('matchingPolicyDetails', matchingPolicyDetails)
         const {
             currentStep,
             currentUser: {
