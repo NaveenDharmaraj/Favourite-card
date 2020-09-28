@@ -45,7 +45,7 @@ const MatchingPolicyModal = ({
             <div className={`noteDefault ${isValidMatchPolicy ? 'info' : ''} mt-2`}>
                 <div className="noteWraper">
                     <span className="leftImg">
-                        <span className="notifyDefaultIcon" />
+                        <span className="notifyDefaultIcon purpleIcon" />
                     </span>
                     <span className="noteContent">
                         {matchPolicyTitle}

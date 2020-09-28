@@ -1147,15 +1147,6 @@ body{
         &.mt-2{
             margin-top: 20px;
         }
-        .noteWraper{
-            .leftImg{
-                .notifyDefaultIcon{
-                    &::before{
-                        .imgColorPurple();
-                    }
-                }
-            }
-        }
     }
     .noteWraper{
         display: list-item;
@@ -1185,6 +1176,11 @@ body{
                     background-repeat: no-repeat;
                     background-position: center;
                     background-size: auto 14px;
+                }
+                &.purpleIcon{
+                    &::before{
+                        background-image: url(../images/icons/purple.svg);
+                    }
                 }
             }
         }
