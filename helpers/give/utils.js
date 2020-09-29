@@ -1409,11 +1409,11 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
 
                 if (Number(giveAmount) > activeMatchAmount) {
                     if (maxMatchAmount === activeMatchAmount) {
-                        state.toDetailsForMatching.popUpMessage = `Your gift is only being partially matched because the maximum match amount per donor is ${formatCurrency(maxMatchAmount, language, currency)}. Matching is available until the funds ran out or expire.`;
+                        state.toDetailsForMatching.popUpMessage = `Your gift is only being partially matched because the maximum match amount per donor is ${formatCurrency(maxMatchAmount, language, currency)}. Matching is available until the funds run out or expire.`;
                     } else if ((activeMatchAmount === Number(availableFund)) && (maxMatchAmount > Number(availableFund))) {
-                        state.toDetailsForMatching.popUpMessage = 'Your gift is only being partially matched because not enough matching funds remain. Matching is available until the funds ran out or expire.';
+                        state.toDetailsForMatching.popUpMessage = 'Your gift is only being partially matched because not enough matching funds remain. Matching is available until the funds run out or expire.';
                     } else if (maxMatchAmount > activeMatchAmount) {
-                        state.toDetailsForMatching.popUpMessage = `Your gift is only being partially matched because previous gifts you've sent to this ${(giveTo.isCampaign) ? 'Campaign' : 'Group'} have already been matched. The maximum match amount is ${formatCurrency(maxMatchAmount, language, currency)} per donor.`;
+                        state.toDetailsForMatching.popUpMessage = `Your gift is only being partially matched because previous gifts you've sent to this ${(giveTo.isCampaign) ? 'Campaign' : 'group'} have already been matched. The maximum match amount is ${formatCurrency(maxMatchAmount, language, currency)} per donor.`;
                     }
                 }
             }
