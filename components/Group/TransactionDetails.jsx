@@ -67,6 +67,7 @@ class TransactionDetails extends React.Component {
             groupDetails: {
                 id: groupId,
             },
+            scrollOffset,
         } = this.props;
         const {
             selectedValue,
@@ -74,6 +75,10 @@ class TransactionDetails extends React.Component {
         dispatch(getTransactionDetails(groupId, selectedValue, data.activePage));
         this.setState({
             activePage: data.activePage,
+        });
+        window.scrollTo({
+            behavior: 'smooth',
+            top: scrollOffset,
         });
     }
 
@@ -299,6 +304,7 @@ TransactionDetails.defaultProps = {
     id: null,
     isChimpAdmin: false,
     language: 'en',
+    scrollOffset: 0,
     t: () => {},
     tableListLoader: true,
 };
@@ -318,6 +324,7 @@ TransactionDetails.propTypes = {
     id: number,
     isChimpAdmin: bool,
     language: string,
+    scrollOffset: number,
     t: func,
     tableListLoader: bool,
 };
@@ -328,6 +335,7 @@ function mapStateToProps(state) {
         groupDetails: state.group.groupDetails,
         groupTransactions: state.group.groupTransactions,
         isChimpAdmin: state.user.isAdmin,
+        scrollOffset: state.group.scrollOffset,
         tableListLoader: state.group.showPlaceholder,
     };
 }

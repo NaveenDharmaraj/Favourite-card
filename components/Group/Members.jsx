@@ -57,10 +57,15 @@ class Members extends React.Component {
             groupDetails: {
                 id: groupId,
             },
+            scrollOffset,
         } = this.props;
         dispatch(getDetails(groupId, 'members', data.activePage));
         this.setState({
             currentActivePage: data.activePage,
+        });
+        window.scrollTo({
+            behavior: 'smooth',
+            top: scrollOffset,
         });
     }
 
@@ -186,6 +191,7 @@ Members.defaultProps = {
         totalCount: null,
     },
     membersLoader: true,
+    scrollOffset: 0,
     t: () => {},
 };
 
@@ -204,6 +210,7 @@ Members.propTypes = {
         totalCount: number,
     }),
     membersLoader: bool,
+    scrollOffset: number,
     t: func,
 };
 
@@ -212,6 +219,7 @@ function mapStateToProps(state) {
         groupDetails: state.group.groupDetails,
         groupMembersDetails: state.group.groupMembersDetails,
         membersLoader: state.group.membersLoader,
+        scrollOffset: state.group.scrollOffset,
     };
 }
 
