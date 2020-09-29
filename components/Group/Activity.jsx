@@ -5,8 +5,8 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     Button,
     Comment,
-    Input,
     Grid,
+    TextArea,
 } from 'semantic-ui-react';
 import {
     array,
@@ -116,6 +116,12 @@ class Activity extends React.Component {
     }
 
     updateInputValue(event) {
+        if (_isEmpty(event.target.value)) {
+            event.currentTarget.style.cssText = `height: ${41}px`;
+        }
+        else {
+            event.currentTarget.style.cssText = `height: ${event.currentTarget.scrollHeight}px`;
+        };
         this.setState({
             commentText: event.target.value,
         });
@@ -171,17 +177,19 @@ class Activity extends React.Component {
                         <Grid.Column mobile={16} tablet={16} computer={16}>
                             {isMember
                                 && (
-                                    <div className="postinputBox">
-                                        <div className="two-icon-brdr-btm-input">
-                                            <Input
+                                    <div className="postInputMainWraper">
+                                        <div className="postInputWraperTop">
+                                            <TextArea
+                                                className="comment_Textarea"
                                                 value={commentText}
                                                 onChange={this.updateInputValue}
                                                 type="text"
                                                 placeholder={formatMessage('groupProfile:commentText')}
                                                 fluid
+                                                rows={1}
                                             />
                                         </div>
-                                        <div className="postSendButton">
+                                        <div className="postBtnWraper">
                                             {(!_isEmpty(commentText))
                                                 && (
                                                     <Button

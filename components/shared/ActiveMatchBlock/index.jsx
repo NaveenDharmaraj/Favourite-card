@@ -74,19 +74,19 @@ const ActiveMatchBlock = (props) => {
                             &nbsp;
                         </b>
                         {formatMessage('groupProfile:matchGiftText')}
-                        <p>
-                            {formatMessage('groupProfile:matchMaxMatchText',
-                                {
-                                    formattedmaxMatchAmount,
-                                })}
-                        </p>
+                    </p>
+                    <p>
+                        {formatMessage('groupProfile:matchMaxMatchTextOne')}
+                        <b>{formattedmaxMatchAmount}</b>
+                            &nbsp;
+                        {formatMessage('groupProfile:matchMaxMatchTextTwo')}
                     </p>
                     <div className="matchingFundsWapper">
                         <div className="matchingFundsGraff">
                             <div className="Progresswapper">
                                 <div className="customProgress">
                                     <div className="bar">
-                                    <span className="progress-inner" style={{ height: `calc(100% - ${matchPercent}%)` }} />
+                                        <span className="progress-inner" style={{ height: `calc(100% - ${matchPercent}%)` }} />
                                     </div>
                                 </div>
                             </div>
@@ -117,15 +117,15 @@ const ActiveMatchBlock = (props) => {
                         </div>
                     </div>
                     {matchClose
-                    && (
-                        <Button className="white-btn-rounded-def goalbtn golbtnDon">
-                            {` ${formatMessage('groupProfile:matchExpires')} ${matchClose}`}
-                        </Button>
-                    )}
+                        && (
+                            <Button className="white-btn-rounded-def goalbtn golbtnDon">
+                                {` ${formatMessage('groupProfile:matchExpires')} ${matchClose}`}
+                            </Button>
+                        )}
                     {canSeeMatchingHistory
-                    && (
-                        <p onClick={updateIndex} className="blueHistory">{formatMessage('groupProfile:viewMatchHistoryLink')}</p>
-                    )}
+                        && (
+                            <p onClick={updateIndex} className="blueHistory">{formatMessage('groupProfile:viewMatchHistoryLink')}</p>
+                        )}
                 </div>
             </div>
         );
@@ -144,12 +144,12 @@ ActiveMatchBlock.defaultProps = {
         maxMatchAmount: null,
         totalMatch: '',
     },
-    dispatch: () => {},
+    dispatch: () => { },
     hasActiveMatch: false,
     hasMatchingHistory: false,
     isAuthenticated: false,
     scrollOffset: 0,
-    t: () => {},
+    t: () => { },
     type: '',
 };
 

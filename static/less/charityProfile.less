@@ -2486,6 +2486,62 @@
           }
         }
       }
+      .postInputMainWraper{
+        //border-top: 1px solid #EEEEEE;
+       // padding-top:28.5px;
+        display: flex;
+        .postInputWraper{
+            width: 100%;
+            margin: 0px;  
+        }
+        .postInputWraperTop{
+            width: 100%;
+        }
+        .comment_Textarea{
+            resize: none;
+            width: calc(100% - 9px);
+            min-height: 41px;
+            border: 1px solid #DDDDDD;
+            border-radius: 5px;
+            padding:12.5px 16.5px 11.5px 16.5px;
+            font-size: 14px;
+            color: #263238;
+            line-height: 17px;
+            max-height: 250px;
+            margin-left: 9px;
+            overflow: hidden;
+            &::placeholder{
+                color: #7F7F7F;
+                font-size: 14px;
+            }
+        }
+        .postBtnWraper{
+            width: auto !important;
+            .ui{
+                &.icon{
+                    color: #fff;
+                    &.button{
+                        background-color: #0CC965;
+                        height: 38px;
+                        width: 38px;
+                        margin-left: 8.5px;
+                        padding: 0px;
+                        justify-content: center;
+                        align-items: center;
+                        display: flex;
+                        .plane{
+                            &.outline{
+                                &.icon{
+                                    font-size:20px;
+                                    line-height: 20px;
+                                }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    }
 }
 
 
