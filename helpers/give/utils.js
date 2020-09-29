@@ -1376,12 +1376,10 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             value: ReactHtmlParser(frequencyMessage),
         });
 
-        if (!_.isEmpty(giveGroupDetails) && (!_.isEmpty(groupMatchingDetails) && groupMatchingDetails.giveFromFund === giveFrom.value)) {
+        if (!_.isEmpty(groupMatchingDetails) && groupMatchingDetails.giveFromFund === giveFrom.value) {
             const {
-                attributes: {
-                    activeMatch,
-                },
-            } = giveGroupDetails;
+                activeMatch,
+            } = giveTo;
 
             const {
                 attributes: {
