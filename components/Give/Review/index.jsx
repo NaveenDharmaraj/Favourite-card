@@ -60,10 +60,8 @@ class Review extends React.Component {
                 matchingPolicyDetails,
             }
         } = flowObject;
-        if(giveTo.type === 'groups' && !_.isEmpty(giveGroupDetails)) {
-            if(matchingPolicyDetails.isValidMatchPolicy) {
+        if(giveTo.type === 'groups' && matchingPolicyDetails.isValidMatchPolicy) {
                     dispatch(fetchGroupMatchAmount(giveAmount, giveFrom.value, giveTo.value));
-            }
         }
         window.scrollTo(0, 0);
     }
@@ -161,6 +159,7 @@ class Review extends React.Component {
                 toURL = `${toURL}?groupCampaign_id=${groupCampaignId}`;
                 isGiveFrom = true;
             }
+
             if(type === 'donations'){
                 reviewData = populateDonationReviewPage(giveData, {
                         companiesAccountsData,
