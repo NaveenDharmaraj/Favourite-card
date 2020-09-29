@@ -134,7 +134,7 @@ const NavBarMobile = ({
                         </a>
                     )
                 }
-                {
+                {/* {
                     !_isEmpty(otherAccounts) && (
                         <Menu.Item
                             as="a"
@@ -142,9 +142,8 @@ const NavBarMobile = ({
                         >
                             {formatMessage('switchAccounts')}
                         </Menu.Item>
-
                     )
-                }
+                } */}
                 <Link route='/users/logout'>
                     <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={logoutIcon}/></span>Log out</Menu.Item>
                 </Link>
