@@ -102,9 +102,16 @@ const group = (state = {}, action) => {
             }
             break;
         case 'POST_NEW_COMMENT':
+            const groupActivityIndex = _findIndex(state.groupActivities.data, (data) => data.id === action.payload.activityId);
+            const activityArray = state.groupActivities.data;
+            activityArray[groupActivityIndex].attributes.commentsCount++;
             if (state.groupComments && state.groupComments[action.payload.activityId]) {
                 newState = {
                     ...state,
+                    groupActivities: {
+                        ...state.groupActivities,
+                        data: activityArray,
+                    },
                     groupComments: {
                         ...state.groupComments,
                         [action.payload.activityId]: action.payload.groupComments.concat(state.groupComments[action.payload.activityId]),
@@ -114,6 +121,10 @@ const group = (state = {}, action) => {
             } else {
                 newState = {
                     ...state,
+                    groupActivities: {
+                        ...state.groupActivities,
+                        data: activityArray,
+                    },
                     groupComments: {
                         ...state.groupComments,
                         [action.payload.activityId]: action.payload.groupComments,

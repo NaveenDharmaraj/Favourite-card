@@ -157,6 +157,29 @@ class CharitySupport extends React.Component {
                                     {data}
                                 </Responsive>
                                 <Responsive maxWidth={767} minWidth={320}>
+                                    {(!campaignId && !viewButtonClicked && !_isEmpty(beneficiariesData))
+                                            && (
+                                                <Fragment>
+                                                    <GroupSupportCard
+                                                        avatar={beneficiariesData[0].attributes.avatar}
+                                                        name={beneficiariesData[0].attributes.name}
+                                                        slug={beneficiariesData[0].attributes.slug}
+                                                        isCampaign={false}
+                                                    />
+                                                    {(beneficiariesData.length > 1)
+                                                    && (
+                                                        <Fragment>
+                                                            <Divider />
+                                                            <Button
+                                                                onClick={this.handleViewMore}
+                                                                className="blue-bordr-btn-round-def view_allbtn w-120"
+                                                                content="View all"
+                                                            />
+                                                        </Fragment>
+                                                    )}
+                                                </Fragment>
+                                            )
+                                    }
                                     {(viewButtonClicked || showNoData)
                                     && (
                                         data

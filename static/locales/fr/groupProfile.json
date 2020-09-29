@@ -43,7 +43,8 @@
     "allActivity": "All activity",
     "giftsReceived": "Gifts received",
     "giftsGiven": "Gifts given",
-    "toggleDisplayname": "toggle display of name",
+    "showDonorName": "Show donor name",
+    "hideDonorName": "Hide donor name",
     "hidden": "Hidden",
     "downloadData": "Download transaction data",
     "charitySupportNoDataText": "This group has not yet chosen a campaign or charity to support.",
@@ -65,5 +66,5 @@
     "expiredMatchedText": "generously matched each gift to this group dollar for dollar.",
     "expiredMatchProvidedText": "of {{formattedTotalFund}} provided was matched by",
     "expireMatchedByText": "was matched by",
-    "commentText": "Write a post..."
+    "commentText": "Write a message to the group…"
 }

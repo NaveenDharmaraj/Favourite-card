@@ -23,7 +23,7 @@ const GroupSupportCard = (props) => {
     } = props;
     const type = isCampaign ? 'campaigns' : 'charities';
     return (
-        <Link route={`/${type}/${slug}`}>
+        <a href={`/${type}/${slug}`} target="_blank">
             <div className="MatchingPartnerWapper">
                 <div className="h_profileMatching">
                     <Image src={avatar} className="profileImgMargin" />
@@ -33,7 +33,7 @@ const GroupSupportCard = (props) => {
                     <p className={`textGreen ${!isCampaign ? 'orange' : ''}`}>{isCampaign ? formatMessage('common:campaigns') : formatMessage('common:charity')}</p>
                 </div>
             </div>
-        </Link>
+        </a>
     );
 };
 

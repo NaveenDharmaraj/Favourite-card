@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -19,10 +21,11 @@ import ReactHtmlParser from 'react-html-parser';
 import {
     generateDeepLink,
 } from '../../actions/profile';
+import ProfileTitle from '../shared/ProfileTitle';
+
 import ProgramAreas from './ProgramAreas';
 import Charts from './Charts';
 import UserDetails from './UserDetails';
-import ProfileTitle from '../shared/ProfileTitle';
 
 class CharityDetails extends React.Component {
     componentDidMount() {
@@ -82,15 +85,20 @@ class CharityDetails extends React.Component {
                             </Grid.Column>
                         </Grid.Row>
                         <Divider className="mobHideDivider" />
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
-                                {!_isEmpty(formattedDescription)
-                                    && <p data-test="Charity_CharityDetails_description">{ReactHtmlParser(formattedDescription)}</p>}
-                                {!_isEmpty(formattedDescriptionNew)
-                                    && <p data-test="Charity_CharityDetails_new_description">{ReactHtmlParser(formattedDescriptionNew)}</p>}
-                            </Grid.Column>
-                        </Grid.Row>
-                        <Divider />
+                        {(!_isEmpty(formattedDescription) || !_isEmpty(formattedDescriptionNew))
+                        && (
+                            <Fragment>
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
+                                        {!_isEmpty(formattedDescription)
+                                            && <p data-test="Charity_CharityDetails_description">{ReactHtmlParser(formattedDescription)}</p>}
+                                        {!_isEmpty(formattedDescriptionNew)
+                                            && <p data-test="Charity_CharityDetails_new_description">{ReactHtmlParser(formattedDescriptionNew)}</p>}
+                                    </Grid.Column>
+                                </Grid.Row>
+                                <Divider />
+                            </Fragment>
+                        )}
                         <ProgramAreas />
                         <Divider />
                         <Charts />

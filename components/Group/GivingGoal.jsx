@@ -88,7 +88,7 @@ const GivingGoal = (props) => {
             goalText = `${fundraisingDaysRemaining}${daysText} ${formatMessage('groupProfile:toReachGoalText')}`;
         }
     } else if (hasPreviousGoal) {
-        if (!_isEmpty(fundraisingEndDate)) {
+        if (!_isEmpty(fundraisingEndDate) && (parseInt(goalAmountRaised, 10) < parseInt(goal, 10))) {
             goalText = `${formatMessage('groupProfile:goalExpiredOnText')} ${formatDateForGivingTools(fundraisingEndDate)}`;
         } else if (parseInt(goalAmountRaised, 10) >= parseInt(goal, 10)) {
             goalText = formatMessage('groupProfile:reachedGoalText');
@@ -153,8 +153,8 @@ const GivingGoal = (props) => {
                                     <p className="lastGiftText lastGiftText_left">{giftText}</p>
                                 </div>
                             )}
-                            <Divider />
                             <Responsive minWidth={768}>
+                                <Divider />
                                 {giveButton}
                             </Responsive>
                         </Fragment>

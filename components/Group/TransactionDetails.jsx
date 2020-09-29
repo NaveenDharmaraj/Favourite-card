@@ -198,7 +198,7 @@ class TransactionDetails extends React.Component {
                                             && (
                                                 <Fragment>
                                                     <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="linkgroupProfile">
-                                                        {formatMessage('groupProfile:toggleDisplayname')}
+                                                        {(transaction.attributes.showName === true) ? formatMessage('groupProfile:hideDonorName') : formatMessage('groupProfile:showDonorName')}
                                                     </a>
                                                 </Fragment>
                                             )}
