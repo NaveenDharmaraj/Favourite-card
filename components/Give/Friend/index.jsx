@@ -40,6 +40,7 @@ import {
     findingErrorElement,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
+import { getEmailList } from '../../../actions/userProfile';
 import {
     getCompanyPaymentAndTax,
     proceed,
@@ -203,6 +204,7 @@ class Friend extends React.Component {
         if(_isEmpty(this.state.giveFromType) && currentAccount.accountType === 'company'){
             getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
         }
+        getEmailList(dispatch, id);
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
     handleAddMoneyModal() {
@@ -401,6 +403,9 @@ class Friend extends React.Component {
 
     handleOnInputBlur(event, data) {
         const {
+            emailDetailList,
+        } = this.props;
+        const {
             name,
             value,
         } = !_.isEmpty(data) ? data : event.target;
@@ -414,6 +419,12 @@ class Friend extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
+        let userEmailList = [];
+        if (!_isEmpty(emailDetailList)) {
+            emailDetailList.map((data) => {
+                userEmailList.push(data.attributes.email);
+            });
+        }
         const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
         if ((name === 'giveAmount') && !_.isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
@@ -444,7 +455,7 @@ class Friend extends React.Component {
                     validity,
                     giveData,
                     coverFeesAmount,
-                    userEmail,
+                    userEmailList,
                 );
                 break;
             default: break;
@@ -601,6 +612,9 @@ class Friend extends React.Component {
 
     validateForm() {
         const {
+            emailDetailList,
+        } = this.props;
+        const {
             flowObject: {
                 giveData,
             },
@@ -610,11 +624,17 @@ class Friend extends React.Component {
             validity,
         } = this.state;
         const coverFeesAmount = 0;
+        let userEmailList = [];
+        if (!_isEmpty(emailDetailList)) {
+            emailDetailList.map((data) => {
+                userEmailList.push(data.attributes.email);
+            });
+        }
         validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToRecipients', giveData.noteToRecipients, validity, giveData, coverFeesAmount);
-        validity = validateGiveForm('recipients', giveData.recipients, validity, giveData, coverFeesAmount, userEmail);
+        validity = validateGiveForm('recipients', giveData.recipients, validity, giveData, coverFeesAmount, userEmailList);
         validity = validateForReload(validity,giveData.giveFrom.type,giveData.totalP2pGiveAmount,giveData.giveFrom.balance);
         this.setState({
             validity,
@@ -1025,6 +1045,7 @@ function mapStateToProps(state) {
         currentAccount: state.user.currentAccount,
         currentUser: state.user.info,
         donationMatchData: state.user.donationMatchData,
+        emailDetailList: state.userProfile.emailDetailList,
         fund: state.user.fund,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
         userAccountsFetched: state.user.userAccountsFetched,
