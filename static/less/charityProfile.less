@@ -226,8 +226,17 @@
             width:100px !important;
         }
         @media only screen and (max-width:400px) {
-            width:140px !important;
+            width:100px !important;
         }
+        @media only screen and (max-width:390px) {
+            width: 112px !important;
+            }
+        @media only screen and (max-width:355px) {
+        width: 130px !important;
+        }
+        @media only screen and (max-width:335px) {
+            width: 136px !important;
+            }
     }
     .GroupPrfileAllText{
         display: flex;
@@ -295,7 +304,7 @@
                 font-size: 14px !important;
                 line-height: 22px;
                 color: #263238;
-                margin-bottom: 10px;
+                margin-bottom:5px;
             }
         }
 
@@ -320,7 +329,7 @@
                 }
             }
             @media only screen and (max-width:992px) {
-                margin: 15px 15px 0px 0px !important;
+                margin: 0px 15px 0px 0px !important;
             }
         }
     }
@@ -704,7 +713,8 @@
                     &.addmember{
                         &::before{
                         background-image:url(../images/icons/add-member.svg) !important;
-                        .imgColorwhite();
+                        filter: brightness(0) invert(1);
+                        -webkit-filte: brightness(0) invert(1);
                         }
                     }
                     }
@@ -1810,7 +1820,7 @@
     }
 }
 .MatchingPartnerWapper{
-    margin:20px 0px;
+    margin:14px 0px;
     display: flex;
     width: 100%;
     cursor: pointer;
@@ -2140,6 +2150,7 @@
             padding:9px 31px;
             margin-right: 4.8px;
             margin-right: 0px;
+            font-size: 12px !important;
         }
         @media only screen and (max-width:384px){
             padding:9px 29px;
@@ -2816,7 +2827,7 @@ margin-top: 10px;
     }
 }
 .mobile_border{
-    margin-bottom: 19px !important;
+    margin-bottom: 12px !important;
     @media only screen and (max-width:767px){
     border: none !important;
     }

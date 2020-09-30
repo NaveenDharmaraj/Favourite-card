@@ -79,6 +79,9 @@
         .searchbox{
             .ui.fluid.input > input{
                 height: 40px !important;
+                &::placeholder{
+                    color:#263238;
+                }
             }
             .search-btn{
                 &.campaignSearch{
@@ -134,6 +137,7 @@
         }
     }
     .campaignCard{
+        cursor: pointer;
       //max-height: 145px;
        border: 1px solid #DEDEDE;
        display: flex;
