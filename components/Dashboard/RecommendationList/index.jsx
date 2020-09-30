@@ -45,9 +45,10 @@ class RecommendationList extends React.Component {
         } = this.props;
         const url = `/recommend/all?userid=${Number(currentUser.id)}&page[number]=1&page[size]=9`;
         getRecommendationList(dispatch, url);
+        this.lazyLoadImage();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         const {
             recommendationData,
         } = this.props;
@@ -62,8 +63,48 @@ class RecommendationList extends React.Component {
                 recommendationListLoader,
             });
         }
+        if (!_.isEqual(this.state.recommendationListLoader, prevState.recommendationListLoader)) {
+            this.lazyLoadImage()
+        }
     }
+    lazyLoadImage = () => {
+        const options = {
+            root: null,
+            threshold: 0,
+            rootMargin: '0px 0px 150px 0px',
+        };
+        const _imageElements = document.querySelectorAll('.recomendation-lazyLoad');
+        if ('IntersectionObserver' in window) {
+            // LazyLoad images using IntersectionObserver
+            const imgObserver = new IntersectionObserver(((entries, imgObserver) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) {
+                        return
+                    } else {
+                        this.preloadImage(entry.target);
+                        imgObserver.unobserve(entry.target);
+                    }
+                });
+            }), options);
+            _imageElements.forEach((element) => {
+                imgObserver.observe(element);
+            });
+        } else {
+            // Load all images at once
+            _imageElements.element((element) => {
+                this.preloadImage(element)
+            });
+        }
 
+    };
+
+    preloadImage = (img) => {
+        const src = img.getAttribute('data-src');
+        if (!src) {
+            return;
+        }
+        img.src = src;
+    };
     handleHideClick(data) {
         const {
             currentUser: {
@@ -115,7 +156,7 @@ class RecommendationList extends React.Component {
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column width={6}>
-                                            <Image src={imageType} />
+                                            <Image data-src={imageType} className="recomendation-lazyLoad" />
                                         </Grid.Column>
                                         <Grid.Column width={10}>
                                             <Grid columns="2">
@@ -158,7 +199,7 @@ class RecommendationList extends React.Component {
                                                     className="btn-small-white-border"
                                                     onClick={RecommendationList.changeButtonState}
                                                 >
-                                                View
+                                                    View
                                                 </Button>
                                             </Link>
                                         </Grid.Column>
@@ -220,7 +261,7 @@ class RecommendationList extends React.Component {
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
-                    { recommendationListLoader ? <PlaceholderGrid row={2} column={3} /> : (
+                    {recommendationListLoader ? <PlaceholderGrid row={2} column={3} /> : (
                         this.recommendationList()
                     )}
                 </Container>
