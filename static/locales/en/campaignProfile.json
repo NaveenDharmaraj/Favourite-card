@@ -14,11 +14,11 @@
     "supportNoDataHeader": "Support this Campaign by creating a Giving Group",
     "supportNoDataSubHeader": "A Giving Group is like a fundraising page where multiple people can combine forces, pool or raise money, and support causes together.",
     "createGivingGroupBtn": "Create a Giving Group",
-    "supportCampaignHeader": "Giving Groups supporting this campaign",
+    "supportCampaignHeader": "Giving Groups supporting this Campaign",
     "totalAmountRaised": "Total Raised: {{amount}}",
     "popupCurrentBalanceText": "The current {{Profiletype}} balance is {{balance}}.",
     "popupMatchingText": "You cannot give from this {{Profiletype}} until matching expires.",
     "campaignButtonText": "Campaign",
-    "groupButtonText": "Group",
-    "matchingCampaignHeader": "Matching History"
+    "groupButtonText": "group",
+    "matchingCampaignHeader": "Matching history"
 }

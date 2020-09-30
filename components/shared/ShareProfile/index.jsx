@@ -2,6 +2,7 @@ import React, {
     Fragment,
 } from 'react';
 import _isEmpty from 'lodash/isEmpty';
+import _capitalize from 'lodash/capitalize';
 import {
     Modal,
     List,
@@ -117,7 +118,7 @@ class ShareProfile extends React.Component {
                 Profiletype = 'group';
                 break;
             case 'campaigns':
-                Profiletype = 'campaign';
+                Profiletype = _capitalize('campaign');
                 break;
             default:
                 break;

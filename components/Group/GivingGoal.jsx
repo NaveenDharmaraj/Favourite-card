@@ -65,7 +65,7 @@ const GivingGoal = (props) => {
     const formattedgoal = (hasGoal || hasPreviousGoal) ? formatCurrency(goal, language, currency) : '';
     const daysText = (fundraisingDaysRemaining === 1) ? formatMessage('groupProfile:dayLeft') : formatMessage('groupProfile:daysLeft');
     let fundRaisingDuration = '';
-    let lastDonationDay = '';
+    let lastDonationDate = '';
     let giveButton = null;
     let giftText = '';
     let goalText = '';
@@ -77,8 +77,8 @@ const GivingGoal = (props) => {
         </Button>
     );
     if (lastDonationAt) {
-        lastDonationDay = distanceOfTimeInWords(lastDonationAt);
-        giftText = `${formatMessage('groupProfile:lastGiftReceived')} ${lastDonationDay}`;
+        lastDonationDate = formatDateForGivingTools(lastDonationAt);
+        giftText = `${formatMessage('groupProfile:lastGiftReceived')} ${lastDonationDate}`;
     }
     if (hasGoal) {
         if (parseInt(goalAmountRaised, 10) >= parseInt(goal, 10)) {
@@ -138,7 +138,7 @@ const GivingGoal = (props) => {
                                         <i aria-hidden="true" className="calendar icon" />
                                         <List.Content>
                                             <List.Header>
-                                                {`${formatMessage('groupProfile:groupCreated')} ${formattedCreated}.`}
+                                                {`${formatMessage('groupProfile:groupCreated')} ${formattedCreated}`}
                                             </List.Header>
                                         </List.Content>
                                     </List.Item>
