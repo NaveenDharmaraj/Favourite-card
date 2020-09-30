@@ -200,7 +200,7 @@ class SupportingGroups extends React.Component {
             const countText = `Showing ${_.size(campaignSubGroupDetails)} of ${subgroupCount}`;
             return (
                 <center>
-                    <div className="result">{countText}</div>
+                    <p>{countText}</p>
                 </center>
             );
         }

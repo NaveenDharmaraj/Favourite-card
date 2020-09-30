@@ -40,6 +40,7 @@ const GroupRightColumnList = (props) => {
             {(!hasActiveMatch && hasMatchingHistory)
             && (
                 <ExpiredMatchBlock
+                    type={type}
                     matchHistory={matchHistory[0]}
                     hasMatchingHistory={hasMatchingHistory}
                 />
