@@ -84,7 +84,7 @@ class Review extends React.Component {
                                 <Table.Row data-test="Give_Review_transaction_details">
                                     <Table.Cell className="tableOne" >{formatMessage(data.name)}</Table.Cell>
                                     <Table.Cell className="tabletwo" >{ data.value}</Table.Cell>
-                                    <Table.Cell ></Table.Cell>
+                                    <Table.Cell className="tablethree"></Table.Cell>
                                 </Table.Row>
                         )
                     })}
@@ -312,7 +312,7 @@ class Review extends React.Component {
                                                             </Table.Cell>
                                                             <Table.Cell textAlign='right'>{mainDisplayAmount}</Table.Cell>
                                                         </Table.Row>
-                                                        <Table.Row>
+                                                        <Table.Row verticalAlign='top'>
                                                             <Table.Cell>
                                                                 {toDetailsForMatching.matchingHeading}
                                                                 <Popup

@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react';
 import {
     Modal,
     Header,
+    Grid,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
@@ -82,38 +83,43 @@ const MatchingPolicyModal = ({
                         </span>
                             per donor until matching funds run out or expire.
                     </p>
-                    <div className="matching-fund-modal-wrapper">
-                        <div className="matching-fund-modal-inner-wrapper">
-                            <div className="matching-progress-wrapper">
-                                <div className="matching-progress">
-                                    <div className="progress-inner-wrapper">
-                                        <span className="progress-inner" style={{ height: `calc(100% - ${matchPercent}%)` }} />
+                    <div className="matching-fund-modal-wrapper">                       
+                        <Grid>
+                            <Grid.Column computer={10} mobile={16} tablet={16}>
+                                <div className="matching-fund-modal-inner-wrapper">
+                                    <div className="matching-progress-wrapper">
+                                        <div className="matching-progress">
+                                            <div className="progress-inner-wrapper">
+                                                <span className="progress-inner" style={{ height: `calc(100% - ${matchPercent}%)` }} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="matching-fund-details">
+                                        <Header as="h4">
+                                            {formattedBalance}
+                                            <Header.Subheader>
+                                                matching funds remaining
+                                            </Header.Subheader>
+                                        </Header>
+                                        <p>
+                                            of {formattedtotalMatch}
+                                            <br />
+                                            provided by {company}
+                                        </p>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="matching-fund-details">
-                                <Header as="h4">
-                                    {formattedBalance}
-                                    <Header.Subheader>
-                                        matching funds remaining
-                                    </Header.Subheader>
-                                </Header>
-                                <p>
-                                    of {formattedtotalMatch}
-                                    <br />
-                                    provided by {company}
-                                </p>
-                            </div>
-                        </div>
-                        {((matchClose) && (
-                            <div className="matching-fund-expire">
-                                <span className="expire-date">
-                                    Expires
-                                    {matchClose}
-                                </span>
-                            </div>
-                        ))}
-
+                            </Grid.Column>
+                            <Grid.Column computer={6} mobile={16} tablet={16}>
+                                {((matchClose) && (
+                                    <div className="matching-fund-expire">
+                                        <span className="expire-date">
+                                            Expires
+                                            {matchClose}
+                                        </span>
+                                    </div>
+                                ))}
+                            </Grid.Column>
+                        </Grid>
                     </div>
                 </Modal.Content>
             </Modal>

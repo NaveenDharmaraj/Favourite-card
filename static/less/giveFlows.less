@@ -69,8 +69,11 @@ body{
          font-family: 'ProximaNova-Regular';
          max-width: 550px;
          width: 100%;
-         margin:0px auto 40px;
+         margin:0px auto 20px;
          text-align: center;
+         +.mt-1{
+            margin-top: 40px !important;
+         }
      }
     } 
     button{
@@ -427,6 +430,11 @@ body{
                                         font-family: 'ProximaNova-Semibold'; 
                                     }
                                 }
+                                &.tablethree{
+                                    @media only screen and (max-width:767px) {
+                                        display: none !important;
+                                    }
+                                }
                                 &.transaction-text{
                                     font-size: 12px;
                                     color: #263238;
@@ -587,6 +595,10 @@ body{
                 }
                 +.small{
                     margin-left: 10px;
+                    @media only screen and (max-width:767px) {
+                        margin-left: 10px;
+                        padding: 0 10px;
+                    }
                 }
             }
             &:hover,&:focus{
@@ -610,6 +622,9 @@ body{
                 }
                 +.button{
                     margin-left: 10px;
+                    @media only screen and (max-width:360px) {
+                        margin-left: 5px;
+                    } 
                 }
                 &:hover,&:focus{
                     background-color: #F1F6FD;
@@ -1175,7 +1190,7 @@ body{
                     background-image: url(../images/icons/ico_addmoney.svg);
                     background-repeat: no-repeat;
                     background-position: center;
-                    background-size: auto 14px;
+                    background-size: auto 20px;
                 }
                 &.purpleIcon{
                     &::before{
@@ -2406,25 +2421,32 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     margin-bottom: 20px;
     }
 }
-.matching-fund-modal{
-    >.content{
-        >p{
-            line-height: 22px;
-            color: #263238;
-            font-size: 14px;
+.ui.modals.dimmer .chimp-modal.ui.modal{
+    &.matching-fund-modal{
+        >.header{
+            border-color: #E6E1E8;
+        }
+        >.content{
+            padding: 14px 35px 15px;
+            >p{
+                line-height: 22px;
+                color: #263238;
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
         }
     }
 }
 .matching-fund-modal-wrapper{
-    display: flex;
+    padding-top: 10px;
     padding-bottom: 15px;
-    @media only screen and (max-width:991px) {
-        flex-direction: column;
+    .ui.grid{
+        width: 100%;
     }
     .matching-fund-modal-inner-wrapper{
         display: flex;
         align-items: center; 
-        width: 72%;
+        height: 100%;
     }
     .matching-progress-wrapper{
         width: 21px;
@@ -2486,15 +2508,18 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             line-height: 22px;
             color: #263238;
             margin-top: 20px;
+            margin-bottom: 33px;
             font-family: 'ProximaNova-Semibold';
+            @media only screen and (max-width:991px) {
+                margin-bottom: 0px;
+            }
         }
     }
     .matching-fund-expire{
         display: flex;
         align-items: flex-end;
-        @media only screen and (max-width:991px) {
-            width: 100%;
-        }
+        justify-content:  flex-end;
+        height: 100%;
         .expire-date{
             display: inline-block;
             font-size: 12px;
@@ -2502,10 +2527,10 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             border-radius: 12.17px;
             background-color: fade(#90459A, 10%);
             padding: 4px 5px;
-            text-align: center;
-            @media only screen and (max-width:991px) {
-                margin-top: 30px;
-            }
+            text-align: center;          
+        }
+        @media only screen and (max-width:991px) {
+            justify-content:  start;
         }
     }
 }
@@ -2527,6 +2552,11 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                             .icon{
                                 &.question{
                                     margin-left: 10px;
+                                    margin-bottom: 0px;
+                                    margin-top: 0;
+                                    +.note{
+                                        margin-top: 3px;
+                                    }
                                 }
                             }
                         }
