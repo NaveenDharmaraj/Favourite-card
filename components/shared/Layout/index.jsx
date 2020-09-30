@@ -185,6 +185,8 @@ class Layout extends React.Component {
                         rel="stylesheet"
                         href="https://d2zw5visq7ucgf.cloudfront.net/static/fonts/proximanova/font.css"
                     />
+                    <link rel="preconnect" href="https://logs.logdna.com" />
+                    <link rel="preconnect" href="https://chat-ca.kommunicate.io:15675" />
                     <script defer id="stripe-js" src="https://js.stripe.com/v3/" />
                     <script type="text/javascript" defer src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
                     <script defer type="text/javascript" src='/static/branchio.js'></script>
