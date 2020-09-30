@@ -181,8 +181,9 @@ class Layout extends React.Component {
                         href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
                     />
                     <link
+                        async
                         rel="stylesheet"
-                        href="/static/fonts/proximanova/font.css"
+                        href="https://d2zw5visq7ucgf.cloudfront.net/static/fonts/proximanova/font.css"
                     />
                     <script defer id="stripe-js" src="https://js.stripe.com/v3/" />
                     <script type="text/javascript" defer src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
