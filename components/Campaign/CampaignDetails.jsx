@@ -45,6 +45,7 @@ const CampaignDetails = (props) => {
                     <ExpiredMatchBlock
                         matchHistory={matchHistory[0]}
                         type={type}
+                        hasMatchingHistory={hasMatchingHistory}
                     />
                 )}
             <CampaignSupporters

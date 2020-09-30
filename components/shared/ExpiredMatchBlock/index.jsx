@@ -21,6 +21,7 @@ import {
 
 const ExpiredMatchBlock = (props) => {
     const {
+        hasMatchingHistory,
         isAuthenticated,
         matchHistory,
         t: formatMessage,
@@ -39,6 +40,7 @@ const ExpiredMatchBlock = (props) => {
     let hasFundLeft = false;
     const formattedTotalMatch = formatCurrency(totalMatched, language, currency);
     const formattedTotalFund = formatCurrency(totalFund, language, currency);
+    const canSeeMatchingHistory = (isAuthenticated && (type === 'groups' || type === 'campaigns') && hasMatchingHistory);
     if (!_isEmpty(totalFund) && !_isEmpty(totalMatched)) {
         hasFundLeft = (parseInt(totalMatched, 10) < parseInt(totalFund, 10));
     }
@@ -65,18 +67,33 @@ const ExpiredMatchBlock = (props) => {
         <div className="charityInfowrap fullwidth lightGreenBg">
             <div className="charityInfo">
                 <Header as="h4">{formatMessage('groupProfile:expiredMatchThankstext')}</Header>
-                <p>
-                    {formatMessage('groupProfile:matchingDaysBetweenText', {
-                        endDate: formatDateForGivingTools(endDate),
-                        startDate: formatDateForGivingTools(startDate),
-                    })}
-                    <b>
-                        &nbsp;
-                        {companyName}
-                    </b>
+                {type === 'groups' ?
+                    (
+                        <p>
+                            {formatMessage('groupProfile:matchingDaysBetweenTextGroup', {
+                                endDate: formatDateForGivingTools(endDate),
+                                startDate: formatDateForGivingTools(startDate),
+                            })}
+                            <b>
+                                &nbsp;
+                                {companyName}
+                            </b>
                     &nbsp;
-                    {formatMessage('groupProfile:expiredMatchedText')}
-                </p>
+                            {formatMessage('groupProfile:expiredMatchedText')}
+                        </p>
+                    )
+                    :
+                    (
+                        <p>
+                            <b>{companyName}</b>
+                            &nbsp;
+                            {formatMessage('groupProfile:matchingDaysBetweenTextCampaign', { 
+                                endDate: formatDateForGivingTools(endDate),
+                                startDate: formatDateForGivingTools(startDate),
+                            })}
+                        </p>
+                    )
+                }
                 <div className="matchingFundsWapper">
                     {hasFundLeft
                         ? (
@@ -86,8 +103,9 @@ const ExpiredMatchBlock = (props) => {
                                     <p>
                                         {formatMessage('groupProfile:expiredMatchProvidedText', {
                                             formattedTotalFund,
-                                        })}     &nbsp;
-                                            {companyName}
+                                        })}     
+                                        &nbsp;
+                                        {companyName}
                                     </p>
                                 </div>
                             </div>
@@ -97,8 +115,9 @@ const ExpiredMatchBlock = (props) => {
                                 <Header as="h3">{formattedTotalMatch}</Header>
                                 <div className="total">
                                     <p>
-                                        {formatMessage('groupProfile:expireMatchedByText')} &nbsp;
-                                            {companyName}
+                                        {formatMessage('groupProfile:expireMatchedByText')} 
+                                        &nbsp;
+                                        {companyName}
                                     </p>
                                 </div>
                             </div>
@@ -114,10 +133,10 @@ const ExpiredMatchBlock = (props) => {
                         <p>{formatMessage('groupProfile:matchingpartner')}</p>
                     </div>
                 </div>
-                {isAuthenticated
-                && (
-                    <p onClick={updateIndex} className="blueHistory">{formatMessage('groupProfile:viewMatchHistoryLink')}</p>
-                )}
+                {canSeeMatchingHistory
+                    && (
+                        <p onClick={updateIndex} className="blueHistory">{formatMessage('groupProfile:viewMatchHistoryLink')}</p>
+                    )}
             </div>
         </div>
     );
@@ -125,6 +144,7 @@ const ExpiredMatchBlock = (props) => {
 
 ExpiredMatchBlock.defaultProps = {
     dispatch: () => {},
+    hasMatchingHistory: false,
     isAuthenticated: false,
     matchHistory: {
         companyAvatar: '',
@@ -141,6 +161,7 @@ ExpiredMatchBlock.defaultProps = {
 
 ExpiredMatchBlock.propTypes = {
     dispatch: func,
+    hasMatchingHistory: bool,
     isAuthenticated: bool,
     matchHistory: PropTypes.shape({
         companyAvatar: string,

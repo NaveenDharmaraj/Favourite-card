@@ -43,7 +43,7 @@ const MatchingHistoryCard = (props) => {
                                 totalMatched: formatCurrency(totalMatched, language, currency),
                             })}
                             <span className="textColor"> &nbsp;
-                                {` ${companyName}.`}
+                                {`${companyName}.`}
                             </span>
                         </p>
                     </div>

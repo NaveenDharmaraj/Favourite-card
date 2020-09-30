@@ -14,6 +14,7 @@ import {
 } from 'prop-types';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
+import _size from 'lodash/size';
 import _isEqual from 'lodash/isEqual';
 import { connect } from 'react-redux';
 import { withTranslation } from '../../i18n';
@@ -194,6 +195,18 @@ class SupportingGroups extends React.Component {
         return null;
     };
 
+    renderCount(campaignSubGroupDetails, subgroupCount) {
+        if (!_isEmpty(campaignSubGroupDetails) && _size(campaignSubGroupDetails) > 0) {
+            const countText = `Showing ${_.size(campaignSubGroupDetails)} of ${subgroupCount}`;
+            return (
+                <center>
+                    <div className="result">{countText}</div>
+                </center>
+            );
+        }
+        return null;
+    }
+
     render() {
         const {
             slug,
@@ -206,6 +219,7 @@ class SupportingGroups extends React.Component {
             viewMoreFn,
             t: formatMessage,
             searchData,
+            subgroupCount,
         } = this.props;
         return (
             <Fragment>
@@ -251,6 +265,7 @@ class SupportingGroups extends React.Component {
                     </div>
                 ) : ''
                 }
+                {this.renderCount(campaignSubGroupDetails, subgroupCount)}
                 <div ref={this.tabRef}>
                 {isAuthenticated && this.renderMatchHistory(matchHistory)}
                 </div>
@@ -281,6 +296,7 @@ SupportingGroups.defaultProps = {
     dispatch: () => {},
     campaignId: '',
     scrollOffset: 0,
+    subgroupCount: 0,
 }
 
 // eslint-disable-next-line react/no-typos
@@ -298,6 +314,7 @@ SupportingGroups.PropTypes = {
     dispatch: PropTypes.func,
     campaignId:  PropTypes.string,
     scrollOffset: PropTypes.number,
+    subgroupCount: PropTypes.number,
 }
 
 export default withTranslation('campaignProfile')(connect(mapStateToProps)(SupportingGroups));

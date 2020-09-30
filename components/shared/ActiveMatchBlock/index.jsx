@@ -67,7 +67,7 @@ const ActiveMatchBlock = (props) => {
                 <div className="charityInfo">
                     <Header as="h4">{formatMessage('groupProfile:matchTextHeading')}</Header>
                     <p>
-                        {formatMessage('groupProfile:matchGiveGroupText')}
+                        {type === 'groups' ? formatMessage('groupProfile:matchGiveGroupText') : formatMessage('groupProfile:matchGiveCampaignText') }
                         <b>
                             &nbsp;
                             {company}
@@ -76,7 +76,7 @@ const ActiveMatchBlock = (props) => {
                         {formatMessage('groupProfile:matchGiftText')}
                     </p>
                     <p>
-                        {formatMessage('groupProfile:matchMaxMatchTextOne')}
+                        {formatMessage('groupProfile:matchMaxMatchTextOne', { profileType: type })}
                         <b>{formattedmaxMatchAmount}</b>
                             &nbsp;
                         {formatMessage('groupProfile:matchMaxMatchTextTwo')}

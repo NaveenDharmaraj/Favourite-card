@@ -196,6 +196,7 @@ function mapStateToProps(state) {
         isAuthenticated: state.auth.isAuthenticated,
         seeMoreLoaderStatus: state.profile.seeMoreLoaderStatus,
         slugApiErrorStats: state.profile.slugApiErrorStats,
+        subgroupCount: state.profile.subgroupCount,
         subGroupListLoader: state.profile.subGroupListLoader,
     };
 }

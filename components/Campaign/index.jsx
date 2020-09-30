@@ -86,6 +86,7 @@ class CampaignProfileWrapper extends React.Component {
             seeMoreLoaderStatus,
             subGroupListLoader,
             isAuthenticated,
+            subgroupCount,
         } = this.props;
         const {
             campaignDetails: {
@@ -210,6 +211,7 @@ class CampaignProfileWrapper extends React.Component {
                                                         subGroupListLoader={subGroupListLoader}
                                                         viewMoreFn={this.viewMoreFn}
                                                         matchHistory={matchHistory}
+                                                        subgroupCount={subgroupCount}
                                                     />
                                                 </React.Fragment>
                                             )

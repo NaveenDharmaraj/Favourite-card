@@ -26,12 +26,14 @@ const profile = (state = {}, action) => {
                     ...state,
                     campaignSubGroupDetails:[...uniqueArray],
                     campaignSubGroupsShowMoreUrl: action.payload.campaignSubGroupDetails.links.next,
+                    subgroupCount: action.payload.campaignSubGroupDetails.meta.recordCount,
                 };
             } else {
                 newState = {
                     ...state,
                     campaignSubGroupDetails: Object.assign([], action.payload.campaignSubGroupDetails.data),
                     campaignSubGroupsShowMoreUrl: action.payload.campaignSubGroupDetails.links.next,
+                    subgroupCount: action.payload.campaignSubGroupDetails.meta.recordCount,
                 };
             }
             break;
