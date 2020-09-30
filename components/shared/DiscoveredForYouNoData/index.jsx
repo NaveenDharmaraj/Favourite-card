@@ -28,8 +28,7 @@ const DiscoveredForYouNoData = () => (
                 <div className="discoverdNoDataImg">
                     <Image
                         floated="right"
-                        data-src={noDataTag}
-                        className="recomendation-lazyLoad"
+                        src={noDataTag}
                     />
                 </div>
             </div>
