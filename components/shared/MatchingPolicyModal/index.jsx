@@ -8,22 +8,18 @@ import PropTypes from 'prop-types';
 import { formatCurrency } from '../../../helpers/give/utils';
 
 const MatchingPolicyModal = ({
-    giveGroupDetails,
+    matchingDetails,
     isCampaign,
     matchingPolicyDetails,
 }) => {
     const {
-        attributes: {
-            activeMatch: {
-                balance,
-                company,
-                maxMatchAmount,
-                matchClose,
-                matchPercent,
-                totalMatch,
-            }
-        }
-    } = giveGroupDetails;
+        balance,
+        company,
+        maxMatchAmount,
+        matchClose,
+        matchPercent,
+        totalMatch,
+    } = matchingDetails;
     const {
         isValidMatchPolicy,
         matchPolicyTitle,
@@ -126,36 +122,31 @@ const MatchingPolicyModal = ({
 };
 
 MatchingPolicyModal.defaultProps = {
-    giveGroupDetails: {
-        attributes: {
-            activeMatch: {
-                balance: '',
-                company: '',
-                matchClose: '',
-                matchPercent: null,
-                maxMatchAmount: null,
-                totalMatch: '',
 
-            }
-        },
+    matchingDetails: {
+        balance: '',
+        company: '',
+        matchClose: '',
+        matchPercent: null,
+        maxMatchAmount: null,
+        totalMatch: '',
     },
     isCampaign: false,
     isMatchingPolicyModalOpen: false,
 };
 
 MatchingPolicyModal.propTypes = {
-    giveGroupDetails: PropTypes.shape({
-        attributes: PropTypes.shape({
-            activeMatch: PropTypes.shape({
-                balance: PropTypes.string,
-                company: PropTypes.string,
-                matchClose: PropTypes.string,
-                matchPercent: PropTypes.number,
-                maxMatchAmount: PropTypes.number,
-                totalMatch: PropTypes.string,
-            }),
-        }),
+    matchingDetails: PropTypes.shape({
+        balance: PropTypes.string,
+        company: PropTypes.string,
+        matchClose: PropTypes.string,
+        matchPercent: PropTypes.number,
+        maxMatchAmount: PropTypes.number,
+        totalMatch: PropTypes.string,
     }),
+    isCampaign: PropTypes.bool,
+    isMatchingPolicyModalOpen: PropTypes.bool,
+
 };
 
 export default MatchingPolicyModal;

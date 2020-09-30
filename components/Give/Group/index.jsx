@@ -1196,7 +1196,7 @@ class Group extends React.Component {
                                                         <Grid.Column mobile={16}>
                                                             <MatchingPolicyModal
                                                                 isCampaign={giveTo.isCampaign}
-                                                                giveGroupDetails={giveGroupDetails}
+                                                                matchingDetails={giveTo.activeMatch}
                                                                 matchingPolicyDetails={matchingPolicyDetails}
                                                             />
                                                         </Grid.Column>
