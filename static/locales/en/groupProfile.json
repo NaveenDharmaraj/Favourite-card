@@ -66,7 +66,7 @@
     "matchingDaysBetweenTextGroup": "Between {{startDate}} and {{endDate}},",
     "matchingDaysBetweenTextCampaign": "generously matched each gift to this group $1.00 for $1.00 between {{startDate}} and {{endDate}}.",
     "expiredMatchedText": "generously matched each gift to this group $1.00 for $1.00.",
-    "expiredMatchProvidedText": "of {{formattedTotalFund}} provided was matched by",
-    "expireMatchedByText": "was matched by",
+    "expiredMatchProvidedText": "matched of {{formattedTotalFund}} provided by",
+    "expireMatchedByText": "was provided and fully matched by",
     "commentText": "Write a message to the group…"
 }
