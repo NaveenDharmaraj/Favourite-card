@@ -102,8 +102,6 @@ class Layout extends React.Component {
         } else {
             // await NotificationHelper.getMessages(userInfo, dispatch, 1);
         }
-        !function (e, t, n) { function a() { var e = t.getElementsByTagName("script")[0], n = t.createElement("script"); n.type = "text/javascript", n.async = !0, n.src = "https://beacon-v2.helpscout.net", e.parentNode.insertBefore(n, e) } if (e.Beacon = n = function (t, n, a) { e.Beacon.readyQueue.push({ method: t, options: n, data: a }) }, n.readyQueue = [], "complete" === t.readyState) return a(); e.attachEvent ? e.attachEvent("onload", a) : e.addEventListener("load", a, !1) }(window, document, window.Beacon || function () { });
-
         if (window && window.Beacon) {
             window.Beacon('init', HELP_SCOUT_KEY);
             if (currentUser) {
@@ -178,6 +176,7 @@ class Layout extends React.Component {
                     <link rel="icon" type="image/x-icon" href="https://d1wjn4fmcgu4dn.cloudfront.net/web/favicon.ico" />
                     <link rel="manifest" href="/static/Manifest.json" />
                     <link
+                        async
                         rel="stylesheet"
                         href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
                     />
@@ -190,6 +189,7 @@ class Layout extends React.Component {
                     <script defer type="text/javascript" src='/static/branchio.js'></script>
                     {isAuthenticated ? <script defer type="text/javascript" src="/static/initApplozic.js"></script> : ""}
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
+                    <script defer type="text/javascript" src='/static/beacon.js'></script>
                     {!_.isEmpty(NEWRELIC_ENV) ? <script defer type="text/javascript" src={`/static/newrelic-${NEWRELIC_ENV}.js`}></script> : ""}
 
                 </Head>
