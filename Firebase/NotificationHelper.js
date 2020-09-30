@@ -1,11 +1,10 @@
 // import { Firebase } from "./init";
 import * as Firebase from "firebase/app";
 import 'firebase/database';
-import firebaseConfig from "./config";
-import getConfig from 'next/config';
 import { firebaseMessageFetchCompleteAction } from "../actions/firebase";
 import _ from 'lodash';
 import eventApi from '../services/eventApi';
+import firebaseConfig from "./config";
 const ACCEPT_FREIND_PAYLOAD = {
     "attributes": {
         "source": "web",
@@ -18,10 +17,6 @@ const ACCEPT_FREIND_PAYLOAD = {
         "friend_request_event_id": "",
     }
 };
-const { publicRuntimeConfig } = getConfig();
-const {
-    FIREBASE_PUBLIC_API_KEY
-} = publicRuntimeConfig;
 
 class NotificationHelper {
     static instance = null;
@@ -33,7 +28,7 @@ class NotificationHelper {
         try { Firebase.getInstance() } catch (err) {
             try {
                 if (!Firebase.apps.length) {
-                    Firebase.initializeApp(firebaseConfig);
+                    Firebase.initializeApp(firebaseConfig.firebaseEnvs);
                 } else {
                     Firebase.app();
                 }
@@ -61,58 +56,58 @@ class NotificationHelper {
             },
         } = msgData;
         let requestData = ACCEPT_FREIND_PAYLOAD;
-        requestData.attributes.acceptor_email_id = userInfo.attributes.email,
+        requestData.attributes.acceptor_email_id = userInfo.attributes.email;
         requestData.attributes.acceptor_user_id = Number(userInfo.id);
-        requestData.attributes.acceptor_avatar_link = userInfo.attributes.avatar,
+        requestData.attributes.acceptor_avatar_link = userInfo.attributes.avatar;
         requestData.attributes.acceptor_first_name = userInfo.attributes.firstName;
         requestData.attributes.acceptor_display_name = userInfo.attributes.displayName;
 
         requestData.attributes.requester_user_id = user_id;
         requestData.attributes.requester_email_id = user_email_id;
         requestData.attributes.friend_request_event_id = msgData.id;
-        eventApi.post("/friend/accept", { data: requestData }).then(function(resp){
+        eventApi.post("/friend/accept", { data: requestData }).then(function (resp) {
         });
     }
 
-    static firebaseInitialLoad = async(userInfo, dispatch )=> {
-            const limit = 10;
-            NotificationHelper.get(userInfo);
-            let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id);
-            let lastSyncTime = null;
-            userRef.on("value", snapshot => {
-                let temp = snapshot;
-                lastSyncTime = temp.child("last_sync_time").val();
-                dispatch({
-                    type: 'FIREBASE_LAST_SYNC_TIME',
-                    payload: {
-                        lastSyncTime,
-                    }
-                  });
-            });
-    
-            const messageRef = userRef.child("/messages");
-            const showMessages = messageRef.orderByChild("createdTs").limitToLast(limit);
-            await showMessages.once("value", snapshot => {
-                let firebaseMessages = [];
-                let temp = snapshot.val();
-                if (!temp) {
-                    firebaseMessages = [];
-                } else {
-                    firebaseMessages = [];
-                    Object.keys(temp).forEach(function (key) {
-                        let t = temp[key];
-                        if (t.sourceUserId != userInfo.id || true) {
-                            t["_key"] = key;
-                            if(!_.isEmpty(t)){
-                                firebaseMessages.push(t);
-                            }
-                        }
-                    });
-                    firebaseMessages.sort(function (a, b) {
-                        return a.createdTs > b.createdTs ? -1 : 1;
-                    });
+    static firebaseInitialLoad = async (userInfo, dispatch) => {
+        const limit = 10;
+        NotificationHelper.get(userInfo);
+        let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id);
+        let lastSyncTime = null;
+        userRef.on("value", snapshot => {
+            let temp = snapshot;
+            lastSyncTime = temp.child("last_sync_time").val();
+            dispatch({
+                type: 'FIREBASE_LAST_SYNC_TIME',
+                payload: {
+                    lastSyncTime,
                 }
-              dispatch({
+            });
+        });
+
+        const messageRef = userRef.child("/messages");
+        const showMessages = messageRef.orderByChild("createdTs").limitToLast(limit);
+        await showMessages.once("value", snapshot => {
+            let firebaseMessages = [];
+            let temp = snapshot.val();
+            if (!temp) {
+                firebaseMessages = [];
+            } else {
+                firebaseMessages = [];
+                Object.keys(temp).forEach(function (key) {
+                    let t = temp[key];
+                    if (t.sourceUserId != userInfo.id || true) {
+                        t["_key"] = key;
+                        if (!_.isEmpty(t)) {
+                            firebaseMessages.push(t);
+                        }
+                    }
+                });
+                firebaseMessages.sort(function (a, b) {
+                    return a.createdTs > b.createdTs ? -1 : 1;
+                });
+            }
+            dispatch({
                 type: 'FIREBASE_INITIAL_LOAD',
                 payload: {
                     firebaseMessages,
@@ -120,46 +115,46 @@ class NotificationHelper {
                     loaded: false,
                     page: 1,
                 }
-              });
             });
+        });
 
-            messageRef.limitToLast(1).on('child_added', function(snapshot) {
-                const temp = snapshot.val();
-                temp._key = snapshot.key;
-                dispatch({
-                    type: 'ADD_NEW_FIREBASE_MESSAGE',
-                    payload: {
-                        addedMessage: temp,
-                        lastSyncTime,
-                        notificationUpdate: true,
-                    }
-                });
+        messageRef.limitToLast(1).on('child_added', function (snapshot) {
+            const temp = snapshot.val();
+            temp._key = snapshot.key;
+            dispatch({
+                type: 'ADD_NEW_FIREBASE_MESSAGE',
+                payload: {
+                    addedMessage: temp,
+                    lastSyncTime,
+                    notificationUpdate: true,
+                }
             });
+        });
 
-            messageRef.on('child_changed', function(snapshot) {
-                const temp = snapshot.val();
-                temp._key = snapshot.key;
-                dispatch({
-                    type: 'UPDATE_FIREBASE_MESSAGE',
-                    payload: {
-                        addedMessage: temp,
-                        lastSyncTime,
-                        notificationUpdate: true,
-                    }
-                });
+        messageRef.on('child_changed', function (snapshot) {
+            const temp = snapshot.val();
+            temp._key = snapshot.key;
+            dispatch({
+                type: 'UPDATE_FIREBASE_MESSAGE',
+                payload: {
+                    addedMessage: temp,
+                    lastSyncTime,
+                    notificationUpdate: true,
+                }
             });
-            messageRef.on('child_removed', function(snapshot) {
-                const temp = snapshot.val();
-                temp._key = snapshot.key;
-                dispatch({
-                    type: 'REMOVE_FIREBASE_MESSAGE',
-                    payload: {
-                        deletedMessage: temp,
-                        lastSyncTime,
-                        notificationUpdate: false,
-                    }
-                });
+        });
+        messageRef.on('child_removed', function (snapshot) {
+            const temp = snapshot.val();
+            temp._key = snapshot.key;
+            dispatch({
+                type: 'REMOVE_FIREBASE_MESSAGE',
+                payload: {
+                    deletedMessage: temp,
+                    lastSyncTime,
+                    notificationUpdate: false,
+                }
             });
+        });
 
     };
 
@@ -217,11 +212,11 @@ class NotificationHelper {
     static getMessagePart(msg, userInfo, localeCode) {
         let msgText = msg["msg"][localeCode];
         const linkArray = [];
-        if(!_.isEmpty(msg.hyperlinks)) {
-            _.map(msg.hyperlinks, function(key, linkName) {
+        if (!_.isEmpty(msg.hyperlinks)) {
+            _.map(msg.hyperlinks, function (key, linkName) {
                 let valueLink = null;
-                if (key['isWeb'] === true && msgText.includes(key['value'])){
-                    switch(key['profile_type']) {
+                if (key['isWeb'] === true && msgText.includes(key['value'])) {
+                    switch (key['profile_type']) {
                         case 'user':
                             valueLink = `/users/profile/${key['profile_id']}`;
                             break;
@@ -235,16 +230,16 @@ class NotificationHelper {
                             valueLink = `/campaigns/${key['profile_slug']}`;
                             break;
                     }
-                    if(valueLink){
+                    if (valueLink) {
                         linkArray.push({
                             text: linkName,
-                            url : valueLink,
+                            url: valueLink,
                             replaceValue: `${key['value']}`,
                         });
                         msgText = msgText.replace(`{{ ${key['value']} }}`, linkName);
                     }
                 }
-              });
+            });
         }
         if (msg.highlighted && msg.highlighted.length > 0) {
             msg.highlighted.forEach(function (w) {
@@ -252,7 +247,7 @@ class NotificationHelper {
                 msgText = msgText.replace(/{{/g, "<b>");
                 msgText = msgText.replace(/}}/g, "</b>");
             });
-        }        
+        }
         let d = {
             "sourceDisplayName": msg.sourceDisplayName,
             "message": msgText,
