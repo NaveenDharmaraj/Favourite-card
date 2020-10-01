@@ -59,6 +59,16 @@ class ActivityDetails extends React.Component {
             showJoinGroupModal: false,
             showJoinLoader: false,
         };
+        this.textAreaRef = React.createRef();
+    }
+
+    componentDidUpdate() {
+        const {
+            current,
+        } = this.textAreaRef;
+        if (!_isEmpty(current)) {
+            current.focus();
+        }
     }
 
     onClicked(id, count) {
@@ -315,6 +325,7 @@ class ActivityDetails extends React.Component {
                                         <Comment.Avatar src={avatar} />
                                         <div className="postInputWraperTop">
                                             <TextArea
+                                                ref={this.textAreaRef}
                                                 value={commentText}
                                                 onChange={this.updateInputValue}
                                                 type="text"

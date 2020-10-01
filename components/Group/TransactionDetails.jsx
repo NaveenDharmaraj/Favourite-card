@@ -46,6 +46,7 @@ class TransactionDetails extends React.Component {
             activePage: 1,
             selectedValue: 'all',
         };
+        this.transactionRef = React.createRef();
     }
 
     componentDidMount() {
@@ -59,6 +60,18 @@ class TransactionDetails extends React.Component {
             selectedValue,
         } = this.state;
         dispatch(getTransactionDetails(groupId, selectedValue));
+    }
+
+    componentDidUpdate() {
+        const {
+            current,
+        } = this.transactionRef;
+        if (!_isEmpty(current)) {
+            current.offsetParent.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+            });
+        }
     }
 
     onPageChange(event, data) {
@@ -233,7 +246,7 @@ class TransactionDetails extends React.Component {
             });
         }
         return (
-            <div>
+            <div ref={this.transactionRef}>
                 <div className="btn_wrapper">
                     {!_isEmpty(groupData) && isAdmin && (
                         <a href={`/groups/${slug}.csv`} target="_blank">
