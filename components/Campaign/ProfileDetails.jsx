@@ -60,7 +60,7 @@ function ProfileDetails(props) {
     return (
         <div>
             <Grid.Row>
-                <Divider className="mobHideDivider mb-0 mt-4" />
+                <Divider className="mobHideDivider Divider-top" />
                 <Grid.Column width={16} className="ch_paragraph AboutProfile" >
                     <p>{about}</p>
                 </Grid.Column>

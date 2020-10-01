@@ -5191,14 +5191,23 @@ body{
 .statusMsgWraper{
   position: fixed;
   z-index: 99999999;
-  right: 16.5%;
-  margin-top: 48px;
-  @media only screen and (max-width:991px){
-    top: 0px;
-    left: calc(50% - 167.5px);
-    right: auto;
-    margin: 48px auto auto;
+  margin-top: 30px;
+  max-width: 1127px;
+  margin-left: auto!important;
+  margin-right: auto!important;
+  text-align: right;
+  width: 100%;
+  @media only screen and (max-width:1199px) and (min-width:992px){
+    max-width: 933px;
   }
+  @media only screen and (max-width:991px){
+      top: 0px;
+      left: calc(50% - 167.5px);
+      right: auto;
+      margin: 48px auto auto;
+      text-align: center;
+      width: auto;
+    }
 }
 .status-message-container{
   margin-bottom: 5px;

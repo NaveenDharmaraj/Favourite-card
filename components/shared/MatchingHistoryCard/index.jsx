@@ -32,7 +32,7 @@ const MatchingHistoryCard = (props) => {
     const currency = 'USD';
     return (
         <div className="MatchingMessages">
-                    <div className="MatchingPartnerWapper margingWapper">
+                    <div className="MatchingPartnerWapper">
                         <div className="h_profileMatching borderprofile">
                             <Image src={companyAvatar} />
                         </div>
@@ -42,8 +42,8 @@ const MatchingHistoryCard = (props) => {
                             {formatMessage('groupProfile:totalMatchText', {
                                 totalMatched: formatCurrency(totalMatched, language, currency),
                             })}
-                            <span className="textColor"> &nbsp;
-                                {`${companyName}.`}
+                            <span className="textColor">
+                                {` ${companyName}.`}
                             </span>
                         </p>
                     </div>

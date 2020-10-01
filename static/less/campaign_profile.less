@@ -93,18 +93,21 @@
                     height: 30px;
                     width: 30px;
                     top: 5px;
+                   a{
+                       display: flex;
+                       align-items: center;
+                       justify-content: center;
                     .search{
                         &.icon{
                             width: auto;
                             height: auto;
-                            margin-top: 6px;
-                            margin-left: 2px;
                             &::before{
                                 width: 15px;
                                 height: 15px;
                             }
                         }
                     }
+                   }
                 }
             }
         }
@@ -203,7 +206,7 @@
 .supportingcardShowMore{
     margin: 30px 0px 100px 0px;
     text-align: center;
-    @media only screen and (max-width:992px){
+    @media only screen and (max-width:991px){
         margin: 30px 0px 50px 0px;
     }
     .btnMore{
@@ -211,14 +214,31 @@
     }
 }
 .supportingMatchHistory {
-    margin: 30px 0px 40px 0px;
+    margin: 10px 0px 8px 0px;
     text-align: center;
-    @media only screen and (max-width:992px){
-        margin: 30px 0px 30px 0px;
+    @media only screen and (max-width:991px){
+        margin: 10px 0px 8px 0px;
     }
     .btnMore{
         font-weight: 600;
     }
+}
+.show_match{
+    text-align: center;
+    margin: 4px 0px 90px 0px;
+    p{
+        color: #2A3940;
+        font-family: 'ProximaNova-Regular';
+        font-size: 14px;
+        letter-spacing: 0;
+        line-height: 25px;
+    }
+    @media only screen and (max-width:768px){
+        margin: 4px 0px 50px 0px;
+    }
+}
+.hide_match{
+    text-align: center; 
 }
 .mt-4{
     margin-top: 60px !important;

@@ -107,7 +107,7 @@ const ActiveMatchBlock = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className={_isEmpty(matchClose) && canSeeMatchingHistory === false ? "MatchingPartnerWapper margingWapper" : "MatchingPartnerWapper"}>
+                    <div className={_isEmpty(matchClose) && canSeeMatchingHistory === false ? "MatchingPartnerWapper" : "MatchingPartnerWapper margingWapper"}>
                         <div className="h_profileMatching borderprofile">
                             <Image src={companyAvatar} />
                         </div>

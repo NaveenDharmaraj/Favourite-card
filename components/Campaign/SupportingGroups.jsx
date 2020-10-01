@@ -196,12 +196,16 @@ class SupportingGroups extends React.Component {
     };
 
     renderCount(campaignSubGroupDetails, subgroupCount) {
+        const {
+            matchHistory
+        } = this.props;
+        
         if (!_isEmpty(campaignSubGroupDetails) && _size(campaignSubGroupDetails) > 0) {
             const countText = `Showing ${_.size(campaignSubGroupDetails)} of ${subgroupCount}`;
             return (
-                <center>
+                <div className={`${ !_isEmpty(matchHistory) ? "hide_match" : 'show_match'}`}>
                     <p>{countText}</p>
-                </center>
+                </div>
             );
         }
         return null;
@@ -256,8 +260,7 @@ class SupportingGroups extends React.Component {
                             {this.renderGroups(campaignSubGroupDetails, slug, formatMessage, searchData)}
                         </div>
                     )}
-                </div>
-                {(campaignSubGroupsShowMoreUrl) ? (
+                    {(campaignSubGroupsShowMoreUrl) ? (
                     <div className={!_isEmpty(matchHistory) ? "supportingMatchHistory" : "supportingcardShowMore"}>
                         <Button
                             className="btnMore blue-bordr-btn-round-def"
@@ -270,6 +273,7 @@ class SupportingGroups extends React.Component {
                 ) : ''
                 }
                 {this.renderCount(campaignSubGroupDetails, subgroupCount)}
+                </div>
                 <div ref={this.tabRef}>
                 {isAuthenticated && this.renderMatchHistory(matchHistory)}
                 </div>
