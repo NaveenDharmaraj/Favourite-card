@@ -23,11 +23,20 @@ const {
 class Success extends React.Component {
 
     componentDidMount() {
-        const { slug, otherAccounts } = this.props;
-        const slugValue = otherAccounts.find((item) => item.slug === slug).slug;
-        if (!slugValue) {
-            Router.pushRoute('/dashboard');
-        }
+        const {
+            currentUser: {
+                id: userId,
+            },
+            dispatch,
+            slug,
+            otherAccounts,
+        } = this.props;
+        getUserAllDetails(dispatch, userId).then(() => {
+            const slugValue = otherAccounts.find((item) => item.slug === slug).slug;
+            if (!slugValue) {
+                Router.pushRoute('/dashboard');
+            }
+        })
     }
 
     renderGoToCharityBtn = (locationNumber, buttonPosition) => {
@@ -52,8 +61,10 @@ class Success extends React.Component {
         let charityName, locationNumber;
         if (otherAccounts && slug) {
             let charityItems = otherAccounts.find((item) => item.slug === slug);
-            charityName = charityItems.name;
-            locationNumber = charityItems.location;
+            if (!_isEmpty(charityItems)) {
+                charityName = charityItems.name;
+                locationNumber = charityItems.location;
+            }
         };
         return (
             <Fragment>
