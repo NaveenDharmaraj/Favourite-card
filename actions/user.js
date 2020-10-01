@@ -470,6 +470,7 @@ export const getUserAllDetails = (dispatch, userId) => {
                         }
                     });
                 }
+                return fsa.payload.otherAccounts;
             },
         ).catch((error) => {
             // console.log(JSON.stringify(error));
@@ -920,9 +921,11 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
                     }
                 }
             } = result;
-            getUser(dispatch, userId, null).then(() => {
+            // Doing the other accounts API call on componentDidMount of success page. This is to make sure that it will 
+            // work fine in login scenario too.
+            // getUserAllDetails(dispatch, userId).then(() => {
                 Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
-            });
+            // });
         }
     ).catch(() => {
         const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below.";
