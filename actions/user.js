@@ -920,7 +920,7 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
                     }
                 }
             } = result;
-            getUser(dispatch, userId, null).then(() => {
+            getUserAllDetails(dispatch, userId).then(() => {
                 Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
             });
         }
