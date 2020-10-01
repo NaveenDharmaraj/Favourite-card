@@ -127,6 +127,7 @@ class Charts extends React.Component {
                 thirdData,
                 fourthData,
                 fifthData,
+                sixthData,
             },
         } = this.state;
         const data = {
@@ -165,6 +166,11 @@ class Charts extends React.Component {
                 {
                     backgroundColor: this.colorArr[4].concat('70'),
                     data: fifthData,
+                    fill: false,
+                },
+                {
+                    backgroundColor: this.colorArr[5].concat('70'),
+                    data: sixthData,
                     fill: false,
                 },
             ],
@@ -206,6 +212,7 @@ class Charts extends React.Component {
             chartInstance.getDatasetMeta(3).data[chartIndex]._model.backgroundColor = this.colorArr[2];
             chartInstance.getDatasetMeta(4).data[chartIndex]._model.backgroundColor = this.colorArr[3];
             chartInstance.getDatasetMeta(5).data[chartIndex]._model.backgroundColor = this.colorArr[4];
+            chartInstance.getDatasetMeta(6).data[chartIndex]._model.backgroundColor = this.colorArr[5];
         }
     }
 

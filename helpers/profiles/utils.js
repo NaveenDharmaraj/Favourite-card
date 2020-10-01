@@ -33,9 +33,7 @@ const createChartData = (yearData, expensesArr, langMapping, colorArr) => {
     expensesArr.map((expense, index) => {
         const expenseValue = yearData.expenses.find((o) => o.name === expense).value;
         const isGift = (expense === 'gifts_to_charities_donees');
-        if (!isGift) {
-            colorData.push(expenseValue);
-        }
+        colorData.push(expenseValue);
         summaryData.push(
             {
                 color: colorArr[index],
@@ -63,6 +61,7 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
     const thirdData = [];
     const fourthData = [];
     const fifthData = [];
+    const sixthData = [];
     let graphData = {};
     if (!_isEmpty(beneficiaryFinance)) {
         const selectedYear = getSelectedYear(beneficiaryFinance);
@@ -107,6 +106,7 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
                 thirdData.push(chartData.colorData[2]);
                 fourthData.push(chartData.colorData[3]);
                 fifthData.push(chartData.colorData[4]);
+                sixthData.push(chartData.colorData[5]);
                 yearData.push(chartData.summaryData);
             });
             graphData = {
@@ -116,6 +116,7 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
                 revenueData,
                 secondData,
                 selectedYear,
+                sixthData,
                 thirdData,
                 totalData,
                 yearData,
