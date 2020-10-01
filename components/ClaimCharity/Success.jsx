@@ -10,6 +10,7 @@ import { connect, } from 'react-redux';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 import { Router } from '../../routes';
+import { getUserAllDetails } from '../../actions/user';
 import accessingleft from '../../static/images/claimcharity04.svg';
 import accessingfull from '../../static/images/accessing1.svg';
 import '../../static/less/claimcharity.less';
@@ -22,18 +23,47 @@ const {
 
 class Success extends React.Component {
 
-    componentDidMount() {
-        const { slug, otherAccounts } = this.props;
-        const slugValue = otherAccounts.find((item) => item.slug === slug).slug;
-        if (!slugValue) {
-            Router.pushRoute('/dashboard');
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            otherAccountsFetched: false,
         }
     }
 
+    componentDidMount() {
+        const {
+            currentUser: {
+                id: userId,
+            },
+            dispatch,
+            slug,
+        } = this.props;
+        getUserAllDetails(dispatch, userId).then((otherAccounts) => {
+            const slugValue = otherAccounts.find((item) => item.slug === slug);
+            if (_isEmpty(slugValue)) {
+                Router.pushRoute('/dashboard');
+            }
+            this.setState({
+                ...this.state,
+                otherAccountsFetched: true,
+                otherAccounts,
+            });
+        });
+    }
+
     renderGoToCharityBtn = (locationNumber, buttonPosition) => {
+        const {
+            otherAccountsFetched
+        } = this.state;
         return (
             <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}>
-                <Button className={buttonPosition ? "primary blue-btn-rounded btnfont mt-1" : "white-btn-round paddingBtn"}>Go to Charity Account</Button>
+                <Button
+                    className={buttonPosition ? "primary blue-btn-rounded btnfont mt-1" : "white-btn-round paddingBtn"}
+                    disabled={!otherAccountsFetched}
+                >
+                    Go to Charity Account
+                </Button>
             </a>
         )
     }
@@ -47,13 +77,17 @@ class Success extends React.Component {
                 }
             },
             slug,
-            otherAccounts,
         } = this.props;
+        const {
+            otherAccounts,
+        } = this.state;
         let charityName, locationNumber;
         if (otherAccounts && slug) {
             let charityItems = otherAccounts.find((item) => item.slug === slug);
-            charityName = charityItems.name;
-            locationNumber = charityItems.location;
+            if (!_isEmpty(charityItems)) {
+                charityName = charityItems.name;
+                locationNumber = charityItems.location;
+            }
         };
         return (
             <Fragment>
@@ -118,7 +152,7 @@ class Success extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    otherAccounts: state.user.otherAccounts,
+    // otherAccounts: state.user.otherAccounts,
     currentUser: state.user.info,
 });
 
