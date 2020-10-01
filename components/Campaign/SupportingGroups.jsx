@@ -221,12 +221,15 @@ class SupportingGroups extends React.Component {
             searchData,
             subgroupCount,
         } = this.props;
+        const { searchKey } = this.state;
         return (
             <Fragment>
                 <div className="supportingWithsearch">
                     <Header as="h3">{formatMessage('campaignProfile:supportCampaignHeader')}</Header>
                 </div>
-                <div className="search-banner campaignSearchBanner">
+                {_isEmpty(campaignSubGroupDetails) && _isEmpty(searchKey) ? 
+                '':
+                (<div className="search-banner campaignSearchBanner">
                     <div className="searchbox">
                         <Grid >
                             <Grid.Row>
@@ -245,7 +248,8 @@ class SupportingGroups extends React.Component {
                             </Grid.Row>
                         </Grid>
                     </div>
-                </div>
+                </div>)
+                }
                 <div className="supportingcardWapper">
                     {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
                         <div className="custom_Grid">
