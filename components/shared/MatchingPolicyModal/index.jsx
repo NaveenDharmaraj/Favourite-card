@@ -37,6 +37,7 @@ const MatchingPolicyModal = ({
     const toggleMatchingPolicyModal = () => {
         setIsMatchingPolicyModalOpen(!isMatchingPolicyModalOpen);
     };
+    console.log()
     return (
         <Fragment>
             <div className={`noteDefault ${isValidMatchPolicy ? 'info' : ''} mt-2`}>
@@ -46,7 +47,9 @@ const MatchingPolicyModal = ({
                     </span>
                     <span className="noteContent">
                         {matchPolicyTitle}
-                        <span className="hyperLinks-style" onClick={toggleMatchingPolicyModal}> Learn more.</span>
+                        {(isValidMatchPolicy && (
+                            <span className="hyperLinks-style" onClick={toggleMatchingPolicyModal}> Learn more.</span>
+                        ))}
                     </span>
                 </div>
             </div>

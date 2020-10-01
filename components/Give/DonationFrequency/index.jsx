@@ -63,7 +63,7 @@ function DonationFrequency(props) {
                 </Form.Field>
                 {
                     (recurringDisabled && (
-                        <span className="givingInfoText">This {(isCampaign ? 'Campaign': 'Giving group' )} does not accept monthly gifts.</span>
+                        <span className="givingInfoText">This {(isCampaign ? 'Campaign': 'Giving Group' )} does not accept monthly gifts.</span>
                     ))
                 }
             </div>
