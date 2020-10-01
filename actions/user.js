@@ -470,6 +470,7 @@ export const getUserAllDetails = (dispatch, userId) => {
                         }
                     });
                 }
+                return fsa.payload.otherAccounts;
             },
         ).catch((error) => {
             // console.log(JSON.stringify(error));
