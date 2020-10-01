@@ -35,11 +35,6 @@ const {
     NEWRELIC_ENV,
 } = publicRuntimeConfig;
 
-const getWidth = () => {
-    const isSSR = typeof window === 'undefined';
-    return isSSR ? 1000 : window.innerWidth
-};
-
 class Layout extends React.Component {
     async componentDidMount() {
         const {
@@ -140,6 +135,15 @@ class Layout extends React.Component {
         window.scrollTo(0, 0);
     };
 
+    getDeviceWidth = () => {
+        const {
+            isMobile
+        } = this.props;
+        const isSSR = typeof window === 'undefined';
+        const ssrWidth = isMobile ? 990 : 1000;
+        return isSSR ? ssrWidth : window.innerWidth;
+    }
+
     renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader) => {
         if (authRequired && !isAuthenticated) {
             return null;
@@ -154,9 +158,12 @@ class Layout extends React.Component {
             disableMinHeight,
             isCharityPage,
         } = this.props;
-        const widthProp = (!isMobile) ? { getWidth: getWidth } : {};
+
+        // const widthProp = (!isMobile) ? {getWidth: getWidth(isMobile)} : {};
+        const widthProp = { getWidth: this.getDeviceWidth };
+
         return (
-            <Responsive getWidth={getWidth}>
+            <Responsive getWidth={this.getDeviceWidth}>
                 <Head>
                     <title>
                         {title}
@@ -178,12 +185,12 @@ class Layout extends React.Component {
                         rel="stylesheet"
                         href="/static/fonts/proximanova/font.css"
                     />
-                    <script id="stripe-js" src="https://js.stripe.com/v3/" />
+                    <script defer id="stripe-js" src="https://js.stripe.com/v3/" />
                     <script type="text/javascript" defer src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
                     <script defer type="text/javascript" src='/static/branchio.js'></script>
                     {isAuthenticated ? <script defer type="text/javascript" src="/static/initApplozic.js"></script> : ""}
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
-                    {!_.isEmpty(NEWRELIC_ENV) ? <script type="text/javascript" src={`/static/newrelic-${NEWRELIC_ENV}.js`}></script> : ""}
+                    {!_.isEmpty(NEWRELIC_ENV) ? <script defer type="text/javascript" src={`/static/newrelic-${NEWRELIC_ENV}.js`}></script> : ""}
 
                 </Head>
                 <div>

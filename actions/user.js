@@ -316,7 +316,7 @@ const setDataToPayload = ({
     return data;
 };
 
-export const getUser = (dispatch, userId, token = null) => {
+export const getUser = async (dispatch, userId, token = null) => {
     const fsa = {
         payload: {},
         type: actionTypes.SET_USER_INFO,
@@ -330,11 +330,65 @@ export const getUser = (dispatch, userId, token = null) => {
             },
         };
     }
-    const userDetails = coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`, params);
-    const administeredCompanies = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`, params);
-    const administeredBeneficiaries = callApiAndGetData(`/users/${userId}/administeredBeneficiaries?page[size]=50&sort=-id`, params);
-    const beneficiaryAdminRoles = callApiAndGetData(`/users/${userId}/beneficiaryAdminRoles?page[size]=50&sort=-id`, params);
-    const companyAdminRoles = callApiAndGetData(`/users/${userId}/companyAdminRoles?page[size]=50&sort=-id`, params);
+    await coreApi.get(`/users/${userId}?include=activeRole`, params).then((result) => {
+        isAuthenticated = true;
+        const { data } = result;
+        const dataMap = {
+            BeneficiaryAdminRole: 'charity',
+            CompanyAdminRole: 'company',
+            DonorRole: 'personal',
+            ChimpAdminRole: 'personal',
+        };
+        const {
+            activeRoleId,
+        } = data.attributes;
+        _.merge(fsa.payload, {
+            activeRoleId,
+            info: data,
+            isAdmin: false,
+        });
+        if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
+            fsa.payload.isAdmin = true;
+        }
+        const {
+            attributes: {
+                roleType,
+                roleDetails,
+            },
+            id,
+        } = result.included[0];
+        fsa.payload.currentAccount = {
+            accountType: dataMap[roleType],
+            avatar: roleDetails.avatar,
+            balance: `$${roleDetails.balance}`,
+            location: `/contexts/${id}`,
+            name: roleDetails.name,
+            slug: !_.isEmpty(roleDetails.slug) ? roleDetails.slug : null,
+        };
+    }).catch((error) => {
+        console.log(JSON.stringify(error));
+        isAuthenticated = false;
+    }).finally(() => {
+        dispatch({
+            payload: {
+                isAuthenticated,
+            },
+            type: 'SET_AUTH',
+        });
+        dispatch(fsa);
+    });
+};
+
+export const getUserAllDetails = (dispatch, userId) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.SET_USER_INFO,
+    };
+    const userDetails = coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`);
+    const administeredCompanies = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`);
+    const administeredBeneficiaries = callApiAndGetData(`/users/${userId}/administeredBeneficiaries?page[size]=50&sort=-id`);
+    const beneficiaryAdminRoles = callApiAndGetData(`/users/${userId}/beneficiaryAdminRoles?page[size]=50&sort=-id`);
+    const companyAdminRoles = callApiAndGetData(`/users/${userId}/companyAdminRoles?page[size]=50&sort=-id`);
     return Promise.all([
         userDetails,
         administeredCompanies,
@@ -344,7 +398,6 @@ export const getUser = (dispatch, userId, token = null) => {
     ])
         .then(
             (allData) => {
-                isAuthenticated = true;
                 const userData = allData[0];
                 const { data } = userData;
                 const {
@@ -425,17 +478,11 @@ export const getUser = (dispatch, userId, token = null) => {
                         }
                     });
                 }
+                return fsa.payload.otherAccounts;
             },
         ).catch((error) => {
             // console.log(JSON.stringify(error));
-            isAuthenticated = false;
         }).finally(() => {
-            dispatch({
-                payload: {
-                    isAuthenticated,
-                },
-                type: 'SET_AUTH',
-            });
             dispatch(fsa);
         });
 };
@@ -927,9 +974,11 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
                     }
                 }
             } = result;
-            getUser(dispatch, userId, null).then(() => {
+            // Doing the other accounts API call on componentDidMount of success page. This is to make sure that it will 
+            // work fine in login scenario too.
+            // getUserAllDetails(dispatch, userId).then(() => {
                 Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
-            });
+            // });
         }
     ).catch(() => {
         const errorMessage = 'That code doesn\'t look right or it\'s expired. Try again or claim without a code below.';
