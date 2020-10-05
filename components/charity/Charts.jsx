@@ -54,7 +54,7 @@ class Charts extends React.Component {
             charitable_activities_programs: formatMessage('charityProfile:charitableActivities'),
             expenditure_charity_activites: formatMessage('charityProfile:expenditures'),
             fundraising: formatMessage('charityProfile:fundraising'),
-            gifts_to_charities_donees: formatMessage('charityProfile:giftsToDonee'),
+            gifts_total: formatMessage('charityProfile:giftsToDonee'),
             management_admin: formatMessage('charityProfile:management'),
             other: formatMessage('charityProfile:other'),
             poilitical_activities: formatMessage('charityProfile:politicalActivity'),
