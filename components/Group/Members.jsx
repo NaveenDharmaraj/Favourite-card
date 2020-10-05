@@ -39,6 +39,7 @@ class Members extends React.Component {
             currentActivePage: 1,
         };
         this.onPageChanged = this.onPageChanged.bind(this);
+        this.memberTabref = React.createRef();
     }
 
     componentDidMount() {
@@ -49,6 +50,18 @@ class Members extends React.Component {
             },
         } = this.props;
         dispatch(getDetails(groupId, 'members'));
+    }
+
+    componentDidUpdate() {
+        const {
+            current,
+        } = this.memberTabref;
+        if (!_isEmpty(current)) {
+            current.offsetParent.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+            });
+        }
     }
 
     onPageChanged(event, data) {
@@ -106,7 +119,7 @@ class Members extends React.Component {
             currentActivePage,
         } = this.state;
         return (
-            <div className="tabWapper">
+            <div className="tabWapper" ref={this.memberTabref}>
                 {!membersLoader
                     ? (
                         <Fragment>
