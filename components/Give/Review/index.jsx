@@ -301,7 +301,7 @@ class Review extends React.Component {
                                     <Grid.Column mobile={16} tablet={14} computer={12}>
                                         {(!!isGroupWithMatching) && (
                                             <div className="review-top-table">
-                                                <Table unstackable basic='very' className="no-border-table">
+                                                <Table unstackable basic='very' className="no-border-table layoutfixed">
                                                     <Table.Body>
                                                         <Table.Row verticalAlign='top'>
                                                             <Table.Cell>
@@ -314,20 +314,22 @@ class Review extends React.Component {
                                                         </Table.Row>
                                                         <Table.Row verticalAlign='top'>
                                                             <Table.Cell>
-                                                                {toDetailsForMatching.matchingHeading}
-                                                                <Popup
-                                                                    content={toDetailsForMatching.popUpMessage}
-                                                                    position="bottom center"
-                                                                    className="matching-popup"
-                                                                    inverted
-                                                                    trigger={(
-                                                                        <Icon
-                                                                            color="blue"
-                                                                            name="question circle"
-                                                                            size="large"
-                                                                        />
-                                                                    )}
-                                                                />
+                                                                <div className='matchingAmount'>
+                                                                    <span>{toDetailsForMatching.matchingHeading}</span>
+                                                                    <Popup
+                                                                        content={toDetailsForMatching.popUpMessage}
+                                                                        position="bottom right"
+                                                                        className="matching-popup"
+                                                                        inverted
+                                                                        trigger={(
+                                                                            <Icon
+                                                                                color="blue"
+                                                                                name="question circle"
+                                                                                size="large"
+                                                                            />
+                                                                        )}
+                                                                    />
+                                                                </div>
                                                                 {
                                                                     (toDetailsForMatching.subHeading !== '') && (
                                                                         <div className="note">

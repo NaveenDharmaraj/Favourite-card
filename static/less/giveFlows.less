@@ -525,13 +525,31 @@ body{
                 }    
             }
         }
+       
     }
     .right.aligned{
         font-family: 'ProximaNova-Semibold';
     }
 }
 }
-
+.layoutfixed{
+    table-layout: fixed;
+    td:first-child{
+        width: 75%;
+    }
+    td:last-child{
+        width: 25%;
+    }
+    .matchingAmount{
+        display: flex;
+        align-items: center;
+        span{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}
 
 /***********flowReviewbanner*close*******/ 
 .flowBreadcrumb{
@@ -1000,7 +1018,8 @@ body{
     .ui{
         &.button{
             &.dropdown{
-                height: 41px;
+                padding-top: 12px;
+                padding-bottom: 12px;
                 &.taxReceiptDropDown{
                     height: auto;
                 }
@@ -2597,6 +2616,9 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                 @media only screen and (min-width:768px) {
                     width: 340px;
                     max-width: 340px;
+                }
+                @media only screen and (max-width:767px) {
+                    max-width: 233px;
                 }
             }
         }
