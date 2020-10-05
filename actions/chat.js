@@ -47,9 +47,9 @@ const setSelectedConversation = (msg, newgroupId = true) => (dispatch) => {
         });
     }
 };
-const loadMuteUserList = () => async (dispatch) => {
+const loadMuteUserList = () => (dispatch) => {
     const muteUserList = {};
-    await applozicApi.get('/user/chat/mute/list', {}).then((response) => {
+    applozicApi.get('/user/chat/mute/list', {}).then((response) => {
         _forEach(response, (muteUser) => {
             muteUserList[muteUser.userId] = muteUser;
         });
@@ -59,7 +59,7 @@ const loadMuteUserList = () => async (dispatch) => {
             },
             type: actionTypes.LOAD_MUTE_USER_LIST,
         });
-    });
+    }).catch((err) => { });
 };
 const loadnewUserGroupInboxMessage = async (queryParam) => {
     try {
