@@ -23,10 +23,10 @@ class Friends extends React.Component {
 
     render() {
         return (
-            <Layout authRequired={true} >
+            <Layout authRequired stripe>
                 <Container>
                     <div className="pageWraper">
-                        <GiveWrapper {...this.props} baseUrl='/give/to/friend'>
+                        <GiveWrapper {...this.props} baseUrl="/give/to/friend">
                             <Friend />
                         </GiveWrapper>
                     </div>

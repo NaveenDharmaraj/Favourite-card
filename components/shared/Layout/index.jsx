@@ -155,6 +155,7 @@ class Layout extends React.Component {
             url,
             disableMinHeight,
             isCharityPage,
+            stripe
         } = this.props;
 
         // const widthProp = (!isMobile) ? {getWidth: getWidth(isMobile)} : {};
@@ -187,7 +188,7 @@ class Layout extends React.Component {
                     />
                     <link rel="preconnect" href="https://logs.logdna.com" />
                     <link rel="preconnect" href="https://chat-ca.kommunicate.io:15675" />
-                    <script defer id="stripe-js" src="https://js.stripe.com/v3/" />
+                    {stripe && <script defer id="stripe-js" src="https://js.stripe.com/v3/" />}
                     <script type="text/javascript" defer src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
                     <script defer type="text/javascript" src='/static/branchio.js'></script>
                     {isAuthenticated ? <script defer type="text/javascript" src="/static/initApplozic.js"></script> : ""}
@@ -273,12 +274,14 @@ Layout.defaultProps = {
     addCauses: false,
     description: ' Charitable Impact',
     title: ' Charitable Impact',
+    stripe: false
 };
 
 Layout.propTypes = {
     addCauses: boolean,
     description: string,
     title: string,
+    stripe: boolean,
 };
 
 function mapStateToProps(state) {
