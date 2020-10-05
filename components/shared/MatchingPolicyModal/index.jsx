@@ -66,7 +66,7 @@ const MatchingPolicyModal = ({
                 <Modal.Content>
                     <p>
                         When you give to this
-                        {isCampaign ? ' campaign' : ' group'}
+                        {isCampaign ? ' Campaign' : ' group'}
                         ,
                         <span className="bold">
                             &nbsp;
@@ -77,7 +77,7 @@ const MatchingPolicyModal = ({
                     </p>
                     <p>
                         Gifts to this
-                        {isCampaign ? ' campaign ' : ' group '}
+                        {isCampaign ? ' Campaign ' : ' group '}
                         will be matched up to a maximum of
                         <span className="bold">
                             &nbsp;
