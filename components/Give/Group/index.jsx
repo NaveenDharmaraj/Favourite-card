@@ -56,6 +56,7 @@ import {
     getCompanyPaymentAndTax,
     getGroupsFromSlug,
     proceed,
+    fetchGroupMatchAmount,
 } from '../../../actions/give';
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
 import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
@@ -179,7 +180,7 @@ class Group extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if (!_isEqual(this.props, prevProps)) {
             const {
                 dropDownOptions,
@@ -210,6 +211,7 @@ class Group extends React.Component {
                     },
                     id,
                 },
+                dispatch,
                 i18n: {
                     language,
                 },
@@ -292,7 +294,7 @@ class Group extends React.Component {
                     giveData, fund, id,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
                     groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage,
-                    this.props.groupCampaignId, currentAccount,
+                    this.props.groupCampaignId, currentAccount
                 );
             }
             if (giveData.giveFrom.type === 'user' && !_isEmpty(groupMemberInfoToShare)) {
@@ -303,6 +305,9 @@ class Group extends React.Component {
             } else {
                 const name = (giveData.giveFrom.type === 'companies' && giveData.giveFrom.displayName) ? giveData.giveFrom.displayName : giveData.giveFrom.name;
                 dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(name, formatMessage);
+            }
+            if (giveData.giveFrom.value && giveData.giveTo.value && giveData.giveTo.hasActiveMatch) {
+                giveData.matchingPolicyDetails.matchingPolicyExpiry = await dispatch(fetchGroupMatchAmount(1, giveData.giveFrom.value, giveData.giveTo.value));
             }
             this.setState({
                 buttonClicked: false,
@@ -580,7 +585,7 @@ class Group extends React.Component {
         const formatMessage = this.props.t;
         if (Number(value) && Number(value) >= 1) {
             giveData.matchingPolicyDetails = giveData.giveTo &&
-                checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage);
+                checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
         }
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         giveData.giveAmount = inputValue;
@@ -664,7 +669,7 @@ class Group extends React.Component {
         } = this.state;
         const formatMessage = this.props.t;
         if (Number(giveData.giveAmount) >= 1) {
-            giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, value, formatMessage);
+            giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
         }
         this.setState({
             flowObject: {
@@ -680,7 +685,7 @@ class Group extends React.Component {
         })
     }
 
-    handleInputChange(event, data) {
+    async handleInputChange(event, data) {
         const {
             name,
             options,
@@ -808,11 +813,15 @@ class Group extends React.Component {
                     if (giveData.giveFrom.type === 'companies') {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
+                    if ((Number(giveData.giveAmount) > 1) && giveData.giveTo.hasActiveMatch) {
+                        giveData.matchingPolicyDetails.matchingPolicyExpiry = await dispatch(fetchGroupMatchAmount(1, giveData.giveFrom.value, giveData.giveTo.value));
+                        giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
+                    }
                     break;
                 case 'giveAmount':
                     giveData['formatedGroupAmount'] = newValue;
-                    if (Number(newValue) && Number(newValue) >= 1) {
-                        giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage);
+                    if (Number(newValue) && Number(newValue) >= 1 && giveData.giveTo && giveData.giveTo.hasActiveMatch) {
+                        giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
                     } else {
                         giveData.matchingPolicyDetails = {
                             hasMatchingPolicy: false,
@@ -861,7 +870,7 @@ class Group extends React.Component {
         }
     }
 
-    handleInputChangeGiveTo(event, data) {
+    async handleInputChangeGiveTo(event, data) {
         const {
             options,
             value,
@@ -882,9 +891,10 @@ class Group extends React.Component {
                 giveData: {
                     matchingPolicyDetails,
                 }
-            }
+            },
         } = this.state;
         const {
+            dispatch,
             userMembershipGroups,
         } = this.props;
         const formatMessage = this.props.t;
@@ -905,8 +915,9 @@ class Group extends React.Component {
         validity.isValidGiveTo = !((giveTo.type === giveFrom.type)
             && (giveTo.value === giveFrom.value));
         if (Number(giveAmount) >= 1) {
+            matchingPolicyDetails.matchingPolicyExpiry = giveFrom.value && await dispatch(fetchGroupMatchAmount(1, giveFrom.value, giveTo.value));
             matchingPolicyDetails = giveTo &&
-                checkMatchPolicy(giveTo, giftType.value, formatMessage);
+                checkMatchPolicy(giveTo, giftType.value, formatMessage, matchingPolicyDetails.matchingPolicyExpiry);
         }
         this.setState({
             flowObject: {

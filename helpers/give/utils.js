@@ -1755,16 +1755,17 @@ const checkMatchPolicyExpiry = (date, day, name, formatMessage) => {
  * @param {object} matchingPolicyObj give matchingPolicyObj attributes.
  * @param {number} giftType tells whether allocation is monthly or once.
  * @param {function} formatMessage language translation function
+ * @param {boolean} expiry check whether its a valid match or not
  * @return {boolean} match policy condition.
  */
-const checkMatchPolicy = (matchingPolicyObj = {}, giftType = 0, formatMessage) => {
+const checkMatchPolicy = (matchingPolicyObj = {}, giftType = 0, formatMessage, expiry = true) => {
     if (!_.isEmpty(matchingPolicyObj)) {
         const {
             activeMatch,
             hasActiveMatch,
         } = matchingPolicyObj;
         if (!_.isEmpty(activeMatch) && hasActiveMatch) {
-            if (giftType > 0) {
+            if (giftType > 0 && expiry) {
                 return activeMatch.matchClose ? checkMatchPolicyExpiry(activeMatch.matchClose, giftType, activeMatch.company, formatMessage) : {
                     hasMatchingPolicy: true,
                     isValidMatchPolicy: true,
@@ -1774,7 +1775,8 @@ const checkMatchPolicy = (matchingPolicyObj = {}, giftType = 0, formatMessage) =
             return {
                 hasMatchingPolicy: true,
                 isValidMatchPolicy: true,
-                matchPolicyTitle: `${activeMatch.company} will match your gift.`,
+                matchPolicyTitle: expiry ? `${activeMatch.company} will match your gift.`
+                    : `Matching will not be available for this gift. Previous gifts you’ve given to this ${activeMatch.company} have already been fully matched the maximum amount per donor.`,
             };
         }
     }
