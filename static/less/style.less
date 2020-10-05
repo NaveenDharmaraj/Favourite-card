@@ -7159,7 +7159,7 @@ button.ui.button.blue-bordr-btn-round-def{
       box-shadow:none;	
       padding: 15px 15px 15px 36px;
       @media only screen and (max-width: 420px){
-        padding: 15px 15px 15px 15px;
+        padding: 20px 15px 20px 15px;
       }
       //box-shadow: 0 1px 7px 0 rgba(0,0,0,0.17);
       &.rightImg{
@@ -7859,6 +7859,10 @@ body{
       &.divided{
         &.relaxed{
           >.item{
+            display: flex;
+            align-items: center;
+            vertical-align: middle;
+            padding:20px 15px 20px 5px;
             &.shareCopyLink{
               padding: 20px 15px 20px 5px;
               border-bottom:1px solid rgba(34,36,38,.15);
@@ -7886,7 +7890,13 @@ body{
             }
             >i{
               &.icon{
-                padding:15px 15px 15px 5px;
+                //padding:15px 15px 15px 5px;
+              }
+            }
+            .content{
+              a{
+                margin: 0px;
+                padding: 0px;
               }
             }
           }
