@@ -61,9 +61,13 @@ function ProfileDetails(props) {
         <div>
             <Grid.Row>
                 <Divider className="mobHideDivider Divider-top" />
+                {about ? (
                 <Grid.Column width={16} className="ch_paragraph AboutProfile" >
-                    <p>{about}</p>
+                <p>{about}</p>
                 </Grid.Column>
+                ) :
+                ''
+            }
             </Grid.Row>
             <div className="MyGallery">
                 <Grid.Row>
@@ -80,10 +84,10 @@ function ProfileDetails(props) {
                             (
                                 <Fragment>
                                     <Grid.Column width={16}>
-                                        {ReactHtmlParser(formattedShort)}
+                                        <p className="formattedShort">{ReactHtmlParser(formattedShort)}</p>
                                     </Grid.Column>
                                     <Grid.Column width={16}>
-                                        {ReactHtmlParser(formattedImpact)}
+                                       <p className ="formattedImpact"> {ReactHtmlParser(formattedImpact)}</p>
                                     </Grid.Column>
                                     <div className="fullwidth_v_G">
                                         <div className={imageArray.length === 1 ? 'one_img_full GalleryWrapper' : 'GalleryWrapper'} style={{ display: imageArray.length === 0 ? 'none' : 'inline-block' }}>

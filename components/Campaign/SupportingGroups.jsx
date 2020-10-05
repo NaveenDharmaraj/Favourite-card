@@ -141,7 +141,7 @@ class SupportingGroups extends React.Component {
                                         </Header>
                                         <div>
                                             <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
-                                                <Button className="success-btn-rounded-def">{formatMessage('campaignProfile:createGivingGroupBtn')}</Button>
+                                                <Button className="success-btn-rounded-def campaignsBtn">{formatMessage('campaignProfile:createGivingGroupBtn')}</Button>
                                             </a>
                                         </div>
                                     </div>

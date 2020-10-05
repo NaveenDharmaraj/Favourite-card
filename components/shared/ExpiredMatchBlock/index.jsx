@@ -67,6 +67,7 @@ const ExpiredMatchBlock = (props) => {
         <div className="charityInfowrap fullwidth lightGreenBg">
             <div className="charityInfo">
                 <Header as="h4">{formatMessage('groupProfile:expiredMatchThankstext')}</Header>
+                <div className="matchingDaysBetweenTextGroup">
                 {type === 'groups' ?
                     (
                         <p>
@@ -94,6 +95,7 @@ const ExpiredMatchBlock = (props) => {
                         </p>
                     )
                 }
+                </div>
                 <div className="matchingFundsWapper">
                     {hasFundLeft
                         ? (
@@ -124,7 +126,7 @@ const ExpiredMatchBlock = (props) => {
                         )
                     }
                 </div>
-                <div className="MatchingPartnerWapper">
+                <div className="MatchingPartnerWapper margingWapper">
                     <div className="h_profileMatching borderprofile">
                         <Image src={companyAvatar} />
                     </div>
