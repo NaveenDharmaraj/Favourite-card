@@ -18,6 +18,10 @@ class Friends extends React.Component {
                 'giveCommon',
                 'friends',
                 'accountTopUp',
+                'review',
+                'taxReceipt',
+                'success',
+                'error',
             ],
             step: query.step,
         };
