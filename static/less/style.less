@@ -921,8 +921,8 @@ h4{
             overflow-y: hidden;
             scrollbar-width: none;
             &::-webkit-scrollbar {
-              width: 3px;
-              height: 5px;
+              width: 0px;
+              height: 0px;
               border-radius:6px;
             }
             &::-webkit-scrollbar-track {
@@ -1157,7 +1157,10 @@ h4{
       padding-bottom: 0px!important;
     }
     &.pMethodHead{
-      padding-top: 3px !important;
+      // padding-top: 3px !important;
+      .ui.grid{
+        margin-top: 0;
+      }
     }
     p{
       >a{
@@ -1169,6 +1172,7 @@ h4{
     }
     &:last-child{
       border-bottom: 0px solid transparent;
+      padding-bottom:0 ;
     }
     .success-btn-rounded-def{
       min-width: 166px;
@@ -1178,6 +1182,9 @@ h4{
         &.list{
           &.userList{
             padding-bottom: 20px;
+            &:last-child{
+              padding-bottom:0 ;
+            }
             .item{
               &:last-child{
                 border-bottom: 1px solid rgba(34,36,38,.15);
@@ -1346,6 +1353,9 @@ h4{
   +.border-top{
     .settingsTab{
       border-top: 1px solid @grey-lighten-2;
+      > div .ui.grid{
+        margin-top: 0;
+      }
     }
   }
 }
