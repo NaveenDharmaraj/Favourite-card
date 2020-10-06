@@ -351,16 +351,18 @@ export const getUser = async (dispatch, userId, token = null) => {
             fsa.payload.isAdmin = true;
         }
         const {
-            attributes: {
-                roleType,
-                roleDetails,
-            },
+            attributes,
             id,
         } = result.included[0];
+        const {
+            roleType,
+            roleDetails,
+        } = attributes;
         fsa.payload.currentAccount = {
             accountType: dataMap[roleType],
             avatar: roleDetails.avatar,
             balance: `$${roleDetails.balance}`,
+            id: (dataMap[roleType] === 'company') ? attributes.companyId : null,
             location: `/contexts/${id}`,
             name: roleDetails.name,
             slug: !_.isEmpty(roleDetails.slug) ? roleDetails.slug : null,
