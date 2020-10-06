@@ -13,6 +13,7 @@ import {
     Link,
 } from '../../routes';
 import '../../static/less/giveFlows.less';
+import { withTranslation } from '../../i18n';
 import leftmodelimg from '../../static/images/icons/leftmodelimg.png';
 import leftcampaigngroup from '../../static/images/givinggroup_banner.png';
 import modelimg1 from '../../static/images/icons/rightmodelimg1.png';
@@ -35,9 +36,10 @@ const GiveFromGroupModal = (props) => {
         fundId,
         hasCampaignAccess,
         isGiveFromModalOpen,
+        t: formatMessage,
     } = props;
-    const divTextForCharity = 'A charity your group supports';
-    const divTextForCampaign = 'The Campaign your group supports';
+    const divTextForCharity = formatMessage('groupProfile:divTextForCharity');
+    const divTextForCampaign = formatMessage('groupProfile:divTextForCampaign');
     let modalLeftSectionDouble;
     let giveUrl = `/give/to/charity/new?group_id=${groupId}`;
     let imgClass;
@@ -86,7 +88,7 @@ const GiveFromGroupModal = (props) => {
         divText = divTextForCharity;
         imgClass = "charityImg";
         divClassName = 'ModelLeftBox graybox isDisabled';
-        disabledDivText = 'Your group hasn\'t yet set any charities to support';
+        disabledDivText = formatMessage('groupProfile:disabledDivText');
     }
     const modalLeftSectionSingle = (
         <Grid.Column mobile={16} tablet={16} computer={6}>
@@ -115,20 +117,23 @@ const GiveFromGroupModal = (props) => {
             centered
             dimmer="inverted"
         >
-            <Modal.Header>Give from: {groupName}</Modal.Header>
+            <Modal.Header>
+                {formatMessage('groupProfile:giveFrom')}
+                {groupName}
+            </Modal.Header>
             <Modal.Content className="scrollContent">
                 <div className="giveingGropPopupHeading">
                     <Grid>
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={16} computer={6}>
                                 <div className="giveboxheding">
-                                    <p>Give to:</p>
+                                    <p>{formatMessage('groupProfile:giveTo')}</p>
                                 </div>
                             </Grid.Column>
                             <Responsive minWidth={992} maxWidth={2559}>
                                 <Grid.Column mobile={16} tablet={16} computer={10}>
                                     <div className="giveboxheding">
-                                        <p className="rightTop">Or, find someone else to give to:</p>
+                                        <p className="rightTop">{formatMessage('groupProfile:giveboxheadingOne')}</p>
                                     </div>
                                 </Grid.Column>
                             </Responsive>
@@ -141,13 +146,15 @@ const GiveFromGroupModal = (props) => {
                         <Grid.Row stretched>
                             {(!_isEmpty(beneficiariesCount) && hasCampaignAccess) ? modalLeftSectionDouble : modalLeftSectionSingle}
 
-                            <Responsive  minWidth={320} maxWidth={991}>
+                            <Responsive minWidth={320} maxWidth={991}>
                                 <div className="giveingGropPopupHeading">
                                     <Grid>
                                         <Grid.Row>
                                             <Grid.Column mobile={16} tablet={16} computer={10}>
                                                 <div className="giveboxheding">
-                                                    <p className="rightbottom"> Or, find someone else to give to: </p>
+                                                    <p className="rightbottom"> 
+                                                        {formatMessage('groupProfile:giveboxheadingTwo')} 
+                                                    </p>
                                                 </div>
                                             </Grid.Column>
                                         </Grid.Row>
@@ -162,9 +169,9 @@ const GiveFromGroupModal = (props) => {
                                                 <Image src={modelimg1} />
                                                 <Item.Content verticalAlign='middle'>
                                                     <Item.Description>
-                                                        <p>Another Giving Group that you're a member of </p>
+                                                        <p>{formatMessage('groupProfile:givingGroupMemberText')}</p>
                                                         {(!relatedGroupsRoute && (
-                                                            <p className="disabled-text">It looks like you're not yet a member of any other groups</p>
+                                                            <p className="disabled-text">{formatMessage('groupProfile:givingGroupNotMemberText')}</p>
                                                         ))
                                                         }
                                                     </Item.Description>
@@ -180,7 +187,7 @@ const GiveFromGroupModal = (props) => {
                                                 <Image src={modelimg2} />
                                                 <Item.Content verticalAlign='middle'>
                                                     <Item.Description>
-                                                        <p> One of your friends on Charitable Impact</p>
+                                                        <p>{formatMessage('groupProfile:friendText')}</p>
                                                     </Item.Description>
                                                 </Item.Content>
                                             </Item>
@@ -194,7 +201,7 @@ const GiveFromGroupModal = (props) => {
                                                 <Image src={modelimg3} />
                                                 <Item.Content verticalAlign='middle'>
                                                     <Item.Description>
-                                                        <p> A different charity, Giving Group, or Campaign that you want to search for</p>
+                                                        <p>{formatMessage('groupProfile:searchText')}</p>
                                                     </Item.Description>
                                                 </Item.Content>
                                             </Item>
@@ -222,5 +229,5 @@ function mapStateToProps(state) {
 
     };
 }
-export default connect(mapStateToProps)(GiveFromGroupModal);
+export default withTranslation('groupProfile')(connect(mapStateToProps)(GiveFromGroupModal));
 

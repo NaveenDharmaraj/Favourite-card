@@ -20,6 +20,7 @@ import modelimg1 from '../../static/images/icons/rightmodelimg1.png';
 import modelimg2 from '../../static/images/illustration-find-friends.png';
 import modelimg3 from '../../static/images/icons/rightmodelimg3.png';
 import PlaceholderGrid from '../shared/PlaceHolder';
+import { withTranslation } from '../../i18n';
 
 const GiveFromCampaignModal = (props) => {
     const {
@@ -29,7 +30,8 @@ const GiveFromCampaignModal = (props) => {
         campaignRelatedBeneficiariesCount,
         fundId,
         isGiveFromModalOpen,
-        toggleGiveFromGroupModal
+        toggleGiveFromGroupModal,
+        t: formatMessage,
     } = props;
     const relatedBeneficiaryRoute = (campaignRelatedBeneficiariesCount) ? (`/give/to/charity/new?campaign_id=${campaignId}`) : '';
     const relatedGroupsRoute = (groupsWithMemberships && groupsWithMemberships.data && groupsWithMemberships.data.length > 0) ? (`/give/to/group/new?campaign_id=${campaignId}`) : '';
@@ -44,7 +46,10 @@ const GiveFromCampaignModal = (props) => {
                 onClose={toggleGiveFromGroupModal}
                 dimmer="inverted"
             >
-                <Modal.Header>Give from: {campaignName}</Modal.Header>
+                <Modal.Header>
+                    {formatMessage('campaignProfile:giveFrom')}
+                    {campaignName}
+                </Modal.Header>
                 <Modal.Content className="scrollContent">
                     { (groupsWithMemberships !== undefined || campaignRelatedBeneficiariesCount !== undefined) ? (
                         <Fragment>
@@ -53,13 +58,13 @@ const GiveFromCampaignModal = (props) => {
                                     <Grid.Row>
                                         <Grid.Column mobile={16} tablet={16} computer={6}>
                                             <div className="giveboxheding">
-                                                <p>Give to:</p>
+                                                <p>{formatMessage('campaignProfile:giveTo')}</p>
                                             </div>
                                         </Grid.Column>
                                         <Responsive minWidth={992} maxWidth={2559}>
                                             <Grid.Column mobile={16} tablet={16} computer={10}>
                                                 <div className="giveboxheding">
-                                                    <p className="rightTop">Or, find someone else to give to:</p>
+                                                    <p className="rightTop">{formatMessage('campaignProfile:giveboxheading')}</p>
                                                 </div>
                                             </Grid.Column>
                                         </Responsive>
@@ -74,9 +79,9 @@ const GiveFromCampaignModal = (props) => {
                                                 <div className="center-content">
                                                     <Image src={leftmodelimg} className="charityImg" />
                                                     <div className="descriptiontext">
-                                                        A charity your Campaign supports
+                                                        {formatMessage('campaignProfile:charityDescriptiontext')}
                                                         {(!relatedBeneficiaryRoute && (
-                                                            <p className="disabled-text">Your Campaign hasn't yet set charities to support</p>
+                                                            <p className="disabled-text">{formatMessage('campaignProfile:charityDescriptionInnertext')}</p>
                                                         ))
                                                         }
                                                     </div>
@@ -90,7 +95,7 @@ const GiveFromCampaignModal = (props) => {
                                                 <Grid.Row>
                                                     <Grid.Column mobile={16} tablet={16} computer={10}>
                                                         <div className="giveboxheding">
-                                                            <p className="rightbottom"> Or, find someone else to give to: </p>
+                                                            <p className="rightbottom">{formatMessage('campaignProfile:giveboxheadingText')}</p>
                                                         </div>
                                                     </Grid.Column>
                                                 </Grid.Row>
@@ -105,9 +110,9 @@ const GiveFromCampaignModal = (props) => {
                                                         <Image src={modelimg1} />
                                                         <Item.Content verticalAlign="middle">
                                                             <Item.Description>
-                                                                <p>A Giving Group that you're a member of </p>
+                                                                <p>{formatMessage('campaignProfile:givingGroupMemberText')}</p>
                                                                 {(!relatedGroupsRoute && (
-                                                                    <p className="disabled-text">It looks like you're not yet a member of any other groups</p>
+                                                                    <p className="disabled-text">{formatMessage('campaignProfile:givingGroupNotaMemberText')}</p>
                                                                 ))
                                                                 }
                                                             </Item.Description>
@@ -123,7 +128,7 @@ const GiveFromCampaignModal = (props) => {
                                                         <Image src={modelimg2} />
                                                         <Item.Content verticalAlign='middle'>
                                                             <Item.Description>
-                                                                <p> One of your friends on Charitable Impact</p>
+                                                                <p>{formatMessage('campaignProfile:friendText')}</p>
                                                             </Item.Description>
                                                         </Item.Content>
                                                     </Item>
@@ -137,7 +142,7 @@ const GiveFromCampaignModal = (props) => {
                                                         <Image src={modelimg3} />
                                                         <Item.Content verticalAlign='middle'>
                                                             <Item.Description>
-                                                                <p> A different charity, Giving Group, or Campaign that you want to search for</p>
+                                                                <p>{formatMessage('campaignProfile:searchText')}</p>
                                                             </Item.Description>
                                                         </Item.Content>
                                                     </Item>
@@ -188,4 +193,4 @@ GiveFromCampaignModal.PropTypes = {
     toggleGiveFromGroupModal: PropTypes.func,
 }
 
-export default connect(mapStateToProps)(GiveFromCampaignModal);
+export default withTranslation('campaignProfile')(connect(mapStateToProps)(GiveFromCampaignModal));

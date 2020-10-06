@@ -68,5 +68,16 @@
     "expiredMatchedText": "generously matched each gift to this group $1.00 for $1.00.",
     "expiredMatchProvidedText": "matched of {{formattedTotalFund}} provided by",
     "expireMatchedByText": "was provided and fully matched by",
-    "commentText": "Write a message to the group…"
+    "commentText": "Write a message to the group…",
+    "divTextForCharity": "A charity your group supports",
+    "divTextForCampaign": "The Campaign your group supports",
+    "disabledDivText": "Your group hasn't yet set any charities to support",
+    "giveFrom": "Give from: ",
+    "giveTo": "Give to:",
+    "giveboxheadingOne": "Or, find someone else to give to:",
+    "giveboxheadingTwo": " Or, find someone else to give to: ",
+    "givingGroupMemberText": "Another Giving Group that you're a member of ",
+    "givingGroupNotMemberText": "It looks like you're not yet a member of any other groups",
+    "friendText": " One of your friends on Charitable Impact",
+    "searchText": " A different charity, Giving Group, or Campaign that you want to search for"
 }
