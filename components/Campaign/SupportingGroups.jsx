@@ -122,8 +122,12 @@ class SupportingGroups extends React.Component {
         }
         else {
             return (
+                <Fragment>
+                <div className="campaignProfileSubheading">
+                <p>{formatMessage('campaignProfile:supportNoDataHeading')}</p>
+                </div>
                 <Grid.Column width={16} className="c-w-100">
-                    <div className="givingGroup noData mt-1 mb-2">
+                    <div className="campaignProfile_noData noData mt-1 mb-2">
                         <Grid verticalAlign="middle">
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={8} computer={8}>
@@ -150,6 +154,7 @@ class SupportingGroups extends React.Component {
                         </Grid>
                     </div>
                 </Grid.Column>
+                </Fragment>
             );
         }
     };
