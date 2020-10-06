@@ -134,6 +134,8 @@ class SupportingGroups extends React.Component {
                                         <Header as="h4">
                                             <Header.Content>
                                                 {formatMessage('campaignProfile:supportNoDataHeader')}
+                                                <br/>
+                                                {formatMessage('campaignProfile:supportNoDataHeaderGroup')}
                                                 <Header.Subheader>
                                                     {formatMessage('campaignProfile:supportNoDataSubHeader')}
                                                 </Header.Subheader>
