@@ -94,7 +94,7 @@ const TransactionsBlock = (props) => {
                 && (
                     <div className="groupcreated">
                         <List verticalAlign="middle">
-                            <List.Item>
+                            <List.Item className="calendar_btn">
                                 <i aria-hidden="true" className="calendar icon" />
                                 <List.Content>
                                     <List.Header>

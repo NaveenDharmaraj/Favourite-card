@@ -67,7 +67,7 @@
                 font-size: 20px;
                 color    : #263238;
                 line-height: 24px;
-                margin: 33px 0px 30px 0px!important;
+                margin: 40px 0px 30px 0px!important;
             }
         }
     }
@@ -119,18 +119,21 @@
         font-size: 14px;
         line-height: 22px;
         color: #263238;
+        padding-right: 10px;padding-left: 10px;
     }
     .custom_Grid{
         display: -ms-flexbox;
         -ms-flex-wrap: wrap;
         flex-wrap: wrap;
         display: flex;
-        margin: 0px -9px;
-        @media only screen and (min-width: 767px){
-            margin:0px;
+        margin-right: -10px;
+        margin-left: -10px;
+        >div{
+            padding-right: 10px;padding-left: 10px;
         }
         .col-sm-6{
             width: 100%;
+            padding-right: 10px;padding-left: 10px;
             @media only screen and (min-width: 992px){
                 -ms-flex: 0 0 50%;
                 flex: 0 0 50%;
@@ -146,7 +149,7 @@
        display: flex;
         border-radius: 4px;
         padding:10px;
-        margin: 0px 9px 18px 9px;
+        margin: 18px 0px;
         @media only screen and (max-width: 991px){
             max-width:100%;
             width: 100%;
@@ -155,6 +158,10 @@
         @media only screen and (max-width: 767px){
             margin: 0px auto 18px;
             max-width: 377px;
+        }
+        @media only screen and (max-width:500px){
+            margin: 0px auto 18px;
+            max-width:100%;
         }
         .CardProfile{
             max-width: 85px;
