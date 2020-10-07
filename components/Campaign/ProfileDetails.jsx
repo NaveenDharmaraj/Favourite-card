@@ -91,7 +91,7 @@ function ProfileDetails(props) {
                                     </Grid.Column>
                                     <div className="fullwidth_v_G">
                                         <div className={imageArray.length === 1 ? 'one_img_full GalleryWrapper' : 'GalleryWrapper'} style={{ display: imageArray.length === 0 ? 'none' : 'inline-block' }}>
-                                            <Grid className="fullwidth_gallery">
+                                            <Grid className={!videoPlayerLink ? "fullwidth_gallery gallery_btn" : "fullwidth_gallery "}>
                                                 <Grid.Row>
                                                     <Grid.Column width={16}>
                                                         <ImageGallery
