@@ -113,7 +113,7 @@ const ActiveMatchBlock = (props) => {
                         </div>
                         <div className="MatchingPartner">
                             <Header as="h3">{company}</Header>
-                            <p>{formatMessage('groupProfile:matchingPartner')}</p>
+                            <p>{formatMessage('groupProfile:matchingpartner')}</p>
                         </div>
                     </div>
                     {matchClose
