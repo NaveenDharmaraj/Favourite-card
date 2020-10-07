@@ -54,7 +54,7 @@
     "totalMatchText": "A total of {{totalMatched}} was matched by",
     "matchTextHeading": "Your gift will be matched!",
     "matchGiveGroupText": "When you give to this group,",
-    "matchGiveCampaignText": "When you give to this campaign,",
+    "matchGiveCampaignText": "When you give to this Campaign,",
     "matchGiftText": "will match your gift $1.00 for $1.00.",
     "matchMaxMatchTextOne": "Gifts to this {{profileType}} will be matched up to a maximum of ",
     "matchMaxMatchTextTwo": "per donor until matching funds run out or expire.",
