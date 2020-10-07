@@ -13,6 +13,7 @@ import {
 } from 'prop-types';
 import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
+import _capitalize from 'lodash/capitalize';
 
 import { withTranslation } from '../../../i18n';
 import {
@@ -61,7 +62,20 @@ const ActiveMatchBlock = (props) => {
                 top: scrollOffset,
             });
         };
-
+        let Profiletype = '';
+        switch (type) {
+            case 'beneficiaries':
+                Profiletype = 'charity';
+                break;
+            case 'groups':
+                Profiletype = 'group';
+                break;
+            case 'campaigns':
+                Profiletype = _capitalize('campaign');
+                break;
+            default:
+                break;
+        };
         return (
             <div className="charityInfowrap fullwidth lightGreenBg">
                 <div className="charityInfo">
@@ -76,7 +90,7 @@ const ActiveMatchBlock = (props) => {
                         {formatMessage('groupProfile:matchGiftText')}
                     </p>
                     <p>
-                        {formatMessage('groupProfile:matchMaxMatchTextOne', { profileType: type })}
+                        {formatMessage('groupProfile:matchMaxMatchTextOne', { profileType: Profiletype })}
                         <b>{formattedmaxMatchAmount}</b>
                             &nbsp;
                         {formatMessage('groupProfile:matchMaxMatchTextTwo')}
