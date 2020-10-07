@@ -199,7 +199,10 @@
          }
         a{
             &.item{
-                margin-left:-50px !important;
+                margin-left:-48px !important;
+                @media only screen and (max-width:768px) {
+                margin-left:-52px !important;
+                }
                 .grProfile{
                     width: 30px;
                     height: 30px;
@@ -240,7 +243,7 @@
     }
     .GroupPrfileAllText{
         display: flex;
-        padding-left: 14px;
+        padding-left: 16px;
         p{
             font-size: 14px;
             line-height: 22px;
@@ -304,7 +307,8 @@
                 font-size: 14px !important;
                 line-height: 22px;
                 color: #263238;
-                margin-bottom:5px;
+                margin-bottom:7px;
+                margin-top:18px;
             }
         }
 
@@ -318,6 +322,7 @@
                 width: 30px;
                 height: 30px;
                 border-radius: 100px;
+                margin-right: 10px;
             }
             .content{
                 .header {
@@ -452,11 +457,17 @@
                 @media only screen and (max-width:992px) {
                     padding-left: 10px;
                 padding-right: 10px;
+                P{
+                    text-align: left;
+                }
                 }
                 @media only screen and (max-width:500px) {
                    width: 100%;
                    margin-top: 10px;
                    margin-bottom: 10px;
+                   P{
+                    text-align: center;
+                }
                 }
             }
         }
@@ -1124,13 +1135,13 @@
                         font-size: 13px !important;
                     }
                    +.groupcreated{
-                       margin-top: 0px;
+                       margin-bottom: 0px;
                    } 
                 }
             }
         }
         .groupcreated{
-            margin-top: 0px;
+            margin-bottom: -4px;
         } 
         .headingColor{
         color: #263238;
@@ -1829,6 +1840,9 @@
     &.margingWapper{
         margin:20px 0px;
     }
+    &.no-margin-bottom{
+        margin:20px 0px 0px 0px ;  
+    }
     .h_profileMatching{
         border-radius: 100%;
         width:40px;
@@ -2051,6 +2065,10 @@
                         height: 135px !important;
                         border-radius: 4px !important;
                         background-color: #fff;
+                        @media only screen and (max-width:991px){
+                        width: 130px !important;
+                        height: 130px !important;
+                        }
                         img{
                         width: 100% !important;
                         height: 100%!important;
@@ -2864,4 +2882,9 @@ margin-top: 10px;
 }
 .c-w-100{
     width: 100%;
+}
+.noDataCard.ui.card.rightImg > .content > .header{
+    @media only screen and (max-width:420px){
+    margin-top:0px !important;
+    }
 }

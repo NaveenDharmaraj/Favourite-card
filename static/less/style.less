@@ -7184,7 +7184,7 @@ button.ui.button.blue-bordr-btn-round-def{
           }
           >.header{
             width: calc(100% - 150px);
-            margin: 30px 0px;
+            margin: 20px 0px;
             font-size: 14px;
             @media only screen and (max-width: 420px){
               width: 100%;
@@ -7233,6 +7233,10 @@ button.ui.button.blue-bordr-btn-round-def{
       &.ui{
         .content{
           font-size: 17px;
+          padding-right: 15px;
+          @media only screen and (max-width:767px) {
+            padding-right: 0px;
+          }
           .sub{
             &.header{
               margin-top: 10px;
@@ -7255,11 +7259,41 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-left: auto;
           margin-right: auto;
+          width: 100%;
         }
       }
     }
     .givingGroupNoDataContent{
       max-width: 417px;
+    }
+  }
+  &.campaignProfile_noData{
+    background-color: #E3E8F0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    .noDataLeftImg{
+      &.ui{
+        &.image{
+          max-width: 293px;
+          margin-bottom: -1rem;
+          margin-left: auto;
+          margin-right: auto;
+          width: 100%;
+        }
+      }
+    }
+    .givingGroupNoDataContent{
+      max-width: 417px;
+    }
+    .givingGroupNoDataContent{
+      .sub{
+        &.header{
+          font-size: 14px !important;
+          line-height: 22px;
+          color: #263238;
+          font-family: 'ProximaNova-Regular'
+        }
+      }
     }
   }
   &.ggManage{
@@ -7274,6 +7308,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-top: -1rem;
           margin-bottom: -1rem;
           margin-right: auto;
+          width: 100%;
         }
       }
     }
@@ -7291,6 +7326,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-right: auto;
           margin-left: auto;
+          width: 100%;
         }
       }
     }
@@ -7307,6 +7343,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-top: -1rem;
           margin-right: auto;
+          width: 100%;
         }
       }
     }
@@ -7322,6 +7359,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-left: auto;
           margin-right: auto;
+          width: 100%;  
         }
       }
     }
@@ -7338,6 +7376,23 @@ button.ui.button.blue-bordr-btn-round-def{
       }
     }
     &.givingGroup{
+      .noDataLeftImg{
+        text-align: center;
+        &.ui{
+          &.image{
+            max-width: 293px;
+            margin-bottom: 1rem;
+          }
+        }
+      }
+      .givingGroupNoDataContent{
+        max-width: 415px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+      }
+    }
+    &.campaignProfile_noData{
       .noDataLeftImg{
         text-align: center;
         &.ui{
@@ -7894,6 +7949,8 @@ body{
               }
             }
             .content{
+              margin-top: 0px;
+                padding-top: 0px;
               a{
                 margin: 0px;
                 padding: 0px;

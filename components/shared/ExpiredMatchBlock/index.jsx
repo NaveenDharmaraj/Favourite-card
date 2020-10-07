@@ -126,7 +126,7 @@ const ExpiredMatchBlock = (props) => {
                         )
                     }
                 </div>
-                <div className="MatchingPartnerWapper margingWapper">
+                <div className={canSeeMatchingHistory ? "MatchingPartnerWapper margingWapper" : "MatchingPartnerWapper no-margin-bottom"}>
                     <div className="h_profileMatching borderprofile">
                         <Image src={companyAvatar} />
                     </div>

@@ -26,6 +26,7 @@
     "supportNoDataSubHeader": "Giving Groups bring multiple people together to give. You can pool or raise money to support causes or charities together.",
     "createGivingGroupBtn": "Create a Giving Group",
     "supportCampaignHeader": "Giving Groups supporting this Campaign",
+    "supportNoDataHeading": "This Campaign doesn't have any Giving Groups supporting it yet.",
     "totalAmountRaised": "Total Raised: {{amount}}",
     "popupCurrentBalanceText": "The current {{Profiletype}} balance is {{balance}}.",
     "popupMatchingText": "You cannot give from this {{Profiletype}} until matching expires.",
