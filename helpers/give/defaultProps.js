@@ -132,7 +132,8 @@ export const groupDefaultProps = {
             },
             matchingPolicyDetails: {
                 hasMatchingPolicy: false,
-                isValidMatchPolicy : false,
+                isValidMatchPolicy: false,
+                matchingPolicyExpiry: true,
                 matchPolicyTitle: '',
             },
             infoToShareList: [],
