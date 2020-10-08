@@ -66,10 +66,9 @@ class DedicateGift extends Component {
         } = this.props;
         return (
             <Fragment>
-                <div className="give_flow_field">
-                    <Header as="h3" className="f-weight-n">
-                        Dedicate this gift (optional)
-                    </Header>
+                <div className="give_flow_field dedicate-flow">
+                    <label>Dedicate this gift (optional)</label>
+                    <span className="givingInfoText">Only you will see this in your Account Details.</span>
                     <Accordion>
                         <Accordion.Title
                             data-test="Give_DedicateGift_accordian_inhonor"
@@ -94,7 +93,8 @@ class DedicateGift extends Component {
                         />
                         <Accordion.Content
                             as={Input}
-                            className="inputInline"
+                            className="inputInline field"
+                            error={validity && !validity.isDedicateGiftEmpty}
                             active={activeIndex === 0 || activeIndex === 1}
                             name={currentName}
                             placeholder="Who are you dedicating this gift to? "

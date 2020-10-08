@@ -37,7 +37,7 @@ const GiveFromGroupModal = (props) => {
         isGiveFromModalOpen,
     } = props;
     const divTextForCharity = 'A charity your group supports';
-    const divTextForCampaign = 'The campaign your group supports';
+    const divTextForCampaign = 'The Campaign your group supports';
     let modalLeftSectionDouble;
     let giveUrl;
     let imgClass;
@@ -58,7 +58,7 @@ const GiveFromGroupModal = (props) => {
                             </div>
                         </div>
                     </Link>
-                    <Link route={`/give/to/group/${slug}/new`}>
+                    <Link route={`/give/to/group/${slug}/new?groupCampaign_id=${groupId}`}>
                         <div className="ModelLeftBoxBottom ">
                             <Image src={leftcampaigngroup} />
                             <div className="descriptiontext">

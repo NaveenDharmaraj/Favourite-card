@@ -62,7 +62,7 @@ class SwitchAccountModal extends React.Component {
                 open={open}
                 onClose={close}
             >
-                <Modal.Header>Switch Account</Modal.Header>
+                <Modal.Header>Switch account</Modal.Header>
                 <Modal.Content>
                     <Modal.Description className="font-s-16">
                         <div className="messageSearch">

@@ -1,4 +1,21 @@
 @import "_mixins.less";
+body{
+    .ui.form input:not([type]), .ui.form input[type="date"], .ui.form input[type="datetime-local"], .ui.form input[type="email"], .ui.form input[type="file"], .ui.form input[type="number"], .ui.form input[type="password"], .ui.form input[type="search"], .ui.form input[type="tel"], .ui.form input[type="text"], .ui.form input[type="time"], .ui.form input[type="url"]{
+        font-size: 14px;
+    }
+    .ui.selection.dropdown{
+        font-size: 14px;
+    }
+    .ui.modals.dimmer .chimp-modal.ui.modal > .header{
+        font-size: 17px;
+        font-family: 'ProximaNova-Semibold';
+    }
+}
+.addRecipientForm{
+    .ui.form input:not([type]), .ui.form input[type="date"], .ui.form input[type="datetime-local"], .ui.form input[type="email"], .ui.form input[type="file"], .ui.form input[type="number"], .ui.form input[type="password"], .ui.form input[type="search"], .ui.form input[type="tel"], .ui.form input[type="text"], .ui.form input[type="time"], .ui.form input[type="url"]{
+        min-height: 40px;
+    }
+}
 .flowSuccess{
     @media only screen and (min-width: 1199px){
         min-height: 685px;
@@ -52,8 +69,11 @@
          font-family: 'ProximaNova-Regular';
          max-width: 550px;
          width: 100%;
-         margin:0px auto 40px;
+         margin:0px auto 20px;
          text-align: center;
+         +.mt-1{
+            margin-top: 40px !important;
+         }
      }
     } 
     button{
@@ -198,7 +218,7 @@
                                     bottom: 0;
                                     width: 12px;
                                     height: 16px;
-                                    background-image: url(../images/icons/icon-arrow-down.svg) !important;
+                                    background-image: url("../images/icons/icon-arrow-down.svg") !important;
                                     background-size: contain !important;
                                     background-repeat: no-repeat !important;
                                     background-position: center !important;
@@ -214,7 +234,7 @@
 }
 /***********flowReviewbanner********/
 .givinggroupbanner{
-    background-image: url(../images/banner_give-to-gg-campaign.svg)!important;
+    background-image: url("../images/banner_give-to-gg-campaign.svg")!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -242,7 +262,8 @@
                   font-size: 24px;
                   color: #263238;
                   @media only screen and (max-width:768px) {
-                    font-size: 17px;  
+                    font-size: 17px;
+                    padding-top: 3px;
                   }
                 }
             }
@@ -251,7 +272,7 @@
 }
 /*******/
 .charityallocationbanner{
-    background-image: url(../images/banner_give-to-charity.svg)!important;
+    background-image: url("../images/banner_give-to-charity.svg")!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -279,7 +300,8 @@
                   font-size: 24px;
                   color: #263238;
                   @media only screen and (max-width:768px) {
-                    font-size: 17px;  
+                    font-size: 17px;
+                    padding-top: 3px;
                   }
                 }
             }
@@ -288,7 +310,7 @@
 }
 /*****/
 .flowReviewbanner{
-    background-image: url(../images/banner-add_money_give_flows-blue.png)!important;
+    background-image: url("../images/banner_give-fromgg.svg")!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -299,7 +321,6 @@
     justify-content: center;
     align-items: center;
     @media only screen and (max-width:767px) {
-        background-image: url(../images/dashboard_bg.png) !important;
         min-height: 55px;
         height: unset;
         padding: 15px 0px;
@@ -317,7 +338,8 @@
                   font-size: 24px;
                   color: #263238;
                   @media only screen and (max-width:768px) {
-                    font-size: 17px;  
+                    font-size: 17px;
+                    padding-top: 3px; 
                   }
                 }
             }
@@ -403,6 +425,14 @@
                                         padding: 29px 4px 29px 10px;
                                         vertical-align: top;
                                         word-break: break-word;
+                                    }
+                                    b{
+                                        font-family: 'ProximaNova-Semibold'; 
+                                    }
+                                }
+                                &.tablethree{
+                                    @media only screen and (max-width:767px) {
+                                        display: none !important;
                                     }
                                 }
                                 &.transaction-text{
@@ -495,13 +525,31 @@
                 }    
             }
         }
+       
     }
     .right.aligned{
         font-family: 'ProximaNova-Semibold';
     }
 }
 }
-
+.layoutfixed{
+    table-layout: fixed;
+    td:first-child{
+        width: 75%;
+    }
+    td:last-child{
+        width: 25%;
+    }
+    .matchingAmount{
+        display: flex;
+        align-items: center;
+        span{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}
 
 /***********flowReviewbanner*close*******/ 
 .flowBreadcrumb{
@@ -566,6 +614,9 @@
                 +.small{
                     margin-left: 10px;
                 }
+                @media only screen and (max-width:767px) {
+                    padding: 0 12px;
+                }
             }
             &:hover,&:focus{
                 background-color: #F1F6FD;
@@ -588,6 +639,9 @@
                 }
                 +.button{
                     margin-left: 10px;
+                    @media only screen and (max-width:360px) {
+                        margin-left: 5px;
+                    } 
                 }
                 &:hover,&:focus{
                     background-color: #F1F6FD;
@@ -651,6 +705,8 @@
                 &.icon{
                     &.blue{
                         visibility: hidden;
+                        margin: 0px !important;
+                        height: 0px;
                     }
                 }
             }
@@ -665,6 +721,8 @@
                     &.icon{
                         &.blue{
                             visibility: hidden;
+                            height: 0px;
+                            margin: 0px;
                         }
                     }
                 }
@@ -683,6 +741,8 @@
                 &.icon{
                     &.blue{
                         visibility: hidden;
+                        margin: 0px;
+                        height: 0px;
                     }
                 }
             }
@@ -703,6 +763,7 @@
                                 input{
                                     background-color: #F8F8F8;
                                     color: #7F7F7F;
+                                    font-size: 14px;
                                 }
                             }
                         }
@@ -797,14 +858,17 @@
     .coverFeeLabel{
         font-size: 12px !important;
         color: #263238 ;
-        line-height: 15px;
+        line-height: 12px;
         margin-top: 15px;
         a{
             text-decoration: none;
             &.link{
+                font-family: 'ProximaNova-Regular';
+                font-weight: 400;
                 &.border{
                     &.bold{
                         font-family: 'ProximaNova-Regular';
+                        font-weight: 400;
                     }
                 }
             }
@@ -820,7 +884,7 @@
             }
         }
         +.error-message{
-            margin-top: -11px;
+            margin-top: -4px;
         }
     }
     textarea{
@@ -838,20 +902,20 @@
             } 
         }
         +.error-message{
-            margin-top: -14px;
+            margin-top: -10px !important;
             font-size: 12px;
         }
     }
     .give_flow_field{
-        margin-top:40px !important;
+        margin-top:38px !important;
         @media only screen and (max-width: 767px){
             margin-top:30px !important;
         }
         .price_btn{
             margin-bottom: 10px;
         }
-        .error-message{
-            margin-top: -10px;
+        .field+.error-message{
+            margin-top: -4px;
         }
         .accordion.ui{
             .cp_chkbx{
@@ -862,6 +926,11 @@
                 +.inputInline{
                     margin-top: 14px;
                 }
+                &:nth-child(2){
+                    label{
+                        margin-bottom: 0 !important;
+                    }
+                }
             }
             +.error-message{
                 margin-top: 8px;
@@ -870,7 +939,7 @@
         
     }
     .give_flow_field_bottom{
-        margin-bottom:40px !important;
+        margin-bottom:38px !important;
         margin-top: 18px;
         @media only screen and (max-width:767px) {
             margin-bottom:30px !important;
@@ -949,7 +1018,8 @@
     .ui{
         &.button{
             &.dropdown{
-                height: 41px;
+                padding-top: 12px;
+                padding-bottom: 12px;
                 &.taxReceiptDropDown{
                     height: auto;
                 }
@@ -989,7 +1059,7 @@
                 }
                 &::before{
                     content: '';
-                    background-image: url(../images/icons/icon-arrow-down.svg);
+                    background-image: url("../images/icons/icon-arrow-down.svg");
                     height: 7px;
                     width: 13.5px;
                     position: absolute;
@@ -1065,7 +1135,7 @@
                     &.cardVisa{
                         &::before{
                             content: '';
-                            background-image: url(../images/icons/icon-cc-visa-colour.png) !important;
+                            background-image: url("../images/icons/icon-cc-visa-colour.png") !important;
                             left: 10px;
                             width: 31px;
                             height: 11px;
@@ -1074,7 +1144,7 @@
                     &.cardMaster{
                         &::before{
                             content: '';
-                            background-image: url(../images/icons/icon-cc-mastercard-colour.png) !important;
+                            background-image: url("../images/icons/icon-cc-mastercard-colour.png") !important;
                             left: 10px;
                             width: 31px;
                             height: 11px;
@@ -1083,7 +1153,7 @@
                     &.cardExpress{
                         &::before{
                             content: '';
-                            background-image: url(../images/icons/icon-cc-american-express-colour.png) !important;
+                            background-image: url("../images/icons/icon-cc-american-express-colour.png") !important;
                             left: 10px;
                             width: 31px;
                             height: 11px;
@@ -1103,22 +1173,12 @@
     }
 }
 .noteDefault{
-    border-radius: 4px;	
     background-color: #E3E8F0;
-    padding:7px 9px 6px;
+    padding:10px 16px 9px;
     &.info{
-        background-color: #E5F5F5;
+        background-color: fade(#90459A, 10%);
         &.mt-2{
             margin-top: 20px;
-        }
-        .noteWraper{
-            .leftImg{
-                .notifyDefaultIcon{
-                    &::before{
-                        filter: invert(61%) sepia(64%) saturate(7283%) hue-rotate(156deg) brightness(96%) contrast(103%);
-                    }
-                }
-            }
         }
     }
     .noteWraper{
@@ -1134,7 +1194,7 @@
                 display: inline-block;
                 width: 23px;
                 height: 23px;
-                background-color: #fff;
+                // background-color: #fff;
                 border-radius: 100%;
                 position: relative;
                 &::before{
@@ -1142,13 +1202,18 @@
                     position: absolute;
                     left: 0px;
                     right: 0px;
-                    top: 3px;
-                    bottom: 3px;
+                    top: 0px;
+                    bottom: 0px;
                     margin: auto;
-                    background-image: url(../images/icons/exclamation.svg);
+                    background-image: url("../images/icons/ico_addmoney.svg");
                     background-repeat: no-repeat;
                     background-position: center;
-                    background-size: contain;
+                    background-size: 23px;
+                }
+                &.purpleIcon{
+                    &::before{
+                        background-image: url("../images/icons/purple.svg");
+                    }
                 }
             }
         }
@@ -1225,7 +1290,7 @@
             width: 17px;
             height: 17px;
             display: block;
-            background-image: url(../images/icons/red.svg);
+            background-image: url("../images/icons/red.svg");
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -1309,7 +1374,7 @@
     }
     &::before{
         content: '';
-        background-image: url(../images/icons/icon-arrow-down.svg);
+        background-image: url("../images/icons/icon-arrow-down.svg");
         height: 15px;
         width: 15px;
         position: absolute;
@@ -1328,12 +1393,34 @@
 
 .ui.button.fluid.floating.selection.dropdown.taxReceiptDropDown{
     text-align:left;
+    @media only screen and (max-width:767px) {
+        >.menu{
+            min-height:auto;
+            max-height: 220px;
+        }
+    }
     &:before{
         top:40%;
     }
 }
 .ui.button.fluid.floating.selection.dropdown.creditCardDropDown{
     text-align:left;
+    &.active{
+        .menu{
+            &.visible{
+                @media only screen and (max-width:767px) {
+                    overflow-y: auto;
+                    &::-webkit-scrollbar {
+                        width: 7px;
+                    }
+                }
+            }
+            >.item{
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
 }
 .taxReceiptDropDown >.text >span{
     display:block
@@ -1524,6 +1611,12 @@ span.attributes {
                 >.item {
                     border-bottom: 1px solid #DDDDDD;
                     padding: 18px !important;
+                    display: flex;
+                    align-items: center;
+                    >img,>.image{
+                        margin-bottom: 0px !important;
+                        margin-top: 0px !important;
+                    }
                 }
             }
         }
@@ -1578,7 +1671,7 @@ span.attributes {
                     opacity: 1;
                     &::before{
                         content: '';
-                        background-image: url(../images/icons/close.svg) !important;
+                        background-image: url("../images/icons/close.svg") !important;
                         background-size : contain !important;
                         width: 10px;
                         height: 10px;
@@ -1603,7 +1696,7 @@ span.attributes {
         }
         &::after{
             content: '';
-            background-image: url(../images/icons/icon-arrow-down.svg);
+            background-image: url("../images/icons/icon-arrow-down.svg");
             height: 15px;
             width: 15px;
             position: absolute;
@@ -1632,11 +1725,13 @@ span.attributes {
 .givingInfoText{
     font-family: 'ProximaNova-Regular';
     font-size: 12px;
+    line-height: 12px;
     display: block;
     margin-bottom: 15px;
-    margin-top: -10px;
+    margin-top: -3px;
     .icon.circle.blue.large.question.popupMargin-6{
         font-size: 21px;
+        display: none;
     }
 }
 .icon.circle.blue.large.question.popupMargin-6{
@@ -1668,7 +1763,7 @@ p{
     z-index: 1;
     opacity: .8;
     padding: .625rem 0 0 0;
-    background-image: url('../images/icons/close.svg') !important;
+    background-image: url("../images/icons/close.svg") !important;
     background-size: contain !important;
     background-repeat: no-repeat !important;
 }
@@ -1700,13 +1795,13 @@ p{
                     position: absolute;
                     left: 0px;
                     right: 0px;
-                    top: 3px;
-                    bottom: 3px;
+                    top: 0px;
+                    bottom: 0px;
                     margin: auto;
-                    background-image: url(../images/icons/exclamation.svg);
+                    background-image: url("../images/icons/ico_addmoney.svg");
                     background-repeat: no-repeat;
                     background-position: center;
-                    background-size: auto; 
+                    background-size: auto 28px; 
                 }
             }
         }
@@ -1727,7 +1822,7 @@ p{
     margin-top: 30px;
     .reviewP2ptext{
         margin-top:30px;
-        margin-bottom: 15px;
+        margin-bottom: 0px;
         @media only screen and (max-width:767px) {
             margin-top: 0px;
             margin-bottom: 0px;
@@ -1794,7 +1889,7 @@ textarea {
 .coverFeeLabel{
     font-size: 12px !important;
     color: #263238 ;
-    line-height: 15px;
+    line-height: 12px;
     margin-top: 15px;
 }
 input{
@@ -2146,13 +2241,25 @@ input{
                                     font-size: 14px;
                                     line-height: 22px;
                                     color: #263238;
+                                    border: 0px solid transparent;
+                                    &.selected{
+                                        background:transparent;
+                                    }
+                                    &.active{
+                                        background: rgba(0, 0, 0, 0.03);
+                                    }
                                     &.disabled{
                                         opacity: 1;
+                                        color: #BBBBBB;
                                         font-size: 14px;
-                                        font-family: 'ProximaNova-Semibold';
-                                        color:#263238;
-                                        border-top: 1px solid #E9E9E9;
-                                        line-height: 22px;
+                                        line-height: 17px;
+                                        &.ddlGroup{
+                                            font-size: 14px;
+                                            font-family: 'ProximaNova-Semibold';
+                                            color:#263238;
+                                            border-top: 1px solid #E9E9E9;
+                                            line-height: 22px;
+                                        }
                                         &:hover{
                                             background-color: #fff;
                                         }
@@ -2203,7 +2310,7 @@ input{
         }
         &::after{
             content: '';
-            background-image: url(../images/icons/icon-arrow-down.svg);
+            background-image: url("../images/icons/icon-arrow-down.svg");
             height: 7px;
             width: 13.5px;
             position: absolute;
@@ -2232,7 +2339,7 @@ input{
         bottom: 0;
         width: 20px;
         height: 20px;
-        background-image: url(../images/icons/icon-search.svg) !important;
+        background-image: url("../images/icons/icon-search.svg") !important;
         background-size: contain !important;
         background-repeat: no-repeat !important;
         background-position: center !important;
@@ -2296,12 +2403,11 @@ input{
         .item{
             margin-left: 15px !important;
             padding: 0 !important;
-            &:last-child{
-                margin-right: 15px !important;
-            }
         }
     }
-  
+    .ui.dropdown.floating{
+        margin-left: 15px;
+    }
 }
 .button.ui.primary.button.blue-btn-rounded.btn_first{
     margin-right: 20px;
@@ -2333,41 +2439,64 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     margin-bottom: 20px;
     }
 }
-.matching-fund-modal{
-    >.content{
-        >p{
-            line-height: 22px;
-            color: #263238;
-            font-size: 14px;
+.ui.modals.dimmer .chimp-modal.ui.modal{
+    &.matching-fund-modal{
+        i.icon.close{
+            opacity: 1;
+        }
+        >.header{
+            border-color: #E6E1E8;
+        }
+        >.content{
+            padding: 14px 35px 15px;
+            >p{
+                line-height: 22px;
+                color: #263238;
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
         }
     }
 }
 .matching-fund-modal-wrapper{
-    display: flex;
+    padding-top: 10px;
     padding-bottom: 15px;
-    @media only screen and (max-width:991px) {
-        flex-direction: column;
+    .ui.grid{
+        width: 100%;
     }
     .matching-fund-modal-inner-wrapper{
         display: flex;
         align-items: center; 
-        width: 100%;
+        height: 100%;
     }
     .matching-progress-wrapper{
-        width: 24px;
+        width: 21px;
+        height: 100%;
         .matching-progress{
-            background-color: #D7D7D7;
-            width: 24px;
-            height: 128px;
+            height: 100%;
+            background-color:transparent;
             border-radius: 29.5px;
-            overflow: hidden;
+            width: 21px;
             position: relative;
-            .progress-inner{
+            border: 1px solid #90459A;
+            overflow: hidden;
+            .progress-inner-wrapper{
+                width: 15px;
                 position: absolute;
-                bottom: 0px;
-                left: 0;
-                right: 0;
-                background-color: #009E9F;
+                bottom: 2px;
+                margin: auto;
+                left: 2px;
+                right: 2px;
+                border-radius:29.5px;
+                overflow: hidden;
+                height: calc(100% - 4px);
+                .progress-inner{
+                    background: linear-gradient(180deg, #C37BCA 0%, #90459A 100%);
+                    position: absolute;
+                    bottom: 0px;
+                    left: 0;
+                    right: 0;
+                }
             }
         }
     }
@@ -2384,11 +2513,11 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             &.ui{
                 &.header{
                     font-size: 24px;
-                    color: #009EA2;
+                    color: #90459A;
                     >.sub{
                         &.header{
                             font-size: 14px;
-                            color: #009EA2;
+                            color: #90459A;
                             font-family: 'ProximaNova-Semibold';
                         }
                     }
@@ -2400,26 +2529,29 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             line-height: 22px;
             color: #263238;
             margin-top: 20px;
+            margin-bottom: 33px;
             font-family: 'ProximaNova-Semibold';
+            @media only screen and (max-width:991px) {
+                margin-bottom: 0px;
+            }
         }
     }
     .matching-fund-expire{
         display: flex;
         align-items: flex-end;
-        @media only screen and (max-width:991px) {
-            width: 100%;
-        }
+        justify-content:  flex-end;
+        height: 100%;
         .expire-date{
             display: inline-block;
             font-size: 12px;
             font-family: 'ProximaNova-Medium';
             border-radius: 12.17px;
-            background-color: #E5F5F5;
+            background-color: fade(#90459A, 10%);
             padding: 4px 5px;
-            text-align: center;
-            @media only screen and (max-width:991px) {
-                margin-top: 30px;
-            }
+            text-align: center;          
+        }
+        @media only screen and (max-width:991px) {
+            justify-content:  start;
         }
     }
 }
@@ -2441,6 +2573,11 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                             .icon{
                                 &.question{
                                     margin-left: 10px;
+                                    margin-bottom: 0px;
+                                    margin-top: 0;
+                                    +.note{
+                                        margin-top: 3px;
+                                    }
                                 }
                             }
                         }
@@ -2480,6 +2617,9 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                     width: 340px;
                     max-width: 340px;
                 }
+                @media only screen and (max-width:767px) {
+                    max-width: 233px;
+                }
             }
         }
     }
@@ -2501,6 +2641,23 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     >.header{
         font-family: 'ProximaNova-semibold';
         color: #263238;
+    }
+    @media only screen and (max-width: 767px){
+        .selection{
+            &.dropdown{
+                &.ui{
+                    .menu{
+                        min-height: 220px;
+                        &.visible{
+                            overflow-y: auto;
+                            &::-webkit-scrollbar {
+                                width: 7px !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     .ui{
         &.form{
@@ -2569,9 +2726,6 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
         }
     }
     .noteWraper{
-        .leftImg .notifyDefaultIcon::before{
-            height: 18px;
-        }
         @media only screen and (max-width: 767px){
             .noteContent{
                 padding-left: 23px;
@@ -2582,7 +2736,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
         resize: none;
     }
 }
-.field{
+.give_flow_field{
     .accordion{
         &.ui{
             .checkbox{
@@ -2594,6 +2748,11 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                         label{
                             margin-bottom: 0px !important;
                             font-family: 'ProximaNova-Regular';
+                        }
+                        &:last-child{
+                            label{
+                                margin-bottom: 0px !important;
+                            }
                         }
                         +.input{
                             input{
@@ -2645,5 +2804,93 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
 body{
     .ui.inverted.dimmer{
         background-color: fade(#D8D8D8, 71%);
+    }
+}
+.multyDropDownFilter{
+    position: relative;
+    .ui.active.multiple.search.selection.dropdown{
+        .dropdown.icon{
+            position: absolute;
+            width: 20px;
+            top: 15px;
+            bottom: 15px;
+            right: 15px;
+            background: transparent;
+            cursor: pointer;
+            z-index: 999;
+        }
+    }
+}
+.dropdownWithArrowParentnotbg{
+    .ui.selection.dropdown{
+        &.active{
+            .dropdown.icon{
+                position: absolute;
+                width: 20px;
+                top: 15px;
+                bottom: 15px;
+                right: 15px;
+                background: transparent;
+                cursor: pointer;
+                z-index: 999;
+            }
+        }
+        .dropdown.icon{
+            display: block;
+            &::before{
+                content: '';
+            }
+        }
+    }
+}
+.mobile_btn{
+    .ui.button{
+        &.w-120{
+            width: auto;
+            min-width: 120px;
+        }
+        &.w-160{
+            width: auto;
+            min-width: 160px;
+        }
+    }
+}
+@media only screen and (max-width:991px) {
+    body{
+        .ui.search.dropdown .menu{
+            max-height: 220px;
+        }
+    }
+}
+.givetoInfoText{
+    display: block;
+    margin-top: -6px;
+    margin-bottom: 20px;
+    font-size: 12px;
+}
+.reload-mdl-footer-btns{
+    .ui.button{
+        padding: 10px 30px;
+        margin-right: 0px !important;
+        min-height: 40px;
+        +.button{
+            margin-left: 10px !important;
+        }
+        &.blue-btn-rounded{
+
+        }
+        &.blue-bordr-btn-round{
+
+        }
+    }
+    &.addNewCardMdlFooter{
+        padding-bottom: 25px;
+        .ui.button{
+            padding: 10px 30px;
+            margin-right: 0px !important;
+            +.button{
+                margin-left: 10px !important;
+            }
+        }
     }
 }

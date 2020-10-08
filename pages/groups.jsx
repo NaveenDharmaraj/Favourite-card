@@ -22,6 +22,7 @@ class Groups extends React.Component {
     static async getInitialProps({ query }) {
         return {
             campaignId: query.campaign_id,
+            groupCampaignId: query.groupCampaign_id,
             groupId: query.group_id,
             namespacesRequired: [
                 'authHeader',
@@ -29,6 +30,10 @@ class Groups extends React.Component {
                 'noteTo',
                 'accountTopUp',
                 'privacyOptions',
+                'review',
+                'taxReceipt',
+                'success',
+                'error',
             ],
             slug: query.slug,
             step: (query.slug) ? `${query.slug}/${query.step}` : query.step,

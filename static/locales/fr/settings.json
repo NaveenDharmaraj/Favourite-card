@@ -2,7 +2,7 @@
     "infoToShare": {
         "infoToShareHeader": "Information to share",
         "infoToShareDesc": "Choose the default options for information you’d like to share when you send gifts.",
-        "shareDesc": "If you choose to share your name, your full name is used.",
+        "shareDesc": "If you choose to share your name, your display name is used.",
         "charityHeader": "Charities",
         "givingGroupMemeberHeader": "Giving Groups members",
         "givingGroupAdminHeader": "Giving Group admins",

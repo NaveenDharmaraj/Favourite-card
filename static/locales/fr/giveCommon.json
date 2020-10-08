@@ -14,13 +14,14 @@
         "septemberLabel": "septembre"
     },
     "errorMessages": {
-        "amountLessOrInvalid": "Veuillez choisir un montant de {{minAmount}} $ ou plus",
+        "amountLessOrInvalid": "Enter an amount to deposit. The minimum deposit is ${{minAmount}}.",
+        "amountLessOrInvalidGivingFlows": "Enter an amount of ${{minAmount}} or more.",
         "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: &nbsp <a href = \"mailto: hello@charitableimpact.com\">hello@charitableimpact.com</a> &nbsp ou 1-877-531-0580.",
         "invalidLengthError": "est trop long (maximum de 1000 caractères)",
         "invalidNoteTextError":  "Seuls les lettres et les chiffres standard sont autorisés ici",
         "giveAmountGreaterThanBalance": "Désolé, vous ne pouvez pas envoyer plus d'argent qu'il n'y en a dans votre compte.",
-        "creditCardNotAdded": "Add a payment method",
-        "taxReceiptNotAdded": "Add a tax receipt recipient"
+        "creditCardNotAdded": "Add a payment method.",
+        "taxReceiptNotAdded": "Add a tax receipt recipient."
 
 
     },
@@ -49,6 +50,7 @@
         "invalidCvv": "Enter the card's CVV security code."
     },
     "blankError":  "Doit être rempli",
+    "allocationBlankError": "Select an account to give from.",
     "amountLabel": "Montant",
     "amountPlaceHolder": "Enter a custom amount",
     "noteRemainingChars1000": "{{currentCount}} sur {{maximum}} caractères restants",

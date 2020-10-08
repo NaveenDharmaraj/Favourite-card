@@ -37,8 +37,10 @@ import {
     getSelectedFriendList,
     validateForReload,
     calculateP2pTotalGiveAmount,
+    findingErrorElement,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
+import { getEmailList } from '../../../actions/userProfile';
 import {
     getCompanyPaymentAndTax,
     proceed,
@@ -171,6 +173,7 @@ class Friend extends React.Component {
 
     componentDidMount() {
         const {
+            currentAccount,
             currentUser: {
                 id,
             },
@@ -198,12 +201,21 @@ class Friend extends React.Component {
                 type: 'USER_FRIEND_EMAIL',
             });
         }
+        if(_isEmpty(this.state.giveFromType) && currentAccount.accountType === 'company'){
+            getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
+        }
+        getEmailList(dispatch, id);
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
     handleAddMoneyModal() {
         this.setState({
             reloadModalOpen:1,
         })
+    }
+    handleReloadModalClose = () => {
+        this.setState({
+            reloadModalOpen:0,
+        });
     }
     componentDidUpdate(prevProps) {
         if (!_isEqual(this.props, prevProps)) {
@@ -225,6 +237,7 @@ class Friend extends React.Component {
             const {
                 companyDetails,
                 companiesAccountsData,
+                currentAccount,
                 currentUser: {
                     id,
                     attributes: {
@@ -276,7 +289,7 @@ class Friend extends React.Component {
                 const giveFromId = (giveFromType === 'campaigns') ? campaignId : groupId;
                 giveData = Friend.initFields(
                     giveData, fund, id, avatar,
-                    `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType, language, currency
+                    `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType, language, currency, currentAccount
                 );
             }
             this.setState({
@@ -296,7 +309,7 @@ class Friend extends React.Component {
     }
 
     static initFields(giveData, fund, id, avatar,
-        name, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType, language, currency) {
+        name, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType, language, currency, currentAccount) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
             giveData.giveFrom.id = id;
@@ -320,6 +333,33 @@ class Friend extends React.Component {
                     giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
                     giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
                 }
+            }
+            if(currentAccount.accountType === 'company' && _isEmpty(giveFromType)){
+                companiesAccountsData.find(company => {
+                    if(currentAccount.id == company.id) {
+                        const {
+                            attributes: {
+                                avatar,
+                                balance, 
+                                name,
+                                companyFundId,
+                                companyFundName,
+                                slug
+                            },
+                            type,
+                            id
+                        } = company;
+                        giveData.giveFrom.value = companyFundId;
+                        giveData.giveFrom.name = name;
+                        giveData.giveFrom.avatar = avatar;
+                        giveData.giveFrom.id = id;
+                        giveData.giveFrom.type = type;
+                        giveData.giveFrom.text = `${companyFundName} (${formatCurrency(balance, language, currency)})`;
+                        giveData.giveFrom.balance = balance;
+                        giveData.giveFrom.slug = slug;
+                        return true;
+                     }
+                    })
             }
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
@@ -363,6 +403,9 @@ class Friend extends React.Component {
 
     handleOnInputBlur(event, data) {
         const {
+            emailDetailList,
+        } = this.props;
+        const {
             name,
             value,
         } = !_.isEmpty(data) ? data : event.target;
@@ -376,6 +419,12 @@ class Friend extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
+        let userEmailList = [];
+        if (!_isEmpty(emailDetailList)) {
+            emailDetailList.map((data) => {
+                userEmailList.push(data.attributes.email);
+            });
+        }
         const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
         if ((name === 'giveAmount') && !_.isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
@@ -406,7 +455,7 @@ class Friend extends React.Component {
                     validity,
                     giveData,
                     coverFeesAmount,
-                    userEmail,
+                    userEmailList,
                 );
                 break;
             default: break;
@@ -563,6 +612,9 @@ class Friend extends React.Component {
 
     validateForm() {
         const {
+            emailDetailList,
+        } = this.props;
+        const {
             flowObject: {
                 giveData,
             },
@@ -572,20 +624,28 @@ class Friend extends React.Component {
             validity,
         } = this.state;
         const coverFeesAmount = 0;
+        let userEmailList = [];
+        if (!_isEmpty(emailDetailList)) {
+            emailDetailList.map((data) => {
+                userEmailList.push(data.attributes.email);
+            });
+        }
         validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToRecipients', giveData.noteToRecipients, validity, giveData, coverFeesAmount);
-        validity = validateGiveForm('recipients', giveData.recipients, validity, giveData, coverFeesAmount, userEmail);
+        validity = validateGiveForm('recipients', giveData.recipients, validity, giveData, coverFeesAmount, userEmailList);
         validity = validateForReload(validity,giveData.giveFrom.type,giveData.totalP2pGiveAmount,giveData.giveFrom.balance);
         this.setState({
             validity,
             reviewBtnFlag: !validity.isReloadRequired,
         });
-        if (!validity.isReloadRequired || !validity.doesAmountExist){
-            window.scrollTo(0,0)
+        const validationsResponse = _.every(validity);
+        if (!validationsResponse) {
+            const errorNode = findingErrorElement(validity, 'allocation');
+            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({behavior: "smooth", block: "center"});
         }
-        return _.every(validity);
+        return validationsResponse;
     }
 
     handleGiveToEmail() {
@@ -682,6 +742,7 @@ class Friend extends React.Component {
                     reloadModalOpen={reloadModalOpen}
                     reviewBtnFlag={reviewBtnFlag}
                     taxReceiptsOptions={taxReceiptsOptions}
+                    handleParentModalState={this.handleReloadModalClose}
                 />
             )
             } else{
@@ -782,7 +843,7 @@ class Friend extends React.Component {
                                                 <Grid.Row>
                                                     {
                                                         (emailMasked) &&
-                                                        <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                        <Grid.Column className="friends-error" mobile={16} tablet={12} computer={10}>
                                                             <Form.Field>
                                                                 <label htmlFor="recipientName">
                                                                     {formatMessage('friends:recipientsLabel')}
@@ -802,7 +863,7 @@ class Friend extends React.Component {
                                                     {
                                                         (!emailMasked) &&
                                                         <Fragment>
-                                                            <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                            <Grid.Column className="friends-error" mobile={16} tablet={12} computer={10}>
                                                                 <label htmlFor="recipients">
                                                                     {formatMessage('friends:recipientsLabel')}
                                                                 </label>
@@ -826,6 +887,24 @@ class Friend extends React.Component {
                                                                         />
                                                                     )
                                                                 }
+                                                                {!showDropDown
+                                                                    && (
+                                                                        <div className="disabled-giveto">
+                                                                            <Form.Field>
+                                                                                <Form.Field
+                                                                                    control={Input}
+                                                                                    disabled
+                                                                                    id="recipientName"
+                                                                                    maxLength="20"
+                                                                                    name="recipientName"
+                                                                                    size="large"
+                                                                                    placeholder="You're not connected to friends on Charitable Impact yet"
+                                                                                />
+                                                                            </Form.Field>
+                                                                            <span class="givetoInfoText">You can find friends to give to on Charitable Impact under your Account Settings.</span>
+                                                                        </div>
+                                                                    )
+                                                                }
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={16} computer={16}>
                                                                 {showDropDown
@@ -839,18 +918,18 @@ class Friend extends React.Component {
                                                                 }
                                                                 {(showGiveToEmail || !_.isEmpty(recipients) || (typeof showDropDown !== 'undefined' && !showDropDown))
                                                                     && (
-                                                                            <Note
-                                                                                enableCharacterCount={false}
-                                                                                fieldName="recipients"
-                                                                                formatMessage={formatMessage}
-                                                                                handleOnInputChange={this.handleInputChange}
-                                                                                handleOnInputBlur={this.handleOnInputBlur}
-                                                                                labelText={formatMessage('friends:recipientsLabel')}
-                                                                                popupText={formatMessage('friends:recipientsPopup')}
-                                                                                placeholderText={formatMessage('friends:recipientsPlaceholderText')}
-                                                                                text={recipients.join(',')}
-                                                                                hideLabel={true}
-                                                                            />
+                                                                        <Note
+                                                                            enableCharacterCount={false}
+                                                                            fieldName="recipients"
+                                                                            formatMessage={formatMessage}
+                                                                            handleOnInputChange={this.handleInputChange}
+                                                                            handleOnInputBlur={this.handleOnInputBlur}
+                                                                            labelText={formatMessage('friends:recipientsLabel')}
+                                                                            popupText={formatMessage('friends:recipientsPopup')}
+                                                                            placeholderText={formatMessage('friends:recipientsPlaceholderText')}
+                                                                            text={recipients.join(',')}
+                                                                            hideLabel={true}
+                                                                        />
                                                                     )}
                                                                 <FormValidationErrorMessage
                                                                     condition={!validity.isValidEmailList}
@@ -889,7 +968,6 @@ class Friend extends React.Component {
                                                                 handlePresetAmountClick={this.handlePresetAmountClick}
                                                                 validity={validity}
                                                                 isGiveFlow
-                                                                fromP2p
                                                             />
                                                             </div>
                                                             <p className="multipleFriendAmountFieldText">
@@ -915,30 +993,33 @@ class Friend extends React.Component {
                                                 <Grid.Row className="to_space">
                                                     <Grid.Column mobile={16} tablet={16} computer={16}>
                                                         <div className="give_flow_field">
-                                                        <Note
-                                                            fieldName="noteToRecipients"
-                                                            formatMessage={formatMessage}
-                                                            handleOnInputChange={this.handleInputChange}
-                                                            handleOnInputBlur={this.handleOnInputBlur}
-                                                            labelText={formatMessage('friends:noteToRecipientsLabel')}
-                                                            popupText={formatMessage('friends:noteToRecipientsPopup')}
-                                                            placeholderText={formatMessage('friends:noteToRecipientsPlaceholderText')}
-                                                            text={noteToRecipients}
-                                                        />
-                                                        {(giveFromType === 'groups' || giveFromType === 'user') && (
-                                                        <Note
-                                                            fieldName="noteToSelf"
-                                                            formatMessage={formatMessage}
-                                                            handleOnInputChange={this.handleInputChange}
-                                                            handleOnInputBlur={this.handleOnInputBlur}
-                                                            labelText={formatMessage(`friends:noteToSelfLabel${giveFromType}`)}
-                                                            popupText={formatMessage(`friends:noteToSelfPopup${giveFromType}`)}
-                                                            placeholderText={formatMessage(`friends:noteToSelfPlaceholderText${giveFromType}`)}
-                                                            text={noteToSelf}
-                                                        />
-                                                        )}
-                                                        {submtBtn}
+                                                            <Note
+                                                                fieldName="noteToRecipients"
+                                                                formatMessage={formatMessage}
+                                                                handleOnInputChange={this.handleInputChange}
+                                                                handleOnInputBlur={this.handleOnInputBlur}
+                                                                labelText={formatMessage('friends:noteToRecipientsLabel')}
+                                                                popupText={formatMessage('friends:noteToRecipientsPopup')}
+                                                                placeholderText={formatMessage('friends:noteToRecipientsPlaceholderText')}
+                                                                text={noteToRecipients}
+                                                                fromP2P
+                                                            />
                                                         </div>
+                                                        <div className="give_flow_field">    
+                                                            {(giveFromType === 'groups' || giveFromType === 'user') && (
+                                                            <Note
+                                                                fieldName="noteToSelf"
+                                                                formatMessage={formatMessage}
+                                                                handleOnInputChange={this.handleInputChange}
+                                                                handleOnInputBlur={this.handleOnInputBlur}
+                                                                labelText={formatMessage(`friends:noteToSelfLabel${giveFromType}`)}
+                                                                popupText={formatMessage(`friends:noteToSelfPopup${giveFromType}`)}
+                                                                placeholderText={formatMessage(`friends:noteToSelfPlaceholderText${giveFromType}`)}
+                                                                text={noteToSelf}
+                                                            />
+                                                            )}
+                                                        </div>
+                                                        {submtBtn}
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
@@ -961,8 +1042,10 @@ function mapStateToProps(state) {
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
         companyAccountsFetched: state.give.companyAccountsFetched,
+        currentAccount: state.user.currentAccount,
         currentUser: state.user.info,
         donationMatchData: state.user.donationMatchData,
+        emailDetailList: state.userProfile.emailDetailList,
         fund: state.user.fund,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
         userAccountsFetched: state.user.userAccountsFetched,

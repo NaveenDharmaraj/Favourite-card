@@ -165,7 +165,7 @@ class CreditCard extends React.Component {
             name,
             value,
         } = event.target;
-
+        this.props.handleOnChangeCardName();
         this.setState({
             [name]: value,
         });
@@ -356,5 +356,7 @@ class CreditCard extends React.Component {
         );
     }
 }
-
+CreditCard.defaultProps = {
+    handleOnChangeCardName: () => {},
+};
 export default injectStripe(CreditCard);

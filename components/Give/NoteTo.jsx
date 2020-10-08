@@ -73,7 +73,7 @@ const NoteTo = (props) => {
                 </span>
 
                 <Form.Field
-                    className="with-info"
+                    className="with-info noteToSelf"
                     control={TextAreaWithInfo}
                     error={!validity.isValidNoteToCharity}
                     name="noteToCharity"
@@ -112,7 +112,7 @@ const NoteTo = (props) => {
                             )}
                         />
                         <Form.TextArea
-                            className="with-info"
+                            className="with-info noteToSelf"
                             control={TextAreaWithInfo}
                             error={!validity.isValidNoteToSelf}
                             name="noteToSelf"

@@ -14,14 +14,15 @@
         "decemberLabel": "December"
     },
     "errorMessages": {
-        "amountLessOrInvalid": "Please choose an amount of ${{minAmount}} or more",
+        "amountLessOrInvalid": "Enter an amount to deposit. The minimum deposit is ${{minAmount}}.",
+        "amountLessOrInvalidGivingFlows": "Enter an amount of ${{minAmount}} or more.",
         "invalidMaxAmountError":  "$9,999.00 is the maximum we can process here per transaction. For larger amounts, please get in touch with us: &nbsp <a href = \"mailto: hello@charitableimpact.com\">hello@charitableimpact.com</a> &nbsp or 1-877-531-0580.",
         "invalidLengthError": "is too long (maximum is 1000 characters)",
         "invalidNoteTextError":  "Only standard letters and numbers are allowed here",
         "isAmountCoverGive": "Sorry, you can't give more money than what is in your account.",
         "giveAmountGreaterThanBalance": "Sorry, you can't give more money than what is in your account.",
-        "creditCardNotAdded": "Add a payment method",
-        "taxReceiptNotAdded": "Add a tax receipt recipient"
+        "creditCardNotAdded": "Add a payment method.",
+        "taxReceiptNotAdded": "Add a tax receipt recipient."
     },
     "breadCrumb" : {
         "new" : "Add money",
@@ -48,6 +49,7 @@
         "invalidCvv": "Enter the card's CVV security code."
     },
     "blankError":  "Can't be blank",
+    "allocationBlankError": "Select an account to give from.",
     "amountLabel": "Amount",
     "amountPlaceHolder": "Enter a custom amount",
     "noteRemainingChars1000": "{{currentCount}} of {{maximum}} characters left ",

@@ -5,6 +5,9 @@ import {
     Input,
 } from 'semantic-ui-react';
 import ReactHtmlParser from 'react-html-parser';
+import {
+    PropTypes,
+} from 'prop-types';
 
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import {
@@ -16,7 +19,7 @@ function DonationAmountField(props) {
         isGiveFlow,
         amount,
         formatMessage,
-        fromP2p,
+        fromCharity,
         handleInputChange,
         handleInputOnBlur,
         handlePresetAmountClick,
@@ -61,14 +64,14 @@ function DonationAmountField(props) {
                 placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                 size="large"
                 value={amount}
-                className={`give_field ${amount ? 'give_amount' : ''}`}
+                className={`give_field ${amount ? 'give_amount' : ''} amountField`}
             />
             <FormValidationErrorMessage
                 condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
                     || !validity.isValidPositiveNumber}
-                errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
-                    minAmount: (fromP2p) ? 1 : 5,
-                })}
+                errorMessage={isGiveFlow ? formatMessage('giveCommon:errorMessages.amountLessOrInvalidGivingFlows', {
+                    minAmount: (fromCharity) ? 5 : 1,
+                }) : formatMessage('giveCommon:errorMessages.amountLessOrInvalid', { minAmount: 5 })}
             />
             <FormValidationErrorMessage
                 condition={!validity.isAmountLessThanOneBillion}
@@ -89,5 +92,15 @@ function DonationAmountField(props) {
         </Form.Field>
     );
 }
+
+DonationAmountField.defaultProps = {
+    fromCharity: false,
+};
+
+DonationAmountField.propTypes = {
+    fromCharity: PropTypes.bool,
+};
+
+
 export default DonationAmountField;
 export { DonationAmountField };

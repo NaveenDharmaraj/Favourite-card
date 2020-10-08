@@ -451,7 +451,7 @@ class ReloadAddAmount extends React.Component {
             });
             const topUpAmount = formatCurrency(donationAmount, language, reloadObject.currency);
             const succesToast = (giveTo.type === 'user') ? `${topUpAmount} has been added to your Impact Account`
-                : `${topUpAmount} has been added to ${giveTo.name}'s Account`;
+                : `${topUpAmount} has been added to ${giveTo.name}'s Company Account`;
             dispatch(walletTopUp(reloadObject, succesToast)).then(()=>{
                 this.setState({
                     currentModalStep: 0,
@@ -548,7 +548,7 @@ class ReloadAddAmount extends React.Component {
                     'id': id
                 });
                 const statusMessageProps = {
-                    message: 'New Credit Card Added',
+                    message: 'Payment method added',
                     type: 'success',
                 };
                 dispatch({
@@ -656,7 +656,7 @@ class ReloadAddAmount extends React.Component {
                 } = result;
                 let newtaxReceipt = getTaxReceiptById(this.props.taxReceiptsOptions, id);
                 const statusMessageProps = {
-                    message: 'Tax recipient added',
+                    message: 'Tax receipt recipient added',
                     type: 'success',
                 };
                 
@@ -693,8 +693,11 @@ class ReloadAddAmount extends React.Component {
         }
     }
 
-    renderReloadComponent(allocationGiftType, reviewBtnFlag) {
+    renderReloadComponent(allocationGiftType, reviewBtnFlag, giveType) {
         if (allocationGiftType === 0 && !reviewBtnFlag) {
+            const messageContent = (giveType === 'companies')
+                ? `Company` : `Impact`
+
             return (
                 // eslint-disable-next-line react/jsx-filename-extension
                 <div className="noteDefault">
@@ -704,7 +707,7 @@ class ReloadAddAmount extends React.Component {
                         </span>
                         <span className="noteContent">
                             <span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style">Reload </span>
-                            your Impact Account to send this gift.
+                            your {messageContent} Account to send this gift.
                         </span>
                     </div>
                 </div>
@@ -712,7 +715,7 @@ class ReloadAddAmount extends React.Component {
         }
         if (reviewBtnFlag) {
             return (
-                <div><p className="errorNote"><Icon name="exclamation circle" />There's not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue.</p></div>
+                <div><p className="error-message"><Icon name="exclamation circle" />There's not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue.</p></div>
             );
         }
         return null;
@@ -845,7 +848,7 @@ class ReloadAddAmount extends React.Component {
                 </Form.Field>
             );
         } else if (formData.giveTo.type === 'user' && _.isEmpty(options)) {
-            donationMatchField = (<Form.Input fluid label="Matching Partner" placeholder="No matching partner available" disabled />)
+            donationMatchField = (<Form.Input fluid label="Matching partner" placeholder="No matching partner available" disabled />)
         }
         return donationMatchField;
     }
@@ -886,14 +889,22 @@ class ReloadAddAmount extends React.Component {
                     </div>
                     </Form.Field>
                 </Form>
-                <Button 
-                    primary 
-                    onClick={() => this.handleAddNewTaxReceipt()} 
-                    className="blue-btn-rounded w-120 mb-2 btn_right"
-                    disabled={addNewTRButtonClicked || disableTRBDefault}
-                >
-                    Done
-                </Button>
+                <div className="text-right reload-mdl-footer-btns">
+                    <Button
+                        primary
+                        onClick={() => this.handleAddNewTaxReceipt()}
+                        className="blue-btn-rounded mb-2"
+                        disabled={addNewTRButtonClicked || disableTRBDefault}
+                    >
+                        Done
+                    </Button>
+                    <Button
+                        className="blue-bordr-btn-round mb-2"
+                        onClick={this.handleModalClose}
+                    >
+                        Cancel
+                    </Button>
+                </div>
             </Fragment>
         );
     }
@@ -945,9 +956,9 @@ class ReloadAddAmount extends React.Component {
                         onChange={this.handleSetPrimaryClick}
                     />
                 </Form>
-                <div className="btn-wraper pt-3 text-right">
+                <div className="text-right addNewCardMdlFooter reload-mdl-footer-btns">
                     <Button
-                        className="blue-btn-rounded-def sizeBig w-180"
+                        className="blue-btn-rounded-def"
                         onClick={this.handleAddNewCreditCard}
                         disabled={addNewCCButtonClicked || inValidCardNumber
                             || inValidExpirationDate || inValidNameOnCard
@@ -955,6 +966,12 @@ class ReloadAddAmount extends React.Component {
                             }
                     >
                         Done
+                    </Button>
+                    <Button
+                        className="blue-bordr-btn-round"
+                        onClick={this.handleModalClose}
+                    >
+                        Cancel
                     </Button>
                 </div>
             </Fragment>
@@ -1071,6 +1088,8 @@ class ReloadAddAmount extends React.Component {
         } = this.state;
         const {
             allocationGiftType,
+            giveTo,
+            handleParentModalState,
             reviewBtnFlag,
             language,
         } = this.props;
@@ -1081,12 +1100,18 @@ class ReloadAddAmount extends React.Component {
             modalHeaderText = 'Add new tax receipt recipient';
         }
         let formatedBalance = formatCurrency(this.props.giveTo.balance, language, reloadObject.currency);
+        const headingText = (giveTo.type === 'companies')
+            ? `Add money to your Company Account to send this gift. ${giveTo.name}'s current account balance is `
+            : 'Add money to your Impact Account to send this gift. Your current Impact Account balance is ';
         return (
             <Fragment>
-                {this.renderReloadComponent(allocationGiftType, reviewBtnFlag)}
-                <Modal closeOnDimmerClick={false} size="tiny" dimmer="inverted" className="chimp-modal popbox addMoneyMoadal " open={currentModalStep >0} onClose={this.handleModalClose}>
+                {this.renderReloadComponent(allocationGiftType, reviewBtnFlag, giveTo.type)}
+                <Modal closeOnDimmerClick={false} size="tiny" dimmer="inverted" className="chimp-modal popbox addMoneyMoadal " open={currentModalStep >0} onClose={() => this.setState({currentModalStep: 0})}>
                     <Modal.Header>{modalHeaderText} 
-                        <span className="closebtn" onClick={() =>{this.handleModalClose(currentModalStep)}}>
+                        <span className="closebtn" onClick={() => {
+                            this.setState({currentModalStep: 0})
+                            handleParentModalState()
+                            }}>
                         </span>
                     </Modal.Header>
                     {(currentModalStep === 1) && (<div className="noteDefault-bg">
@@ -1095,7 +1120,7 @@ class ReloadAddAmount extends React.Component {
                                 <span className="notifyDefaultIcon"></span>
                             </span>
                             <span className="noteContent">
-                                Add money to your Impact Account to send this gift. Your current Impact Account balance is <span className="amount-give">{formatedBalance}</span>
+                                {headingText} <span className="amount-give">{formatedBalance}</span>
                             </span>
                         </div>    
                     </div>)}
@@ -1108,5 +1133,9 @@ class ReloadAddAmount extends React.Component {
             </Fragment>
         );
     }
+}
+
+ReloadAddAmount.defaultProps = {
+    handleParentModalState: () => {}
 }
 export default ReloadAddAmount;

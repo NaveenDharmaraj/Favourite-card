@@ -81,6 +81,7 @@ class DropDownAccountOptions extends React.Component {
         const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
         const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
         const newPlaceholder = updatePlaceHolder ? formatMessage('searchPlaceholder') : giveFromPlaceHolder;
+        const errorMessage = (type === 'donations') ? formatMessage('giveCommon:blankError') : formatMessage('giveCommon:allocationBlankError');
         let newPlaceholderValue = '';
         if (!_isEmpty(fund)) {
             if (giveTo && giveTo.value && giveFromUrl) {
@@ -127,7 +128,7 @@ class DropDownAccountOptions extends React.Component {
         } else {
             newPlaceholderValue = selectedValue ? selectedValue.toString() : '';
             fieldData = (
-                <div className="dropdownSearch dropdownWithArrowParentnotbg medium">
+                <div className="dropdownSearch dropdownWithArrowParentnotbg medium giveFromAccount">
                     <Dropdown
                         className="dropdownsearchField grouped medium"
                         error={!validity || reviewBtnFlag}
@@ -169,7 +170,7 @@ class DropDownAccountOptions extends React.Component {
                             )}
                         />
                         {((type !== 'donations') && (
-                            <p className="multipleFriendAmountFieldText">
+                            <p className="givingInfoText">
                                 You can give from your personal account or those you administer.
                             </p>
                         ))}
@@ -179,7 +180,7 @@ class DropDownAccountOptions extends React.Component {
                 </Form.Field>
                 <FormValidationErrorMessage
                     condition={!validity}
-                    errorMessage={formatMessage('giveCommon:blankError')}
+                    errorMessage={errorMessage}
                 />
             </Fragment>
         );

@@ -242,7 +242,7 @@ class ModalComponent extends React.Component {
         const {
             isDefaultChecked,
         } = this.state;
-        if (!_isEmpty(selectedTaxReceiptProfile) && !_isEmpty(selectedTaxReceiptProfile.attributes) && selectedTaxReceiptProfile.attributes.isDefault) {
+        if ((!_isEmpty(selectedTaxReceiptProfile) && !_isEmpty(selectedTaxReceiptProfile.attributes) && selectedTaxReceiptProfile.attributes.isDefault) || _isEmpty(this.props.taxReceiptProfileList)) {
             return (
                 <div className="checkboxToRadio">
                     <Checkbox
@@ -250,7 +250,7 @@ class ModalComponent extends React.Component {
                         checked
                         type="checkbox"
                         id="checkbox"
-                        label="Set as default tax receipt recipient"
+                        label={_isEmpty(this.props.taxReceiptProfileList) ? "This will be your default tax receipt recipient." : "Set as default tax receipt recipient"}
                     />
                 </div>
                 
@@ -375,5 +375,6 @@ ModalComponent.defaultProps = {
 };
 const mapStateToProps = (state) => ({
     currentUser: state.user.info,
+    taxReceiptProfileList: state.taxreceipt.taxReceiptProfileList,
 });
 export default withTranslation(['taxReceipt'])(connect(mapStateToProps)(ModalComponent));

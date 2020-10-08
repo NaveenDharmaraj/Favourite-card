@@ -2,12 +2,12 @@
     "addingToLabel": "Add to",
     "accountPlaceHolder": "Select a source account",
     "giveFromLabel": "Give from",
-    "destinationaccountPlaceHolder": "Select a destination account ",
+    "destinationaccountPlaceHolder": "Select an account ",
     "preloadedAccountPlaceHolder": "Your list of accounts is loading. This may take a moment",
     "allocationsGiveFromPopup": "You can give from your personal account or those that you administer.",
     "personalAccountLabel": "PERSONAL ACCOUNT",
     "companiesAccountLabel": "COMPANIES",
     "groupHeader" : "GIVING GROUPS",
     "campaignHeader": "CAMPAIGNS",
-    "searchPlaceholder": "Search your accounts"
+    "searchPlaceholder": "Find an account"
 }

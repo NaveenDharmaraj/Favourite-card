@@ -36,7 +36,7 @@ class SearchButtonWrapper extends React.Component {
         } = this.props;
         let searchQueryParam = '';
         if (!_isEmpty(searchWord)) {
-            searchQueryParam = `search=${searchWord}&`;
+            searchQueryParam = `search=${encodeURIComponent(decodeURI(searchWord))}&`;
         }
         // if (!_isEmpty(searchWord) && currentTab === 'All') {
         //     searchQueryParam = `?search=${searchWord}`;

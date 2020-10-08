@@ -50,11 +50,13 @@ import {
     validateForReload,
     populateInfoToShareAccountName,
     checkMatchPolicy,
+    findingErrorElement,
 } from '../../../helpers/give/utils';
 import {
     getCompanyPaymentAndTax,
     getGroupsFromSlug,
     proceed,
+    fetchGroupMatchAmount,
 } from '../../../actions/give';
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
 import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
@@ -75,6 +77,7 @@ class Group extends React.Component {
                     email,
                 },
             },
+            groupCampaignId,
             groupId,
             infoOptions: {
                 groupMemberInfoToShare,
@@ -105,7 +108,9 @@ class Group extends React.Component {
                 } = populateDropdownInfoToShare(groupMemberInfoToShare);
                 privacyNameOptions = infoToShareList;
             } else {
-                privacyNameOptions = populateInfoToShareAccountName(props.flowObject.giveData.giveFrom.name, formatMessage);
+                const name = (props.flowObject.giveData.giveFrom.type === 'companies' && props.flowObject.giveData.giveFrom.displayName) ? props.flowObject.giveData.giveFrom.displayName
+                    : props.flowObject.giveData.giveFrom.name;
+                privacyNameOptions = populateInfoToShareAccountName(name, formatMessage);
             }
         }
 
@@ -135,6 +140,9 @@ class Group extends React.Component {
             && Number(campaignId) > 0) {
             this.state.flowObject.campaignId = campaignId;
             this.state.giveFromType = 'campaigns'
+        } else if (!_isEmpty(groupCampaignId)
+            && Number(groupCampaignId) > 0) {
+            this.state.flowObject.groupCampaignId = groupCampaignId;
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
@@ -146,6 +154,7 @@ class Group extends React.Component {
         const {
             slug,
             dispatch,
+            currentAccount,
             currentUser: {
                 id,
             },
@@ -166,9 +175,12 @@ class Group extends React.Component {
                 .catch(err => {
                 })
         }
+        if (_isEmpty(this.state.giveFromType) && currentAccount.accountType === 'company') {
+            getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
+        }
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if (!_isEqual(this.props, prevProps)) {
             const {
                 dropDownOptions,
@@ -187,6 +199,7 @@ class Group extends React.Component {
                 campaignId,
                 companyDetails,
                 companiesAccountsData,
+                currentAccount,
                 currentUser: {
                     attributes: {
                         displayName,
@@ -198,6 +211,7 @@ class Group extends React.Component {
                     },
                     id,
                 },
+                dispatch,
                 i18n: {
                     language,
                 },
@@ -208,7 +222,7 @@ class Group extends React.Component {
                 userGroups,
                 taxReceiptProfiles,
                 giveGroupDetails,
-                infoOptions:{
+                infoOptions: {
                     groupMemberInfoToShare,
                     groupCampaignAdminShareInfoOptions,
                 },
@@ -253,6 +267,8 @@ class Group extends React.Component {
                     text: giveGroupDetails.attributes.name,
                     type: giveGroupDetails.type,
                     value: giveGroupDetails.attributes.fundId,
+                    activeMatch: giveGroupDetails.attributes.activeMatch,
+                    hasActiveMatch: giveGroupDetails.attributes.hasActiveMatch,
                 };
             }
             else if (!_isEmpty(userMembershipGroups) && !_isEmpty(giveFromType)) {
@@ -268,6 +284,8 @@ class Group extends React.Component {
                     text: userMembershipGroups.userGroups[groupIndex].attributes.name,
                     type: userMembershipGroups.userGroups[groupIndex].type,
                     value: userMembershipGroups.userGroups[groupIndex].attributes.fundId,
+                    activeMatch: userMembershipGroups.userGroups[groupIndex].attributes.activeMatch,
+                    hasActiveMatch: userMembershipGroups.userGroups[groupIndex].attributes.hasActiveMatch,
                 };
             }
             if (!_isEmpty(fund)) {
@@ -275,16 +293,21 @@ class Group extends React.Component {
                 giveData = Group.initFields(
                     giveData, fund, id,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage
+                    groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage,
+                    this.props.groupCampaignId, currentAccount
                 );
             }
             if (giveData.giveFrom.type === 'user' && !_isEmpty(groupMemberInfoToShare)) {
                 const {
                     infoToShareList,
                 } = populateDropdownInfoToShare(groupMemberInfoToShare);
-                dropDownOptions.privacyNameOptions  = infoToShareList;
+                dropDownOptions.privacyNameOptions = infoToShareList;
             } else {
-                dropDownOptions.privacyNameOptions  = populateInfoToShareAccountName(giveData.giveFrom.name, formatMessage);
+                const name = (giveData.giveFrom.type === 'companies' && giveData.giveFrom.displayName) ? giveData.giveFrom.displayName : giveData.giveFrom.name;
+                dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(name, formatMessage);
+            }
+            if (giveData.giveFrom.value && giveData.giveTo.value && giveData.giveTo.hasActiveMatch) {
+                giveData.matchingPolicyDetails.matchingPolicyExpiry = await dispatch(fetchGroupMatchAmount(1, giveData.giveFrom.value, giveData.giveTo.value));
             }
             this.setState({
                 buttonClicked: false,
@@ -317,7 +340,8 @@ class Group extends React.Component {
      */
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id,
-        name, companiesAccountsData, userGroups, userCampaigns, groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, groupId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage) {
+        name, companiesAccountsData, userGroups, userCampaigns, groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, groupId, giveFromType, language,
+        currency, preferences, giveGroupDetails, formatMessage, groupCampaignId, currentAccount) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
@@ -343,13 +367,53 @@ class Group extends React.Component {
                         value: giveFromGroup.attributes.fundId,
                     };
                 }
+            } else if (groupCampaignId) {
+                const giveFromGroupCampaign = userGroups.find((userGroup) => userGroup.id === groupCampaignId)
+                giveData.giveFrom = {
+                    avatar: giveFromGroupCampaign.attributes.avatar,
+                    balance: giveFromGroupCampaign.attributes.balance,
+                    id: giveFromGroupCampaign.id,
+                    name: giveFromGroupCampaign.attributes.name,
+                    slug: giveFromGroupCampaign.attributes.slug,
+                    text: `${giveFromGroupCampaign.attributes.fundName}: ${formatCurrency(giveFromGroupCampaign.attributes.balance, language, currency)}`,
+                    type: giveFromGroupCampaign.type,
+                    value: giveFromGroupCampaign.attributes.fundId,
+                };
+            } else if (_isEmpty(giveFromType) && currentAccount.accountType === 'company') {
+                companiesAccountsData.find(company => {
+                    if (currentAccount.id == company.id) {
+                        const {
+                            attributes: {
+                                avatar,
+                                balance,
+                                name,
+                                companyFundId,
+                                companyFundName,
+                                slug,
+                                displayName
+                            },
+                            type,
+                            id
+                        } = company;
+                        giveData.giveFrom.value = companyFundId;
+                        giveData.giveFrom.name = name;
+                        giveData.giveFrom.avatar = avatar;
+                        giveData.giveFrom.id = id;
+                        giveData.giveFrom.type = type;
+                        giveData.giveFrom.text = `${companyFundName} (${formatCurrency(balance, language, currency)})`;
+                        giveData.giveFrom.balance = balance;
+                        giveData.giveFrom.slug = slug;
+                        giveData.giveFrom.displayName = displayName;
+                        return true;
+                    }
+                })
             }
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
                 value: '',
             };
         }
-        if (!giveData.userInteracted && !(giveFromType === 'groups' || giveFromType === 'campaigns')) {
+        if (!giveData.userInteracted && !(giveFromType === 'groups' || giveFromType === 'campaigns' || !_isEmpty(groupCampaignId))) {
             giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
         }
         if (!_isEmpty(groupCampaignAdminShareInfoOptions) && groupCampaignAdminShareInfoOptions.length > 0
@@ -362,7 +426,7 @@ class Group extends React.Component {
                 opt.value === preference
             ));
             giveData.defaultInfoToShare = defaultInfoToShare;
-            if (giveFromType === 'groups' || giveFromType === 'campaigns') {
+            if (giveFromType === 'groups' || giveFromType === 'campaigns' || !_isEmpty(groupCampaignId) || currentAccount.accountType === 'company') {
                 giveData.infoToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
@@ -379,7 +443,7 @@ class Group extends React.Component {
                 opt.value === preferences['giving_group_members_info_to_share']
             )) || {};
             giveData.defaultNameToShare = defaultNameToShare || {};
-            if (giveFromType === 'groups' || giveFromType === 'campaigns') {
+            if (giveFromType === 'groups' || giveFromType === 'campaigns' || currentAccount.accountType === 'company') {
                 giveData.nameToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
@@ -421,10 +485,12 @@ class Group extends React.Component {
             validity,
             reviewBtnFlag: !validity.isReloadRequired
         });
-        if (!validity.isReloadRequired || !validity.doesAmountExist){
-            window.scrollTo(0,0)
+        const validationsResponse = _every(validity);
+        if (!validationsResponse) {
+            const errorNode = findingErrorElement(validity, 'allocation');
+            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({ behavior: "smooth", block: "center" });
         }
-        return _every(validity);
+        return validationsResponse;
     }
 
     handleInputOnBlur(event, data) {
@@ -516,12 +582,10 @@ class Group extends React.Component {
             reviewBtnFlag,
             validity,
         } = this.state;
-        const {
-            giveGroupDetails
-        } = this.props;
         const formatMessage = this.props.t;
         if (Number(value) && Number(value) >= 1) {
-            giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, giveData.giftType.value, formatMessage);
+            giveData.matchingPolicyDetails = giveData.giveTo &&
+                checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
         }
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         giveData.giveAmount = inputValue;
@@ -598,9 +662,6 @@ class Group extends React.Component {
 
     handlegiftTypeButtonClick = (e, { value }) => {
         const {
-            giveGroupDetails
-        } = this.props;
-        const {
             flowObject: {
                 giveData
             },
@@ -608,7 +669,7 @@ class Group extends React.Component {
         } = this.state;
         const formatMessage = this.props.t;
         if (Number(giveData.giveAmount) >= 1) {
-            giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, value, formatMessage);
+            giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
         }
         this.setState({
             flowObject: {
@@ -624,7 +685,7 @@ class Group extends React.Component {
         })
     }
 
-    handleInputChange(event, data) {
+    async handleInputChange(event, data) {
         const {
             name,
             options,
@@ -653,7 +714,7 @@ class Group extends React.Component {
                 },
             },
             giveGroupDetails,
-            infoOptions:{
+            infoOptions: {
                 groupMemberInfoToShare,
                 groupCampaignAdminShareInfoOptions,
             },
@@ -712,7 +773,7 @@ class Group extends React.Component {
                     if (giveData.giveFrom.type === 'user') {
                         giveData.infoToShare = giveData.defaultInfoToShare;
                         giveData.nameToShare = giveData.defaultNameToShare;
-                        if(_isEmpty(giveData.defaultInfoToShare)){
+                        if (_isEmpty(giveData.defaultInfoToShare)) {
                             const prefernceName = giveData.giveTo.isCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
                             const preference = preferences[prefernceName].includes('address')
                                 ? `${preferences[prefernceName]}-${preferences[`${prefernceName}_address`]}` : preferences[prefernceName];
@@ -722,7 +783,7 @@ class Group extends React.Component {
                             ));
                             giveData.defaultInfoToShare = defaultInfoToShare;
                         }
-                        if(_isEmpty(giveData.defaultNameToShare)){
+                        if (_isEmpty(giveData.defaultNameToShare)) {
                             const { infoToShareList } = populateDropdownInfoToShare(groupMemberInfoToShare);
                             const defaultNameToShare = infoToShareList.find(opt => (
                                 opt.value === preferences['giving_group_members_info_to_share']
@@ -752,11 +813,15 @@ class Group extends React.Component {
                     if (giveData.giveFrom.type === 'companies') {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
+                    if ((Number(giveData.giveAmount) > 1) && giveData.giveTo.hasActiveMatch) {
+                        giveData.matchingPolicyDetails.matchingPolicyExpiry = await dispatch(fetchGroupMatchAmount(1, giveData.giveFrom.value, giveData.giveTo.value));
+                        giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
+                    }
                     break;
                 case 'giveAmount':
                     giveData['formatedGroupAmount'] = newValue;
-                    if (Number(newValue) && Number(newValue) >= 1) {
-                        giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, giveData.giftType.value, formatMessage);
+                    if (Number(newValue) && Number(newValue) >= 1 && giveData.giveTo && giveData.giveTo.hasActiveMatch) {
+                        giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
                     } else {
                         giveData.matchingPolicyDetails = {
                             hasMatchingPolicy: false,
@@ -805,7 +870,7 @@ class Group extends React.Component {
         }
     }
 
-    handleInputChangeGiveTo(event, data) {
+    async handleInputChangeGiveTo(event, data) {
         const {
             options,
             value,
@@ -813,15 +878,26 @@ class Group extends React.Component {
         const {
             flowObject: {
                 giveData: {
+                    giveAmount,
                     giveFrom,
                     giveTo,
+                    giftType,
                 },
             },
             validity,
         } = this.state;
+        let {
+            flowObject: {
+                giveData: {
+                    matchingPolicyDetails,
+                }
+            },
+        } = this.state;
         const {
+            dispatch,
             userMembershipGroups,
         } = this.props;
+        const formatMessage = this.props.t;
         const dataUsers = userMembershipGroups.userGroups;
         const groupId = options[data.options.findIndex((p) => p.value === value)].id;
         const benificiaryIndex = dataUsers.findIndex((p) => p.id === groupId);
@@ -834,14 +910,22 @@ class Group extends React.Component {
         giveTo.text = benificiaryData.attributes.name;
         giveTo.type = benificiaryData.type;
         giveTo.value = value;
+        giveTo.activeMatch = benificiaryData.attributes.activeMatch;
+        giveTo.hasActiveMatch = benificiaryData.attributes.hasActiveMatch;
         validity.isValidGiveTo = !((giveTo.type === giveFrom.type)
             && (giveTo.value === giveFrom.value));
+        if (Number(giveAmount) >= 1) {
+            matchingPolicyDetails.matchingPolicyExpiry = giveFrom.value && await dispatch(fetchGroupMatchAmount(1, giveFrom.value, giveTo.value));
+            matchingPolicyDetails = giveTo &&
+                checkMatchPolicy(giveTo, giftType.value, formatMessage, matchingPolicyDetails.matchingPolicyExpiry);
+        }
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
                 giveData: {
                     ...this.state.flowObject.giveData,
                     giveTo,
+                    matchingPolicyDetails,
                 },
                 groupIndex: benificiaryIndex,
             },
@@ -857,7 +941,11 @@ class Group extends React.Component {
             reloadModalOpen: 1,
         })
     }
-
+    handleReloadModalClose = () => {
+        this.setState({
+            reloadModalOpen: 0,
+        });
+    }
     renderReloadAddAmount = () => {
         let {
             defaultTaxReceiptProfile,
@@ -912,6 +1000,7 @@ class Group extends React.Component {
                         reloadModalOpen={reloadModalOpen}
                         reviewBtnFlag={reviewBtnFlag}
                         taxReceiptsOptions={taxReceiptsOptions}
+                        handleParentModalState={this.handleReloadModalClose}
                     />
                 )
             } else {
@@ -940,6 +1029,7 @@ class Group extends React.Component {
                     handleInputChange={this.handleInputChange}
                     language={language}
                     recurringDisabled={!giveTo.recurringEnabled}
+                    isCampaign={giveTo.isCampaign}
                 />
             );
         }
@@ -987,7 +1077,7 @@ class Group extends React.Component {
             },
             flowSteps,
             giveGroupDetails,
-            infoOptions:{
+            infoOptions: {
                 groupCampaignAdminShareInfoOptions,
             },
             i18n: {
@@ -1079,7 +1169,7 @@ class Group extends React.Component {
                                                                                 {formatMessage('giveToLabel')}
                                                                             </label>
                                                                             <Form.Field
-                                                                                className="dropdownWithArrowParent"
+                                                                                className="dropdownWithArrowParent group-to-give"
                                                                                 control={Select}
                                                                                 error={!validity.isValidGiveTo}
                                                                                 id="giveToList"
@@ -1110,16 +1200,15 @@ class Group extends React.Component {
                                                             handleInputOnBlur={this.handleInputOnBlur}
                                                             handlePresetAmountClick={this.handlePresetAmountClick}
                                                             validity={validity}
-                                                            fromP2p // set minimun amount as 1
                                                         />
                                                     </Grid.Column>
                                                     {
                                                         matchingPolicyDetails.hasMatchingPolicy &&
-                                                        <Grid.Column mobile={16}>
+                                                        <Grid.Column mobile={16} tablet={12} computer={10}>
                                                             <MatchingPolicyModal
                                                                 isCampaign={giveTo.isCampaign}
-                                                                giveGroupDetails={giveGroupDetails}
-                                                                matchingPolicyDetails ={matchingPolicyDetails}
+                                                                matchingDetails={giveTo.activeMatch}
+                                                                matchingPolicyDetails={matchingPolicyDetails}
                                                             />
                                                         </Grid.Column>
                                                     }
@@ -1189,9 +1278,9 @@ Group.defaultProps = Object.assign({}, groupDefaultProps, {
     infoOptions: {
         groupCampaignAdminShareInfoOptions: [
             {
-            text: 'Give anonymously',
-            value: 'anonymous',
-            privacySetting: 'anonymous'
+                text: 'Give anonymously',
+                value: 'anonymous',
+                privacySetting: 'anonymous'
             },
         ],
         groupMemberInfoToShare: [
@@ -1211,6 +1300,7 @@ const mapStateToProps = (state) => {
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
         companyAccountsFetched: state.give.companyAccountsFetched,
+        currentAccount: state.user.currentAccount,
         currentUser: state.user.info,
         giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
         infoOptions: state.userProfile.infoOptions,

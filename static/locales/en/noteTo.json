@@ -1,10 +1,10 @@
 {
     "fortheCharityLabel": "The charity will receive this message with your gift.",
     "fortheGroupLabel":"The Giving Group will receive this message with your gift.",
-    "fortheCampaignLabel":"The Campaign admins will receive this message with your gift.",
+    "fortheCampaignLabel":"Campaign admins will receive this message with your gift.",
     "includeCharityMessageLabel": "Message for the charity (optional)",
     "includeGroupMessageLabel": "Message for the Giving Group (optional)",
-    "includeCampaignMessageLabel": "Message for the Campaign admins (optional)",
+    "includeCampaignMessageLabel": "Message for Campaign admins (optional)",
     "allocationsForthCharityPopup": "You can tell the recipient why you're giving to them, provide recommendations for how you'd prefer your gift is spent, or offer words of encouragement.",
     "generalInputPlaceHolder": "Why are you giving today?",
     "invalidLengthError": "is too long (maximum is 1000 characters)",
