@@ -71,6 +71,7 @@ class DedicateGift extends Component {
                     <span className="givingInfoText">Only you will see this in your Account Details.</span>
                     <Accordion>
                         <Accordion.Title
+                            data-test="Give_DedicateGift_accordian_inhonor"
                             as={Checkbox}
                             checked={activeIndex === 0}
                             label="In honour of"
@@ -141,3 +142,4 @@ DedicateGift.defaultProps = {
 
 
 export default DedicateGift;
+export { DedicateGift };

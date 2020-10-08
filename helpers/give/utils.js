@@ -1413,7 +1413,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                     } else if ((activeMatchAmount === Number(availableFund)) && (maxMatchAmount > Number(availableFund))) {
                         state.toDetailsForMatching.popUpMessage = 'Your gift is only being partially matched because not enough matching funds remain. Matching is available until the funds run out or expire.';
                     } else if (maxMatchAmount > activeMatchAmount) {
-                        state.toDetailsForMatching.popUpMessage = `Your gift is only being partially matched because previous gifts you've sent to this ${(giveTo.isCampaign) ? 'Campaign' : 'group'} have already been matched. The maximum match amount is ${formatCurrency(maxMatchAmount, language, currency)} per donor.`;
+                        state.toDetailsForMatching.popUpMessage = `Your gift is only being partially matched because previous gifts you've sent to this ${(giveTo.isCampaign) ? 'Campaign' : 'group'} have already been matched. The maximum match amount is ${formatCurrency(maxMatchAmount, language, currency)} per donor. Matching is available until funds run out or expire.`;
                     }
                 }
             }
@@ -1763,6 +1763,7 @@ const checkMatchPolicy = (matchingPolicyObj = {}, giftType = 0, formatMessage, e
         const {
             activeMatch,
             hasActiveMatch,
+            isCampaign,
         } = matchingPolicyObj;
         if (!_.isEmpty(activeMatch) && hasActiveMatch) {
             if (giftType > 0 && expiry) {
@@ -1776,7 +1777,7 @@ const checkMatchPolicy = (matchingPolicyObj = {}, giftType = 0, formatMessage, e
                 hasMatchingPolicy: true,
                 isValidMatchPolicy: true,
                 matchPolicyTitle: expiry ? `${activeMatch.company} will match your gift.`
-                    : `Matching will not be available for this gift. Previous gifts you’ve given to this ${activeMatch.company} have already been fully matched the maximum amount per donor.`,
+                    : `Matching will not be available for this gift. Previous gifts you’ve given to this ${(isCampaign) ? 'Campaign' : 'group'} have already been fully matched the maximum amount per donor.`,
             };
         }
     }
