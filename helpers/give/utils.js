@@ -1009,7 +1009,7 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
             validity.doesAmountExist = !isInputBlank(value);
             validity.isAmountLessThanOneBillion = (giveData.giftType.value > 0)
                 ? isAmountLessThanOneBillion(value) : true;
-            validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries') || giveData.giftType.value > 0
+            validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries')
                 ? isAmountMoreThanOneDollor(value) : isAmountMoreOrEqualToOneDollor(value);
             validity.isValidPositiveNumber = isValidPositiveNumber(value);
             validity.isAmountCoverGive = (giveData.giveFrom.type === 'groups'
