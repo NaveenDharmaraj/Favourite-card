@@ -112,16 +112,16 @@ const MatchingPolicyModal = ({
                                     </div>
                                 </div>
                             </Grid.Column>
-                            <Grid.Column computer={6} mobile={16} tablet={16}>
                                 {((matchClose) && (
+                                    <Grid.Column computer={6} mobile={16} tablet={16}>
                                     <div className="matching-fund-expire">
                                         <span className="expire-date">
                                             Expires&nbsp;
                                             {matchClose}
                                         </span>
                                     </div>
+                                    </Grid.Column>
                                 ))}
-                            </Grid.Column>
                         </Grid>
                     </div>
                 </Modal.Content>
