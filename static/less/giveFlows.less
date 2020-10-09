@@ -2575,6 +2575,9 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                                     margin-left: 10px;
                                     margin-bottom: 0px;
                                     margin-top: 0;
+                                    @media only screen and (max-width:340px) {
+                                        width: 30px;
+                                    }
                                     +.note{
                                         margin-top: 3px;
                                     }
@@ -2613,12 +2616,18 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                 font-size: 12px;
                 line-height: 15px;
                 text-align: center;
-                @media only screen and (min-width:768px) {
-                    width: 340px;
+                width: 100%;
+                @media only screen and (min-width:991px) {
                     max-width: 340px;
                 }
+                @media only screen and (max-width:991px) {
+                    max-width: 280px;
+                }
                 @media only screen and (max-width:767px) {
-                    max-width: 233px;
+                    max-width: 240px;
+                }
+                @media only screen and (max-width:340px) {
+                    max-width: 225px;
                 }
             }
         }
