@@ -541,12 +541,12 @@ body{
         width: 25%;
     }
     .matchingAmount{
-        display: flex;
         align-items: center;
-        span{
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        @media only screen and (max-width:472px) and (min-width:416px) {
+            max-width: 80%;
+        }
+        @media only screen and (max-width:415px){
+            max-width: 90%;
         }
     }
 }
@@ -2460,7 +2460,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
 }
 .matching-fund-modal-wrapper{
     padding-top: 10px;
-    padding-bottom: 15px;
+    padding-bottom: 12px;
     .ui.grid{
         width: 100%;
     }
@@ -2547,7 +2547,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             font-family: 'ProximaNova-Medium';
             border-radius: 12.17px;
             background-color: fade(#90459A, 10%);
-            padding: 4px 5px;
+            padding: 5px 8px;
             text-align: center;          
         }
         @media only screen and (max-width:991px) {
