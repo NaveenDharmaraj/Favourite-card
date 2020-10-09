@@ -52,10 +52,13 @@ class Profile extends React.Component {
         const {
             dispatch,
             userInfo: {
+                attributes: {
+                    roles,
+                },
                 id,
             },
         } = this.props;
-        getUserAllDetails(dispatch, id);
+        getUserAllDetails(dispatch, id, roles);
     }
 
     openModal() {

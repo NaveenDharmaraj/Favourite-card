@@ -374,16 +374,16 @@ export const getUser = async (dispatch, userId, token = null) => {
     });
 };
 
-export const getUserAllDetails = (dispatch, userId) => {
+export const getUserAllDetails = (dispatch, userId, roles) => {
     const fsa = {
         payload: {},
         type: actionTypes.SET_USER_INFO,
     };
     const userDetails = coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`);
-    const administeredCompanies = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`);
-    const administeredBeneficiaries = callApiAndGetData(`/users/${userId}/administeredBeneficiaries?page[size]=50&sort=-id`);
-    const beneficiaryAdminRoles = callApiAndGetData(`/users/${userId}/beneficiaryAdminRoles?page[size]=50&sort=-id`);
-    const companyAdminRoles = callApiAndGetData(`/users/${userId}/companyAdminRoles?page[size]=50&sort=-id`);
+    const administeredCompanies = (_.includes(roles, 'CompanyAdminRole')) ? callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`) : null;
+    const administeredBeneficiaries = (_.includes(roles, 'BeneficiaryAdminRole')) ? callApiAndGetData(`/users/${userId}/administeredBeneficiaries?page[size]=50&sort=-id`) : null;
+    const beneficiaryAdminRoles = (_.includes(roles, 'BeneficiaryAdminRole')) ? callApiAndGetData(`/users/${userId}/beneficiaryAdminRoles?page[size]=50&sort=-id`) : null;
+    const companyAdminRoles = (_.includes(roles, 'CompanyAdminRole')) ? callApiAndGetData(`/users/${userId}/companyAdminRoles?page[size]=50&sort=-id`) : null;
     return Promise.all([
         userDetails,
         administeredCompanies,
@@ -415,9 +415,22 @@ export const getUserAllDetails = (dispatch, userId) => {
                 if (hasAdminAccess) {
                     fsa.payload.isAdmin = true;
                 }
-                const includedData = _.concat(
+                /* const includedData = _.concat(
                     userData.included, allData[1], allData[2], allData[3], allData[4],
-                );
+                ); */
+                let includedData = userData.included;
+                if (!_.isEmpty(allData[1])) {
+                    includedData = _.concat(includedData, allData[1]);
+                }
+                if (!_.isEmpty(allData[2])) {
+                    includedData = _.concat(includedData, allData[2]);
+                }
+                if (!_.isEmpty(allData[3])) {
+                    includedData = _.concat(includedData, allData[3]);
+                }
+                if (!_.isEmpty(allData[4])) {
+                    includedData = _.concat(includedData, allData[4]);
+                }
                 if (!_.isEmpty(includedData)) {
                     const accounts = [];
                     const contexts = [];
