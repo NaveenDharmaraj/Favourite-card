@@ -930,7 +930,7 @@ h4{
                 background-color: transparent;
             }
             &::-webkit-scrollbar-thumb {
-              background-color: #ddd;
+              background-color: transparent;
               //outline: 1px solid slategrey;
               border-radius:6px;
             }
@@ -6609,6 +6609,7 @@ button.ui.button.blue-bordr-btn-round-def{
   .ui{
     &.list{
       &.celled{
+        margin-bottom: 0;
         .item{
           padding: 2rem 0rem; 
           .ellipsis{
@@ -6723,6 +6724,12 @@ button.ui.button.blue-bordr-btn-round-def{
           }
         }
       }
+    }
+  }
+  .db-pagination{
+    text-align: right;
+    .ui.menu{
+      min-height: auto;
     }
   }
 }
