@@ -218,7 +218,7 @@ body{
                                     bottom: 0;
                                     width: 12px;
                                     height: 16px;
-                                    background-image: url("../images/icons/icon-arrow-down.svg") !important;
+                                    background-image: url("@{img_url}/images/icons/icon-arrow-down.svg") !important;
                                     background-size: contain !important;
                                     background-repeat: no-repeat !important;
                                     background-position: center !important;
@@ -234,7 +234,7 @@ body{
 }
 /***********flowReviewbanner********/
 .givinggroupbanner{
-    background-image: url("../images/banner_give-to-gg-campaign.svg")!important;
+    background-image: url("@{img_url}/images/banner_give-to-gg-campaign.svg")!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -272,7 +272,7 @@ body{
 }
 /*******/
 .charityallocationbanner{
-    background-image: url("../images/banner_give-to-charity.svg")!important;
+    background-image: url("@{img_url}/images/banner_give-to-charity.svg")!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -310,7 +310,7 @@ body{
 }
 /*****/
 .flowReviewbanner{
-    background-image: url("../images/banner_give-fromgg.svg")!important;
+    background-image: url("@{img_url}/images/banner_give-fromgg.svg")!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -541,12 +541,12 @@ body{
         width: 25%;
     }
     .matchingAmount{
-        display: flex;
         align-items: center;
-        span{
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        @media only screen and (max-width:472px) and (min-width:416px) {
+            max-width: 80%;
+        }
+        @media only screen and (max-width:415px){
+            max-width: 90%;
         }
     }
 }
@@ -1059,7 +1059,7 @@ body{
                 }
                 &::before{
                     content: '';
-                    background-image: url("../images/icons/icon-arrow-down.svg");
+                    background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
                     height: 7px;
                     width: 13.5px;
                     position: absolute;
@@ -1135,7 +1135,7 @@ body{
                     &.cardVisa{
                         &::before{
                             content: '';
-                            background-image: url("../images/icons/icon-cc-visa-colour.png") !important;
+                            background-image: url("@{img_url}/images/icons/icon-cc-visa-colour.png") !important;
                             left: 10px;
                             width: 31px;
                             height: 11px;
@@ -1144,7 +1144,7 @@ body{
                     &.cardMaster{
                         &::before{
                             content: '';
-                            background-image: url("../images/icons/icon-cc-mastercard-colour.png") !important;
+                            background-image: url("@{img_url}/images/icons/icon-cc-mastercard-colour.png") !important;
                             left: 10px;
                             width: 31px;
                             height: 11px;
@@ -1153,7 +1153,7 @@ body{
                     &.cardExpress{
                         &::before{
                             content: '';
-                            background-image: url("../images/icons/icon-cc-american-express-colour.png") !important;
+                            background-image: url("@{img_url}/images/icons/icon-cc-american-express-colour.png") !important;
                             left: 10px;
                             width: 31px;
                             height: 11px;
@@ -1205,14 +1205,14 @@ body{
                     top: 0px;
                     bottom: 0px;
                     margin: auto;
-                    background-image: url("../images/icons/ico_addmoney.svg");
+                    background-image: url("@{img_url}/images/icons/ico_addmoney.svg");
                     background-repeat: no-repeat;
                     background-position: center;
                     background-size: 23px;
                 }
                 &.purpleIcon{
                     &::before{
-                        background-image: url("../images/icons/purple.svg");
+                        background-image: url("@{img_url}/images/icons/purple.svg");
                     }
                 }
             }
@@ -1290,7 +1290,7 @@ body{
             width: 17px;
             height: 17px;
             display: block;
-            background-image: url("../images/icons/red.svg");
+            background-image: url("@{img_url}/images/icons/red.svg");
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -1374,7 +1374,7 @@ body{
     }
     &::before{
         content: '';
-        background-image: url("../images/icons/icon-arrow-down.svg");
+        background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
         height: 15px;
         width: 15px;
         position: absolute;
@@ -1671,7 +1671,7 @@ span.attributes {
                     opacity: 1;
                     &::before{
                         content: '';
-                        background-image: url("../images/icons/close.svg") !important;
+                        background-image: url("@{img_url}/images/icons/close.svg") !important;
                         background-size : contain !important;
                         width: 10px;
                         height: 10px;
@@ -1696,7 +1696,7 @@ span.attributes {
         }
         &::after{
             content: '';
-            background-image: url("../images/icons/icon-arrow-down.svg");
+            background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
             height: 15px;
             width: 15px;
             position: absolute;
@@ -1763,7 +1763,7 @@ p{
     z-index: 1;
     opacity: .8;
     padding: .625rem 0 0 0;
-    background-image: url("../images/icons/close.svg") !important;
+    background-image: url("@{img_url}/images/icons/close.svg") !important;
     background-size: contain !important;
     background-repeat: no-repeat !important;
 }
@@ -1798,7 +1798,7 @@ p{
                     top: 0px;
                     bottom: 0px;
                     margin: auto;
-                    background-image: url("../images/icons/ico_addmoney.svg");
+                    background-image: url("@{img_url}/images/icons/ico_addmoney.svg");
                     background-repeat: no-repeat;
                     background-position: center;
                     background-size: auto 28px; 
@@ -2310,7 +2310,7 @@ input{
         }
         &::after{
             content: '';
-            background-image: url("../images/icons/icon-arrow-down.svg");
+            background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
             height: 7px;
             width: 13.5px;
             position: absolute;
@@ -2339,7 +2339,7 @@ input{
         bottom: 0;
         width: 20px;
         height: 20px;
-        background-image: url("../images/icons/icon-search.svg") !important;
+        background-image: url("@{img_url}/images/icons/icon-search.svg") !important;
         background-size: contain !important;
         background-repeat: no-repeat !important;
         background-position: center !important;
@@ -2460,7 +2460,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
 }
 .matching-fund-modal-wrapper{
     padding-top: 10px;
-    padding-bottom: 15px;
+    padding-bottom: 12px;
     .ui.grid{
         width: 100%;
     }
@@ -2547,7 +2547,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             font-family: 'ProximaNova-Medium';
             border-radius: 12.17px;
             background-color: fade(#90459A, 10%);
-            padding: 4px 5px;
+            padding: 5px 8px;
             text-align: center;          
         }
         @media only screen and (max-width:991px) {
@@ -2575,6 +2575,9 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                                     margin-left: 10px;
                                     margin-bottom: 0px;
                                     margin-top: 0;
+                                    @media only screen and (max-width:340px) {
+                                        width: 30px;
+                                    }
                                     +.note{
                                         margin-top: 3px;
                                     }
@@ -2613,12 +2616,18 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                 font-size: 12px;
                 line-height: 15px;
                 text-align: center;
-                @media only screen and (min-width:768px) {
-                    width: 340px;
+                width: 100%;
+                @media only screen and (min-width:991px) {
                     max-width: 340px;
                 }
+                @media only screen and (max-width:991px) {
+                    max-width: 280px;
+                }
                 @media only screen and (max-width:767px) {
-                    max-width: 233px;
+                    max-width: 240px;
+                }
+                @media only screen and (max-width:340px) {
+                    max-width: 225px;
                 }
             }
         }
