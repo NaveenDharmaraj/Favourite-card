@@ -79,6 +79,7 @@ class ProfilePageHead extends React.Component {
         let profileType = '';
         let linkAddress;
         let profileButtonText = '';
+        let profileTooltipText = '';
         const currency = 'USD';
         const language = 'en';
         if (type === 'beneficiaries') {
@@ -87,10 +88,12 @@ class ProfilePageHead extends React.Component {
             profileType = 'group';
             linkAddress = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
             profileButtonText = formatMessage('campaignProfile:groupButtonText');
+            profileTooltipText = formatMessage('campaignProfile:givingGroupText');
         } else if (type === 'campaigns') {
             profileType = 'group';
             linkAddress = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
             profileButtonText = formatMessage('campaignProfile:campaignButtonText');
+            profileTooltipText = formatMessage('campaignProfile:campaignButtonText');
         }
         if (pageDetails.attributes) {
             if (isAuthenticated) {
@@ -157,7 +160,8 @@ class ProfilePageHead extends React.Component {
                                             position="bottom center"
                                             inverted
                                             content={hasActiveMatch ? formatMessage('campaignProfile:popupMatchingText', {
-                                                Profiletype: profileButtonText.toLowerCase(),
+                                                Profile: profileButtonText,
+                                                Profiletype: profileTooltipText,
                                             }) : formatMessage('campaignProfile:popupCurrentBalanceText', {
                                                 balance: formatCurrency(balance, language, currency),
                                                 Profiletype: profileButtonText.toLowerCase(),

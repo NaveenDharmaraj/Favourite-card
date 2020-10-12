@@ -29,8 +29,9 @@
     "supportNoDataHeading": "This Campaign doesn't have any Giving Groups supporting it yet.",
     "totalAmountRaised": "Total Raised: {{amount}}",
     "popupCurrentBalanceText": "The current {{Profiletype}} balance is {{balance}}.",
-    "popupMatchingText": "You cannot give from this {{Profiletype}} until matching expires.",
+    "popupMatchingText": "Gifts to this {{Profiletype}} are being matched. You will be able to give from this {{Profile}} once matching expires.",
     "campaignButtonText": "Campaign",
     "groupButtonText": "group",
+    "givingGroupText": "Giving Group",
     "matchingCampaignHeader": "Matching history"
 }
