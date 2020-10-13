@@ -121,7 +121,7 @@ class DashboradList extends React.Component {
         } = this.props;
         let accordianHead = this.nodataCard();
         let compareDate = '';
-        const giftNotSent = <b>Gift Not Sent</b>;
+        const giftNotSent = <label className='giftNotSent'>GIFT NOT SENT</label>;
         if (dataList && dataList.data && _.size(dataList.data) > 0) {
             accordianHead = dataList.data.map((data, index) => {
                 let date = new Date(data.attributes.createdAt);
@@ -315,13 +315,13 @@ class DashboradList extends React.Component {
                                                     }
                                                     {(data.attributes.status === 'cancelled' || data.attributes.status === 'returned_to_donor')
                                                     && (
-                                                        <Fragment>
-                                                            Learn about the common reasons
+                                                        <div className='learnAboutWrap'>
+                                                            Learn about the common reasons<br/>
                                                             <a href={`${HELP_CENTRE_URL}/article/198-gifts-returned-to-your-impact-account `}> why a gift is not sent. </a>
                                                             Or,
                                                             <a href={`${CORP_DOMAIN}/contact/`}> contact us </a>
                                                             for help.
-                                                        </Fragment>
+                                                        </div>
                                                     )
                                                     }
                                                 </Modal.Content>
