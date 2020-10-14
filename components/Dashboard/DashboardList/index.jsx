@@ -251,7 +251,6 @@ class DashboradList extends React.Component {
                     }
                 }
                 const amount = formatCurrency(data.attributes.amount, language, 'USD');
-                // const transactionType = (data.attributes.transactionType.toLowerCase() === 'donation' && data.attributes.status !== 'cancelled') ? 'Deposit' : transactionTypeDisplay;
                 return (
                     <Table.Row className={rowClass} key={index}>
                         <Table.Cell className={dateClass}>{date}</Table.Cell>
