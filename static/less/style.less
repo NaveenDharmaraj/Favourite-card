@@ -1002,7 +1002,7 @@ h4{
       &.segment{
         &.tab{
           border: none;
-          padding-top: 25px;
+          padding-top: 0rem;
         }
       }
     }
@@ -1079,6 +1079,7 @@ h4{
           margin-top: -1rem;
           .ui.grid >.row{
             padding-top: 0px;
+            padding-bottom: 2rem;
             
           }
           .user-left-menu{
@@ -1167,12 +1168,9 @@ h4{
         text-decoration: underline;
       }
     }
-    &:first-child{
-      padding-top: 0px;
-    }
     &:last-child{
       border-bottom: 0px solid transparent;
-      padding-bottom:0 ;
+      padding-bottom:0 !important ;
     }
     .success-btn-rounded-def{
       min-width: 166px;
@@ -1206,12 +1204,24 @@ h4{
         &.header{
           font-size: 17px;
           line-height: 15px;
+          margin-top: 0;
         }
       }
     }
     p{
       line-height: 28/@rem;
       font-size: 1rem;
+      &:last-child{
+        margin-bottom: -4px;
+        @media only screen and (max-width: 991px){
+          margin-bottom: 0px;
+        }
+      }
+    }
+    button.ui.button.success-btn-rounded-def{
+      @media only screen and (max-width: 991px){
+        margin-top: 5px;
+      }
     }
   }
 }
@@ -6579,7 +6589,7 @@ button.ui.button.blue-bordr-btn-round-def{
             .content{
               padding-left: 0px;
               .header{
-                padding-bottom: 7px;
+                padding-bottom: 0px;
                 .pending{
                   display: inline-block;
                   margin-left: 10px;
@@ -6618,6 +6628,7 @@ button.ui.button.blue-bordr-btn-round-def{
                 width: 30px;
                 &::before{
                   content: url("@{img_url}/images/icons/ellipsis.svg");
+                  top: 10px;
                 }
               }
             }
@@ -8428,6 +8439,11 @@ body{
 .charityTab{
   &.user-profile-settings{
     margin-bottom: 0px;
+    .user-messaging{
+      .ui.pointing.secondary.menu{
+        margin-bottom: 0;
+      }
+    }
     .settingsTab{
       margin-bottom: -3rem;
       >div{
