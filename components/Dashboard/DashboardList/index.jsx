@@ -121,7 +121,6 @@ class DashboradList extends React.Component {
         } = this.props;
         let accordianHead = this.nodataCard();
         let compareDate = '';
-        const giftNotSent = <label className='giftNotSent'>GIFT NOT SENT</label>;
         if (dataList && dataList.data && _.size(dataList.data) > 0) {
             accordianHead = dataList.data.map((data, index) => {
                 let date = new Date(data.attributes.createdAt);
@@ -159,6 +158,8 @@ class DashboradList extends React.Component {
                 let imageCls = 'ui image';
                 let transactionTypeDisplay = '';
                 const isGiftCancelled = (data.attributes.status === 'cancelled' || data.attributes.status === 'returned_to_donor');
+                const giftNotSent = <label className='giftNotSent'>GIFT NOT SENT</label>;
+                const giftReversed = <label className='giftNotSent'>GIFT CANCELLED</label>;
                 if (!_.isEmpty(data.attributes.destination)) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
                         givingType = 'giving group';
@@ -209,8 +210,8 @@ class DashboradList extends React.Component {
                         givingType = '';
                         rowClass = 'gift';
                         descriptionType = 'Received a gift from ';
-                        transactionTypeDisplay = 'Gift received';
-                        transactionSign = '+';
+                        transactionTypeDisplay = isGiftCancelled ? giftReversed : 'Gift received';
+                        transactionSign = isGiftCancelled ? '-' : '+';
                         if (!_.isEmpty(data.attributes.source)) {
                             entity = data.attributes.source.name;
                             if (data.attributes.source.type === 'User') {
@@ -236,7 +237,7 @@ class DashboradList extends React.Component {
                 } else if (data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation') {
                     givingType = '';
                     rowClass = 'gift';
-                    transactionTypeDisplay = 'Gift given';
+                    transactionTypeDisplay = isGiftCancelled ? giftReversed : 'Gift given';
                     descriptionType = 'Given to ';
                     entity = data.attributes.recipientEmail;
                     transactionSign = '-';
@@ -247,8 +248,8 @@ class DashboradList extends React.Component {
                     transactionSign = '-';
                     // for catransfer destination is blank but it is a deposit
                     if (data.attributes.transactionType.toLowerCase() === 'catransfer') {
-                        transactionSign = '+';
-                        transactionTypeDisplay = 'Deposit';
+                        transactionSign = isGiftCancelled ? '+' : '-';
+                        transactionTypeDisplay = isGiftCancelled ? giftReversed : 'Deposit';
                     }
                 }
                 const amount = formatCurrency(data.attributes.amount, language, 'USD');
@@ -284,7 +285,7 @@ class DashboradList extends React.Component {
                                                             <Header.Subheader>
                                                                 {isGiftCancelled
                                                                     ? (
-                                                                        giftNotSent
+                                                                        transactionTypeDisplay
                                                                     )
                                                                     : (
                                                                         <Fragment>
