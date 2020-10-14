@@ -15,13 +15,46 @@ const {
 
 // eslint-disable-next-line react/prefer-stateless-function
 class HelpCenter extends React.Component {
+    lazyLoadImage = () => {
+        const options = {
+            root: null,
+            threshold: 0,
+            rootMargin: '0px 0px 150px 0px',
+        };
+        const _imageElement = document.querySelectorAll('.helpCenter');
+        if ('IntersectionObserver' in window) {
+            // LazyLoad images using IntersectionObserver
+            const Observer = new IntersectionObserver(((entries, Observer) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) {
+                        return
+                    } else {
+                        entry.target.classList.add("helpImg");
+                        Observer.unobserve(entry.target);
+                    }
+                });
+            }), options);
+            _imageElement.forEach((element) => {
+                Observer.observe(element);
+            });
+        } else {
+            // Load all images at once
+            _imageElement.forEach((element) => {
+                element.classList.add("helpImg")
+            });
+        }
+
+    };
+    componentDidMount() {
+        this.lazyLoadImage();
+    }
     render() {
         return (
             <div className="footer-help">
                 <Container>
                     <Grid verticalAlign="middle">
                         <Grid.Row>
-                            <Grid.Column mobile={12} tablet={6} computer={6} className="helpImg">
+                            <Grid.Column mobile={12} tablet={6} computer={6} className="helpCenter">
                                 <div />
                             </Grid.Column>
                             <Grid.Column mobile={16} tablet={6} computer={6}>
