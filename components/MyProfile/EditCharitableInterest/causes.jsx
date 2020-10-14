@@ -100,7 +100,7 @@ class MyCauses extends React.Component {
             userProfileBasicData,
         } = this.props;
         let causesVisible = 0;
-        if (!_.isEmpty(userProfileBasicData)) {
+        if (!_.isEmpty(userProfileBasicData) && userProfileBasicData.data) {
             causesVisible = userProfileBasicData.data[0].attributes.causes_visibility;
         }
         const privacyColumn = 'causes_visibility';

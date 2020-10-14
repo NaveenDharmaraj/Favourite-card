@@ -21,6 +21,9 @@ export const donationDefaultProps = {
             },
             newCreditCardId: null,
             noteToSelf: '',
+            taxReceipt: {
+                value: null,
+            },
             userInteracted: false,
         },
         selectedTaxReceiptProfile: {},
@@ -31,26 +34,50 @@ export const donationDefaultProps = {
     },
 };
 
-
-export const beneficiaryDefaultProps = {
-    flowObject: {
+export const reloadDefaultProps = {
+    reloadObject: {
+        cardHolderName: '',
         currency: 'USD',
         giveData: {
-            coverFees: false,
-            coverFeesAmount: null,
             creditCard: {
                 value: null,
-            },
-            dedicateGift: {
-                dedicateType: '',
-                dedicateValue: '',
             },
             donationAmount: '',
             donationMatch: {
                 value: null,
             },
-            formatedCharityAmount: '',
             formatedDonationAmount: '',
+            giftType: {
+                value: 0,
+            },
+            giveTo: {
+                value: null,
+            },
+            newCreditCardId: null,
+            noteToSelf: '',
+            taxReceipt: {
+                value: null,
+            },
+            userInteracted: false,
+        },
+        selectedTaxReceiptProfile: {},
+        stripeCreditCard: {},
+        type: 'donations',
+    },
+};
+
+export const beneficiaryDefaultProps = {
+    flowObject: {
+        benificiaryIndex: 0,
+        currency: 'USD',
+        giveData: {
+            coverFees: false,
+            coverFeesAmount: null,
+            dedicateGift: {
+                dedicateType: '',
+                dedicateValue: '',
+            },
+            formatedCharityAmount: '',
             giftType: {
                 value: 0,
             },
@@ -62,6 +89,8 @@ export const beneficiaryDefaultProps = {
                 value: null,
             },
             infoToShare: {
+                privacyData: null,
+                privacySetting: 'anonymous',
                 value: 'anonymous',
             },
             newCreditCardId: null,
@@ -72,10 +101,7 @@ export const beneficiaryDefaultProps = {
         groupFromUrl: false,
         groupId: null,
         nextSteptoProceed: {},
-        selectedTaxReceiptProfile: {},
-        sourceAccountHolderId: null,
         stepsCompleted: false,
-        taxReceiptProfileAction: 'no_change',
         type: 'give/to/charity',
     },
 };
@@ -84,18 +110,10 @@ export const groupDefaultProps = {
     flowObject: {
         currency: 'USD',
         giveData: {
-            creditCard: {
-                value: null,
-            },
             dedicateGift: {
                 dedicateType: '',
                 dedicateValue: '',
             },
-            donationAmount: '',
-            donationMatch: {
-                value: null,
-            },
-            formatedDonationAmount: '',
             formatedGroupAmount: '',
             giftType: {
                 value: 0,
@@ -108,7 +126,18 @@ export const groupDefaultProps = {
                 value: null,
             },
             infoToShare: {
-                value: null,
+                privacyData: null,
+                privacySetting: 'anonymous',
+                value: 'anonymous',
+            },
+            matchingPolicyDetails: {
+                hasMatchingPolicy: false,
+                isValidMatchPolicy : false,
+                matchPolicyTitle: '',
+            },
+            infoToShareList: [],
+            nameToShare: {
+                value: 'anonymous',
             },
             noteToCharity: '',
             noteToSelf: '',
@@ -121,11 +150,8 @@ export const groupDefaultProps = {
         groupFromUrl: false,
         groupIndex: 0,
         nextSteptoProceed: {},
-        selectedTaxReceiptProfile: {},
         slugValue: null,
-        sourceAccountHolderId: null,
         stepsCompleted: false,
-        taxReceiptProfileAction: 'no_change',
         type: 'give/to/group',
     },
 };
@@ -134,15 +160,8 @@ export const p2pDefaultProps = {
     flowObject: {
         currency: 'USD',
         giveData: {
-            creditCard: {
-                value: null,
-            },
-            donationAmount: '',
-            donationMatch: {
-                value: null,
-            },
-            formatedDonationAmount: '',
             formatedP2PAmount: '',
+            friendsList: [],
             // P2P gift type is always 0
             giftType: {
                 value: 0,
@@ -157,7 +176,6 @@ export const p2pDefaultProps = {
             infoToShare: {
                 value: 'anonymous',
             },
-            newCreditCardId: null,
             noteToRecipients: '',
             noteToSelf: '',
             recipients: [],
@@ -165,11 +183,11 @@ export const p2pDefaultProps = {
             userInteracted: false,
             emailMasked: false,
             recipientName: '',
+            recipientImage: '',
+            selectedFriendsList: [],
         },
         nextSteptoProceed: {},
-        selectedTaxReceiptProfile: {},
         stepsCompleted: false,
-        taxReceiptProfileAction: 'no_change',
         type: 'give/to/friend',
     },
 };

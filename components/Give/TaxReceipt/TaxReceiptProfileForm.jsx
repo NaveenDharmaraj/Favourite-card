@@ -10,7 +10,7 @@ import {
     Popup,
     Select,
 } from 'semantic-ui-react';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     canadaProvinceOptions,
@@ -18,11 +18,16 @@ import {
     usStateOptions,
 } from '../../../helpers/constants';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import { withTranslation } from '../../../i18n';
 
 function TaxReceiptProfileForm(props) {
     const handleInputChange = (e, {
         value, name,
     }) => {
+        // condition for restricting the max characters to be entered in full name input field
+        if (name === 'fullName' && !_isEmpty(value) && value.length > 250) {
+            return;
+        }
         props.parentInputChange(name, value);
     };
 
@@ -51,7 +56,6 @@ function TaxReceiptProfileForm(props) {
 
     const displayForm = () => {
         const {
-            formatMessage,
             showFormData,
             data: {
                 attributes: {
@@ -64,8 +68,10 @@ function TaxReceiptProfileForm(props) {
                     province,
                 },
             },
+            t,
             validity,
         } = props;
+        const formatMessage = t;
         let provinceOptions = canadaProvinceOptions;
         let showUSNote = false;
         let provinceMessage = 'province';
@@ -80,7 +86,7 @@ function TaxReceiptProfileForm(props) {
                 <React.Fragment>
                     { !!showFormData
                     && <div>
-                        <div>
+                        <div className="addRecipientForm">
                             <Form.Field>
                                 <label htmlFor="fullName">
                                     {formatMessage('fullName')}
@@ -160,7 +166,7 @@ function TaxReceiptProfileForm(props) {
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
                                     placeholder={formatMessage('secondAddressPlaceHolder')}
-                                    value={_.isEmpty(addressTwo) ? '' : addressTwo}
+                                    value={_isEmpty(addressTwo) ? '' : addressTwo}
                                 />
                                 <FormValidationErrorMessage
                                     condition={!validity.isValidSecondAddress}
@@ -201,12 +207,13 @@ function TaxReceiptProfileForm(props) {
                             <Grid>
                                 <Grid.Row>
                                     <Grid.Column mobile={16} tablet={8} computer={8}>
-                                        <Form.Field>
+                                        <Form.Field className="mb-1">
                                             <label htmlFor="country">
                                                 {formatMessage('country')}
                                             </label>
                                             <Form.Field
                                                 control={Select}
+                                                className="dropdownWithArrowParent"
                                                 id="country"
                                                 name="country"
                                                 onBlur={handleInputOnBlur}
@@ -218,7 +225,7 @@ function TaxReceiptProfileForm(props) {
                                         </Form.Field>
                                     </Grid.Column>
                                     <Grid.Column mobile={16} tablet={8} computer={8}>
-                                        <Form.Field>
+                                        <Form.Field className="mb-1">
                                             <label htmlFor="postalCode">
                                                 {formatMessage('postalCode')}
                                             </label>
@@ -252,7 +259,7 @@ function TaxReceiptProfileForm(props) {
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
-                            <Form.Field className="mt-1">
+                            <Form.Field>
                                 <label htmlFor="province">
                                     {formatMessage(provinceMessage)}
                                 </label>
@@ -261,6 +268,7 @@ function TaxReceiptProfileForm(props) {
                                     control={Select}
                                     id="province"
                                     name="province"
+                                    className="dropdownWithArrowParent"
                                     onBlur={handleInputOnBlur}
                                     options={provinceOptions}
                                     onChange={handleInputChange}
@@ -311,4 +319,4 @@ function TaxReceiptProfileForm(props) {
         displayForm()
     );
 }
-export default TaxReceiptProfileForm;
+export default withTranslation('taxReceipt')(TaxReceiptProfileForm);

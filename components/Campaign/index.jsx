@@ -109,6 +109,7 @@ class CampaignProfileWrapper extends React.Component {
                     <ProfilePageHead
                         pageDetails={campaignDetails}
                         isAuthenticated={isAuthenticated}
+                        dispatch={dispatch}
                     />
                 )}
                 {

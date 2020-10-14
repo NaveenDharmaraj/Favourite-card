@@ -28,6 +28,8 @@ import {
 } from '../routes';
 import '../static/less/charityProfile.less';
 import storage from '../helpers/storage';
+import { resetFlowObject } from '../actions/give';
+
 
 const actionTypes = {
     RESET_CHARITY_STATES: 'RESET_CHARITY_STATES',
@@ -85,6 +87,7 @@ class CharityProfile extends React.Component {
                     hideGive,
                 },
             },
+            dispatch,
             isAUthenticated,
             redirectToDashboard,
             t: formatMessage,
@@ -107,7 +110,7 @@ class CharityProfile extends React.Component {
             if (isAUthenticated) {
                 buttonLink = (
                     <Link route={(`/give/to/charity/${slug}/gift/new`)}>
-                        <Button className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
+                        <Button className="blue-btn-rounded-def" onClick={() => { resetFlowObject('charity', dispatch); }}>{formatMessage('charityProfile:give')}</Button>
                     </Link>
                 );
             } else {

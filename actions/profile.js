@@ -69,6 +69,7 @@ export const actionTypes = {
     DISABLE_FOLLOW_BUTTON: 'DISABLE_FOLLOW_BUTTON',
     GET_CAMPAIGN_FROM_SLUG: 'GET_CAMPAIGN_FROM_SLUG',
     GET_IMAGES_FOR_CAMPAIGN: 'GET_IMAGES_FOR_CAMPAIGN',
+    GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN: 'GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN',
     GET_SUB_GROUPS_FOR_CAMPAIGN: 'GET_SUB_GROUPS_FOR_CAMPAIGN',
     SAVE_FOLLOW_STATUS_CAMPAIGN: 'SAVE_FOLLOW_STATUS_CAMPAIGN',
     SAVE_FOLLOW_STATUS_CHARITY: 'SAVE_FOLLOW_STATUS_CHARITY',
@@ -157,7 +158,7 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
                     // console.log(error);
                 });
             }
-            // API call for images
+            // API call for images & related beneficiaries
             if (result.data) {
                 coreApi.get(result.data.relationships.galleryImages.links.related,
                     {
@@ -172,6 +173,22 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
                         });
                     },
                 ).catch((error) => {
+                    // console.log(error);
+                });
+                // API call for related beneficiaries
+                coreApi.get(result.data.relationships.groupBeneficiaries.links.related, {
+                    params: {
+                        dispatch,
+                        ignore401: true,
+                    },
+                }).then((campaignRelatedBeneficiaries) => {
+                    dispatch({
+                        payload: {
+                            campaignRelatedBeneficiariesCount: campaignRelatedBeneficiaries.data.length,
+                        },
+                        type: actionTypes.GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN,
+                    });
+                }).catch((error) => {
                     // console.log(error);
                 });
             }

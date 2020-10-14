@@ -1,11 +1,10 @@
 import React, {
-  Fragment,
+    Fragment,
 } from 'react';
-import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import {
     connect
-  } from 'react-redux';
+} from 'react-redux';
 import { withTranslation } from '../../../i18n';
 import _find from 'lodash/find';
 import _includes from 'lodash/includes';
@@ -17,44 +16,41 @@ import _merge from 'lodash/merge';
 import _replace from 'lodash/replace';
 import _ from 'lodash';
 import {
-    Elements,
-    StripeProvider,
-} from 'react-stripe-elements';
-import {
-  Divider,
-  Form,
-  Icon,
-  Input,
-  Popup,
-  Select,
+    Container,
+    Form,
+    Grid,
+    Header,
+    Placeholder,
+    Select,
+    Modal,
 } from 'semantic-ui-react';
 import ReactHtmlParser from 'react-html-parser';
-import { Link } from '../../../routes';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import NoteTo from '../NoteTo';
-import AccountTopUp from '../AccountTopUp';
-// import CreditCard from '../../shared/CreditCard';
+import ReloadAddAmount from '../ReloadAddAmount';
+import FlowBreadcrumbs from '../FlowBreadcrumbs';
+import DonationFrequency from '../DonationFrequency';
+import GroupAmountField from '../DonationAmountField';
 import PrivacyOptions from '../PrivacyOptions';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
-import { 
+import {
     getDonationMatchAndPaymentInstruments,
     getGroupsForUser,
- } from '../../../actions/user';
+} from '../../../actions/user';
 import {
     formatAmount,
-    getDefaultCreditCard,
     getDropDownOptionFromApiData,
-    populateDonationMatch,
-    populateGiveToGroupsofUser,
-    populateGiftType,
     populateGroupsOfUser,
     populatePaymentInstrument,
-    populateInfoToShare,
-    resetDataForGiveAmountChange,
+    populateTaxReceipts,
     resetDataForAccountChange,
-    resetDataForGiftTypeChange,
     validateGiveForm,
-    formatCurrency
+    formatCurrency,
+    setDonationAmount,
+    validateForReload,
+    populateInfoToShareAccountName,
+    checkMatchPolicy,
+    findingErrorElement,
 } from '../../../helpers/give/utils';
 import {
     getCompanyPaymentAndTax,
@@ -62,31 +58,31 @@ import {
     proceed,
 } from '../../../actions/give';
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
-import { dismissAllUxCritialErrors } from '../../../actions/error';
-                          
-const { publicRuntimeConfig } = getConfig();
+import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
+import { getGroupCampaignAdminInfoToShare } from '../../../actions/userProfile';
+import MatchingPolicyModal from '../../shared/MatchingPolicyModal';
 
-const {
-    STRIPE_KEY
-} = publicRuntimeConfig;
 const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
-const CreditCard = dynamic(() => import('../../shared/CreditCard'), {
-    ssr: false
-});
 
 class Group extends React.Component {
     constructor(props) {
         super(props);
         const {
+            campaignId,
             companyDetails,
             currentUser: {
-                displayName,
-                email,
+                attributes: {
+                    displayName,
+                    email,
+                },
             },
-            donationMatchData,
+            groupCampaignId,
+            groupId,
+            infoOptions: {
+                groupMemberInfoToShare,
+            },
             paymentInstrumentsData,
             taxReceiptProfiles,
-
         } = props;
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
@@ -100,26 +96,29 @@ class Group extends React.Component {
                 nextStep: props.step,
             };
         }
-        else{
-                payload =  _merge({}, props.flowObject)
+        else {
+            payload = _merge({}, props.flowObject)
+        }
+        let privacyNameOptions = [];
+        if (props.flowObject.giveData.giveFrom.type) {
+            if (props.flowObject.giveData.giveFrom.type === 'user' && !_isEmpty(groupMemberInfoToShare)) {
+                const {
+                    infoToShareList,
+                } = populateDropdownInfoToShare(groupMemberInfoToShare);
+                privacyNameOptions = infoToShareList;
+            } else {
+                const name = (props.flowObject.giveData.giveFrom.type === 'companies' && props.flowObject.giveData.giveFrom.displayName) ? props.flowObject.giveData.giveFrom.displayName 
+                             : props.flowObject.giveData.giveFrom.name;
+                privacyNameOptions = populateInfoToShareAccountName(name, formatMessage);
             }
+        }
+
         this.state = {
-            flowObject:_.cloneDeep(payload),
+            flowObject: _.cloneDeep(payload),
             benificiaryIndex: 0,
             buttonClicked: false,
             dropDownOptions: {
-                donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
-                giftTypeList: populateGiftType(formatMessage),
-                infoToShareList: populateInfoToShare(
-                    taxReceiptProfiles,
-                    companyDetails,
-                    payload.giveData.giveFrom,
-                    {
-                        displayName,
-                        email,
-                    },
-                    formatMessage,
-                ),
+                privacyNameOptions,
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments),
             },
             inValidCardNameValue: true,
@@ -127,104 +126,138 @@ class Group extends React.Component {
             inValidCvv: true,
             inValidExpirationDate: true,
             inValidNameOnCard: true,
+            reloadModalOpen: 0,
+            reviewBtnFlag: false,
             validity: this.intializeValidations(),
         };
         this.state.flowObject.groupFromUrl = false;
-        if(props.sourceAccountHolderId ){
-        this.state.flowObject.sourceAccountHolderId = props.sourceAccountHolderId;
-        }
+        if (!_isEmpty(groupId)
+            && Number(groupId) > 0) {
+            this.state.flowObject.groupId = groupId;
+            this.state.giveFromType = 'groups';
+        } else if (!_isEmpty(campaignId)
+            && Number(campaignId) > 0) {
+            this.state.flowObject.campaignId = campaignId;
+            this.state.giveFromType = 'campaigns'
+        } else if (!_isEmpty(groupCampaignId)
+        && Number(groupCampaignId) > 0) {
+        this.state.flowObject.groupCampaignId = groupCampaignId;
+    }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
-
-        this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
-        this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
-        this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
-        this.validateCreditCardName = this.validateCreditCardName.bind(this);
-        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
-        dismissAllUxCritialErrors(props.dispatch);
+        this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
     }
 
     componentDidMount() {
         const {
             slug,
             dispatch,
-            currentUser:{
+            currentAccount,
+            currentUser: {
                 id,
             },
-            sourceAccountHolderId,
+            groupId,
+            campaignId,
         } = this.props;
-        if (Number(sourceAccountHolderId) > 0) {
-            getGroupsForUser(dispatch,id);
-        }  
-        else if (slug !== null) {
-            getGroupsFromSlug(dispatch, slug);
-        }
         dispatch(getDonationMatchAndPaymentInstruments(id));
-        dispatch({
-            payload: {
-                attributes: {
-                    matchAvailable : '0',
-                },
-            },
-            type: 'GET_MATCHING_DETAILS_FOR_GROUPS',
-        });
+        if (Number(groupId) > 0 || Number(campaignId) > 0) {
+            getGroupsForUser(dispatch, id);
+            dispatch(getGroupCampaignAdminInfoToShare(id, false))
+        }
+        else if (slug !== null) {
+            getGroupsFromSlug(dispatch, slug)
+                .then((result) => {
+                    const giveGroupDetails = result.data;
+                    dispatch(getGroupCampaignAdminInfoToShare(id, giveGroupDetails.attributes.isCampaign));
+                })
+                .catch(err => {
+                })
+        }
+        if(_isEmpty(this.state.giveFromType) && currentAccount.accountType === 'company'){
+            getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
+        }
     }
 
     componentDidUpdate(prevProps) {
-        if(!_isEqual(this.props, prevProps)) {
+        if (!_isEqual(this.props, prevProps)) {
             const {
                 dropDownOptions,
             } = this.state;
             let {
                 flowObject: {
+                    currency,
                     giveData,
                 },
+                giveFromType,
                 groupFromUrl,
+                reviewBtnFlag,
+                reloadModalOpen,
             } = this.state;
             const {
+                campaignId,
                 companyDetails,
                 companiesAccountsData,
-                donationMatchData,
-                currentUser:{
-                    attributes:{
+                currentAccount,
+                currentUser: {
+                    attributes: {
+                        displayName,
+                        email,
                         firstName,
                         lastName,
+                        preferences,
 
                     },
                     id,
                 },
+                i18n: {
+                    language,
+                },
                 fund,
+                groupId,
                 paymentInstrumentsData,
                 userCampaigns,
                 userGroups,
                 taxReceiptProfiles,
                 giveGroupDetails,
+                infoOptions:{
+                    groupMemberInfoToShare,
+                    groupCampaignAdminShareInfoOptions,
+                },
                 userMembershipGroups
             } = this.props;
             let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
+                const companyIndex = _.findIndex(companiesAccountsData, { 'id': giveData.giveFrom.id });
+                giveData.giveFrom.balance = companiesAccountsData[companyIndex].attributes.balance;
+                giveData.giveFrom.text = `${companiesAccountsData[companyIndex].attributes.companyFundName}: ${formatCurrency(companiesAccountsData[companyIndex].attributes.balance, language, currency)}`;
                 if (_isEmpty(prevProps.companyDetails)
-                     || !_isEqual(companyDetails.companyPaymentInstrumentsData,
-                         prevProps.companyDetails.companyPaymentInstrumentsData)
+                    || !_isEqual(companyDetails.companyPaymentInstrumentsData,
+                        prevProps.companyDetails.companyPaymentInstrumentsData)
                 ) {
                     companyPaymentInstrumentChanged = true;
                 }
                 paymentInstruments = companyDetails.companyPaymentInstrumentsData;
             } else if (giveData.giveFrom.type === 'user') {
+                giveData.giveFrom.balance = fund.attributes.balance;
                 paymentInstruments = paymentInstrumentsData;
+                giveData.giveFrom.text = `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`
+            }
+            if (reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
+                reviewBtnFlag = false;
+                reloadModalOpen = 0;
             }
             const paymentInstrumentOptions = populatePaymentInstrument(
                 paymentInstruments, formatMessage,
             );
-            const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             const giveToOptions = populateGroupsOfUser(userMembershipGroups);
-            
-            if (!_isEmpty(giveGroupDetails)) {
+
+            if (!_isEmpty(giveGroupDetails) && _isEmpty(giveFromType)) {
                 groupFromUrl = false;
                 giveData.giveTo = {
+                    avatar: giveGroupDetails.attributes.avatar,
                     id: giveGroupDetails.id,
                     isCampaign: giveGroupDetails.attributes.isCampaign,
                     name: giveGroupDetails.attributes.name,
@@ -233,11 +266,12 @@ class Group extends React.Component {
                     type: giveGroupDetails.type,
                     value: giveGroupDetails.attributes.fundId,
                 };
-            } 
-            else if (!_isEmpty(userMembershipGroups)) {
+            }
+            else if (!_isEmpty(userMembershipGroups) && !_isEmpty(giveFromType)) {
                 groupFromUrl = true;
                 const groupIndex = this.state.flowObject.groupIndex;
                 giveData.giveTo = {
+                    avatar: userMembershipGroups.userGroups[groupIndex].attributes.avatar,
                     id: userMembershipGroups.userGroups[groupIndex].id,
                     isCampaign: userMembershipGroups.userGroups[groupIndex].attributes.isCampaign,
                     name: userMembershipGroups.userGroups[groupIndex].attributes.name,
@@ -248,47 +282,43 @@ class Group extends React.Component {
                     value: userMembershipGroups.userGroups[groupIndex].attributes.fundId,
                 };
             }
-            
             if (!_isEmpty(fund)) {
-                const addressToShareList = Group.populateShareAddress(
-                    taxReceiptProfiles,
-                );
+                const giveFromId = (giveFromType === 'campaigns') ? campaignId : groupId;
                 giveData = Group.initFields(
-                    giveData, fund, id, paymentInstrumentOptions,
-                    companyPaymentInstrumentChanged,
+                    giveData, fund, id,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    addressToShareList
+                    groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage,
+                    this.props.groupCampaignId, currentAccount,
                 );
             }
-
+            if (giveData.giveFrom.type === 'user' && !_isEmpty(groupMemberInfoToShare)) {
+                const {
+                    infoToShareList,
+                } = populateDropdownInfoToShare(groupMemberInfoToShare);
+                dropDownOptions.privacyNameOptions  = infoToShareList;
+            } else {
+                const name = (giveData.giveFrom.type === 'companies' && giveData.giveFrom.displayName) ? giveData.giveFrom.displayName : giveData.giveFrom.name;
+                dropDownOptions.privacyNameOptions  = populateInfoToShareAccountName(name, formatMessage);
+            }
             this.setState({
                 buttonClicked: false,
                 dropDownOptions: {
                     ...dropDownOptions,
-                    donationMatchList: donationMatchOptions,
-                    giftTypeList: populateGiftType(formatMessage),
                     giveToList: giveToOptions,
-                    infoToShareList: Group.populateShareAddress(
-                        taxReceiptProfiles,
-                    ),
                     paymentInstrumentList: paymentInstrumentOptions,
                 },
-                flowObject:{
+                flowObject: {
                     ...this.state.flowObject,
-                    giveData:{
-                        ...this.state.flowObject.giveData,
+                    giveData: {
+                        // ...this.state.flowObject.giveData,
                         ...giveData,
                     },
                     groupFromUrl,
-                }
-            });        
-        }        
-    }
-
-    static populateShareAddress(taxReceiptProfile) {
-        return !_isEmpty(taxReceiptProfile) ? getDropDownOptionFromApiData(taxReceiptProfile, null, (item) => `name_address_email|${item.id}`,
-            (attributes) => `${attributes.fullName}, ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
-            (attributes) => false) : null;
+                },
+                reloadModalOpen,
+                reviewBtnFlag,
+            });
+        }
     }
 
     /**
@@ -296,25 +326,14 @@ class Group extends React.Component {
      * @param {object} giveData full form data.
      * @param {object} fund user fund details from API.
      * @param {String} id user id from API.
-     * @param {object[]} paymentInstrumentOptions creditcard list.
-     * @param {boolean} companyPaymentInstrumentChanged creditcard changed or not.
      * @param {String} name user name from API.
      * @return {object} full form data.
      */
     // eslint-disable-next-line react/sort-comp
-    static initFields(giveData, fund, id, paymentInstrumentOptions,
-        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, addressToShareList) {
-        if (
-            (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
-            && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
-            && (giveData.giftType.value > 0
-            || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
-        ) {
-            giveData.creditCard = getDefaultCreditCard(
-                paymentInstrumentOptions,
-            );
-        }
-        if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
+    static initFields(giveData, fund, id,
+        name, companiesAccountsData, userGroups, userCampaigns, groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, groupId, giveFromType, language,
+        currency, preferences, giveGroupDetails, formatMessage, groupCampaignId, currentAccount) {
+            if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
             giveData.giveFrom.type = 'user';
@@ -322,17 +341,108 @@ class Group extends React.Component {
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
+        } else if ((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && (!giveData.userInteracted || _isEmpty(giveData.giveFrom.id))) {
+            if (groupId) {
+                const giveFromGroup = (giveFromType === 'campaigns')
+                    ? userCampaigns.find((userCampaign) => userCampaign.id === groupId)
+                    : userGroups.find((userGroup) => userGroup.id === groupId)
+                if (!_isEmpty(giveFromGroup)) {
+                    giveData.giveFrom = {
+                        avatar: giveFromGroup.attributes.avatar,
+                        balance: giveFromGroup.attributes.balance,
+                        id: giveFromGroup.id,
+                        name: giveFromGroup.attributes.name,
+                        slug: giveFromGroup.attributes.slug,
+                        text: `${giveFromGroup.attributes.fundName}: ${formatCurrency(giveFromGroup.attributes.balance, language, currency)}`,
+                        type: giveFromGroup.type,
+                        value: giveFromGroup.attributes.fundId,
+                    };
+                }
+            }else if(groupCampaignId){
+                const giveFromGroupCampaign = userGroups.find((userGroup) => userGroup.id === groupCampaignId)
+                giveData.giveFrom = {
+                    avatar: giveFromGroupCampaign.attributes.avatar,
+                    balance: giveFromGroupCampaign.attributes.balance,
+                    id: giveFromGroupCampaign.id,
+                    name: giveFromGroupCampaign.attributes.name,
+                    slug: giveFromGroupCampaign.attributes.slug,
+                    text: `${giveFromGroupCampaign.attributes.fundName}: ${formatCurrency(giveFromGroupCampaign.attributes.balance, language, currency)}`,
+                    type: giveFromGroupCampaign.type,
+                    value: giveFromGroupCampaign.attributes.fundId,
+                };
+            } else if(_isEmpty(giveFromType) && currentAccount.accountType === 'company'){
+                companiesAccountsData.find(company => {
+                    if(currentAccount.id == company.id) {
+                        const {
+                            attributes: {
+                                avatar,
+                                balance, 
+                                name,
+                                companyFundId,
+                                companyFundName,
+                                slug,
+                                displayName
+                            },
+                            type,
+                            id
+                        } = company;
+                        giveData.giveFrom.value = companyFundId;
+                        giveData.giveFrom.name = name;
+                        giveData.giveFrom.avatar = avatar;
+                        giveData.giveFrom.id = id;
+                        giveData.giveFrom.type = type;
+                        giveData.giveFrom.text = `${companyFundName} (${formatCurrency(balance, language, currency)})`;
+                        giveData.giveFrom.balance = balance;
+                        giveData.giveFrom.slug = slug;
+                        giveData.giveFrom.displayName = displayName;
+                        return true;
+                     }
+                    })
+            }
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
                 value: '',
             };
         }
-        if (!_isEmpty(addressToShareList) && addressToShareList.length > 0
-        && !giveData.userInteracted) {
-            const [
-                defaultAddress,
-            ] = addressToShareList;
-            giveData.infoToShare = defaultAddress;
+        if (!giveData.userInteracted && !(giveFromType === 'groups' || giveFromType === 'campaigns' || !_isEmpty(groupCampaignId))) {
+            giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
+        }
+        if (!_isEmpty(groupCampaignAdminShareInfoOptions) && groupCampaignAdminShareInfoOptions.length > 0
+            && (!giveData.userInteracted || _isEmpty(giveData.defaultInfoToShare))) {
+            const prefernceName = giveData.giveTo.isCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
+            const preference = preferences[prefernceName].includes('address')
+                ? `${preferences[prefernceName]}-${preferences[`${prefernceName}_address`]}` : preferences[prefernceName];
+            const { infoToShareList } = populateDropdownInfoToShare(groupCampaignAdminShareInfoOptions);
+            const defaultInfoToShare = giveData.infoToShare = infoToShareList.find(opt => (
+                opt.value === preference
+            ));
+            giveData.defaultInfoToShare = defaultInfoToShare;
+            if (giveFromType === 'groups' || giveFromType === 'campaigns' || !_isEmpty(groupCampaignId) || currentAccount.accountType === 'company') {
+                giveData.infoToShare = {
+                    disabled: false,
+                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
+                    value: 'anonymous',
+                };
+            } else {
+                giveData.infoToShare = defaultInfoToShare
+            }
+            giveData.infoToShareList = infoToShareList;
+        }
+        if ((!giveData.userInteracted || _isEmpty(giveData.defaultNameToShare)) && !giveData.giveTo.isCampaign) {
+            const { infoToShareList } = populateDropdownInfoToShare(groupMemberInfoToShare);
+            const defaultNameToShare = infoToShareList.find(opt => (
+                opt.value === preferences['giving_group_members_info_to_share']
+            )) || {};
+            giveData.defaultNameToShare = defaultNameToShare || {};
+            if (giveFromType === 'groups' || giveFromType === 'campaigns' || currentAccount.accountType === 'company') {
+                giveData.nameToShare = {
+                    disabled: false,
+                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
+                    value: 'anonymous',
+                };
+            } else {
+                giveData.nameToShare = defaultNameToShare;
+            }
         }
         return giveData;
     }
@@ -342,38 +452,36 @@ class Group extends React.Component {
             flowObject: {
                 giveData,
             },
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
         } = this.state;
         let {
             validity,
         } = this.state;
-
-        validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
         validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, 0);
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, 0);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, 0);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, 0);
         validity = validateGiveForm('dedicateType', null, validity, giveData);
+        if (giveData.giftType.value === 0) {
+            validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
+        } else {
+            validity.isReloadRequired = true;
+        }
+
         if (giveData.giveTo.value === giveData.giveFrom.value) {
             validity.isValidGiveTo = false;
         } else {
             validity.isValidGiveTo = true;
         }
-        this.setState({ validity });
-        let validateCC = true;
-        if (giveData.creditCard.value === 0) {
-            this.CreditCard.handleOnLoad(
-                inValidCardNumber, inValidExpirationDate, inValidNameOnCard,
-                inValidCvv, inValidCardNameValue,
-            );
-            validateCC = (!inValidCardNumber && !inValidExpirationDate &&
-                !inValidNameOnCard && !inValidCvv && !inValidCardNameValue);
+        this.setState({
+            validity,
+            reviewBtnFlag: !validity.isReloadRequired
+        });
+        const validationsResponse = _every(validity);
+        if (!validationsResponse) {
+            const errorNode = findingErrorElement(validity, 'allocation');
+            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({behavior: "smooth", block: "center"});
         }
-        return _every(validity) && validateCC;
+        return validationsResponse;
     }
 
     handleInputOnBlur(event, data) {
@@ -391,39 +499,34 @@ class Group extends React.Component {
         } = this.state;
         let inputValue = value;
         const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
-        if ((name === 'giveAmount' || name === 'donationAmount') && !_isEmpty(value) && value.match(isNumber)) {
+        if ((name === 'giveAmount') && !_isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             giveData[name] = inputValue;
-            if(name === 'giveAmount') {
-                giveData['formatedGroupAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
-            } else {
-                giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
-            }
-           
+            giveData['formatedGroupAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+
         }
         if (name !== 'giftType' && name !== 'giveFrom') {
             validity = validateGiveForm(name, inputValue, validity, giveData, 0);
         }
         switch (name) {
-            case 'giveAmount':
-                validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
-                break;
             case 'giveFrom':
+                if (giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                    giveData['noteToSelf'] = '';
+                }
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, 0);
-                validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
                 break;
             case 'inHonorOf':
             case 'inMemoryOf':
                 validity = validateGiveForm('dedicateType', null, validity, giveData);
-            break;
+                break;
             case 'noteToCharity':
                 giveData[name] = inputValue.trim();
                 validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData);
-            break;
+                break;
             case 'noteToSelf':
                 giveData[name] = inputValue.trim();
                 validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData);
-            break;
+                break;
             default: break;
         }
         this.setState({
@@ -442,78 +545,140 @@ class Group extends React.Component {
             isAmountLessThanOneBillion: true,
             isAmountMoreThanOneDollor: true,
             isDedicateGiftEmpty: true,
-            isDonationAmountBlank: true,
-            isDonationAmountCoverGive: true,
-            isDonationAmountLessThan1Billion: true,
-            isDonationAmountMoreThan1Dollor: true,
-            isDonationAmountPositive: true,
             isNoteToCharityInLimit: true,
             isNoteToSelfInLimit: true,
             isValidDecimalAmount: true,
-            isValidDecimalDonationAmount: true,
-            isValidDonationAmount: true,
             isValidGiveAmount: true,
             isValidGiveFrom: true,
-            isValidGiveTo:true,
+            isValidGiveTo: true,
             isValidNoteSelfText: true,
             isValidNoteToCharity: true,
             isValidNoteToCharityText: true,
             isValidNoteToSelf: true,
             isValidPositiveNumber: true,
+            isReloadRequired: true
         };
         return this.validity;
     }
 
-    handleSubmit = () => {
+    handlePresetAmountClick = (event, data) => {
         const {
+            value,
+        } = data;
+        let {
+            flowObject: {
+                giveData
+            },
+            giveFromType,
+            reviewBtnFlag,
+            validity,
+        } = this.state;
+        const {
+            giveGroupDetails
+        } = this.props;
+        const formatMessage = this.props.t;
+        if (Number(value) && Number(value) >= 1) {
+            giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, giveData.giftType.value, formatMessage);
+        }
+        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+        giveData.giveAmount = inputValue;
+        giveData.formatedGroupAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+        validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
+        reviewBtnFlag = false;
+        this.setState({
+            ...this.state,
+            flowObject: {
+                ...this.state.flowObject,
+                giveData: {
+                    ...this.state.flowObject.giveData,
+                    ...giveData,
+                },
+            },
+            reviewBtnFlag,
+            validity,
+        });
+    }
+
+    handleSubmit = () => {
+        let {
             flowObject,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
         } = this.state;
         const {
             nextStep,
-            companyDetails,
-            defaultTaxReceiptProfile,
             dispatch,
             flowSteps,
             stepIndex
         } = this.props;
-        const {
+        let {
             giveData: {
-                creditCard,
+                infoToShare,
+                nameToShare,
+                giveTo: {
+                    isCampaign,
+                }
             },
         } = flowObject;
         this.setState({
             buttonClicked: true,
         });
-        const validateCC = this.isValidCC(
-            creditCard,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
-        );
-
-        if (this.validateForm() && validateCC) {
-
-            if (creditCard.value > 0) {
-                flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
-                    companyDetails.companyDefaultTaxReceiptProfile :
-                    defaultTaxReceiptProfile;
+        if (this.validateForm()) {
+            flowObject.giveData.privacyShareAdminName = false
+            flowObject.giveData.privacyShareEmail = false;
+            flowObject.giveData.privacyShareAddress = false;
+            if (infoToShare.value !== 'anonymous') {
+                if (infoToShare.value === 'name') {
+                    flowObject.giveData.privacyShareAdminName = true;
+                } else if (infoToShare.value === 'name_email') {
+                    flowObject.giveData.privacyShareAdminName = true;
+                    flowObject.giveData.privacyShareEmail = true;
+                } else if (infoToShare.value.includes('name_address_email')) {
+                    flowObject.giveData.privacyShareAdminName = true;
+                    flowObject.giveData.privacyShareEmail = true;
+                    flowObject.giveData.privacyShareAddress = true;
+                }
+            }
+            if (!isCampaign && nameToShare.value !== 'anonymous') {
+                flowObject.giveData.privacyShareName = true;
+                flowObject.giveData.privacyShareAdminName = true;
+            } else {
+                flowObject.giveData.privacyShareName = false;
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
-            dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         } else {
             this.setState({
                 buttonClicked: false,
             });
         }
+    }
+
+    handlegiftTypeButtonClick = (e, { value }) => {
+        const {
+            giveGroupDetails
+        } = this.props;
+        const {
+            flowObject: {
+                giveData
+            },
+            giveFromType,
+        } = this.state;
+        const formatMessage = this.props.t;
+        if (Number(giveData.giveAmount) >= 1) {
+            giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, value, formatMessage);
+        }
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                giveData: {
+                    ...this.state.flowObject.giveData,
+                    giftType: {
+                        value: value
+                    },
+                },
+            },
+            reviewBtnFlag: false,
+        })
     }
 
     handleInputChange(event, data) {
@@ -528,6 +693,9 @@ class Group extends React.Component {
                 giveData,
             },
             dropDownOptions,
+            giveFromType,
+            reloadModalOpen,
+            reviewBtnFlag,
             validity,
         } = this.state;
         const {
@@ -535,6 +703,19 @@ class Group extends React.Component {
                 type,
             },
         } = this.state;
+        const {
+            currentUser: {
+                attributes: {
+                    preferences,
+                },
+            },
+            giveGroupDetails,
+            infoOptions:{
+                groupMemberInfoToShare,
+                groupCampaignAdminShareInfoOptions,
+            },
+        } = this.props;
+        const formatMessage = this.props.t;
         const {
             coverFeesData,
             dispatch,
@@ -553,18 +734,17 @@ class Group extends React.Component {
             } = event;
             newValue = target.checked;
         }
-        if(name === 'inHonorOf' || name ==='inMemoryOf'){
-            if(newIndex === -1){
+        if (name === 'inHonorOf' || name === 'inMemoryOf') {
+            if (newIndex === -1) {
                 giveData.dedicateGift.dedicateType = '';
                 giveData.dedicateGift.dedicateValue = '';
             }
-            else{
+            else {
                 giveData.dedicateGift.dedicateType = name;
                 giveData.dedicateGift.dedicateValue = value;
             }
             validity.isDedicateGiftEmpty = true;
             this.setState({
-       
                 flowObject: {
                     ...this.state.flowObject,
                     giveData,
@@ -575,38 +755,92 @@ class Group extends React.Component {
                 },
             });
         }
-        if (name !== 'inHonorOf' && name !=='inMemoryOf') {
+        if (name !== 'inHonorOf' && name !== 'inMemoryOf') {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
-                case 'donationAmount':
-                        giveData['formatedDonationAmount'] =  newValue;
-                    break;
                 case 'giveFrom':
                     const {
                         modifiedDropDownOptions,
                         modifiedGiveData,
                     } = resetDataForAccountChange(
-                        giveData, dropDownOptions, this.props, type,
+                        giveData, dropDownOptions, this.props, type, groupMemberInfoToShare,
                     );
+                    if (giveData.giveFrom.type === 'user') {
+                        giveData.infoToShare = giveData.defaultInfoToShare;
+                        giveData.nameToShare = giveData.defaultNameToShare;
+                        if(_isEmpty(giveData.defaultInfoToShare)){
+                            const prefernceName = giveData.giveTo.isCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
+                            const preference = preferences[prefernceName].includes('address')
+                                ? `${preferences[prefernceName]}-${preferences[`${prefernceName}_address`]}` : preferences[prefernceName];
+                            const { infoToShareList } = populateDropdownInfoToShare(groupCampaignAdminShareInfoOptions);
+                            const defaultInfoToShare = giveData.infoToShare = infoToShareList.find(opt => (
+                                opt.value === preference
+                            ));
+                            giveData.defaultInfoToShare = defaultInfoToShare;
+                        }
+                        if(_isEmpty(giveData.defaultNameToShare)){
+                            const { infoToShareList } = populateDropdownInfoToShare(groupMemberInfoToShare);
+                            const defaultNameToShare = infoToShareList.find(opt => (
+                                opt.value === preferences['giving_group_members_info_to_share']
+                            )) || {};
+                            giveData.defaultNameToShare = giveData.nameToShare = defaultNameToShare || {};
+                        }
+                        giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
+                    } else {
+                        const defaultDropDownOption = {
+                            disabled: false,
+                            text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
+                            value: 'anonymous',
+                        };
+                        giveData.infoToShare = defaultDropDownOption;
+                        giveData.nameToShare = defaultDropDownOption;
+                    }
+                    if (giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                        giveData.noteToSelf = '';
+                    }
                     giveData = modifiedGiveData;
                     dropDownOptions = modifiedDropDownOptions;
                     validity = validateGiveForm(
                         name, giveData[name], validity, giveData, 0,
                     );
+                    reviewBtnFlag = false;
+                    reloadModalOpen = 0;
                     if (giveData.giveFrom.type === 'companies') {
-                        getCompanyPaymentAndTax(dispatch,Number(giveData.giveFrom.id));
+                        getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
-                    break;
-                case 'giftType':
-                    giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
                     break;
                 case 'giveAmount':
                     giveData['formatedGroupAmount'] = newValue;
-                    giveData = resetDataForGiveAmountChange(
-                        giveData, dropDownOptions, coverFeesData,
-                    );
+                    if (Number(newValue) && Number(newValue) >= 1) {
+                        giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, giveData.giftType.value, formatMessage);
+                    } else {
+                        giveData.matchingPolicyDetails = {
+                            hasMatchingPolicy: false,
+                            isValidMatchPolicy: false,
+                            matchPolicyTitle: '',
+                        };
+                    }
+                    reviewBtnFlag = false;
+                    reloadModalOpen = 0;
                     break;
+                case 'nameToShare':
+                    const {
+                        giveFrom,
+                        infoToShare,
+                        infoToShareList
+                    } = giveData;
+                    if (newValue.value !== 'anonymous' && infoToShare.value === 'anonymous') {
+                        if (giveFrom.type === 'user') {
+                            giveData.infoToShare = infoToShareList.find(opt => (
+                                opt.value === 'name'
+                            ));
+                        } else {
+                            giveData.infoToShare = dropDownOptions.privacyNameOptions.find(opt => (
+                                opt.value === 'name'
+                            ));
+                        }
+                    }
                 default: break;
             }
             this.setState({
@@ -618,6 +852,8 @@ class Group extends React.Component {
                     ...this.state.dropDownOptions,
                     dropDownOptions,
                 },
+                reloadModalOpen,
+                reviewBtnFlag,
                 validity: {
                     ...this.state.validity,
                     validity,
@@ -647,6 +883,7 @@ class Group extends React.Component {
         const groupId = options[data.options.findIndex((p) => p.value === value)].id;
         const benificiaryIndex = dataUsers.findIndex((p) => p.id === groupId);
         const benificiaryData = dataUsers[benificiaryIndex];
+        giveTo.avatar = benificiaryData.attributes.avatar;
         giveTo.id = benificiaryData.id;
         giveTo.isCampaign = benificiaryData.attributes.isCampaign;
         giveTo.name = benificiaryData.attributes.name;
@@ -655,7 +892,7 @@ class Group extends React.Component {
         giveTo.type = benificiaryData.type;
         giveTo.value = value;
         validity.isValidGiveTo = !((giveTo.type === giveFrom.type)
-        && (giveTo.value === giveFrom.value));
+            && (giveTo.value === giveFrom.value));
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
@@ -672,458 +909,380 @@ class Group extends React.Component {
         });
     }
 
-    /**
-     * validateStripeElements
-     * @param {boolean} inValidCardNumber credit card number
-     * @return {void}
-     */
-    validateStripeCreditCardNo(inValidCardNumber) {
-        this.setState({ inValidCardNumber });
-    }
-
-    /**
-     * validateStripeElements
-     * @param {boolean} inValidExpirationDate credit card expiry date
-     * @return {void}
-     */
-    validateStripeExpirationDate(inValidExpirationDate) {
-        this.setState({ inValidExpirationDate });
-    }
-
-    /**
-     * validateStripeElements
-     * @param {boolean} inValidCvv credit card CVV
-     * @return {void}
-     */
-    validateCreditCardCvv(inValidCvv) {
-        this.setState({ inValidCvv });
-    }
-
-    /**
-     * @param {boolean} inValidNameOnCard credit card Name
-     * @param {boolean} inValidCardNameValue credit card Name Value
-     * @param {string} cardHolderName credit card Name Data
-     * @return {void}
-     */
-    validateCreditCardName(inValidNameOnCard, inValidCardNameValue, cardHolderName) {
-        let cardNameValid = inValidNameOnCard;
-        if (cardHolderName.trim() === '' || cardHolderName.trim() === null) {
-            cardNameValid = true;
-        } else {
-            this.setState({
-                flowObject: {
-                    ...this.state.flowObject,
-                    cardHolderName,
-                },
-            });
-        }
+    handleAddMoneyModal() {
         this.setState({
-            inValidCardNameValue,
-            inValidNameOnCard: cardNameValid,
+            reloadModalOpen: 1,
+        })
+    }
+    handleReloadModalClose = () => {
+        this.setState({
+            reloadModalOpen:0,
         });
     }
-
-    getStripeCreditCard(data, cardHolderName) {
-        this.setState({
-            flowObject: {
-                ...this.state.flowObject,
-                cardHolderName,
-                stripeCreditCard: data,
+    renderReloadAddAmount = () => {
+        let {
+            defaultTaxReceiptProfile,
+            dispatch,
+            donationMatchData,
+            taxReceiptProfiles,
+            companyDetails,
+            i18n: {
+                language,
             },
-        });
+            userAccountsFetched,
+            companyAccountsFetched,
+        } = this.props
+        const {
+            dropDownOptions: {
+                paymentInstrumentList,
+            },
+            flowObject: {
+                giveData,
+            },
+            reloadModalOpen,
+            reviewBtnFlag,
+        } = this.state;
+        let {
+            giveFrom,
+            giveAmount,
+            giftType,
+        } = giveData
+        const formatMessage = this.props.t;
+        if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(giveAmount) > Number(giveFrom.balance))) {
+            if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
+                let taxReceiptList = taxReceiptProfiles;
+                let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
+                if (giveFrom.type === 'companies' && companyDetails) {
+                    taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
+                    defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
+                }
+                let coverFeesData = {};
+                let AmountToDonate = setDonationAmount(giveData, coverFeesData);
+                const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
+                return (
+                    <ReloadAddAmount
+                        defaultTaxReceiptProfile={defaultTaxReceiptProfileForReload}
+                        dispatch={dispatch}
+                        donationMatchData={(giveFrom.type === 'user') ? donationMatchData : {}}
+                        formatedDonationAmount={AmountToDonate}
+                        formatMessage={formatMessage}
+                        allocationGiftType={giftType.value}
+                        giveTo={giveData.giveFrom}
+                        language={language}
+                        paymentInstrumentOptions={paymentInstrumentList}
+                        reloadModalOpen={reloadModalOpen}
+                        reviewBtnFlag={reviewBtnFlag}
+                        taxReceiptsOptions={taxReceiptsOptions}
+                        handleParentModalState={this.handleReloadModalClose}
+                    />
+                )
+            } else {
+                return (
+                    <Placeholder>
+                        <Placeholder.Header>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                        </Placeholder.Header>
+                    </Placeholder>
+                );
+            }
+
+        }
     }
 
-    isValidCC(
-        creditCard,
-        inValidCardNumber,
-        inValidExpirationDate,
-        inValidNameOnCard,
-        inValidCvv,
-        inValidCardNameValue,
-    ) {
-        let validCC = true;
-        if (creditCard.value === 0) {
-            this.CreditCard.handleOnLoad(
-                inValidCardNumber,
-                inValidExpirationDate,
-                inValidNameOnCard,
-                inValidCvv,
-                inValidCardNameValue,
-            );
-            validCC = (
-                !inValidCardNumber &&
-                !inValidExpirationDate &&
-                !inValidNameOnCard &&
-                !inValidCvv &&
-                !inValidCardNameValue
+    renderRepeatGift(giveTo, giftType, giveFrom, formatMessage, language) {
+        let repeatGift = null;
+        if (giveFrom.type === 'user' || giveFrom.type === 'companies') {
+            repeatGift = (
+                <DonationFrequency
+                    isGiveFlow={true}
+                    formatMessage={formatMessage}
+                    giftType={giftType}
+                    handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
+                    handleInputChange={this.handleInputChange}
+                    language={language}
+                    recurringDisabled={!giveTo.recurringEnabled}
+                    isCampaign={giveTo.isCampaign}
+                />
             );
         }
-
-        return validCC;
-    }
-
-
-    renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom, companyDetails, giftType){
-        const{
-            companyAccountsFetched,
-            slug,
-            userAccountsFetched
-        } = this.props;
-        if(giftType > 0){
-            if(userAccountsFetched && giveFrom.type === 'user' || companyAccountsFetched && giveFrom.type === 'companies'){
-                let taxProfile = (giveFrom.type === 'companies' && companyDetails && companyDetails.companyDefaultTaxReceiptProfile) ?
-                companyDetails.companyDefaultTaxReceiptProfile :
-                defaultTaxReceiptProfile;
-                    if(_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)){
-                        const paymentLink = (giveFrom.type === 'companies')
-                            ? <a href={`/companies/${slug}/payment-profiles`}>payment method</a>
-                            : <Link route = '/user/profile/settings/creditcard'>payment method</Link> ;
-                        const taxLink = (giveFrom.type === 'companies')
-                            ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                            : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
-                        return(
-                            <div className="mb-1">
-                                <Icon color="red" name="warning circle" />
-                                <span style={{ color: 'red' }}>
-                                    To send a monthly gift, first add a {paymentLink} and {taxLink} to your account details. We won't charge your card without your permission.
-                                </span>
-                            </div>
-                        ) 
-                    }
-                    else if(_isEmpty(paymentInstrumentList)){
-                        const link = (giveFrom.type === 'companies')
-                            ? <a href={`/companies/${slug}/payment-profiles`}>payment method</a>
-                            : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
-                        return(
-                            <div className="mb-1">
-                                <Icon color="red" name="warning circle" />
-                                <span style={{ color: 'red' }}>
-                                    To send a monthly gift, first add a {link} to your account details. We won't charge your card without your permission.
-                                </span>
-                            </div>
-                        ) 
-                    }
-                    else if( _isEmpty(taxProfile)){
-                        const link = (giveFrom.type === 'companies')
-                            ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                            : <Link route="/user/tax-receipts">tax receipt recipient</Link>
-                        return(
-                            <div className="mb-1">
-                                    <Icon color="red" name="warning circle" />
-                                    <span style={{ color: 'red' }}>
-                                        To send a monthly gift, first add a {link} to your account details.
-                                </span>
-                            </div>
-                        ) 
-                    }
-                 }
-            }
-        return null;
+        return repeatGift;
     }
 
     render() {
         let {
             flowObject: {
-                giveData:{
-                    creditCard,
+                giveData: {
                     dedicateGift: {
                         dedicateType,
-                        dedicateValue, 
+                        dedicateValue,
                     },
-                    donationAmount,
-                    donationMatch,
                     giftType,
-                    formatedDonationAmount,
                     formatedGroupAmount,
                     giveAmount,
                     giveTo,
                     giveFrom,
+                    matchingPolicyDetails,
                     infoToShare,
+                    nameToShare,
                     noteToCharity,
                     noteToSelf,
-                    privacyShareAddress,
                     privacyShareAmount,
-                    privacyShareEmail,
-                    privacyShareName,
                 },
                 groupFromUrl,
+                type
             },
             validity,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
-            dropDownOptions:{
-                giftTypeList,
+            dropDownOptions: {
                 giveToList,
-                paymentInstrumentList,
-                donationMatchList,
-                infoToShareList
+                privacyNameOptions,
             },
+            reviewBtnFlag,
         } = this.state;
         const {
-            companyDetails,
+            currentStep,
+            currentUser: {
+                attributes: {
+                    displayName,
+                    preferences,
+                },
+                id,
+            },
+            flowSteps,
             giveGroupDetails,
-            defaultTaxReceiptProfile,
+            infoOptions:{
+                groupCampaignAdminShareInfoOptions,
+            },
+            i18n: {
+                language,
+            },
         } = this.props;
         const formatMessage = this.props.t;
-        let showGroupSupport = false;
-        if(!_.isEmpty(giveGroupDetails)){
-            showGroupSupport = (giveGroupDetails.attributes.campaignId) ? true : false ;
-        }
         const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
-        let accountTopUpComponent = null;
-        let stripeCardComponent = null;
         let privacyOptionComponent = null;
-        if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-        &&  (giftType.value === 0 &&
-            Number(giveAmount) > Number(giveFrom.balance))
-        ) {
-            const topupAmount = formatAmount((formatAmount(giveAmount) -
-                formatAmount(giveFrom.balance)));
-            accountTopUpComponent = (
-                <AccountTopUp
-                    creditCard={creditCard}
-                    donationAmount={formatedDonationAmount}
-                    donationMatch={donationMatch}
-                    donationMatchList={donationMatchList}
-                    formatMessage={formatMessage}
-                    getStripeCreditCard={this.getStripeCreditCard}
-                    handleInputChange={this.handleInputChange}
-                    handleInputOnBlur={this.handleInputOnBlur}
-                    isAmountFieldVisible={giftType.value === 0}
-                    isDonationMatchFieldVisible={giveFrom.type === 'user'}
-                    paymentInstrumentList={paymentInstrumentList}
-                    topupAmount={topupAmount}
-                    validity={validity}
-                />
-            );
-            if ((_isEmpty(paymentInstrumentList) && giveFrom.value) || creditCard.value === 0) {
-                stripeCardComponent = (
-                    <StripeProvider apiKey={STRIPE_KEY}>
-                        <Elements>
-                            <CreditCard
-                                creditCardElement={this.getStripeCreditCard}
-                                creditCardValidate={inValidCardNumber}
-                                creditCardExpiryValidate={inValidExpirationDate}
-                                creditCardNameValidte={inValidNameOnCard}
-                                creditCardNameValueValidate={inValidCardNameValue}
-                                creditCardCvvValidate={inValidCvv}
-                                validateCCNo={this.validateStripeCreditCardNo}
-                                validateExpiraton={this.validateStripeExpirationDate}
-                                validateCvv={this.validateCreditCardCvv}
-                                validateCardName={this.validateCreditCardName}
-                                formatMessage={formatMessage}
-                                // eslint-disable-next-line no-return-assign
-                                onRef={(ref) => (this.CreditCard = ref)}
-                            />
-                        </Elements>
-                    </StripeProvider>
-                );
-            }
+        let hasCampaign = false;
+        if (!_.isEmpty(giveGroupDetails)) {
+            //hasCampaign = (giveGroupDetails.attributes.campaignId) ? true : false;
+            hasCampaign = (giveGroupDetails.attributes.campaignId && !giveGroupDetails.attributes.isCampaign) ? true : false;
         }
-
-        if ( giveFrom.value > 0) {
+        if (giveFrom.value > 0) {
             privacyOptionComponent = (
                 <PrivacyOptions
+                    displayName={displayName}
                     formatMessage={formatMessage}
                     handleInputChange={this.handleInputChange}
+                    hasCampaign={hasCampaign}
+                    isCampaign={giveTo.isCampaign}
                     giveFrom={giveFrom}
                     giveToType={giveToType}
                     infoToShare={infoToShare}
-                    infoToShareList={infoToShareList}
-                    privacyShareAddress={privacyShareAddress}
+                    groupCampaignAdminShareInfoOptions={groupCampaignAdminShareInfoOptions}
+                    nameToShare={nameToShare}
                     privacyShareAmount={privacyShareAmount}
-                    privacyShareEmail={privacyShareEmail}
-                    privacyShareName={privacyShareName}
-                    showSupportMessage={showGroupSupport}
+                    privacyNameOptions={privacyNameOptions}
+                    preferences={preferences}
+                    userId={id}
                 />
             );
         }
-
-        let repeatGift = null;
-            if ( (giveFrom.type === 'user' || giveFrom.type === 'companies') &&
-                 !!giveTo.recurringEnabled
-            ) {
-                repeatGift = (
-                    <Form.Field>
-                        <label htmlFor="giftType">
-                            { formatMessage('repeatThisGiftLabel') }
-                        </label>
-                        <Form.Field
-                            control={Select}
-                            id="giftType"
-                            name="giftType"
-                            options= {giftTypeList}
-                            onChange={this.handleInputChange}
-                            value={giftType.value}
-                        />
-                    </Form.Field>
-                );
-            }
+        let submtBtn = (reviewBtnFlag && giftType.value === 0) ? (
+            <Form.Button
+                primary
+                className="blue-btn-rounded btn_right rivewbtnp2p"
+                content={formatMessage('giveCommon:reviewButtonFlag')}
+                disabled={!this.props.userAccountsFetched}
+                onClick={this.handleAddMoneyModal}
+                type="button"
+            />) : (<Form.Button
+                primary
+                className="blue-btn-rounded btn_right rivewbtnp2p"
+                content={formatMessage('giveCommon:reviewButton')}
+                disabled={!this.props.userAccountsFetched}
+                type="submit"
+            />);
+        let giveBannerHeader;
+        if (!!groupFromUrl) {
+            giveBannerHeader = (giveFrom.name) ? `Give From ${giveFrom.name}` : '';
+        } else {
+            giveBannerHeader = (giveTo.text) ? `Give to ${giveTo.text}` : '';
+        }
         return (
-        <Form onSubmit={this.handleSubmit}>
-                    <Fragment>
-                        {
-                             ( !groupFromUrl && (
-                                <Form.Field>
-                                    <label htmlFor="giveTo">
-                                        {formatMessage('giveToLabel')}
-                                    </label>
-                                    <Form.Field
-                                        control={Input}
-                                        className="disabled-input"
-                                        disabled
-                                        id="giveTo"
-                                        name="giveTo"
-                                        size="large"
-                                        value={_.isEmpty(giveTo.text) ? '' : giveTo.text}
-                                    />
-                                </Form.Field>
-                                )
-                            )
-                        }
-                        {
-                         (  !!groupFromUrl && (
-                                <Fragment>
-                                    <Form.Field>
-                                        <label htmlFor="giveTo">
-                                            {formatMessage('giveToLabel')}
-                                        </label>
-                                        <Form.Field
-                                            control={Select}
-                                            error={!validity.isValidGiveTo}
-                                            id="giveToList"
-                                            name="giveToList"
-                                            onChange={this.handleInputChangeGiveTo}
-                                            options={giveToList}
-                                            placeholder={formatMessage('groupToGive')}
-                                            value={giveTo.value}
-                                        />
-                                    </Form.Field>
-                                    <FormValidationErrorMessage
-                                        condition={!validity.isValidGiveTo}
-                                        errorMessage={
-                                            formatMessage('giveGroupToEqualGiveFrom')
-                                        }
-                                    />
-                                </Fragment>
-                                )
-                            )
-                        }
-                        <Form.Field>
-                            <label htmlFor="giveAmount">
-                                {formatMessage('amountLabel')}
-                            </label>
-                            <Form.Field
-                                control={Input}
-                                error={!validity.isValidGiveAmount}
-                                icon="dollar"
-                                iconPosition="left"
-                                id="giveAmount"
-                                maxLength="20"
-                                name="giveAmount"
-                                onBlur={this.handleInputOnBlur}
-                                onChange={this.handleInputChange}
-                                placeholder={formatMessage('amountPlaceHolder')}
-                                size="large"
-                                value={formatedGroupAmount}
-                            />
-                        </Form.Field>
-                        
-                        <FormValidationErrorMessage
-                            condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                            || !validity.isValidPositiveNumber}
-                            errorMessage={formatMessage('amountLessOrInvalid', {
-                                minAmount:  giftType.value > 0 ? 5 : 1,
-                            })}
-                        />
-                        <FormValidationErrorMessage
-                            condition={!validity.isAmountLessThanOneBillion}
-                            errorMessage={ReactHtmlParser(formatMessage('invalidMaxAmountError'))}
-                        />
-                        <FormValidationErrorMessage
-                            condition={!validity.isAmountCoverGive}
-                            errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
-                        />
-                        { (!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (
-                        <DropDownAccountOptions
-                            type="group"
-                            validity={validity.isValidGiveFrom}
-                            selectedValue={this.state.flowObject.giveData.giveFrom.value}
-                            name="giveFrom"
-                            formatMessage={formatMessage}
-                            parentInputChange={this.handleInputChange}
-                            giveTo={giveTo}
-                            giveFromUrl={!groupFromUrl}
-                            parentOnBlurChange={this.handleInputOnBlur}
-                        />
-                        )}
-                        {repeatGift}
-                        { 
-                            this.renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom,companyDetails, giftType.value)
-                        }
-                        <Form.Field>
-                            <Divider className="dividerMargin" />
-                        </Form.Field>
-                        <DedicateType 
-                            handleInputChange={this.handleInputChange}
-                            handleInputOnBlur={this.handleInputOnBlur}
-                            dedicateType={dedicateType}
-                            dedicateValue={dedicateValue}
-                            validity={validity}
-                        />
-                        <NoteTo
-                            allocationType=""// {type}
-                            formatMessage={formatMessage}
-                            giveFrom= {giveFrom}
-                            giveToType= {giveToType}
-                            noteToCharity= {noteToCharity}
-                            handleInputChange={this.handleInputChange}
-                            handleInputOnBlur={this.handleInputOnBlur}
-                            noteToSelf={noteToSelf}
-                            validity={validity}
-                        />
-                        {privacyOptionComponent}
-                        {accountTopUpComponent}
-                        {stripeCardComponent}
-                        <Divider hidden />
-                        {/* { !stepsCompleted && */}
-                            <Form.Button
-                                primary
-                                className='blue-btn-rounded' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                content={(!this.state.buttonClicked) ?
-                                    formatMessage('giveCommon:continueButton')
-                                    : formatMessage('giveCommon:submittingButton')}
-                                disabled={(this.state.buttonClicked) }
-                                type="submit"
-                            />
-                        {/* } */}
-                    </Fragment>
-                </Form>
+            <Fragment>
+                <div className="givinggroupbanner">
+                    <Container>
+                        <div className="flowReviewbannerText">
+                            <Header as='h2'>{giveBannerHeader}</Header>
+                        </div>
+                    </Container>
+                </div>
+                <div className="flowReview">
+                    <Container>
+                        <Grid centered verticalAlign="middle">
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={14} computer={12}>
+                                    <div className="flowBreadcrumb">
+                                        <FlowBreadcrumbs
+                                            currentStep={currentStep}
+                                            formatMessage={formatMessage}
+                                            steps={flowSteps}
+                                            flowType={type} />
+                                    </div>
+                                    <div className="flowFirst">
+                                        <Form onSubmit={this.handleSubmit}>
+                                            <Grid>
+                                                <Grid.Row>
+                                                    <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                        {/* Give From Scenario */}
+                                                        {
+                                                            (!!groupFromUrl && (
+                                                                <Fragment>
+                                                                    <div className="give_flow_field_bottom">
+                                                                        <Form.Field>
+                                                                            <label htmlFor="giveTo">
+                                                                                {formatMessage('giveToLabel')}
+                                                                            </label>
+                                                                            <Form.Field
+                                                                                className="dropdownWithArrowParent group-to-give"
+                                                                                control={Select}
+                                                                                error={!validity.isValidGiveTo}
+                                                                                id="giveToList"
+                                                                                name="giveToList"
+                                                                                search
+                                                                                onChange={this.handleInputChangeGiveTo}
+                                                                                options={giveToList}
+                                                                                placeholder={formatMessage('groupToGive')}
+                                                                                value={giveTo.value}
+                                                                            />
+                                                                        </Form.Field>
+                                                                        <FormValidationErrorMessage
+                                                                            condition={!validity.isValidGiveTo}
+                                                                            errorMessage={
+                                                                                formatMessage('giveGroupToEqualGiveFrom')
+                                                                            }
+                                                                        />
+                                                                    </div>
+                                                                </Fragment>
+                                                            )
+                                                            )
+                                                        }
+                                                        <GroupAmountField
+                                                            isGiveFlow={true}
+                                                            amount={formatedGroupAmount}
+                                                            formatMessage={formatMessage}
+                                                            handleInputChange={this.handleInputChange}
+                                                            handleInputOnBlur={this.handleInputOnBlur}
+                                                            handlePresetAmountClick={this.handlePresetAmountClick}
+                                                            validity={validity}
+                                                        />
+                                                    </Grid.Column>
+                                                    {
+                                                        matchingPolicyDetails.hasMatchingPolicy &&
+                                                        <Grid.Column mobile={16}>
+                                                            <MatchingPolicyModal
+                                                                isCampaign={giveTo.isCampaign}
+                                                                giveGroupDetails={giveGroupDetails}
+                                                                matchingPolicyDetails ={matchingPolicyDetails}
+                                                            />
+                                                        </Grid.Column>
+                                                    }
+                                                    <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                        <div className="give_flow_field">
+                                                            {(!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (
+                                                                <DropDownAccountOptions
+                                                                    type="group"
+                                                                    validity={validity.isValidGiveFrom}
+                                                                    selectedValue={giveFrom.value}
+                                                                    name="giveFrom"
+                                                                    formatMessage={formatMessage}
+                                                                    parentInputChange={this.handleInputChange}
+                                                                    giveTo={giveTo}
+                                                                    giveFromUrl={!groupFromUrl}
+                                                                    parentOnBlurChange={this.handleInputOnBlur}
+                                                                    reviewBtnFlag={reviewBtnFlag}
+                                                                />
+                                                            )}
+                                                            {this.renderReloadAddAmount()}
+                                                        </div>
+                                                        {this.renderRepeatGift(giveTo, giftType, giveFrom, formatMessage, language)}
+                                                        {privacyOptionComponent}
+                                                        <Form.Field className="give_flow_field">
+                                                            <DedicateType
+                                                                handleInputChange={this.handleInputChange}
+                                                                handleInputOnBlur={this.handleInputOnBlur}
+                                                                dedicateType={dedicateType}
+                                                                dedicateValue={dedicateValue}
+                                                                validity={validity}
+                                                            />
+                                                        </Form.Field>
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                            <Grid className="to_space">
+                                                <Grid.Row className="to_space">
+                                                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                                                        <NoteTo
+                                                            allocationType={giveToType}
+                                                            formatMessage={formatMessage}
+                                                            giveFrom={giveFrom}
+                                                            noteToCharity={noteToCharity}
+                                                            handleInputChange={this.handleInputChange}
+                                                            handleInputOnBlur={this.handleInputOnBlur}
+                                                            noteToSelf={noteToSelf}
+                                                            validity={validity}
+                                                        />
+
+                                                        {submtBtn}
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        </Form>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </Container>
+                </div>
+            </Fragment>
         )
     }
 }
 
-Group.defaultProps = Object.assign({}, groupDefaultProps);
+Group.defaultProps = Object.assign({}, groupDefaultProps, {
+    infoOptions: {
+        groupCampaignAdminShareInfoOptions: [
+            {
+            text: 'Give anonymously',
+            value: 'anonymous',
+            privacySetting: 'anonymous'
+            },
+        ],
+        groupMemberInfoToShare: [
+            {
+                text: 'Give anonymously',
+                value: 'anonymous',
+                privacySetting: 'anonymous'
+            },
+        ],
+    }
+});
 
-const  mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
 
-  return {
-    giveGroupDetails: state.give.groupSlugDetails,
-    companiesAccountsData: state.user.companiesAccountsData,
-    companyDetails: state.give.companyData,
-    companyAccountsFetched: state.give.companyAccountsFetched,
-    currentUser: state.user.info,
-    giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
-    taxReceiptProfiles: state.user.taxReceiptProfiles,
-    userAccountsFetched: state.user.userAccountsFetched,
-    userCampaigns: state.user.userCampaigns,
-    userGroups: state.user.userGroups,
-    userMembershipGroups:state.user.userMembershipGroups,
-    creditCardApiCall: state.give.creditCardApiCall,
-  }
+    return {
+        giveGroupDetails: state.give.groupSlugDetails,
+        companiesAccountsData: state.user.companiesAccountsData,
+        companyDetails: state.give.companyData,
+        companyAccountsFetched: state.give.companyAccountsFetched,
+        currentAccount: state.user.currentAccount,
+        currentUser: state.user.info,
+        giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
+        infoOptions: state.userProfile.infoOptions,
+        taxReceiptProfiles: state.user.taxReceiptProfiles,
+        userAccountsFetched: state.user.userAccountsFetched,
+        userCampaigns: state.user.userCampaigns,
+        userGroups: state.user.userGroups,
+        userMembershipGroups: state.user.userMembershipGroups,
+    }
 }
 
 export default withTranslation([

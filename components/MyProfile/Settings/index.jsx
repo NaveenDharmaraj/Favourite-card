@@ -9,13 +9,13 @@ import {
 import { Router } from '../../../routes';
 
 import ManagePassword from './managePassword';
-import ManageGiving from './manageGiving';
 import Privacy from './privacy';
 import CreditCard from './creditCard';
 import Notifications from './notifications';
 import Support from './support';
 import Legal from './legal';
 import EmailList from './emailList';
+import InfoToShare from './infoToShare';
 
 const panes1 = [
     {
@@ -55,7 +55,7 @@ const panes1 = [
         },
         render: () => (
             <Tab.Pane>
-                <ManageGiving />
+                <InfoToShare />
             </Tab.Pane>
         ),
     },
