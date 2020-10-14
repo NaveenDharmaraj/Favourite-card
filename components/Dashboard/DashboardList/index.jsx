@@ -226,7 +226,7 @@ class DashboradList extends React.Component {
                     } else if ((data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation')) {
                         givingType = '';
                         rowClass = 'gift';
-                        transactionTypeDisplay = 'Gift given';
+                        transactionTypeDisplay = (data.attributes.status === 'cancelled') ? giftNotSent : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
