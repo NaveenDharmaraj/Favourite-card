@@ -14,6 +14,7 @@ import {
     getNextAllocationMonth,
     formatCurrency,
     formatAmount,
+    fullMonthNames,
     setDateForRecurring,
 } from '../../../../helpers/give/utils';
 import { Link } from '../../../../routes';
@@ -34,6 +35,7 @@ const CharitySuccess = (props) => {
             giftType,
             giveAmount,
         },
+        result,
     } = successData;
     const {
         eftEnabled,
@@ -59,7 +61,17 @@ const CharitySuccess = (props) => {
                 month,
             });
     } else {
-        const month = getNextAllocationMonth(formatMessage, eftEnabled, language);
+        const {
+            attributes: {
+                disbursementDate,
+            },
+        } = result;
+        const allocationDate = new Date(disbursementDate);
+        const months = fullMonthNames(formatMessage);
+        const month = (language === 'fr')
+            ? `${allocationDate.getDate()}er ${months[allocationDate.getMonth()]} ${allocationDate.getFullYear()}`
+            : `${months[allocationDate.getMonth()]} ${allocationDate.getDate()}, ${allocationDate.getFullYear()}`;
+        // const month = getNextAllocationMonth(formatMessage, eftEnabled, language);
         secondParagraph = (giveFrom.type === 'user')
             ? formatMessage('charityTimeForSending', {
                 charityName: name,
@@ -141,6 +153,11 @@ CharitySuccess.propTypes = {
                 name: PropTypes.string,
             }),
         }),
+        result: PropTypes.shape({
+            attributes: PropTypes.shape({
+                disbursementDate: PropTypes.string,
+            }),
+        }),
         type: PropTypes.string,
     }),
     t: PropTypes.func,
@@ -164,6 +181,11 @@ CharitySuccess.defaultProps = {
             giveTo: {
                 eftEnabled: false,
                 name: '',
+            },
+        },
+        result: {
+            attributes: {
+                disbursementDate: '',
             },
         },
         type: null,

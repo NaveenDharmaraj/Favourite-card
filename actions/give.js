@@ -729,7 +729,7 @@ export const proceed = (
                 ],
             ).then((results) => {
                 if (!_.isEmpty(results[0])) {
-                    successData.result = results[0];
+                    successData.result = results[0].data;
                 }
             }).catch((err) => {
                 if (checkForQuaziSuccess(err.errors)) {
