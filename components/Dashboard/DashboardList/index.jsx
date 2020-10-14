@@ -158,12 +158,13 @@ class DashboradList extends React.Component {
                 let informationSharedEntity = '';
                 let imageCls = 'ui image';
                 let transactionTypeDisplay = '';
+                const isGiftCancelled = (data.attributes.status === 'cancelled' || data.attributes.status === 'returned_to_donor');
                 if (!_.isEmpty(data.attributes.destination)) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
                         givingType = 'giving group';
                         rowClass = 'm-allocation';
                         givingTypeClass = 'grp-color';
-                        transactionTypeDisplay = (data.attributes.status === 'cancelled') ? giftNotSent : 'Gift given';
+                        transactionTypeDisplay = isGiftCancelled ? giftNotSent : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
@@ -173,7 +174,7 @@ class DashboradList extends React.Component {
                         givingType = 'charity';
                         rowClass = 'allocation';
                         givingTypeClass = 'charity-color';
-                        transactionTypeDisplay = (data.attributes.status === 'returned_to_donor') ? giftNotSent : 'Gift given';
+                        transactionTypeDisplay = isGiftCancelled ? giftNotSent : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
@@ -183,7 +184,7 @@ class DashboradList extends React.Component {
                         givingType = 'campaign';
                         rowClass = 'allocation';
                         givingTypeClass = 'grp-color';
-                        transactionTypeDisplay = (data.attributes.status === 'cancelled') ? giftNotSent : 'Gift given';
+                        transactionTypeDisplay = isGiftCancelled ? giftNotSent : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
@@ -195,7 +196,7 @@ class DashboradList extends React.Component {
                         descriptionType = 'Added to ';
                         entity = 'your Impact Account';
                         transactionSign = '+';
-                        transactionTypeDisplay = (data.attributes.status === 'cancelled') ? giftNotSent : 'Deposit';
+                        transactionTypeDisplay = isGiftCancelled ? giftNotSent : 'Deposit';
                         imageCls = 'ui avatar image';
                     } else if (data.attributes.transactionType.toLowerCase() === 'matchallocation') {
                         givingType = '';
@@ -226,7 +227,7 @@ class DashboradList extends React.Component {
                     } else if ((data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation')) {
                         givingType = '';
                         rowClass = 'gift';
-                        transactionTypeDisplay = (data.attributes.status === 'cancelled') ? giftNotSent : 'Gift given';
+                        transactionTypeDisplay = isGiftCancelled ? giftNotSent : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
@@ -281,7 +282,7 @@ class DashboradList extends React.Component {
                                                             {transactionSign}
                                                             {amount}
                                                             <Header.Subheader>
-                                                                {(data.attributes.status === 'cancelled' || data.attributes.status === 'returned_to_donor')
+                                                                {isGiftCancelled
                                                                     ? (
                                                                         giftNotSent
                                                                     )
@@ -312,11 +313,11 @@ class DashboradList extends React.Component {
                                                             />
                                                         )
                                                     }
-                                                    {(data.attributes.status === 'cancelled' || data.attributes.status === 'returned_to_donor')
+                                                    {isGiftCancelled
                                                     && (
                                                         <div className='learnAboutWrap'>
                                                             Learn about the common reasons<br/>
-                                                            <a href={`${HELP_CENTRE_URL}/article/198-gifts-returned-to-your-impact-account `}> why a gift is not sent. </a>
+                                                            <a href={`${HELP_CENTRE_URL}article/198-gifts-returned-to-your-impact-account `}> why a gift is not sent. </a>
                                                             Or,
                                                             <a href={`${CORP_DOMAIN}/contact/`}> contact us </a>
                                                             for help.
@@ -333,7 +334,7 @@ class DashboradList extends React.Component {
                                 </List.Item>
                             </List>
                         </Table.Cell>
-                        <Table.Cell className="reason">{transactionTypeDisplay}</Table.Cell>
+                        <Table.Cell className={`reason ${!isGiftCancelled ? 'reasonText' : ''}`}>{transactionTypeDisplay}</Table.Cell>
                         <Table.Cell className="amount">
                             {transactionSign}
                             {amount}
