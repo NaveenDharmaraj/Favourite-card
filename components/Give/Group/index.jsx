@@ -407,6 +407,13 @@ class Group extends React.Component {
                         return true;
                     }
                 })
+            } else if (_isEmpty(giveFromType) && currentAccount.accountType === 'personal') {
+                giveData.giveFrom.id = id;
+                giveData.giveFrom.value = fund.id;
+                giveData.giveFrom.type = 'user';
+                giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
+                giveData.giveFrom.balance = fund.attributes.balance;
+                giveData.giveFrom.name = name;
             }
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {

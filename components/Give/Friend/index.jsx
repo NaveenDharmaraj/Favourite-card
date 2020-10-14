@@ -84,7 +84,7 @@ class Friend extends React.Component {
                     lastName,
                 },
             },
-            t:formatMessage,
+            t: formatMessage,
             i18n: {
                 language,
             },
@@ -118,7 +118,7 @@ class Friend extends React.Component {
             userEmail: email,
             validity: this.initializeValidations(),
             showGiveToEmail: false,
-            reloadModalOpen:0,
+            reloadModalOpen: 0,
             reviewBtnFlag: false,
         };
         if (!_isEmpty(groupId) && Number(groupId) > 0) {
@@ -134,7 +134,7 @@ class Friend extends React.Component {
             },
             type: actionTypes.SHOW_FRIENDS_DROPDOWN,
         });
-        
+
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleOnInputBlur = this.handleOnInputBlur.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -142,14 +142,14 @@ class Friend extends React.Component {
 
         this.handleGiveToEmail = this.handleGiveToEmail.bind(this);
         this.renderReloadAddAmount = this.renderReloadAddAmount.bind(this);
-        this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this); 
+        this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
     }
 
 
     static constructPaymentInstruments(props, companyDetails, paymentInstrumentsData) {
         return (
             (!_.isEmpty(props.flowObject.giveData.giveFrom) &&
-            props.flowObject.giveData.giveFrom.type === 'companies') ?
+                props.flowObject.giveData.giveFrom.type === 'companies') ?
                 companyDetails.companyPaymentInstrumentsData
                 : paymentInstrumentsData
         );
@@ -180,11 +180,11 @@ class Friend extends React.Component {
             userFriendEmail,
             dispatch,
         } = this.props;
-        if(!_isEmpty(userFriendEmail)) {
+        if (!_isEmpty(userFriendEmail)) {
             this.setState({
                 flowObject: {
                     ...this.state.flowObject,
-                    giveData:{
+                    giveData: {
                         ...this.state.flowObject.giveData,
                         emailMasked: true,
                         friendsList: [],
@@ -201,7 +201,7 @@ class Friend extends React.Component {
                 type: 'USER_FRIEND_EMAIL',
             });
         }
-        if(_isEmpty(this.state.giveFromType) && currentAccount.accountType === 'company'){
+        if (_isEmpty(this.state.giveFromType) && currentAccount.accountType === 'company') {
             getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
         }
         getEmailList(dispatch, id);
@@ -209,12 +209,12 @@ class Friend extends React.Component {
     }
     handleAddMoneyModal() {
         this.setState({
-            reloadModalOpen:1,
+            reloadModalOpen: 1,
         })
     }
     handleReloadModalClose = () => {
         this.setState({
-            reloadModalOpen:0,
+            reloadModalOpen: 0,
         });
     }
     componentDidUpdate(prevProps) {
@@ -252,7 +252,7 @@ class Friend extends React.Component {
                 fund,
                 paymentInstrumentsData,
                 userCampaigns,
-                userGroups,                
+                userGroups,
                 slug,
                 i18n: {
                     language,
@@ -262,12 +262,12 @@ class Friend extends React.Component {
             let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
-                const companyIndex = _.findIndex(companiesAccountsData, {'id': giveData.giveFrom.id});
+                const companyIndex = _.findIndex(companiesAccountsData, { 'id': giveData.giveFrom.id });
                 giveData.giveFrom.balance = companiesAccountsData[companyIndex].attributes.balance;
                 giveData.giveFrom.text = `${companiesAccountsData[companyIndex].attributes.companyFundName}: ${formatCurrency(companiesAccountsData[companyIndex].attributes.balance, language, currency)}`;
                 if (_isEmpty(prevProps.companyDetails)
-                     || !_isEqual(companyDetails.companyPaymentInstrumentsData,
-                         prevProps.companyDetails.companyPaymentInstrumentsData)
+                    || !_isEqual(companyDetails.companyPaymentInstrumentsData,
+                        prevProps.companyDetails.companyPaymentInstrumentsData)
                 ) {
                     companyPaymentInstrumentChanged = true;
                 }
@@ -280,7 +280,7 @@ class Friend extends React.Component {
             const paymentInstrumentOptions = populatePaymentInstrument(
                 paymentInstruments, formatMessage,
             );
-            if(reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
+            if (reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
                 reviewBtnFlag = false;
                 reloadModalOpen = 0;
             }
@@ -311,18 +311,18 @@ class Friend extends React.Component {
     static initFields(giveData, fund, id, avatar,
         name, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType, language, currency, currentAccount) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
-            giveData.giveFrom.avatar = avatar,
+            giveData.giveFrom.avatar = avatar;
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
             giveData.giveFrom.type = 'user';
             giveData.giveFrom.text = `${fund.attributes.name} (${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && (!giveData.userInteracted || _isEmpty(giveData.giveFrom.id))){
+        } else if ((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && (!giveData.userInteracted || _isEmpty(giveData.giveFrom.id))) {
             if (giveFromType) {
                 const defaultGroupFrom = (giveFromType === 'campaigns')
-                ? userCampaigns.find((userCampaign) => userCampaign.id === giveFromId)
-                : userGroups.find((userGroup) => userGroup.id === giveFromId);
+                    ? userCampaigns.find((userCampaign) => userCampaign.id === giveFromId)
+                    : userGroups.find((userGroup) => userGroup.id === giveFromId);
                 if (!_isEmpty(defaultGroupFrom)) {
                     giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
                     giveData.giveFrom.name = defaultGroupFrom.attributes.name;
@@ -330,17 +330,17 @@ class Friend extends React.Component {
                     giveData.giveFrom.id = defaultGroupFrom.id;
                     giveData.giveFrom.type = defaultGroupFrom.type;
                     giveData.giveFrom.text = `${defaultGroupFrom.attributes.fundName}: ${formatCurrency(defaultGroupFrom.attributes.balance, language, currency)}`,
-                    giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
+                        giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
                     giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
                 }
             }
-            if(currentAccount.accountType === 'company' && _isEmpty(giveFromType)){
+            if (currentAccount.accountType === 'company' && _isEmpty(giveFromType)) {
                 companiesAccountsData.find(company => {
-                    if(currentAccount.id == company.id) {
+                    if (currentAccount.id == company.id) {
                         const {
                             attributes: {
                                 avatar,
-                                balance, 
+                                balance,
                                 name,
                                 companyFundId,
                                 companyFundName,
@@ -358,8 +358,17 @@ class Friend extends React.Component {
                         giveData.giveFrom.balance = balance;
                         giveData.giveFrom.slug = slug;
                         return true;
-                     }
-                    })
+                    }
+                })
+            }
+            if (currentAccount.accountType === 'personal' && _isEmpty(giveFromType)) {
+                giveData.giveFrom.avatar = avatar;
+                giveData.giveFrom.id = id;
+                giveData.giveFrom.value = fund.id;
+                giveData.giveFrom.type = 'user';
+                giveData.giveFrom.text = `${fund.attributes.name} (${fund.attributes.balance})`;
+                giveData.giveFrom.balance = fund.attributes.balance;
+                giveData.giveFrom.name = name;
             }
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
@@ -389,7 +398,7 @@ class Friend extends React.Component {
             isValidNoteToRecipients: true,
             isValidNoteToSelf: true,
             isValidPositiveNumber: true,
-            isReloadRequired:true,
+            isReloadRequired: true,
             isRecepientSelected: true,
         };
         return this.validity;
@@ -437,7 +446,7 @@ class Friend extends React.Component {
         }
         switch (name) {
             case 'giveFrom':
-                if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                if (giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
                     giveData['noteToSelf'] = '';
                 }
                 validity = validateGiveForm(
@@ -527,7 +536,7 @@ class Friend extends React.Component {
                     );
                     reviewBtnFlag = false;
                     dropDownOptions = modifiedDropDownOptions;
-                    if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                    if (giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
                         giveData['noteToSelf'] = '';
                     }
                     if (giveData.giveFrom.type === 'companies') {
@@ -538,18 +547,18 @@ class Friend extends React.Component {
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     giveData['formatedP2PAmount'] = newValue;
-                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), giveData.giveAmount);
                     break;
                 case 'recipients':
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     giveData[name] = Friend.parseRecipients(newValue);
-                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), giveData.giveAmount);
                     break;
                 case 'friendsList':
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
-                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), giveData.giveAmount);
                     validity = validateGiveForm(
                         'recipients',
                         giveData.recipients,
@@ -594,7 +603,7 @@ class Friend extends React.Component {
                 ? getSelectedFriendList(friendsListData, friendsList)
                 : [];
             flowObject.giveData.selectedFriendsList.map((friendData) => {
-            _.remove(flowObject.giveData.recipients,(recepientData) => {
+                _.remove(flowObject.giveData.recipients, (recepientData) => {
                     return recepientData == friendData.email;
                 });
             })
@@ -635,7 +644,7 @@ class Friend extends React.Component {
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToRecipients', giveData.noteToRecipients, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('recipients', giveData.recipients, validity, giveData, coverFeesAmount, userEmailList);
-        validity = validateForReload(validity,giveData.giveFrom.type,giveData.totalP2pGiveAmount,giveData.giveFrom.balance);
+        validity = validateForReload(validity, giveData.giveFrom.type, giveData.totalP2pGiveAmount, giveData.giveFrom.balance);
         this.setState({
             validity,
             reviewBtnFlag: !validity.isReloadRequired,
@@ -643,7 +652,7 @@ class Friend extends React.Component {
         const validationsResponse = _.every(validity);
         if (!validationsResponse) {
             const errorNode = findingErrorElement(validity, 'allocation');
-            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({behavior: "smooth", block: "center"});
+            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({ behavior: "smooth", block: "center" });
         }
         return validationsResponse;
     }
@@ -699,7 +708,7 @@ class Friend extends React.Component {
             companyAccountsFetched,
         } = this.props
         const {
-            dropDownOptions:{
+            dropDownOptions: {
                 paymentInstrumentList,
             },
             flowObject: {
@@ -716,43 +725,43 @@ class Friend extends React.Component {
         const formatMessage = this.props.t;
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(totalP2pGiveAmount) > Number(giveFrom.balance))) {
             if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
-            let taxReceiptList = taxReceiptProfiles;
-            let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
-            if (giveFrom.type === 'companies' && companyDetails) {
-                taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
-                defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
-            }
-            let amountToDonate = formatAmount((formatAmount(totalP2pGiveAmount)
-            - formatAmount(giveFrom.balance)));
-            if (Number(amountToDonate) < 5) {
-                amountToDonate = formatAmount(5);
-            }
-            const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
-            return (
-                <ReloadAddAmount
-                    defaultTaxReceiptProfile={defaultTaxReceiptProfileForReload}
-                    dispatch={dispatch}
-                    donationMatchData={(giveFrom.type === 'user') ? donationMatchData : {}}
-                    formatedDonationAmount={(amountToDonate > 9999) ? formatAmount(9999) : amountToDonate}
-                    formatMessage={formatMessage}
-                    allocationGiftType={giftType.value}
-                    giveTo={giveFrom}
-                    language={language}
-                    paymentInstrumentOptions={paymentInstrumentList}
-                    reloadModalOpen={reloadModalOpen}
-                    reviewBtnFlag={reviewBtnFlag}
-                    taxReceiptsOptions={taxReceiptsOptions}
-                    handleParentModalState={this.handleReloadModalClose}
-                />
-            )
-            } else{
+                let taxReceiptList = taxReceiptProfiles;
+                let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
+                if (giveFrom.type === 'companies' && companyDetails) {
+                    taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
+                    defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
+                }
+                let amountToDonate = formatAmount((formatAmount(totalP2pGiveAmount)
+                    - formatAmount(giveFrom.balance)));
+                if (Number(amountToDonate) < 5) {
+                    amountToDonate = formatAmount(5);
+                }
+                const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
+                return (
+                    <ReloadAddAmount
+                        defaultTaxReceiptProfile={defaultTaxReceiptProfileForReload}
+                        dispatch={dispatch}
+                        donationMatchData={(giveFrom.type === 'user') ? donationMatchData : {}}
+                        formatedDonationAmount={(amountToDonate > 9999) ? formatAmount(9999) : amountToDonate}
+                        formatMessage={formatMessage}
+                        allocationGiftType={giftType.value}
+                        giveTo={giveFrom}
+                        language={language}
+                        paymentInstrumentOptions={paymentInstrumentList}
+                        reloadModalOpen={reloadModalOpen}
+                        reviewBtnFlag={reviewBtnFlag}
+                        taxReceiptsOptions={taxReceiptsOptions}
+                        handleParentModalState={this.handleReloadModalClose}
+                    />
+                )
+            } else {
                 return (
                     <Placeholder>
-                    <Placeholder.Header>
-                      <Placeholder.Line />
-                      <Placeholder.Line />
-                    </Placeholder.Header>
-                  </Placeholder>
+                        <Placeholder.Header>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                        </Placeholder.Header>
+                    </Placeholder>
                 );
             }
 
@@ -764,7 +773,7 @@ class Friend extends React.Component {
         const {
             currentStep,
             flowSteps,
-            i18n:{
+            i18n: {
                 language,
             },
             t: formatMessage,
@@ -799,7 +808,7 @@ class Friend extends React.Component {
         } = this.state;
 
         const recipientsList = recipients.join(',');
-        let submtBtn = (reviewBtnFlag)?(
+        let submtBtn = (reviewBtnFlag) ? (
             <Form.Button
                 primary
                 className="blue-btn-rounded btn_right rivewbtnp2p"
@@ -958,8 +967,8 @@ class Friend extends React.Component {
                                                             </Grid.Column>
                                                         </Fragment>
                                                     }
-                                                        <Grid.Column mobile={16} tablet={12} computer={10}>
-                                                            <div className="give_flow_field">
+                                                    <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                        <div className="give_flow_field">
                                                             <DonationAmountField
                                                                 amount={formatedP2PAmount}
                                                                 formatMessage={formatMessage}
@@ -969,11 +978,11 @@ class Friend extends React.Component {
                                                                 validity={validity}
                                                                 isGiveFlow
                                                             />
-                                                            </div>
-                                                            <p className="multipleFriendAmountFieldText">
-                                                                {formatMessage('friends:multipleFriendAmountFieldText')}
-                                                            </p>
-                                                            <div className="give_flow_field">
+                                                        </div>
+                                                        <p className="multipleFriendAmountFieldText">
+                                                            {formatMessage('friends:multipleFriendAmountFieldText')}
+                                                        </p>
+                                                        <div className="give_flow_field">
                                                             <DropDownAccountOptions
                                                                 type={type}
                                                                 validity={validity.isValidGiveFrom}
@@ -985,8 +994,8 @@ class Friend extends React.Component {
                                                                 reviewBtnFlag={reviewBtnFlag}
                                                             />
                                                             {this.renderReloadAddAmount()}
-                                                            </div>
-                                                        </Grid.Column>
+                                                        </div>
+                                                    </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
                                             <Grid className="to_space">
@@ -1005,18 +1014,18 @@ class Friend extends React.Component {
                                                                 fromP2P
                                                             />
                                                         </div>
-                                                        <div className="give_flow_field">    
+                                                        <div className="give_flow_field">
                                                             {(giveFromType === 'groups' || giveFromType === 'user') && (
-                                                            <Note
-                                                                fieldName="noteToSelf"
-                                                                formatMessage={formatMessage}
-                                                                handleOnInputChange={this.handleInputChange}
-                                                                handleOnInputBlur={this.handleOnInputBlur}
-                                                                labelText={formatMessage(`friends:noteToSelfLabel${giveFromType}`)}
-                                                                popupText={formatMessage(`friends:noteToSelfPopup${giveFromType}`)}
-                                                                placeholderText={formatMessage(`friends:noteToSelfPlaceholderText${giveFromType}`)}
-                                                                text={noteToSelf}
-                                                            />
+                                                                <Note
+                                                                    fieldName="noteToSelf"
+                                                                    formatMessage={formatMessage}
+                                                                    handleOnInputChange={this.handleInputChange}
+                                                                    handleOnInputBlur={this.handleOnInputBlur}
+                                                                    labelText={formatMessage(`friends:noteToSelfLabel${giveFromType}`)}
+                                                                    popupText={formatMessage(`friends:noteToSelfPopup${giveFromType}`)}
+                                                                    placeholderText={formatMessage(`friends:noteToSelfPlaceholderText${giveFromType}`)}
+                                                                    text={noteToSelf}
+                                                                />
                                                             )}
                                                         </div>
                                                         {submtBtn}

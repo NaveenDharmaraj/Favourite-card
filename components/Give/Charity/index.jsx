@@ -117,7 +117,7 @@ class Charity extends React.Component {
             findAnotherRecipientLabel: 'Find another recipient',
             flowObject: _.cloneDeep(payload),
             showModal: false,
-            reloadModalOpen:0,
+            reloadModalOpen: 0,
             reviewBtnFlag: false,
             validity: this.intializeValidations(),
         };
@@ -173,7 +173,7 @@ class Charity extends React.Component {
         } else {
             Router.pushRoute('/dashboard');
         }
-        if(_isEmpty(giveFromType) && currentAccount.accountType === 'company'){
+        if (_isEmpty(giveFromType) && currentAccount.accountType === 'company') {
             getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
         }
         window.scrollTo(0, 0);
@@ -247,7 +247,7 @@ class Charity extends React.Component {
                 giveData.giveFrom.text = `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`
                 paymentInstruments = paymentInstrumentsData;
             }
-            if(reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
+            if (reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
                 reviewBtnFlag = false;
                 reloadModalOpen = 0;
             }
@@ -328,14 +328,14 @@ class Charity extends React.Component {
     static initFields(giveData, fund, id, avatar,
         name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId, giveFromType, language, currency, preferences, charityShareInfoOptions, formatMessage, currentAccount) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
-            giveData.giveFrom.avatar = avatar,
-                giveData.giveFrom.id = id;
+            giveData.giveFrom.avatar = avatar;
+            giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
             giveData.giveFrom.type = 'user';
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && (!giveData.userInteracted || _isEmpty(giveData.giveFrom.id))){
+        } else if ((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && (!giveData.userInteracted || _isEmpty(giveData.giveFrom.id))) {
             if (!_isEmpty(giveGroupBenificairyDetails) && !_isEmpty(giveGroupBenificairyDetails.benificiaryDetails)) {
                 const defaultGroupFrom = (giveFromType === 'campaigns')
                     ? userCampaigns.find((userCampaign) => userCampaign.id === groupId)
@@ -351,13 +351,13 @@ class Charity extends React.Component {
                     giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
                 }
             }
-            if(_isEmpty(giveFromType) && currentAccount.accountType === 'company'){
+            if (_isEmpty(giveFromType) && currentAccount.accountType === 'company') {
                 companiesAccountsData.find(company => {
-                    if(currentAccount.id == company.id) {
+                    if (currentAccount.id == company.id) {
                         const {
                             attributes: {
                                 avatar,
-                                balance, 
+                                balance,
                                 name,
                                 companyFundId,
                                 companyFundName,
@@ -377,15 +377,24 @@ class Charity extends React.Component {
                         giveData.giveFrom.slug = slug;
                         giveData.giveFrom.displayName = displayName;
                         return true;
-                     }
-                    })
+                    }
+                })
+            }
+            if (_isEmpty(giveFromType) && currentAccount.accountType === 'personal') {
+                giveData.giveFrom.avatar = avatar;
+                giveData.giveFrom.id = id;
+                giveData.giveFrom.value = fund.id;
+                giveData.giveFrom.type = 'user';
+                giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
+                giveData.giveFrom.balance = fund.attributes.balance;
+                giveData.giveFrom.name = name;
             }
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
                 value: '',
             };
         }
-        if((!giveData.userInteracted || _isEmpty(giveData.defaultInfoToShare)) && !_isEmpty(charityShareInfoOptions) && charityShareInfoOptions.length>0){
+        if ((!giveData.userInteracted || _isEmpty(giveData.defaultInfoToShare)) && !_isEmpty(charityShareInfoOptions) && charityShareInfoOptions.length > 0) {
             const name = 'charities_info_to_share';
             const preference = preferences[name].includes('address')
                 ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
@@ -394,7 +403,7 @@ class Charity extends React.Component {
                 opt.value === preference
             ));
             giveData.defaultInfoToShare = defaultInfoToShare;
-            if ( giveFromType === 'groups' || giveFromType === 'campaigns' || currentAccount.accountType === 'company') {
+            if (giveFromType === 'groups' || giveFromType === 'campaigns' || currentAccount.accountType === 'company') {
                 giveData.infoToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
@@ -468,7 +477,7 @@ class Charity extends React.Component {
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('dedicateType', null, validity, giveData);
-        if(giveData.giftType.value === 0) {
+        if (giveData.giftType.value === 0) {
             validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
         } else {
             validity.isReloadRequired = true;
@@ -480,7 +489,7 @@ class Charity extends React.Component {
         const validationsResponse = _every(validity);
         if (!validationsResponse) {
             const errorNode = findingErrorElement(validity, 'allocation');
-            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({behavior: "smooth", block: "center"});
+            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({ behavior: "smooth", block: "center" });
         }
         return validationsResponse;
     }
@@ -527,7 +536,7 @@ class Charity extends React.Component {
         }
         switch (name) {
             case 'giveFrom':
-                if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                if (giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
                     giveData['noteToSelf'] = '';
                 }
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
@@ -633,19 +642,19 @@ class Charity extends React.Component {
                         giveData, dropDownOptions, this.props, type,
                     );
                     giveData = modifiedGiveData;
-                    if(giveData.giveFrom.type === 'user'){
-                       giveData.infoToShare =  giveData.defaultInfoToShare;
-                       if(_isEmpty(giveData.defaultInfoToShare)){
-                        const name = 'charities_info_to_share';
-                        const preference = preferences[name].includes('address')
-                            ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
-                        const { infoToShareList } = populateDropdownInfoToShare(charityShareInfoOptions);
-                        const defaultInfoToShare = infoToShareList.find(opt => (
-                            opt.value === preference
-                        ));
-                        giveData.defaultInfoToShare = giveData.infoToShare = defaultInfoToShare;
-                       }
-                    } else{
+                    if (giveData.giveFrom.type === 'user') {
+                        giveData.infoToShare = giveData.defaultInfoToShare;
+                        if (_isEmpty(giveData.defaultInfoToShare)) {
+                            const name = 'charities_info_to_share';
+                            const preference = preferences[name].includes('address')
+                                ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
+                            const { infoToShareList } = populateDropdownInfoToShare(charityShareInfoOptions);
+                            const defaultInfoToShare = infoToShareList.find(opt => (
+                                opt.value === preference
+                            ));
+                            giveData.defaultInfoToShare = giveData.infoToShare = defaultInfoToShare;
+                        }
+                    } else {
                         const formatMessage = this.props.t;
                         const defaultDropDownOption = {
                             disabled: false,
@@ -654,7 +663,7 @@ class Charity extends React.Component {
                         };
                         giveData.infoToShare = defaultDropDownOption;
                     }
-                    if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                    if (giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
                         giveData.noteToSelf = '';
                     }
                     dropDownOptions = modifiedDropDownOptions;
@@ -700,7 +709,7 @@ class Charity extends React.Component {
         } = data;
         let {
             flowObject: {
-                giveData 
+                giveData
             },
             reviewBtnFlag,
             validity,
@@ -809,12 +818,12 @@ class Charity extends React.Component {
 
     handleAddMoneyModal() {
         this.setState({
-            reloadModalOpen:1,
+            reloadModalOpen: 1,
         })
     }
     handleReloadModalClose = () => {
         this.setState({
-            reloadModalOpen:0,
+            reloadModalOpen: 0,
         });
     }
     /**
@@ -912,7 +921,7 @@ class Charity extends React.Component {
                         handleParentModalState={this.handleReloadModalClose}
                     />
                 )
-            } else{
+            } else {
                 return (
                     <Placeholder>
                         <Placeholder.Header>
@@ -988,7 +997,7 @@ class Charity extends React.Component {
                 type="submit"
             />);
         let giveBannerHeader;
-        if(!!groupFromUrl) {
+        if (!!groupFromUrl) {
             giveBannerHeader = (giveFrom.name) ? `Give From ${giveFrom.name}` : '';
         } else {
             giveBannerHeader = (giveTo.text) ? `Give to ${giveTo.text}` : '';
@@ -1054,9 +1063,9 @@ class Charity extends React.Component {
                                                             fromCharity
                                                         />
                                                         <p className="coverFeeLabel">
-                                                            { (!_isEmpty(coverAmountDisplay) && coverAmountDisplay > 0) ? formatMessage('coverFeeLabelWithAmount', {
+                                                            {(!_isEmpty(coverAmountDisplay) && coverAmountDisplay > 0) ? formatMessage('coverFeeLabelWithAmount', {
                                                                 amount: formatCurrency(coverAmountDisplay, language, 'USD'),
-                                                             }) : formatMessage('coverFeeLabel')
+                                                            }) : formatMessage('coverFeeLabel')
                                                             }
                                                             <Modal
                                                                 size="tiny"
@@ -1082,7 +1091,7 @@ class Charity extends React.Component {
                                                                     <br /><br />
                                                                 </Modal.Content>
                                                             </Modal>
-                                                        </p>                                                       
+                                                        </p>
                                                         <div className="give_flow_field">
                                                             <DropDownAccountOptions
                                                                 reviewBtnFlag={this.state.reviewBtnFlag}
