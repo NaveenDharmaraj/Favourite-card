@@ -39,7 +39,7 @@ class Success extends React.Component {
             dispatch,
             slug,
         } = this.props;
-        getUserAllDetails(dispatch, userId).then((otherAccounts) => {
+        getUserAllDetails(dispatch, userId, ['BeneficiaryAdminRole']).then((otherAccounts) => {
             const slugValue = otherAccounts.find((item) => item.slug === slug);
             if (_isEmpty(slugValue)) {
                 Router.pushRoute('/dashboard');

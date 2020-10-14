@@ -120,7 +120,20 @@ class DashboradList extends React.Component {
                 let date = new Date(data.attributes.createdAt);
                 const dd = date.getDate();
                 const mm = date.getMonth();
-                const month = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
+                const month = [
+                    'January',
+                    'February',
+                    'March',
+                    'April',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
+                    'September',
+                    'October',
+                    'November',
+                    'December',
+                ];
                 const yyyy = date.getFullYear();
                 date = `${month[mm]} ${dd}, ${yyyy}`;
                 const modalDate = `${month[mm]} ${dd}, ${yyyy}`;
@@ -252,7 +265,7 @@ class DashboradList extends React.Component {
                                                     {entity}
                                                 </b>
                                             )}
-                                            <Modal size="tiny" dimmer="inverted" className="chimp-modal acntActivityModel" closeIcon trigger={<span className="descriptionRight"><Image className="icons-right-page" src={iconsRight}/></span>}>
+                                            <Modal size="tiny" dimmer="inverted" className="chimp-modal acntActivityModel" closeIcon trigger={<span className="descriptionRight"><Image className="icons-right-page" src={iconsRight} /></span>}>
                                                 <Modal.Header>{modalDate}</Modal.Header>
                                                 <Modal.Content>
                                                     <div className="acntActivityHeader">
@@ -328,16 +341,16 @@ class DashboradList extends React.Component {
                             <Grid.Column mobile={16} tablet={12} computer={12}>
                                 <Header as="h3">
                                     <Header.Content>
-                                    Account activity
+                                        Account activity
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
                     <div className="pt-2">
-                        { dashboardListLoader ? (
+                        {dashboardListLoader ? (
                             <Table padded unstackable className="no-border-table">
-                                <PlaceHolderGrid row={4} column={4} placeholderType="table" />
+                                <PlaceHolderGrid row={6} column={4} placeholderType="table" />
                             </Table>
                         ) : (
                             this.listItem()
@@ -369,4 +382,6 @@ function mapStateToProps(state) {
     };
 }
 
-export default withTranslation(['giveCommon'])(connect(mapStateToProps)(DashboradList));
+export default withTranslation([
+    'giveCommon',
+])(connect(mapStateToProps)(DashboradList));

@@ -60,7 +60,7 @@ class Groups extends React.Component {
             flowSteps[0] = `${slug}/${firstStep}`;
         }
         return (
-            <Layout authRequired={true}>
+            <Layout authRequired stripe>
                 <div className="pageWraperGive">
                     <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
                         <Group />
