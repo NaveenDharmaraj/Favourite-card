@@ -119,10 +119,10 @@ class CampaignProfileWrapper extends React.Component {
             },
         } = this.props;
         const bannerStyle = {};
-        let campaignBannerClassName = 'ch_headerImage greenBg';
+        let campaignBannerClassName = 'ch_headerImage greenBg greenBgnew ';
         if (!_isEmpty(banner)) {
             bannerStyle.backgroundImage = `url( ${banner})`;
-            campaignBannerClassName = 'CampaigBanner ch_headerImage greenBg';
+            campaignBannerClassName = 'CampaigBanner ch_headerImage greenBg greenBgnew';
         }
         let locationDetails = '';
         if (_isEmpty(city) && !_isEmpty(province)) {
