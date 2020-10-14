@@ -58,7 +58,7 @@ class Charities extends React.Component {
         }
         return (
             // eslint-disable-next-line react/jsx-filename-extension
-            <Layout authRequired={true}>
+            <Layout authRequired stripe>
                 <div className="pageWraperGive">
                     <GiveWrapper {...this.props} baseUrl="/give/to/charity" flowSteps={(slug) ? flowSteps : null}>
                         <Charity />
