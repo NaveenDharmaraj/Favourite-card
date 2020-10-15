@@ -64,12 +64,12 @@ class MobileHeader extends React.Component {
                     visible={visible}
                     direction="right"
                 >
-                    <Menu.Item className="twoBtnWraper">
-                        <Link route="/users/login">
-                            <Button as="a" basic color="blue" >Login</Button>
+                    <Menu.Item className="twoBtnWraper" >
+                        <Link route="/users/login" >
+                            <Button as="a" basic color="blue" onClick={this.handleToggle}>Login</Button>
                         </Link>
                         <Link route={claimCharityAccessCode ? `/users/new?isClaimCharity=${true}` : '/users/new'}>
-                            <Button as="a" color="blue">Sign up</Button>
+                            <Button as="a" color="blue"  onClick={this.handleToggle}>Sign up</Button>
                         </Link>
                     </Menu.Item>
                     <Menu.Item as='a' href={`${CORP_DOMAIN}/how-it-works/`}>
