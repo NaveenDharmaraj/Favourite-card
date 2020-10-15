@@ -12,6 +12,7 @@ import {
     Button,
     Popup,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     resetFlowObject,
@@ -66,6 +67,7 @@ class ProfilePageHead extends React.Component {
                     name,
                     slug,
                     balance,
+                    moneyManage,
                 },
             },
             pageDetails,
@@ -94,7 +96,23 @@ class ProfilePageHead extends React.Component {
             linkAddress = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
             profileButtonText = formatMessage('campaignProfile:campaignButtonText');
             profileTooltipText = formatMessage('campaignProfile:campaignButtonText');
+        };
+        let popUpContent = '';
+        if (hasActiveMatch) {
+            popUpContent = formatMessage('campaignProfile:popupMatchingText', {
+                Profile: profileButtonText,
+                Profiletype: profileTooltipText,
+            })
         }
+        else if (!_isEmpty(moneyManage) && moneyManage === 'Campaign Admin') {
+            popUpContent = formatMessage('campaignProfile:popupMoneyManageText')
+        }
+        else if (balance <= 0) {
+            popUpContent = formatMessage('campaignProfile:popupCurrentBalanceText', {
+                balance: formatCurrency(balance, language, currency),
+                Profiletype: profileButtonText.toLowerCase(),
+            })
+        };
         if (pageDetails.attributes) {
             if (isAuthenticated) {
                 if ((type === 'groups' || type === 'campaigns') && isAdmin) {
@@ -159,13 +177,7 @@ class ProfilePageHead extends React.Component {
                                             disabled={false}
                                             position="bottom center"
                                             inverted
-                                            content={hasActiveMatch ? formatMessage('campaignProfile:popupMatchingText', {
-                                                Profile: profileButtonText,
-                                                Profiletype: profileTooltipText,
-                                            }) : formatMessage('campaignProfile:popupCurrentBalanceText', {
-                                                balance: formatCurrency(balance, language, currency),
-                                                Profiletype: profileButtonText.toLowerCase(),
-                                            })}
+                                            content={popUpContent}
                                             trigger={
                                                 (
                                                     <Button className={`blue-bordr-btn-round-def CampaignBtn hover_disabled ${(type === 'campaigns') ? 'campaign_btn_padding' : ''}`}>
@@ -207,6 +219,7 @@ ProfilePageHead.defaultProps = {
             fundId: 0,
             hasCampaignAccess: false,
             isAdmin: false,
+            moneyManage: '',
             name: '',
             slug: '',
         },
@@ -225,6 +238,7 @@ ProfilePageHead.propTypes = {
             fundId: number,
             hasCampaignAccess: bool,
             isAdmin: bool,
+            moneyManage: string,
             name: string,
             slug: string,
         }),
