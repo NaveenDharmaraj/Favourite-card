@@ -30,6 +30,7 @@
     "totalAmountRaised": "Total Raised: {{amount}}",
     "popupCurrentBalanceText": "The current {{Profiletype}} balance is {{balance}}.",
     "popupMatchingText": "Gifts to this {{Profiletype}} are being matched. You will be able to give from this {{Profile}} once matching expires.",
+    "popupMoneyManageText": "This group was created in support of a Campaign. All money raised is sent directly to the Campaign.",
     "campaignButtonText": "Campaign",
     "groupButtonText": "group",
     "givingGroupText": "Giving Group",
