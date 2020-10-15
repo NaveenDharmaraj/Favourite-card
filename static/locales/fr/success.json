@@ -8,7 +8,7 @@
     "addMoneyDonationMatchedManualText": " In addition, you requested a {{matchedAmount}} match from {{donationCompany}}. When their administrator accepts your request, any matched funds will also appear in your account.",
     "addMoneyThirdText": "You can give these charitable dollars to others, including charities and Giving Groups, whenever you choose.",
     "addMoneyRecurringSecondText": "You scheduled {{amount}} to be added to your Impact Account each month, starting on {{startsOn}}. Each time, a tax receipt will automatically be posted to your account.",
-    "addMoneyRecurringCompanySecondText": "You scheduled {{amount}} to be added to the {{companyName}}'s Company Account each month, starting on {{startsOn}}. Each time, a tax receipt will automatically be posted to Company account.",
+    "addMoneyRecurringCompanySecondText": "You scheduled {{amount}} to be added to the {{companyName}}'s Company Account each month, starting on {{startsOn}}. Each time, a tax receipt will automatically be posted to you Company Account.",
     "addMoneyRecurringThirdText": "Any match requests approved by {{donationCompany}} will also be added to your account according to their matching policy.",
     "addMoneyTaxButtonText": "View tax receipt ",
     "addMoneyCompanyTaxButtonText": "View tax receipt",
