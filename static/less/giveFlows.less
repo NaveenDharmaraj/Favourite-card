@@ -541,13 +541,8 @@ body{
         width: 25%;
     }
     .matchingAmount{
-        align-items: center;
-        @media only screen and (max-width:472px) and (min-width:416px) {
-            max-width: 80%;
-        }
-        @media only screen and (max-width:415px){
-            max-width: 90%;
-        }
+        display: flex;
+        align-items: flex-start;
     }
 }
 
@@ -608,6 +603,7 @@ body{
                 padding-top: 7px;
                 padding-bottom: 6px;
                 font-family: 'ProximaNova-Regular';
+                font-weight: 400;
                 &:hover{
                     font-family: 'ProximaNova-Regular';
                 }
@@ -1181,6 +1177,11 @@ body{
         &.mt-2{
             margin-top: 20px;
         }
+        .noteWraper .leftImg .notifyDefaultIcon.purpleIcon{
+            &::before{
+                background-image: url("@{img_url}/images/icons/purple.svg");
+            }
+        }
     }
     .noteWraper{
         display: list-item;
@@ -1210,11 +1211,6 @@ body{
                     background-repeat: no-repeat;
                     background-position: center;
                     background-size: 23px;
-                }
-                &.purpleIcon{
-                    &::before{
-                        background-image: url("@{img_url}/images/icons/purple.svg");
-                    }
                 }
             }
         }
@@ -1436,12 +1432,12 @@ button.ui.button.blue-bordr-btn-round-def.flowConfirmBtn.fast_btn {
     margin-bottom: 40px !important;
     padding: 12px !important;
     font-size: 17px !important;
-    font-family: 'ProximaNova-Medium' !important;
+    font-weight: 600;
 }
 button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
     padding: 12px !important;
     font-size: 17px !important;
-    font-family: 'ProximaNova-Medium' !important;
+    font-weight: 600;
 }
 .recurringMsg{
     line-height: 12px;
@@ -2233,7 +2229,7 @@ input{
                             white-space: nowrap;
                             overflow: hidden;
                             text-overflow: ellipsis;
-                            max-width: calc(100% - 40px);
+                            max-width: 100%;
                             left:0px;
                         }
                         &.grouped{
@@ -2548,7 +2544,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             font-family: 'ProximaNova-Medium';
             border-radius: 12.17px;
             background-color: fade(#90459A, 10%);
-            padding: 5px 8px;
+            padding: 3.6px 9.4px;
             text-align: center;          
         }
         @media only screen and (max-width:991px) {
@@ -2576,11 +2572,14 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                                     margin-left: 10px;
                                     margin-bottom: 0px;
                                     margin-top: 0;
-                                    @media only screen and (max-width:340px) {
-                                        width: 30px;
-                                    }
+                                    width: 100%;
+                                    max-width: 28px;
                                     +.note{
                                         margin-top: 3px;
+                                    }
+                                    &::before{
+                                        right: 3px;
+                                        background-position: center !important;
                                     }
                                 }
                             }
