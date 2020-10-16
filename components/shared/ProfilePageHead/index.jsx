@@ -110,9 +110,9 @@ class ProfilePageHead extends React.Component {
         else if (balance <= 0) {
             popUpContent = formatMessage('campaignProfile:popupCurrentBalanceText', {
                 balance: formatCurrency(balance, language, currency),
-                Profiletype: profileButtonText.toLowerCase(),
+                Profiletype: profileButtonText,
             })
-        };
+        }
         if (pageDetails.attributes) {
             if (isAuthenticated) {
                 if ((type === 'groups' || type === 'campaigns') && isAdmin) {
