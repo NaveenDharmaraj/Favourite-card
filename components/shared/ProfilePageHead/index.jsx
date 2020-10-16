@@ -126,7 +126,7 @@ class ProfilePageHead extends React.Component {
                                     {`${formatMessage('campaignProfile:editBtn')} ${profileButtonText}`}
                                 </Button>
                             </a>
-                            {balance > 0 && !hasActiveMatch
+                            {balance > 0 && !hasActiveMatch && (_isEmpty(moneyManage) || moneyManage === 'Group Admin')
                                 ? (
                                     // <Link route={(`/give/to/${profileType}/${slug}/new`)}>
                                     //     {/* TODO need to add  functionality for givefromgroup and givefromcampaign */}
