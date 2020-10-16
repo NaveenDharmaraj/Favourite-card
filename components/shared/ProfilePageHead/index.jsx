@@ -110,9 +110,9 @@ class ProfilePageHead extends React.Component {
         else if (balance <= 0) {
             popUpContent = formatMessage('campaignProfile:popupCurrentBalanceText', {
                 balance: formatCurrency(balance, language, currency),
-                Profiletype: profileButtonText.toLowerCase(),
+                Profiletype: profileButtonText,
             })
-        };
+        }
         if (pageDetails.attributes) {
             if (isAuthenticated) {
                 if ((type === 'groups' || type === 'campaigns') && isAdmin) {
@@ -126,7 +126,7 @@ class ProfilePageHead extends React.Component {
                                     {`${formatMessage('campaignProfile:editBtn')} ${profileButtonText}`}
                                 </Button>
                             </a>
-                            {balance > 0 && !hasActiveMatch
+                            {balance > 0 && !hasActiveMatch && (_isEmpty(moneyManage) || moneyManage === 'Group Admin')
                                 ? (
                                     // <Link route={(`/give/to/${profileType}/${slug}/new`)}>
                                     //     {/* TODO need to add  functionality for givefromgroup and givefromcampaign */}
