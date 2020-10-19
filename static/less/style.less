@@ -3831,7 +3831,9 @@ body{
             >.column{
             position: relative;
             &:first-child{
-              //padding-right: 0px;
+              @media only screen and (max-width:1199px) and (min-width:992px) {
+                padding-right: 0px;
+              }
               .ui{
                 &.image{
                   margin-left: 0px;
@@ -3839,6 +3841,7 @@ body{
                   border-radius: .28571429rem;
                   @media only screen and (max-width:1199px) and (min-width:992px) {
                     height: 108px;
+                    width: 108px;
                   }
                 }
               }
@@ -3850,20 +3853,22 @@ body{
                 padding-top: 3px;
                 padding-bottom: 3px;
                 bottom: 15px;
+                line-height: 13px;
                 @media only screen and (max-width:1199px) and (min-width:992px) {
                   right: auto;
-                  left:0;
+                  left:14px;
                   bottom: 3px;
                 }
                 &.editOpt{
                   left: 58px;
                   @media only screen and (max-width:1199px) and (min-width:992px) {
-                    right: auto;
+                    left: 72px;
                   }
                 }
                 @media only screen and (max-width:400px) {
                   bottom: 9px;
                 }
+                
               }
               .chimp-lbl{
                 margin-bottom: 5px;
@@ -3875,6 +3880,9 @@ body{
                   font-size: 14px;
                   cursor: pointer;
                 }
+              }
+              @media only screen and (max-width:1199px) and (min-width:992px) {
+                padding-left: 14px;
               }
             }
             .ui{
@@ -7925,7 +7933,7 @@ body{
             display: flex;
             align-items: center;
             vertical-align: middle;
-            padding:20px 5px 20px 5px;
+            padding:20px 5px 20px 5px !important;
             &.shareCopyLink{
               padding: 20px 5px 20px 5px;
               border-bottom:1px solid rgba(34,36,38,.15);
