@@ -37,7 +37,6 @@ const MatchingPolicyModal = ({
     const toggleMatchingPolicyModal = () => {
         setIsMatchingPolicyModalOpen(!isMatchingPolicyModalOpen);
     };
-    console.log()
     return (
         <Fragment>
             <div className={`noteDefault ${isValidMatchPolicy ? 'info' : ''} mt-2`}>
@@ -84,9 +83,9 @@ const MatchingPolicyModal = ({
                             {formattedmaxMatchAmount}
                             &nbsp;
                         </span>
-                            per donor until matching funds run out or expire.
+                        per donor until matching funds run out or expire.
                     </p>
-                    <div className="matching-fund-modal-wrapper">                       
+                    <div className="matching-fund-modal-wrapper">
                         <Grid>
                             <Grid.Column computer={10} mobile={16} tablet={16}>
                                 <div className="matching-fund-modal-inner-wrapper">
@@ -112,16 +111,16 @@ const MatchingPolicyModal = ({
                                     </div>
                                 </div>
                             </Grid.Column>
-                                {((matchClose) && (
-                                    <Grid.Column computer={6} mobile={16} tablet={16}>
+                            {((matchClose) && (
+                                <Grid.Column computer={6} mobile={16} tablet={16}>
                                     <div className="matching-fund-expire">
                                         <span className="expire-date">
                                             Expires&nbsp;
                                             {matchClose}
                                         </span>
                                     </div>
-                                    </Grid.Column>
-                                ))}
+                                </Grid.Column>
+                            ))}
                         </Grid>
                     </div>
                 </Modal.Content>

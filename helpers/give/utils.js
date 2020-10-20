@@ -1743,10 +1743,10 @@ const checkMatchPolicyExpiry = (date, day, name, formatMessage) => {
         isValidMatchPolicy: true,
         matchPolicyTitle: `${name} will match your gift.`,
     } : {
-        hasMatchingPolicy: true,
-        isValidMatchPolicy: false,
-        matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
-    };
+            hasMatchingPolicy: true,
+            isValidMatchPolicy: false,
+            matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
+        };
 };
 
 
@@ -1775,7 +1775,7 @@ const checkMatchPolicy = (matchingPolicyObj = {}, giftType = 0, formatMessage, e
             }
             return {
                 hasMatchingPolicy: true,
-                isValidMatchPolicy: true,
+                isValidMatchPolicy: expiry ? true : false,
                 matchPolicyTitle: expiry ? `${activeMatch.company} will match your gift.`
                     : `Matching will not be available for this gift. Previous gifts you’ve given to this ${(isCampaign) ? 'Campaign' : 'group'} have already been fully matched the maximum amount per donor.`,
             };
