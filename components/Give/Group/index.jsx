@@ -308,6 +308,7 @@ class Group extends React.Component {
             }
             if (giveData.giveFrom.value && giveData.giveTo.value && giveData.giveTo.hasActiveMatch) {
                 giveData.matchingPolicyDetails.matchingPolicyExpiry = await dispatch(fetchGroupMatchAmount(1, giveData.giveFrom.value, giveData.giveTo.value));
+                giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
             }
             this.setState({
                 buttonClicked: false,
@@ -1210,7 +1211,7 @@ class Group extends React.Component {
                                                         />
                                                     </Grid.Column>
                                                     {
-                                                        matchingPolicyDetails.hasMatchingPolicy &&
+                                                        (matchingPolicyDetails.hasMatchingPolicy && giveFrom.id && giveTo.id) &&
                                                         <Grid.Column mobile={16} tablet={12} computer={10}>
                                                             <MatchingPolicyModal
                                                                 isCampaign={giveTo.isCampaign}
