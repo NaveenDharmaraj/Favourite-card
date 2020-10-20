@@ -17,12 +17,18 @@ import {
     func,
     bool,
 } from 'prop-types';
+import getConfig from 'next/config';
 
 import { withTranslation } from '../../i18n';
 import { getDetails } from '../../actions/group';
 import PlaceholderGrid from '../shared/PlaceHolder';
 
 import GroupSupportCard from './GroupSupportCard';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 class CharitySupport extends React.Component {
     constructor(props) {
@@ -94,6 +100,8 @@ class CharitySupport extends React.Component {
                     campaignId,
                     campaignName,
                     campaignSlug,
+                    isAdmin,
+                    slug,
                 },
             },
             t: formatMessage,
@@ -107,7 +115,24 @@ class CharitySupport extends React.Component {
             data = this.showCharities();
         } else if (showNoData) {
             data = (
-                <p>{formatMessage('groupProfile:charitySupportNoDataText')}</p>
+                <div>
+                    <p>{formatMessage('groupProfile:charitySupportNoDataText')}</p>
+                    {isAdmin && (
+                        <a
+                            href={`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`}
+                        >
+                            <Button
+                                className="success-btn-rounded-def fluid"
+                                style={{
+                                    minHeight: '40px',
+                                }}
+                            >
+                                Select a charity
+                            </Button>
+                        </a>
+                    )
+                    }
+                </div>
             );
         }
         return (
@@ -117,33 +142,33 @@ class CharitySupport extends React.Component {
                         {formatMessage('groupProfile:groupSupportsheadertext')}
                     </Header>
                     {campaignId
-                    && (
-                        <Fragment>
-                            <GroupSupportCard
-                                avatar={campaignAvatar}
-                                name={campaignName}
-                                slug={campaignSlug}
-                                isCampaign
-                            />
-                            {!_isEmpty(beneficiariesData)
-                            && (
-                                <Fragment>
-                                    <Divider />
-                                    <Responsive maxWidth={767} minWidth={320}>
-                                        {!viewButtonClicked
-                                        && (
-                                            <Button
-                                                onClick={this.handleViewMore}
-                                                className="blue-bordr-btn-round-def view_allbtn w-120"
-                                                content="View all"
-                                            />
-                                        )
-                                        }
-                                    </Responsive>
-                                </Fragment>
-                            )}
-                        </Fragment>
-                    )
+                        && (
+                            <Fragment>
+                                <GroupSupportCard
+                                    avatar={campaignAvatar}
+                                    name={campaignName}
+                                    slug={campaignSlug}
+                                    isCampaign
+                                />
+                                {!_isEmpty(beneficiariesData)
+                                    && (
+                                        <Fragment>
+                                            <Divider />
+                                            <Responsive maxWidth={767} minWidth={320}>
+                                                {!viewButtonClicked
+                                                    && (
+                                                        <Button
+                                                            onClick={this.handleViewMore}
+                                                            className="blue-bordr-btn-round-def view_allbtn w-120"
+                                                            content="View all"
+                                                        />
+                                                    )
+                                                }
+                                            </Responsive>
+                                        </Fragment>
+                                    )}
+                            </Fragment>
+                        )
                     }
                     {(charityLoader)
                         ? (
@@ -158,15 +183,15 @@ class CharitySupport extends React.Component {
                                 </Responsive>
                                 <Responsive maxWidth={767} minWidth={320}>
                                     {(!campaignId && !viewButtonClicked && !_isEmpty(beneficiariesData))
-                                            && (
-                                                <Fragment>
-                                                    <GroupSupportCard
-                                                        avatar={beneficiariesData[0].attributes.avatar}
-                                                        name={beneficiariesData[0].attributes.name}
-                                                        slug={beneficiariesData[0].attributes.slug}
-                                                        isCampaign={false}
-                                                    />
-                                                    {(beneficiariesData.length > 1)
+                                        && (
+                                            <Fragment>
+                                                <GroupSupportCard
+                                                    avatar={beneficiariesData[0].attributes.avatar}
+                                                    name={beneficiariesData[0].attributes.name}
+                                                    slug={beneficiariesData[0].attributes.slug}
+                                                    isCampaign={false}
+                                                />
+                                                {(beneficiariesData.length > 1)
                                                     && (
                                                         <Fragment>
                                                             <Divider />
@@ -177,13 +202,13 @@ class CharitySupport extends React.Component {
                                                             />
                                                         </Fragment>
                                                     )}
-                                                </Fragment>
-                                            )
+                                            </Fragment>
+                                        )
                                     }
                                     {(viewButtonClicked || showNoData)
-                                    && (
-                                        data
-                                    )}
+                                        && (
+                                            data
+                                        )}
                                 </Responsive>
                             </Fragment>
                         )}
@@ -195,7 +220,7 @@ class CharitySupport extends React.Component {
 
 CharitySupport.defaultProps = {
     charityLoader: true,
-    dispatch: () => {},
+    dispatch: () => { },
     groupBeneficiaries: {
         data: [],
     },
@@ -206,10 +231,12 @@ CharitySupport.defaultProps = {
             campaignId: null,
             campaignName: '',
             campaignSlug: '',
+            isAdmin: false,
+            slug: '',
         },
         id: '',
     },
-    t: () => {},
+    t: () => { },
 };
 
 CharitySupport.propTypes = {
@@ -225,6 +252,8 @@ CharitySupport.propTypes = {
             campaignId: number,
             campaignName: string,
             campaignSlug: string,
+            isAdmin: bool,
+            slug: string,
         }),
         id: string,
     }),
