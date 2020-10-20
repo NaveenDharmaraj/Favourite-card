@@ -161,7 +161,7 @@ class DashboradList extends React.Component {
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = `groups/${data.attributes.destination.slug}`;
-                        informationSharedEntity = 'Giving Group admin';
+                        informationSharedEntity = data.attributes.hasCampaign ? 'Giving Group and Campaign admins' : 'Giving Group admin';
                     } else if (data.attributes.destination.type.toLowerCase() === 'beneficiary') {
                         givingType = 'charity';
                         rowClass = 'allocation';
