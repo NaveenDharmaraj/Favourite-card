@@ -70,7 +70,7 @@ function DonationAmountField(props) {
                 condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
                     || !validity.isValidPositiveNumber}
                 errorMessage={isGiveFlow ? formatMessage('giveCommon:errorMessages.amountLessOrInvalidGivingFlows', {
-                    minAmount: (fromCharity) ? 5 : 1,
+                    minAmount: 1,
                 }) : formatMessage('giveCommon:errorMessages.amountLessOrInvalid', { minAmount: 5 })}
             />
             <FormValidationErrorMessage

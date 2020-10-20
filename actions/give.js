@@ -909,7 +909,7 @@ export const getCoverAmount = async (fundId, giveAmount, dispatch) => {
         },
         type: actionTypes.COVER_AMOUNT_DISPLAY,
     };
-    if (giveAmount >= 5) {
+    if (giveAmount >= 1) {
         await getCoverFeesApi(giveAmount, fundId).then((result) => {
             const {
                 data: {
