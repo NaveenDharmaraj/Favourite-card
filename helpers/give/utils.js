@@ -1733,21 +1733,24 @@ const getSelectedFriendList = (options, values) => {
  * @param {number} day tells which day of monthly allocation.
  * @param {string} name name of company giving matching policy.
  * @param {function} formatMessage language translation function
+ * @param {boolean} expiry check whether its a valid match or not
  * @return {boolean} expired or not.
  */
-const checkMatchPolicyExpiry = (date, day, name, formatMessage) => {
+const checkMatchPolicyExpiry = (date, day, name, formatMessage, expiry) => {
     const companyExpireDate = new Date(date).getTime();
     const nextAllocationDate = setDateForRecurring(day, formatMessage);
     const nextAllocationDateTime = new Date(nextAllocationDate).getTime();
     return companyExpireDate > nextAllocationDateTime ? {
         hasMatchingPolicy: true,
         isValidMatchPolicy: true,
+        matchingPolicyExpiry: expiry,
         matchPolicyTitle: `${name} will match your gift.`,
     } : {
-            hasMatchingPolicy: true,
-            isValidMatchPolicy: false,
-            matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
-        };
+        hasMatchingPolicy: true,
+        isValidMatchPolicy: false,
+        matchingPolicyExpiry: expiry,
+        matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
+    };
 };
 
 
@@ -1768,15 +1771,17 @@ const checkMatchPolicy = (matchingPolicyObj = {}, giftType = 0, formatMessage, e
         } = matchingPolicyObj;
         if (!_.isEmpty(activeMatch) && hasActiveMatch) {
             if (giftType > 0 && expiry) {
-                return activeMatch.matchClose ? checkMatchPolicyExpiry(activeMatch.matchClose, giftType, activeMatch.company, formatMessage) : {
+                return activeMatch.matchClose ? checkMatchPolicyExpiry(activeMatch.matchClose, giftType, activeMatch.company, formatMessage, expiry) : {
                     hasMatchingPolicy: true,
                     isValidMatchPolicy: true,
+                    matchingPolicyExpiry: expiry,
                     matchPolicyTitle: `${activeMatch.company} will match your gift.`,
                 };
             }
             return {
                 hasMatchingPolicy: true,
-                isValidMatchPolicy: expiry ? true : false,
+                isValidMatchPolicy: !!expiry,
+                matchingPolicyExpiry: expiry,
                 matchPolicyTitle: expiry ? `${activeMatch.company} will match your gift.`
                     : `Matching will not be available for this gift. Previous gifts you’ve given to this ${(isCampaign) ? 'Campaign' : 'group'} have already been fully matched the maximum amount per donor.`,
             };
@@ -1785,6 +1790,7 @@ const checkMatchPolicy = (matchingPolicyObj = {}, giftType = 0, formatMessage, e
     return {
         hasMatchingPolicy: false,
         isValidMatchPolicy: false,
+        matchingPolicyExpiry: false,
         matchPolicyTitle: '',
     };
 };
