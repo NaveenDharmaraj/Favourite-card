@@ -306,8 +306,8 @@ class Group extends React.Component {
                 const name = (giveData.giveFrom.type === 'companies' && giveData.giveFrom.displayName) ? giveData.giveFrom.displayName : giveData.giveFrom.name;
                 dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(name, formatMessage);
             }
-            if (giveData.giveFrom.value && giveData.giveTo.value && giveData.giveTo.hasActiveMatch) {
-                giveData.matchingPolicyDetails.matchingPolicyExpiry = await dispatch(fetchGroupMatchAmount(1, giveData.giveFrom.value, giveData.giveTo.value));
+            if (giveData.giveFrom.value && giveData.giveTo.value && giveData.giveTo.hasActiveMatch && !this.state.buttonClicked) {
+                giveData.matchingPolicyDetails.matchingPolicyExpiry = await dispatch(fetchGroupMatchAmount(1, giveData.giveFrom.value, giveData.giveTo.value, false));
                 giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
             }
             this.setState({
@@ -822,7 +822,7 @@ class Group extends React.Component {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
                     if ((Number(giveData.giveAmount) > 1) && giveData.giveTo.hasActiveMatch) {
-                        giveData.matchingPolicyDetails.matchingPolicyExpiry = await dispatch(fetchGroupMatchAmount(1, giveData.giveFrom.value, giveData.giveTo.value));
+                        giveData.matchingPolicyDetails.matchingPolicyExpiry = await dispatch(fetchGroupMatchAmount(1, giveData.giveFrom.value, giveData.giveTo.value, false));
                         giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
                     }
                     break;
@@ -923,7 +923,7 @@ class Group extends React.Component {
         validity.isValidGiveTo = !((giveTo.type === giveFrom.type)
             && (giveTo.value === giveFrom.value));
         if (Number(giveAmount) >= 1) {
-            matchingPolicyDetails.matchingPolicyExpiry = giveFrom.value && await dispatch(fetchGroupMatchAmount(1, giveFrom.value, giveTo.value));
+            matchingPolicyDetails.matchingPolicyExpiry = giveFrom.value && await dispatch(fetchGroupMatchAmount(1, giveFrom.value, giveTo.value, false));
             matchingPolicyDetails = giveTo &&
                 checkMatchPolicy(giveTo, giftType.value, formatMessage, matchingPolicyDetails.matchingPolicyExpiry);
         }
