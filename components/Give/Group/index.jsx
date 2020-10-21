@@ -1211,7 +1211,7 @@ class Group extends React.Component {
                                                         />
                                                     </Grid.Column>
                                                     {
-                                                        (matchingPolicyDetails.hasMatchingPolicy && giveFrom.id && giveTo.id) &&
+                                                        (matchingPolicyDetails.hasMatchingPolicy && !_isEmpty(giveFrom.id) && giveTo.id) &&
                                                         <Grid.Column mobile={16} tablet={12} computer={10}>
                                                             <MatchingPolicyModal
                                                                 isCampaign={giveTo.isCampaign}
