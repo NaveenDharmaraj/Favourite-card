@@ -1068,15 +1068,38 @@ export const fetchGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId, 
         if (result && !_.isEmpty(result.data)) {
             const matchingData = result.data;
             matchingData.giveFromFund = giveFromFundId;
-            if (dispatchMatchData) {
-                dispatch({
-                    payload: matchingData,
-                    type: actionTypes.GET_MATCHING_DETAILS_FOR_GROUPS,
-                });
-            }
+            // if (dispatchMatchData) {
+            //     dispatch({
+            //         payload: matchingData,
+            //         type: actionTypes.GET_MATCHING_DETAILS_FOR_GROUPS,
+            //     });
+            // }
             return Number(result.data.attributes.matchAvailable) === 1;
         }
     } catch (err) {
         //
     }
+};
+
+export const fetchFinalGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId) => (dispatch) => {
+    const queryParam = {
+        amount: giveAmount,
+        destinationFund: giveToFundId,
+        fund: giveFromFundId,
+    };
+    coreApi.get(`/groupAllocations/fetchMatchAmount`,
+        {
+            params: queryParam,
+        }
+    ).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            const matchingData = result.data;
+            matchingData.giveFromFund = giveFromFundId;
+            matchingData.giveAmount = giveAmount;
+            dispatch({
+                payload: matchingData,
+                type: actionTypes.GET_MATCHING_DETAILS_FOR_GROUPS,
+            });
+        }
+    }).catch();
 };
