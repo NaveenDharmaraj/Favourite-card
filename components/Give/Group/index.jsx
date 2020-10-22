@@ -591,7 +591,7 @@ class Group extends React.Component {
             validity,
         } = this.state;
         const formatMessage = this.props.t;
-        if (Number(value) && Number(value) >= 1) {
+        if (Number(value) && Number(value) >= 1 && giveData.giveTo.hasActiveMatch) {
             giveData.matchingPolicyDetails = giveData.giveTo &&
                 checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
         }
@@ -676,7 +676,7 @@ class Group extends React.Component {
             giveFromType,
         } = this.state;
         const formatMessage = this.props.t;
-        if (Number(giveData.giveAmount) >= 1) {
+        if (giveData.giveTo.hasActiveMatch) {
             giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
         }
         this.setState({
@@ -828,14 +828,8 @@ class Group extends React.Component {
                     break;
                 case 'giveAmount':
                     giveData['formatedGroupAmount'] = newValue;
-                    if (Number(newValue) && Number(newValue) >= 1 && giveData.giveTo && giveData.giveTo.hasActiveMatch) {
+                    if (giveData.giveTo && giveData.giveTo.hasActiveMatch) {
                         giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
-                    } else {
-                        giveData.matchingPolicyDetails = {
-                            hasMatchingPolicy: false,
-                            isValidMatchPolicy: false,
-                            matchPolicyTitle: '',
-                        };
                     }
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
@@ -926,6 +920,13 @@ class Group extends React.Component {
             matchingPolicyDetails.matchingPolicyExpiry = giveFrom.value && await dispatch(fetchGroupMatchAmount(1, giveFrom.value, giveTo.value, false));
             matchingPolicyDetails = giveTo &&
                 checkMatchPolicy(giveTo, giftType.value, formatMessage, matchingPolicyDetails.matchingPolicyExpiry);
+        } else {
+            giveData.matchingPolicyDetails = {
+                hasMatchingPolicy: false,
+                isValidMatchPolicy: false,
+                matchPolicyTitle: '',
+                matchingPolicyExpiry: false,
+            };
         }
         this.setState({
             flowObject: {
@@ -1211,7 +1212,7 @@ class Group extends React.Component {
                                                         />
                                                     </Grid.Column>
                                                     {
-                                                        (matchingPolicyDetails.hasMatchingPolicy && !_isEmpty(giveFrom.id) && giveTo.id) &&
+                                                        (matchingPolicyDetails.hasMatchingPolicy && Number(giveAmount) >= 1 && !_isEmpty(giveFrom.id) && giveTo.id) &&
                                                         <Grid.Column mobile={16} tablet={12} computer={10}>
                                                             <MatchingPolicyModal
                                                                 isCampaign={giveTo.isCampaign}
