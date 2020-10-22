@@ -821,7 +821,7 @@ class Group extends React.Component {
                     if (giveData.giveFrom.type === 'companies') {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
-                    if ((Number(giveData.giveAmount) > 1) && giveData.giveTo.hasActiveMatch) {
+                    if (giveData.giveTo.hasActiveMatch) {
                         giveData.matchingPolicyDetails.matchingPolicyExpiry = await dispatch(fetchGroupMatchAmount(1, giveData.giveFrom.value, giveData.giveTo.value, false));
                         giveData.matchingPolicyDetails = giveData.giveTo && checkMatchPolicy(giveData.giveTo, giveData.giftType.value, formatMessage, giveData.matchingPolicyDetails.matchingPolicyExpiry);
                     }
@@ -922,7 +922,7 @@ class Group extends React.Component {
         giveTo.hasActiveMatch = benificiaryData.attributes.hasActiveMatch;
         validity.isValidGiveTo = !((giveTo.type === giveFrom.type)
             && (giveTo.value === giveFrom.value));
-        if (Number(giveAmount) >= 1) {
+        if (giveTo.hasActiveMatch) {
             matchingPolicyDetails.matchingPolicyExpiry = giveFrom.value && await dispatch(fetchGroupMatchAmount(1, giveFrom.value, giveTo.value, false));
             matchingPolicyDetails = giveTo &&
                 checkMatchPolicy(giveTo, giftType.value, formatMessage, matchingPolicyDetails.matchingPolicyExpiry);
