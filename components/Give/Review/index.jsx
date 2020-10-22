@@ -4,7 +4,7 @@ import React, {
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
-    fetchGroupMatchAmount,
+    fetchFinalGroupMatchAmount,
     reInitNextStep,
     proceed
 } from '../../../actions/give';
@@ -61,7 +61,7 @@ class Review extends React.Component {
             }
         } = flowObject;
         if(giveTo.type === 'groups' && matchingPolicyDetails.isValidMatchPolicy) {
-                    dispatch(fetchGroupMatchAmount(giveAmount, giveFrom.value, giveTo.value));
+                    dispatch(fetchFinalGroupMatchAmount(giveAmount, giveFrom.value, giveTo.value));
         }
         window.scrollTo(0, 0);
     }
