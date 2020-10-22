@@ -91,11 +91,11 @@ class Friend extends React.Component {
             userFriendEmail,
             dispatch,
         } = props;
-        const paymentInstruments = Friend.constructPaymentInstruments(
-            props,
-            companyDetails,
-            paymentInstrumentsData,
-        );
+        // const paymentInstruments = Friend.constructPaymentInstruments(
+        //     props,
+        //     companyDetails,
+        //     paymentInstrumentsData,
+        // );
         const flowType = _replace(props.baseUrl, /\//, '');
         let payload = null;
         // Initialize the flowObject to default value when got switched from other flows
@@ -112,7 +112,7 @@ class Friend extends React.Component {
             dropDownOptions: {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage, language),
                 // giveFromList: accountOptions,
-                paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
+                //paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
             flowObject: _cloneDeep(payload),
             userEmail: email,
@@ -145,15 +145,14 @@ class Friend extends React.Component {
         this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
     }
 
-
-    static constructPaymentInstruments(props, companyDetails, paymentInstrumentsData) {
-        return (
-            (!_.isEmpty(props.flowObject.giveData.giveFrom) &&
-                props.flowObject.giveData.giveFrom.type === 'companies') ?
-                companyDetails.companyPaymentInstrumentsData
-                : paymentInstrumentsData
-        );
-    }
+    // static constructPaymentInstruments(props, companyDetails, paymentInstrumentsData) {
+    //     return (
+    //         (!_.isEmpty(props.flowObject.giveData.giveFrom) &&
+    //             props.flowObject.giveData.giveFrom.type === 'companies') ?
+    //             companyDetails.companyPaymentInstrumentsData
+    //             : paymentInstrumentsData
+    //     );
+    // }
 
     // static setGiveFrom(giveData, fund, id, accountOptions, name, formatNumber) {
     //     if (_.isEmpty(accountOptions) && !giveData.userInteracted) {
@@ -259,7 +258,7 @@ class Friend extends React.Component {
                 },
             } = this.props;
             const formatMessage = this.props.t;
-            let paymentInstruments = paymentInstrumentsData;
+            //let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 const companyIndex = _.findIndex(companiesAccountsData, { 'id': giveData.giveFrom.id });
@@ -271,15 +270,15 @@ class Friend extends React.Component {
                 ) {
                     companyPaymentInstrumentChanged = true;
                 }
-                paymentInstruments = companyDetails.companyPaymentInstrumentsData;
+                //paymentInstruments = companyDetails.companyPaymentInstrumentsData;
             } else if (giveData.giveFrom.type === 'user') {
                 giveData.giveFrom.balance = fund.attributes.balance;
                 giveData.giveFrom.text = `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`
-                paymentInstruments = paymentInstrumentsData;
+                //paymentInstruments = paymentInstrumentsData;
             }
-            const paymentInstrumentOptions = populatePaymentInstrument(
-                paymentInstruments, formatMessage,
-            );
+            // const paymentInstrumentOptions = populatePaymentInstrument(
+            //     paymentInstruments, formatMessage,
+            // );
             if (reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
                 reviewBtnFlag = false;
                 reloadModalOpen = 0;
@@ -296,7 +295,7 @@ class Friend extends React.Component {
                 dropDownOptions: {
                     ...dropDownOptions,
                     donationMatchList: donationMatchOptions,
-                    paymentInstrumentList: paymentInstrumentOptions,
+                    //paymentInstrumentList: paymentInstrumentOptions,
                 },
                 flowObject: {
                     ...this.state.flowObject,
@@ -704,13 +703,11 @@ class Friend extends React.Component {
             i18n: {
                 language,
             },
+            paymentInstrumentsData,
             userAccountsFetched,
             companyAccountsFetched,
         } = this.props
         const {
-            dropDownOptions: {
-                paymentInstrumentList,
-            },
             flowObject: {
                 giveData,
             },
@@ -727,6 +724,10 @@ class Friend extends React.Component {
             if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
                 let taxReceiptList = taxReceiptProfiles;
                 let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
+                const paymentInstruments = (giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
+                const paymentInstrumentOptions = populatePaymentInstrument(
+                    paymentInstruments, formatMessage,
+                );
                 if (giveFrom.type === 'companies' && companyDetails) {
                     taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
                     defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
@@ -747,7 +748,7 @@ class Friend extends React.Component {
                         allocationGiftType={giftType.value}
                         giveTo={giveFrom}
                         language={language}
-                        paymentInstrumentOptions={paymentInstrumentList}
+                        paymentInstrumentOptions={paymentInstrumentOptions}
                         reloadModalOpen={reloadModalOpen}
                         reviewBtnFlag={reviewBtnFlag}
                         taxReceiptsOptions={taxReceiptsOptions}
