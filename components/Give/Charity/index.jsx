@@ -81,7 +81,7 @@ class Charity extends React.Component {
             fund,
             groupId,
             id,
-            paymentInstrumentsData,
+            //paymentInstrumentsData,
             userCampaigns,
             userGroups,
             giveGroupBenificairyDetails,
@@ -91,7 +91,7 @@ class Charity extends React.Component {
                 language,
             }
         } = props;
-        const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
+        //const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
         const flowType = _replace(props.baseUrl, /\//, '');
         let payload = null;
@@ -111,7 +111,7 @@ class Charity extends React.Component {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
                 giftTypeList: populateGiftType(formatMessage),
                 giveToList: populateGiveToGroupsofUser(giveGroupBenificairyDetails),
-                paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
+                //paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
 
             },
             findAnotherRecipientLabel: 'Find another recipient',
@@ -216,7 +216,7 @@ class Charity extends React.Component {
                 },
                 donationMatchData,
                 fund,
-                paymentInstrumentsData,
+                //paymentInstrumentsData,
                 userCampaigns,
                 userGroups,
                 giveCharityDetails,
@@ -229,7 +229,7 @@ class Charity extends React.Component {
                 },
             } = this.props;
             const formatMessage = this.props.t;
-            let paymentInstruments = paymentInstrumentsData;
+            //let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 const companyIndex = _.findIndex(companiesAccountsData, { 'id': giveData.giveFrom.id });
@@ -241,19 +241,19 @@ class Charity extends React.Component {
                 ) {
                     companyPaymentInstrumentChanged = true;
                 }
-                paymentInstruments = companyDetails.companyPaymentInstrumentsData;
+                //paymentInstruments = companyDetails.companyPaymentInstrumentsData;
             } else if (giveData.giveFrom.type === 'user') {
                 giveData.giveFrom.balance = fund.attributes.balance;
                 giveData.giveFrom.text = `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`
-                paymentInstruments = paymentInstrumentsData;
+                //paymentInstruments = paymentInstrumentsData;
             }
             if (reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
                 reviewBtnFlag = false;
                 reloadModalOpen = 0;
             }
-            const paymentInstrumentOptions = populatePaymentInstrument(
-                paymentInstruments, formatMessage,
-            );
+            // const paymentInstrumentOptions = populatePaymentInstrument(
+            //     paymentInstruments, formatMessage,
+            // );
             const giveToOptions = populateGiveToGroupsofUser(giveGroupBenificairyDetails);
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails) && _isEmpty(giveFromType)) {
@@ -296,7 +296,7 @@ class Charity extends React.Component {
                     donationMatchList: donationMatchOptions,
                     giftTypeList: populateGiftType(formatMessage),
                     giveToList: giveToOptions,
-                    paymentInstrumentList: paymentInstrumentOptions,
+                    //paymentInstrumentList: paymentInstrumentOptions,
                 },
                 flowObject: {
                     ...this.state.flowObject,
@@ -874,13 +874,14 @@ class Charity extends React.Component {
             i18n: {
                 language,
             },
+            paymentInstrumentsData,
             userAccountsFetched,
             companyAccountsFetched,
         } = this.props
         const {
-            dropDownOptions: {
-                paymentInstrumentList,
-            },
+            // dropDownOptions: {
+            //     paymentInstrumentList,
+            // },
             flowObject: {
                 giveData,
             },
@@ -897,6 +898,10 @@ class Charity extends React.Component {
             if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
                 let taxReceiptList = taxReceiptProfiles;
                 let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
+                const paymentInstruments = (giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
+                const paymentInstrumentOptions = populatePaymentInstrument(
+                    paymentInstruments, formatMessage,
+                );
                 if (giveFrom.type === 'companies' && companyDetails) {
                     taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
                     defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
@@ -914,7 +919,7 @@ class Charity extends React.Component {
                         allocationGiftType={giftType.value}
                         giveTo={giveData.giveFrom}
                         language={language}
-                        paymentInstrumentOptions={paymentInstrumentList}
+                        paymentInstrumentOptions={paymentInstrumentOptions}
                         reloadModalOpen={reloadModalOpen}
                         reviewBtnFlag={reviewBtnFlag}
                         taxReceiptsOptions={taxReceiptsOptions}

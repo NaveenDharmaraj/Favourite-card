@@ -82,10 +82,10 @@ class Group extends React.Component {
             infoOptions: {
                 groupMemberInfoToShare,
             },
-            paymentInstrumentsData,
+            //paymentInstrumentsData,
             taxReceiptProfiles,
         } = props;
-        const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
+        //const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
         const flowType = _replace(props.baseUrl, /\//, '');
         let payload = null;
@@ -120,7 +120,7 @@ class Group extends React.Component {
             buttonClicked: false,
             dropDownOptions: {
                 privacyNameOptions,
-                paymentInstrumentList: populatePaymentInstrument(paymentInstruments),
+                //paymentInstrumentList: populatePaymentInstrument(paymentInstruments),
             },
             inValidCardNameValue: true,
             inValidCardNumber: true,
@@ -217,7 +217,7 @@ class Group extends React.Component {
                 },
                 fund,
                 groupId,
-                paymentInstrumentsData,
+                //paymentInstrumentsData,
                 userCampaigns,
                 userGroups,
                 taxReceiptProfiles,
@@ -228,7 +228,7 @@ class Group extends React.Component {
                 },
                 userMembershipGroups
             } = this.props;
-            let paymentInstruments = paymentInstrumentsData;
+            //let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
@@ -241,19 +241,19 @@ class Group extends React.Component {
                 ) {
                     companyPaymentInstrumentChanged = true;
                 }
-                paymentInstruments = companyDetails.companyPaymentInstrumentsData;
+                //paymentInstruments = companyDetails.companyPaymentInstrumentsData;
             } else if (giveData.giveFrom.type === 'user') {
                 giveData.giveFrom.balance = fund.attributes.balance;
-                paymentInstruments = paymentInstrumentsData;
+                //paymentInstruments = paymentInstrumentsData;
                 giveData.giveFrom.text = `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`
             }
             if (reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
                 reviewBtnFlag = false;
                 reloadModalOpen = 0;
             }
-            const paymentInstrumentOptions = populatePaymentInstrument(
-                paymentInstruments, formatMessage,
-            );
+            // const paymentInstrumentOptions = populatePaymentInstrument(
+            //     paymentInstruments, formatMessage,
+            // );
             const giveToOptions = populateGroupsOfUser(userMembershipGroups);
 
             if (!_isEmpty(giveGroupDetails) && _isEmpty(giveFromType)) {
@@ -315,7 +315,7 @@ class Group extends React.Component {
                 dropDownOptions: {
                     ...dropDownOptions,
                     giveToList: giveToOptions,
-                    paymentInstrumentList: paymentInstrumentOptions,
+                    //paymentInstrumentList: paymentInstrumentOptions,
                 },
                 flowObject: {
                     ...this.state.flowObject,
@@ -965,13 +965,14 @@ class Group extends React.Component {
             i18n: {
                 language,
             },
+            paymentInstrumentsData,
             userAccountsFetched,
             companyAccountsFetched,
         } = this.props
         const {
-            dropDownOptions: {
-                paymentInstrumentList,
-            },
+            // dropDownOptions: {
+            //     paymentInstrumentList,
+            // },
             flowObject: {
                 giveData,
             },
@@ -988,6 +989,10 @@ class Group extends React.Component {
             if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
                 let taxReceiptList = taxReceiptProfiles;
                 let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
+                const paymentInstruments = (giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
+                const paymentInstrumentOptions = populatePaymentInstrument(
+                    paymentInstruments, formatMessage,
+                );
                 if (giveFrom.type === 'companies' && companyDetails) {
                     taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
                     defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
@@ -1005,7 +1010,7 @@ class Group extends React.Component {
                         allocationGiftType={giftType.value}
                         giveTo={giveData.giveFrom}
                         language={language}
-                        paymentInstrumentOptions={paymentInstrumentList}
+                        paymentInstrumentOptions={paymentInstrumentOptions}
                         reloadModalOpen={reloadModalOpen}
                         reviewBtnFlag={reviewBtnFlag}
                         taxReceiptsOptions={taxReceiptsOptions}
