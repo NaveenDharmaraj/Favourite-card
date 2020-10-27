@@ -5224,10 +5224,17 @@ body{
       &.message{
         margin-bottom: 1rem;
         background-color: #fff;
-        height: 81px;
+        //height: 81px;
+        height: auto;
         width: 335px !important;
         box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
-        border-radius: 10px;
+        border-radius: 0px !important;
+        &.error{
+          background-color:#f2403f;
+        }
+        &.success{
+          background-color:#0dc965;
+        }
       }
       &.icon{
         text-align: left;
@@ -5237,20 +5244,22 @@ body{
           color: #000;
         }
         .content{
-          color: #263238;
+          color: #fff;
           font-size: 14px;
           line-height: 17px;
         }
         .header{
           margin-bottom: 5/@rem;
+          color: #fff !important;
         }
       }
     }
   }
 }
 i.check.circle.icon.status-icon {
-  font-size:17px !important;
-  color: #0CC965;
+  font-size:22px !important;
+  color: #fff;
+  opacity: 1 !important;
 }
 .error-message {
   color: #FF0000;
@@ -5725,7 +5734,7 @@ body{
  }
 
  .message{
-   &.ui{
+   &.ui{	
      &.error{
        &.icon{
          &.noShadow{
@@ -5753,7 +5762,6 @@ body{
         max-width: 335px;	
         width: 100%;
         border-radius: 10px;	
-        background-color: #FFFFFF;	
         box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
         margin-left: auto;
         margin-right: auto;
@@ -5798,11 +5806,12 @@ body{
                   height: 20px;
                   width: 20px;
                   border-radius: 100%;  
-                  //background-color: #0CC965 !important;
+                  background-color: #fff !important;
                   position: relative;
+                  opacity: 1;
                   &::before{
                     content: '';
-                    background-image: url("@{img_url}/images/icons/red.svg") !important;
+                    background-image: url("@{img_url}/images/icons/close.svg") !important;
                     background-size: contain !important;
                     background-position: center !important;
                     background-repeat: no-repeat !important;
@@ -5812,6 +5821,9 @@ body{
                     top: 0px;
                     bottom: 0px;
                     margin: auto;
+                    width: 10px;
+                    filter: invert(52%) sepia(67%) saturate(5328%) hue-rotate(334deg) brightness(93%) contrast(104%);
+                    -webkit-filter:invert(52%) sepia(67%) saturate(5328%) hue-rotate(334deg) brightness(93%) contrast(104%);
                   }
                 }
               }
