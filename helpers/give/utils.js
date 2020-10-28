@@ -601,6 +601,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
                             const cardProcessors = {
                                 amex: expressCard,
                                 discover: visaIcon,
+                                express: expressCard,
                                 mastercard: mastercardIcon,
                                 stripe: visaIcon,
                                 visa: visaIcon,
