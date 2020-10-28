@@ -91,6 +91,7 @@ class Donation extends React.Component {
         }
         let flowObject = _.cloneDeep(payload);
         this.state = {
+            allowDefaultCardTaxSelect: true,
             buttonClicked: false,
             flowObject: { ...flowObject, },
             disableButton: !props.userAccountsFetched,
@@ -233,6 +234,7 @@ class Donation extends React.Component {
             value,
         } = data;
         let {
+            allowDefaultCardTaxSelect,
             flowObject: {
                 giveData,
             },
@@ -256,6 +258,7 @@ class Donation extends React.Component {
                     if (giveData.giveTo.type === 'companies') {
                         setDisableFlag = true;
                         const { dispatch } = this.props;
+                        allowDefaultCardTaxSelect = true;
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveTo.id));
                         giveData.creditCard = {
                             value: null,
@@ -292,6 +295,7 @@ class Donation extends React.Component {
                 default: break;
             }
             this.setState({
+                allowDefaultCardTaxSelect,
                 disableButton: setDisableFlag,
                 flowObject: {
                     ...this.state.flowObject,
@@ -487,6 +491,7 @@ class Donation extends React.Component {
 
     componentDidUpdate(oldProps) {
         let {
+            allowDefaultCardTaxSelect,
             flowObject,
         } = this.state;
         let {
@@ -508,7 +513,7 @@ class Donation extends React.Component {
         if (this.props.userAccountsFetched !== oldProps.userAccountsFetched) {
             doSetState = true;
         }
-        if (giveData.giveTo.type === 'companies' && (!_.isEqual(this.props.companyDetails, oldProps.companyDetails)
+        if (giveData.giveTo.type === 'companies' && allowDefaultCardTaxSelect && (!_.isEqual(this.props.companyDetails, oldProps.companyDetails)
             || (!_.isEmpty(this.props.companyDetails) && companyAccountsFetched !== oldProps.companyAccountsFetched && companyAccountsFetched))) {
             giveData.creditCard = getDefaultCreditCard(
                 populatePaymentInstrument(
@@ -777,6 +782,7 @@ class Donation extends React.Component {
         );
         if (validateCC) {
             this.setState({
+                allowDefaultCardTaxSelect: false,
                 buttonClicked: true,
             });
             const {
@@ -863,7 +869,9 @@ class Donation extends React.Component {
             }
         } = this.state;
         const formatMessage = this.props.t;
-
+        this.setState({
+            allowDefaultCardTaxSelect: false,
+        })
         return dispatch(addNewTaxReceiptProfileAndLoad(flowObject, newTaxReceiptProfile, isDefaultChecked)).then((result) => {
             const {
                 data: {
