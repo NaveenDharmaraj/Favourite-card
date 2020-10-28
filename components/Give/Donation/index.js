@@ -509,7 +509,7 @@ class Donation extends React.Component {
             doSetState = true;
         }
         if (giveData.giveTo.type === 'companies' && (!_.isEqual(this.props.companyDetails, oldProps.companyDetails)
-            || (companyAccountsFetched !== oldProps.companyAccountsFetched && companyAccountsFetched))) {
+            || (!_.isEmpty(this.props.companyDetails) && companyAccountsFetched !== oldProps.companyAccountsFetched && companyAccountsFetched))) {
             giveData.creditCard = getDefaultCreditCard(
                 populatePaymentInstrument(
                     this.props.companyDetails.companyPaymentInstrumentsData,
