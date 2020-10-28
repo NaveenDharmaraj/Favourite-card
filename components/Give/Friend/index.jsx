@@ -724,14 +724,15 @@ class Friend extends React.Component {
             if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
                 let taxReceiptList = taxReceiptProfiles;
                 let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
-                const paymentInstruments = (giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
-                const paymentInstrumentOptions = populatePaymentInstrument(
-                    paymentInstruments, formatMessage,
-                );
+                let paymentInstruments = paymentInstrumentsData;
                 if (giveFrom.type === 'companies' && companyDetails) {
                     taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
                     defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
+                    paymentInstruments = companyDetails.companyPaymentInstrumentsData;
                 }
+                const paymentInstrumentOptions = populatePaymentInstrument(
+                    paymentInstruments, formatMessage,
+                );
                 let amountToDonate = formatAmount((formatAmount(totalP2pGiveAmount)
                     - formatAmount(giveFrom.balance)));
                 if (Number(amountToDonate) < 5) {
