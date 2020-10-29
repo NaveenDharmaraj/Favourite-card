@@ -857,7 +857,7 @@ class Charity extends React.Component {
                     formatMessage={formatMessage}
                     handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
                     charityShareInfoOptions={charityShareInfoOptions}
-                    infoDefaultValue={infoToShare.value}
+                    infoDefaultValue={!_isEmpty(infoToShare) && infoToShare.value}
                 />
             );
         }
