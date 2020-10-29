@@ -69,7 +69,6 @@ class ReloadAddAmount extends React.Component {
         const reloadObject = _.cloneDeep(payload);
         this.state = {
             allowDefaultCardTax: true,
-            allowDefaultTax: true,
             minReloadAmount: formatAmount(parseFloat(props.formatedDonationAmount.replace(/,/g, ''))),
             addNewCCButtonClicked: false,
             addNewTRButtonClicked: false,
