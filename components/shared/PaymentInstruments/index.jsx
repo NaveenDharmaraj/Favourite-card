@@ -24,6 +24,7 @@ function PaymentInstruments(props) {
     let iconClass = {
         amex: 'cardExpress',
         discover: "cardVisa",
+        express: 'cardExpress',
         mastercard: "cardMaster",
         stripe: "cardVisa",
         visa: "cardVisa",
