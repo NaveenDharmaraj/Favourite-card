@@ -57,41 +57,42 @@ class ReloadAddAmount extends React.Component {
         const defaultPropsData = _.merge({}, reloadDefaultProps);
         const payload = {
             ...defaultPropsData.reloadObject,
-            giveData:{
+            giveData: {
                 ...defaultPropsData.reloadObject.giveData,
                 formatedDonationAmount: props.formatedDonationAmount,
                 donationAmount: formatAmount(parseFloat(props.formatedDonationAmount.replace(/,/g, ''))),
                 giveTo: props.giveTo,
                 creditCard: getDefaultCreditCard(props.paymentInstrumentOptions),
-                taxReceipt: getTaxReceiptById(props.taxReceiptsOptions,props.defaultTaxReceiptProfile.id),
+                taxReceipt: getTaxReceiptById(props.taxReceiptsOptions, props.defaultTaxReceiptProfile.id),
             }
         };
         const reloadObject = _.cloneDeep(payload);
         this.state = {
+            allowDefaultCardTax: true,
             minReloadAmount: formatAmount(parseFloat(props.formatedDonationAmount.replace(/,/g, ''))),
             addNewCCButtonClicked: false,
             addNewTRButtonClicked: false,
             currentModalStep: 0,
             disableTRBDefault: true,
             isDefaultCard: false,
-            isDefaultTaxReceiptChecked:!props.taxReceiptsOptions,
+            isDefaultTaxReceiptChecked: !props.taxReceiptsOptions,
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
             inValidExpirationDate: true,
             inValidNameOnCard: true,
-            reloadObject: { ...reloadObject,},
+            reloadObject: { ...reloadObject, },
             reloadButtonClicked: false,
             selectedTaxReceiptProfile: this.intializeTRFormData,
             validity: this.intializeValidations(),
-            tRFormValidity:this.initializeTRFormValidations()
+            tRFormValidity: this.initializeTRFormValidations()
         };
-        if (!_.isEmpty(this.props.donationMatchData)) {
-            const [
-                defaultMatch,
-            ] = populateDonationMatch(this.props.donationMatchData, props.formatMessage, props.language);
-            this.state.reloadObject.giveData.donationMatch = defaultMatch;
-        }
+        // if (!_.isEmpty(this.props.donationMatchData)) {
+        //     const [
+        //         defaultMatch,
+        //     ] = populateDonationMatch(this.props.donationMatchData, props.formatMessage, props.language);
+        //     this.state.reloadObject.giveData.donationMatch = defaultMatch;
+        // }
 
         this.renderModalContent = this.renderModalContent.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
@@ -135,38 +136,39 @@ class ReloadAddAmount extends React.Component {
 
     componentDidUpdate(oldProps) {
         let {
+            allowDefaultCardTax,
             currentModalStep,
-            reloadObject:{
+            reloadObject: {
                 giveData,
             },
             minReloadAmount,
         } = this.state
         let changeState = false;
         if (!_.isEqual(this.props, oldProps)) {
-            if(!_.isEqual(this.props.formatedDonationAmount, oldProps.formatedDonationAmount)){
+            if (!_.isEqual(this.props.formatedDonationAmount, oldProps.formatedDonationAmount)) {
                 giveData.formatedDonationAmount = this.props.formatedDonationAmount
                 giveData.donationAmount = formatAmount(parseFloat(this.props.formatedDonationAmount.replace(/,/g, '')));
                 minReloadAmount = formatAmount(parseFloat(this.props.formatedDonationAmount.replace(/,/g, '')));
                 changeState = true;
             }
-            if(!_.isEqual(this.props.paymentInstrumentOptions, oldProps.paymentInstrumentOptions)){
+            if (!_.isEqual(this.props.paymentInstrumentOptions, oldProps.paymentInstrumentOptions) && allowDefaultCardTax) {
                 giveData.creditCard = getDefaultCreditCard(
                     this.props.paymentInstrumentOptions,
                 );
                 changeState = true;
             }
-            if(!_.isEqual(this.props.taxReceiptsOptions, oldProps.taxReceiptsOptions)){
+            if (!_.isEqual(this.props.taxReceiptsOptions, oldProps.taxReceiptsOptions) && allowDefaultCardTax) {
                 giveData.taxReceipt = getTaxReceiptById(
                     this.props.taxReceiptsOptions,
                     this.props.defaultTaxReceiptProfile.id
                 );
                 changeState = true;
             }
-            if(!_.isEqual(this.props.giveTo, oldProps.giveTo)){
+            if (!_.isEqual(this.props.giveTo, oldProps.giveTo)) {
                 giveData.giveTo = this.props.giveTo
                 changeState = true;
             }
-            if(!_.isEqual(this.props.reloadModalOpen, oldProps.reloadModalOpen)) {
+            if (!_.isEqual(this.props.reloadModalOpen, oldProps.reloadModalOpen)) {
                 currentModalStep = this.props.reloadModalOpen;
                 changeState = true;
             }
@@ -177,7 +179,7 @@ class ReloadAddAmount extends React.Component {
                     minReloadAmount,
                     reloadObject: {
                         ...this.state.reloadObject,
-                        giveData:{
+                        giveData: {
                             ...this.state.reloadObject.giveData,
                             ...giveData,
                         }
@@ -186,12 +188,12 @@ class ReloadAddAmount extends React.Component {
             }
         }
     }
-    
+
     componentWillUnmount() {
         const defaultPropsData = _.merge({}, reloadDefaultProps);
         this.setState({
             ...this.state,
-            reloadObject:_.cloneDeep(defaultPropsData),
+            reloadObject: _.cloneDeep(defaultPropsData),
         })
     }
 
@@ -207,7 +209,7 @@ class ReloadAddAmount extends React.Component {
         };
         return this.validity;
     }
-    
+
     initializeTRFormValidations() {
         this.tRFormValidity = {
             isAddressHas2: true,
@@ -325,7 +327,7 @@ class ReloadAddAmount extends React.Component {
         if (e.target.id === "addNewCreditCard") {
             this.setState({
                 currentModalStep: 2,
-                isDefaultCard:false,
+                isDefaultCard: false,
             })
         } else if (e.target.id === "addFirstCreditCard") {
             this.setState({
@@ -385,12 +387,12 @@ class ReloadAddAmount extends React.Component {
         }
     }
 
-        /**
-     * Synchronise form data with React state
-     * @param  {Event} event The Event instance object.
-     * @param  {object} options The Options of event
-     * @return {Void} { void } The return nothing.
-     */
+    /**
+ * Synchronise form data with React state
+ * @param  {Event} event The Event instance object.
+ * @param  {object} options The Options of event
+ * @return {Void} { void } The return nothing.
+ */
     handleInputOnBlur = (event, data) => {
         event.preventDefault();
         const {
@@ -431,18 +433,18 @@ class ReloadAddAmount extends React.Component {
             dispatch,
             language,
             taxReceiptsOptions,
-        } =this.props;
+        } = this.props;
         let {
             reloadObject,
         } = this.state;
         let {
-            giveData:{
+            giveData: {
                 taxReceipt,
                 donationAmount,
                 giveTo,
             }
         } = reloadObject;
-        if(this.validateReloadAccountForm()) {
+        if (this.validateReloadAccountForm()) {
             this.setState({
                 reloadButtonClicked: true,
             });
@@ -452,18 +454,18 @@ class ReloadAddAmount extends React.Component {
             const topUpAmount = formatCurrency(donationAmount, language, reloadObject.currency);
             const succesToast = (giveTo.type === 'user') ? `${topUpAmount} has been added to your Impact Account`
                 : `${topUpAmount} has been added to ${giveTo.name}'s Company Account`;
-            dispatch(walletTopUp(reloadObject, succesToast)).then(()=>{
+            dispatch(walletTopUp(reloadObject, succesToast)).then(() => {
                 this.setState({
                     currentModalStep: 0,
                     reloadButtonClicked: false,
                 })
-            }).catch(()=> {
+            }).catch(() => {
                 this.setState({
-                    reloadButtonClicked:false,
+                    reloadButtonClicked: false,
                 })
             });
         }
-            
+
     }
 
     handleModalClose(currentModalStep) {
@@ -472,7 +474,7 @@ class ReloadAddAmount extends React.Component {
             addNewTRButtonClicked,
             reloadButtonClicked,
         } = this.state;
-        if(!addNewCCButtonClicked && !addNewTRButtonClicked && !reloadButtonClicked) {
+        if (!addNewCCButtonClicked && !addNewTRButtonClicked && !reloadButtonClicked) {
             if (currentModalStep !== 1) {
                 this.setState({
                     currentModalStep: 1,
@@ -492,10 +494,10 @@ class ReloadAddAmount extends React.Component {
         });
     }
 
-    handleSetPrimaryClick(event, data) {   
+    handleSetPrimaryClick(event, data) {
         let {
             isDefaultCard,
-        } = this.state;      
+        } = this.state;
         isDefaultCard = data.checked;
         this.setState({ isDefaultCard });
     }
@@ -519,7 +521,7 @@ class ReloadAddAmount extends React.Component {
         const {
             reloadObject,
         } = this.state;
-        
+
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -530,6 +532,7 @@ class ReloadAddAmount extends React.Component {
         );
         if (validateCC) {
             this.setState({
+                allowDefaultCardTax: false,
                 addNewCCButtonClicked: true,
             });
             const {
@@ -544,7 +547,7 @@ class ReloadAddAmount extends React.Component {
                         id,
                     },
                 } = result;
-                creditCard =  _.find( this.props.paymentInstrumentOptions, {
+                creditCard = _.find(this.props.paymentInstrumentOptions, {
                     'id': id
                 });
                 const statusMessageProps = {
@@ -567,7 +570,7 @@ class ReloadAddAmount extends React.Component {
                         ...this.state.reloadObject,
                         giveData: {
                             ...this.state.reloadObject.giveData,
-                            creditCard: creditCard,
+                            creditCard: { ...creditCard, id, value: id },
                         }
                     },
                     validity: {
@@ -628,7 +631,7 @@ class ReloadAddAmount extends React.Component {
         validity = validateDonationForm('donationAmount', donationAmount, validity);
         validity = validateDonationForm('noteToSelf', noteToSelf, validity);
         validity = validateForMinReload(donationAmount, minReloadAmount, validity);
-        validity = validateDonationForm('taxReceipt', taxReceipt, validity );
+        validity = validateDonationForm('taxReceipt', taxReceipt, validity);
         validity = validateDonationForm('creditCard', creditCard, validity);
         this.setState({ validity });
         return _.every(validity);
@@ -646,6 +649,7 @@ class ReloadAddAmount extends React.Component {
         const isValid = this.validateTRForm();
         if (isValid) {
             this.setState({
+                allowDefaultCardTax: false,
                 addNewTRButtonClicked: true,
             });
             dispatch(addNewTaxReceiptProfileAndLoad(reloadObject, selectedTaxReceiptProfile, isDefaultTaxReceiptChecked)).then((result) => {
@@ -659,7 +663,7 @@ class ReloadAddAmount extends React.Component {
                     message: 'Tax receipt recipient added',
                     type: 'success',
                 };
-                
+
                 dispatch({
                     payload: {
                         errors: [
@@ -674,7 +678,7 @@ class ReloadAddAmount extends React.Component {
                         ...this.state.reloadObject,
                         giveData: {
                             ...this.state.reloadObject.giveData,
-                            taxReceipt: { ...newtaxReceipt }
+                            taxReceipt: { ...newtaxReceipt, id, value: id }
                         }
                     },
                     currentModalStep: 1,
@@ -685,11 +689,11 @@ class ReloadAddAmount extends React.Component {
                     }
                 });
             })
-            .catch((error)=>{
-                this.setState({
-                    addNewTRButtonClicked: false,
-                });
-            })
+                .catch((error) => {
+                    this.setState({
+                        addNewTRButtonClicked: false,
+                    });
+                })
         }
     }
 
@@ -706,7 +710,16 @@ class ReloadAddAmount extends React.Component {
                             <span className="notifyDefaultIcon" />
                         </span>
                         <span className="noteContent">
-                            <span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style">Reload </span>
+                            <span onClick={() => {
+                                this.setState({
+                                    allowDefaultCardTax: true,
+                                })
+                                this.modalContentChange(1)
+                            }}
+                                className="hyperLinks-style"
+                            >
+                                Reload
+                            </span>
                             your {messageContent} Account to send this gift.
                         </span>
                     </div>
@@ -715,7 +728,7 @@ class ReloadAddAmount extends React.Component {
         }
         if (reviewBtnFlag) {
             return (
-                <div><p className="error-message"><Icon name="exclamation circle" />There's not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue.</p></div>
+                <div><p className="error-message"><Icon name="exclamation circle" />There's not enough money in your account to send this gift.<span onClick={() => { this.modalContentChange(1) }} className="hyperLinks-style"> Add money</span> to continue.</p></div>
             );
         }
         return null;
@@ -723,7 +736,7 @@ class ReloadAddAmount extends React.Component {
 
     handleChildInputChange(name, value) {
         const {
-            selectedTaxReceiptProfile:{
+            selectedTaxReceiptProfile: {
                 attributes,
             },
         } = this.state;
@@ -767,6 +780,12 @@ class ReloadAddAmount extends React.Component {
             let convertedPolicyPeriod = formatMessage('policyPeriodYear');
             const currentDate = new Date();
             let donationMonth = currentDate.getFullYear();
+            if (!_.isEmpty(this.props.donationMatchData)) {
+                const [
+                    defaultMatch,
+                ] = populateDonationMatch(donationMatchData, formatMessage, language);
+                formData.donationMatch = defaultMatch;
+            }
             if (formData.donationMatch.value > 0) {
                 donationMatchedData = _.find(
                     donationMatchData, (item) => item.attributes.employeeRoleId == formData.donationMatch.value,
@@ -825,8 +844,8 @@ class ReloadAddAmount extends React.Component {
                                     <br />
                                     {formatMessage('accountTopUp:donationMatchNote', {
                                         companyName: (!_.isEmpty(donationMatchedData.attributes.displayName))
-                                        ? donationMatchedData.attributes.displayName
-                                        : donationMatchedData.attributes.companyName,
+                                            ? donationMatchedData.attributes.displayName
+                                            : donationMatchedData.attributes.companyName,
                                         donationMonth: donationMonth,
                                         totalMatched:
                                             formatCurrency(
@@ -862,7 +881,7 @@ class ReloadAddAmount extends React.Component {
             tRFormValidity,
         } = this.state;
         let { formatMessage,
-        taxReceiptsOptions } = this.props;
+            taxReceiptsOptions } = this.props;
         return (
             <Fragment>
                 <Form>
@@ -876,17 +895,17 @@ class ReloadAddAmount extends React.Component {
                         />
                     </Form.Field>
                     <Form.Field className="mt-2">
-                    <div className="checkboxToRadio">
-                        <Checkbox
-                            className="checkboxToRadio f-weight-n"
-                            type="checkbox"
-                            id="checkbox"
-                            checked={isDefaultTaxReceiptChecked}
-                            disabled={!taxReceiptsOptions}
-                            onClick={() => { this.setState({isDefaultTaxReceiptChecked: !isDefaultTaxReceiptChecked }); }}
-                            label="Set as default tax receipt recipient"
-                        />
-                    </div>
+                        <div className="checkboxToRadio">
+                            <Checkbox
+                                className="checkboxToRadio f-weight-n"
+                                type="checkbox"
+                                id="checkbox"
+                                checked={isDefaultTaxReceiptChecked}
+                                disabled={!taxReceiptsOptions}
+                                onClick={() => { this.setState({ isDefaultTaxReceiptChecked: !isDefaultTaxReceiptChecked }); }}
+                                label="Set as default tax receipt recipient"
+                            />
+                        </div>
                     </Form.Field>
                 </Form>
                 <div className="text-right reload-mdl-footer-btns">
@@ -919,11 +938,11 @@ class ReloadAddAmount extends React.Component {
             inValidCardNameValue,
             isDefaultCard,
         } = this.state;
-        let { 
+        let {
             formatMessage,
             paymentInstrumentOptions,
         } = this.props;
-        return(
+        return (
             <Fragment>
                 <Form>
                     <StripeProvider apiKey={STRIPE_KEY}>
@@ -963,7 +982,7 @@ class ReloadAddAmount extends React.Component {
                         disabled={addNewCCButtonClicked || inValidCardNumber
                             || inValidExpirationDate || inValidNameOnCard
                             || inValidCvv || inValidCardNameValue
-                            }
+                        }
                     >
                         Done
                     </Button>
@@ -1001,9 +1020,9 @@ class ReloadAddAmount extends React.Component {
             modalContent = (
                 <>
                     <Form onSubmit={this.handleReloadSubmit}>
-                    <label htmlFor="donationAmount">
-                        {formatMessage('giveCommon:amountLabel')}
-                    </label>
+                        <label htmlFor="donationAmount">
+                            {formatMessage('giveCommon:amountLabel')}
+                        </label>
                         <Form.Field>
                             <Form.Field
                                 control={Input}
@@ -1021,7 +1040,7 @@ class ReloadAddAmount extends React.Component {
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                                || !validity.isValidPositiveNumber || !validity.isAmountEnoughForAllocation}
+                                    || !validity.isValidPositiveNumber || !validity.isAmountEnoughForAllocation}
                                 errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
                                     minAmount: minReloadAmount,
                                 })}
@@ -1067,7 +1086,7 @@ class ReloadAddAmount extends React.Component {
                             content="Add money"
                             disabled={this.state.reloadButtonClicked}
                             // fluid={isMobile}
-                            onClick = {this.handleReloadSubmit}
+                            onClick={this.handleReloadSubmit}
                             type="button"
                         />
                     </Form>
@@ -1076,7 +1095,7 @@ class ReloadAddAmount extends React.Component {
         } else if (currentModalStep === 2) {
             modalContent = (this.renderCCModal());
         } else if (currentModalStep === 3) {
-            modalContent =( this.renderTRModal());
+            modalContent = (this.renderTRModal());
         }
         return modalContent;
     }
@@ -1106,12 +1125,12 @@ class ReloadAddAmount extends React.Component {
         return (
             <Fragment>
                 {this.renderReloadComponent(allocationGiftType, reviewBtnFlag, giveTo.type)}
-                <Modal closeOnDimmerClick={false} size="tiny" dimmer="inverted" className="chimp-modal popbox addMoneyMoadal " open={currentModalStep >0} onClose={() => this.setState({currentModalStep: 0})}>
-                    <Modal.Header>{modalHeaderText} 
+                <Modal closeOnDimmerClick={false} size="tiny" dimmer="inverted" className="chimp-modal popbox addMoneyMoadal " open={currentModalStep > 0} onClose={() => this.setState({ currentModalStep: 0 })}>
+                    <Modal.Header>{modalHeaderText}
                         <span className="closebtn" onClick={() => {
-                            this.setState({currentModalStep: 0})
+                            this.setState({ currentModalStep: 0 })
                             handleParentModalState()
-                            }}>
+                        }}>
                         </span>
                     </Modal.Header>
                     {(currentModalStep === 1) && (<div className="noteDefault-bg">
@@ -1122,7 +1141,7 @@ class ReloadAddAmount extends React.Component {
                             <span className="noteContent">
                                 {headingText} <span className="amount-give">{formatedBalance}</span>
                             </span>
-                        </div>    
+                        </div>
                     </div>)}
                     <Modal.Content>
                         <Modal.Description className="font-s-16">
@@ -1136,6 +1155,6 @@ class ReloadAddAmount extends React.Component {
 }
 
 ReloadAddAmount.defaultProps = {
-    handleParentModalState: () => {}
+    handleParentModalState: () => { }
 }
 export default ReloadAddAmount;
