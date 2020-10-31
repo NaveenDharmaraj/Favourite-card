@@ -101,12 +101,27 @@ class MobileHeader extends React.Component {
                                 index={1}
                                 onClick={this.handleClick}
                             >
+                                <span>Solutions</span>
+                            </Accordion.Title>
+                            <Accordion.Content as="a" active={activeIndex === 1} href={`${CORP_DOMAIN}/advisors/`}>
+                                For Advisors
+                            </Accordion.Content>
+                            <Accordion.Content as="a" active={activeIndex === 1} href={`${CORP_DOMAIN}/charities/`}>
+                                For Charities
+                            </Accordion.Content>
+                        </Menu.Item>
+                        <Menu.Item>
+                            <Accordion.Title
+                                active={activeIndex === 2}
+                                index={2}
+                                onClick={this.handleClick}
+                            >
                                 <span>Support</span>
                             </Accordion.Title>
-                            <Accordion.Content as="a" active={activeIndex === 1} href={`${HELP_CENTRE_URL}`}>
+                            <Accordion.Content as="a" active={activeIndex === 2} href={`${HELP_CENTRE_URL}`}>
                                 Help Centre
                             </Accordion.Content>
-                            <Accordion.Content as="a" active={activeIndex === 1} href={`${CORP_DOMAIN}/contact/`}>
+                            <Accordion.Content as="a" active={activeIndex === 2} href={`${CORP_DOMAIN}/contact/`}>
                                 Contact us
                             </Accordion.Content>
                         </Menu.Item>
