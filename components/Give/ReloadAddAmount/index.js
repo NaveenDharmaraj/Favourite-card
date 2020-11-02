@@ -718,7 +718,7 @@ class ReloadAddAmount extends React.Component {
                             }}
                                 className="hyperLinks-style"
                             >
-                                Reload
+                                Reload&nbsp;
                             </span>
                             your {messageContent} Account to send this gift.
                         </span>
