@@ -100,6 +100,7 @@ class CharitySupport extends React.Component {
                     campaignId,
                     campaignName,
                     campaignSlug,
+                    hasCampaignAccess,
                     isAdmin,
                     slug,
                 },
@@ -110,7 +111,7 @@ class CharitySupport extends React.Component {
             viewButtonClicked,
         } = this.state;
         let data = '';
-        const showNoData = (!campaignId && _isEmpty(beneficiariesData));
+        const showNoData = ((!campaignId || !hasCampaignAccess) && _isEmpty(beneficiariesData));
         if (!_isEmpty(beneficiariesData)) {
             data = this.showCharities();
         } else if (showNoData) {
@@ -141,7 +142,7 @@ class CharitySupport extends React.Component {
                     <Header className="heading_btm" as="h4">
                         {formatMessage('groupProfile:groupSupportsheadertext')}
                     </Header>
-                    {campaignId
+                    {(campaignId && hasCampaignAccess)
                         && (
                             <Fragment>
                                 <GroupSupportCard
@@ -231,6 +232,7 @@ CharitySupport.defaultProps = {
             campaignId: null,
             campaignName: '',
             campaignSlug: '',
+            hasCampaignAccess: false,
             isAdmin: false,
             slug: '',
         },
@@ -252,6 +254,7 @@ CharitySupport.propTypes = {
             campaignId: number,
             campaignName: string,
             campaignSlug: string,
+            hasCampaignAccess: bool,
             isAdmin: bool,
             slug: string,
         }),
