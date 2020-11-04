@@ -31,6 +31,7 @@ import {
 import {
     distanceOfTimeInWords,
 } from '../../helpers/utils';
+import { resetFlowObject } from '../../actions/give';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -39,6 +40,7 @@ const {
 
 const GivingGoal = (props) => {
     const {
+        dispatch,
         groupDetails: {
             attributes: {
                 createdAt,
@@ -72,7 +74,7 @@ const GivingGoal = (props) => {
     let canSetGoal = false;
     const formattedCreated = formatDateForGivingTools(createdAt);
     const giveButtonElement = (
-        <Button className="blue-btn-rounded-def">
+        <Button onClick={() => { resetFlowObject('group', dispatch); }} className="blue-btn-rounded-def">
             {formatMessage('common:giveButtonText')}
         </Button>
     );
@@ -99,13 +101,13 @@ const GivingGoal = (props) => {
         <span className="badge white goalbtn topgoalbtn">
             {goalText}
             {canSetGoal
-            && (
-                <div>
-                    <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit?accordion=goals-settings`)}>
-                        {formatMessage('groupProfile:saveNewGoalText')}
-                    </a>
-                </div>
-            )}
+                && (
+                    <div>
+                        <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit?accordion=goals-settings`)}>
+                            {formatMessage('groupProfile:saveNewGoalText')}
+                        </a>
+                    </div>
+                )}
         </span>
     );
 
@@ -148,11 +150,11 @@ const GivingGoal = (props) => {
                             <Header className="totalMoneyRaised" as="h4">{formatMessage('groupProfile:totalMoneyRaised')}</Header>
                             <Header as="h1">{formattedtotalMoneyRaised}</Header>
                             {!_isEmpty(lastDonationAt)
-                            && (
-                                <div className="lastGiftWapper">
-                                    <p className="lastGiftText lastGiftText_left">{giftText}</p>
-                                </div>
-                            )}
+                                && (
+                                    <div className="lastGiftWapper">
+                                        <p className="lastGiftText lastGiftText_left">{giftText}</p>
+                                    </div>
+                                )}
                             <Responsive minWidth={768}>
                                 <Divider />
                                 {giveButton}
@@ -175,11 +177,11 @@ const GivingGoal = (props) => {
                             </div>
                             {!_isEmpty(goalText) && fundRaisingDuration}
                             {!_isEmpty(lastDonationAt)
-                            && (
-                                <div className="lastGiftWapper">
-                                    <p className="lastGiftText">{giftText}</p>
-                                </div>
-                            )}
+                                && (
+                                    <div className="lastGiftWapper">
+                                        <p className="lastGiftText">{giftText}</p>
+                                    </div>
+                                )}
                             <Responsive minWidth={768}>
                                 <Divider />
                                 {giveButton}
@@ -192,6 +194,7 @@ const GivingGoal = (props) => {
 };
 
 GivingGoal.defaultProps = {
+    dispatch: () => { },
     groupDetails: {
         attributes: {
             createdAt: '',
@@ -207,10 +210,11 @@ GivingGoal.defaultProps = {
         },
     },
     isAuthenticated: false,
-    t: () => {},
+    t: () => { },
 };
 
 GivingGoal.propTypes = {
+    dispatch: PropTypes.func,
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
             createdAt: string,
