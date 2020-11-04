@@ -101,7 +101,7 @@ class Group extends React.Component {
             payload = _merge({}, props.flowObject)
         }
         let privacyNameOptions = [];
-        if (props.flowObject.giveData.giveFrom.type) {
+        if (props.flowObject.giveData.giveFrom && props.flowObject.giveData.giveFrom.type) {
             if (props.flowObject.giveData.giveFrom.type === 'user' && !_isEmpty(groupMemberInfoToShare)) {
                 const {
                     infoToShareList,
