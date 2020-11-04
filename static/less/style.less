@@ -3493,6 +3493,9 @@ body{
       }
       .reason{
         text-align: right;
+        &.reasonText{
+          padding-right: 45px !important;
+        }
       }
       .amount{
         text-align: right;
@@ -3537,6 +3540,18 @@ body{
         font-weight: 600;
       }
     }
+  }
+}
+label.giftNotSent{
+  color: #F34A48;
+  border: 1px solid #DDDDDD;
+  font-size: 10px;
+  line-height: 20px;
+  letter-spacing: 1px;
+  border-radius: 25px;
+  padding: 3px 16px;
+  @media only screen and (max-width:991px) {
+    padding: 3px 12px;
   }
 }
 .right-align{
@@ -7967,7 +7982,7 @@ span{
             font-size: 17px;
           }
           >.content{
-            padding:0px;
+            padding:0px 0 45px 0;
             .acntActivityHeader{
               background-color: #f5f8fc;
               padding: 15px 0px;
@@ -8004,7 +8019,7 @@ span{
               }
             }
             .acntActivityContent{
-              padding: 15px 25px 45px;
+              padding: 15px 25px 0px;
               .acntActivityList{
                 &.ui{
                   &.list{
@@ -8024,6 +8039,12 @@ span{
                   }
                 }
               }
+            }
+            .learnAboutWrap{
+              max-width: 286px;
+              width: 100%;
+              text-align: center;
+              margin: 30px auto 0;
             }
           }
         }
