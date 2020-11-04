@@ -318,10 +318,12 @@ class DashboradList extends React.Component {
                                                     }
                                                     {isGiftCancelled
                                                     && (
-                                                        <div className='learnAboutWrap'>
-                                                            Learn about the common reasons<br/>
-                                                            <a href={`${HELP_CENTRE_URL}article/198-gifts-returned-to-your-impact-account `}> why a gift is not sent. </a>
-                                                            Or,
+                                                        <div className="learnAboutWrap">
+                                                            {(data.attributes.transactionType.toLowerCase() === 'matchallocation')
+                                                            && (
+                                                                <p>Due to a refund in a previous transaction. </p>
+                                                            )}
+                                                            If you have questions about this transaction,
                                                             <a href={`${CORP_DOMAIN}/contact/`}> contact us </a>
                                                             for help.
                                                         </div>
