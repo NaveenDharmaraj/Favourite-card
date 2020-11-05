@@ -713,11 +713,21 @@ class Charity extends React.Component {
             },
             reviewBtnFlag,
             validity,
-        } = this.state
+        } = this.state;
+        const {
+            coverFeesData,
+            dispatch,
+        } = this.props;
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         giveData.giveAmount = inputValue;
         giveData.formatedCharityAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
-        validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
+        const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
+        if (Number(giveData.giveFrom.value) > 0 && Number(giveData.giveAmount) > 0) {
+            getCoverAmount(giveData.giveFrom.value, giveData.giveAmount, dispatch);
+        } else {
+            getCoverAmount(giveData.giveFrom.value, 0, dispatch);
+        }
+        validity = validateGiveForm("giveAmount", inputValue, validity, giveData, coverFeesAmount);
         reviewBtnFlag = false;
         this.setState({
             ...this.state,
