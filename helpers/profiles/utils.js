@@ -31,11 +31,9 @@ const createChartData = (yearData, expensesArr, langMapping, colorArr) => {
     const summaryData = [];
     const colorData = [];
     expensesArr.map((expense, index) => {
-        const expenseValue = yearData.expenses.find((o) => o.name === expense).value;
-        const isGift = (expense === 'gifts_to_charities_donees');
-        if (!isGift) {
-            colorData.push(expenseValue);
-        }
+        const isGift = (expense === 'gifts_total');
+        const expenseValue = !isGift ? yearData.expenses.find((o) => o.name === expense).value : yearData.gifts_total;
+        colorData.push(expenseValue);
         summaryData.push(
             {
                 color: colorArr[index],
@@ -63,6 +61,7 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
     const thirdData = [];
     const fourthData = [];
     const fifthData = [];
+    const sixthData = [];
     let graphData = {};
     if (!_isEmpty(beneficiaryFinance)) {
         const selectedYear = getSelectedYear(beneficiaryFinance);
@@ -88,7 +87,7 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
                         'fundraising',
                         'poilitical_activities',
                         'other',
-                        'gifts_to_charities_donees',
+                        'gifts_total',
                     ];
                     chartData = createChartData(year, expensesArr, langMapping, colorArr);
                 } else {
@@ -98,7 +97,7 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
                         'expenditure_charity_activites',
                         'management_admin',
                         'other',
-                        'gifts_to_charities_donees',
+                        'gifts_total',
                     ];
                     chartData = createChartData(year, expensesArr, langMapping, colorArr);
                 }
@@ -107,6 +106,7 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
                 thirdData.push(chartData.colorData[2]);
                 fourthData.push(chartData.colorData[3]);
                 fifthData.push(chartData.colorData[4]);
+                sixthData.push(chartData.colorData[5]);
                 yearData.push(chartData.summaryData);
             });
             graphData = {
@@ -116,6 +116,7 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
                 revenueData,
                 secondData,
                 selectedYear,
+                sixthData,
                 thirdData,
                 totalData,
                 yearData,
@@ -139,10 +140,23 @@ const formatChartAmount = (value, language, currencyType) => {
     return val;
 };
 
+const getLocation = (city, province) => {
+    let location = '';
+    if (_isEmpty(city) && !_isEmpty(province)) {
+        location = province;
+    } else if (!_isEmpty(city) && _isEmpty(province)) {
+        location = city;
+    } else if (!_isEmpty(city) && !_isEmpty(province)) {
+        location = `${city}, ${province}`;
+    }
+    return location;
+};
+
 export {
     createChartData,
     formatGraphData,
     getChartIndex,
     getSelectedYear,
     formatChartAmount,
+    getLocation,
 };

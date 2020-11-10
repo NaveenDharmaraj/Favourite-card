@@ -3863,7 +3863,9 @@ label.giftNotSent{
             >.column{
             position: relative;
             &:first-child{
-              //padding-right: 0px;
+              @media only screen and (max-width:1199px) and (min-width:992px) {
+                padding-right: 0px;
+              }
               .ui{
                 &.image{
                   margin-left: 0px;
@@ -3871,6 +3873,7 @@ label.giftNotSent{
                   border-radius: .28571429rem;
                   @media only screen and (max-width:1199px) and (min-width:992px) {
                     height: 108px;
+                    width: 108px;
                   }
                 }
               }
@@ -3882,20 +3885,22 @@ label.giftNotSent{
                 padding-top: 3px;
                 padding-bottom: 3px;
                 bottom: 15px;
+                line-height: 13px;
                 @media only screen and (max-width:1199px) and (min-width:992px) {
                   right: auto;
-                  left:0;
+                  left:14px;
                   bottom: 3px;
                 }
                 &.editOpt{
                   left: 58px;
                   @media only screen and (max-width:1199px) and (min-width:992px) {
-                    right: auto;
+                    left: 72px;
                   }
                 }
                 @media only screen and (max-width:400px) {
                   bottom: 5px;
                 }
+                
               }
               .chimp-lbl{
                 margin-bottom: 5px;
@@ -3907,6 +3912,9 @@ label.giftNotSent{
                   font-size: 14px;
                   cursor: pointer;
                 }
+              }
+              @media only screen and (max-width:1199px) and (min-width:992px) {
+                padding-left: 14px;
               }
             }
             .ui{
@@ -4415,10 +4423,10 @@ label.giftNotSent{
       text-align: left;
       padding-left: 47px !important;
     }
-    .db-activity-tbl.ui.basic .amount{
-      text-align: left;
-      padding-left: 47px !important;
-    }
+    // .db-activity-tbl.ui.basic .amount{
+    //   text-align: left;
+    //   padding-left: 47px;
+    // }
   }
   .left-img-card{
     &.ui{
@@ -5223,14 +5231,23 @@ label.giftNotSent{
 .statusMsgWraper{
   position: fixed;
   z-index: 99999999;
-  right:19%;
-  margin-top: 48px;
-  @media only screen and (max-width:991px){
-    top: 0px;
-    left: calc(50% - 167.5px);
-    right: auto;
-    margin: 48px auto auto;
+  margin-top: 30px;
+  max-width: 1127px;
+  margin-left: auto!important;
+  margin-right: auto!important;
+  text-align: right;
+  width: 100%;
+  @media only screen and (max-width:1199px) and (min-width:992px){
+    max-width: 933px;
   }
+  @media only screen and (max-width:991px){
+      top: 0px;
+      left: calc(50% - 167.5px);
+      right: auto;
+      margin: 48px auto auto;
+      text-align: center;
+      width: auto;
+    }
 }
 .status-message-container{
   margin-bottom: 5px;
@@ -6314,6 +6331,7 @@ body{
             margin-left: 0em;
             margin-right: .8em;
             font-size: 12px;
+            color: #263238;
           }
           >a{
             color: @link;
@@ -7189,7 +7207,7 @@ button.ui.button.blue-bordr-btn-round-def{
       box-shadow:none;	
       padding: 15px 15px 15px 36px;
       @media only screen and (max-width: 420px){
-        padding: 15px 15px 15px 15px;
+        padding: 20px 15px 20px 15px;
       }
       //box-shadow: 0 1px 7px 0 rgba(0,0,0,0.17);
       &.rightImg{
@@ -7214,7 +7232,7 @@ button.ui.button.blue-bordr-btn-round-def{
           }
           >.header{
             width: calc(100% - 150px);
-            margin: 30px 0px;
+            margin: 20px 0px;
             font-size: 14px;
             @media only screen and (max-width: 420px){
               width: 100%;
@@ -7263,6 +7281,10 @@ button.ui.button.blue-bordr-btn-round-def{
       &.ui{
         .content{
           font-size: 17px;
+          padding-right: 15px;
+          @media only screen and (max-width:767px) {
+            padding-right: 0px;
+          }
           .sub{
             &.header{
               margin-top: 10px;
@@ -7285,11 +7307,41 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-left: auto;
           margin-right: auto;
+          width: 100%;
         }
       }
     }
     .givingGroupNoDataContent{
       max-width: 417px;
+    }
+  }
+  &.campaignProfile_noData{
+    background-color: #E3E8F0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    .noDataLeftImg{
+      &.ui{
+        &.image{
+          max-width: 293px;
+          margin-bottom: -1rem;
+          margin-left: auto;
+          margin-right: auto;
+          width: 100%;
+        }
+      }
+    }
+    .givingGroupNoDataContent{
+      max-width: 417px;
+    }
+    .givingGroupNoDataContent{
+      .sub{
+        &.header{
+          font-size: 14px !important;
+          line-height: 22px;
+          color: #263238;
+          font-family: 'ProximaNova-Regular'
+        }
+      }
     }
   }
   &.ggManage{
@@ -7304,6 +7356,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-top: -1rem;
           margin-bottom: -1rem;
           margin-right: auto;
+          width: 100%;
         }
       }
     }
@@ -7321,6 +7374,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-right: auto;
           margin-left: auto;
+          width: 100%;
         }
       }
     }
@@ -7337,6 +7391,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-top: -1rem;
           margin-right: auto;
+          width: 100%;
         }
       }
     }
@@ -7352,6 +7407,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-left: auto;
           margin-right: auto;
+          width: 100%;  
         }
       }
     }
@@ -7368,6 +7424,23 @@ button.ui.button.blue-bordr-btn-round-def{
       }
     }
     &.givingGroup{
+      .noDataLeftImg{
+        text-align: center;
+        &.ui{
+          &.image{
+            max-width: 293px;
+            margin-bottom: 1rem;
+          }
+        }
+      }
+      .givingGroupNoDataContent{
+        max-width: 415px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+      }
+    }
+    &.campaignProfile_noData{
       .noDataLeftImg{
         text-align: center;
         &.ui{
@@ -7775,7 +7848,7 @@ body{
 .btn-icon-line {
   display: inline !important;
   img{
-    .imgColorBlue();
+    .iconColorBlue();
     padding-left: 5px;
     width: 25px;
     height: 25px;
@@ -7871,6 +7944,14 @@ body{
                   }
                 }
               }
+              &.ellipsis{
+                &.horizontal{
+                  position: relative;
+                  &::before{
+                    height: 5px;	width: 22px;
+                  }
+                }
+              }
             }
           }
           &:last-child{
@@ -7889,8 +7970,12 @@ body{
       &.divided{
         &.relaxed{
           >.item{
+            display: flex;
+            align-items: center;
+            vertical-align: middle;
+            padding:20px 5px 20px 5px !important;
             &.shareCopyLink{
-              padding: 20px 15px 20px 5px;
+              padding: 20px 5px 20px 5px;
               border-bottom:1px solid rgba(34,36,38,.15);
               margin-bottom: 50px;
               .shareLinkLeft{
@@ -7916,7 +8001,16 @@ body{
             }
             >i{
               &.icon{
-                padding:15px 15px 15px 5px;
+                //padding:15px 15px 15px 5px;
+              }
+            }
+            .content{
+              margin-top: 0px;
+                padding-top: 0px;
+                width: 100%;
+              a{
+                margin: 0px;
+                padding: 0px;
               }
             }
           }
@@ -8498,4 +8592,8 @@ body{
       }
     }
   }
+}
+
+.isDisabled {
+  pointer-events: none;
 }

@@ -2,6 +2,7 @@ import React, {
     Fragment,
 } from 'react';
 import _isEmpty from 'lodash/isEmpty';
+import _capitalize from 'lodash/capitalize';
 import {
     Modal,
     List,
@@ -46,8 +47,10 @@ class ShareProfile extends React.Component {
             },
             dispatch,
             liked,
+            name,
             profileId,
             type,
+            t: formatMessage,
         } = this.props;
         dispatch({
             payload: {
@@ -55,10 +58,13 @@ class ShareProfile extends React.Component {
             },
             type: actionTypes.DISABLE_FOLLOW_BUTTON,
         });
+        const toastMessage = formatMessage('common:favouritesToastMessage', {
+            name,
+        });
         if (liked) {
-            unfollowProfile(dispatch, userId, profileId, type);
+            dispatch(unfollowProfile(userId, profileId, type));
         } else {
-            followProfile(dispatch, userId, profileId, type);
+            dispatch(followProfile(userId, profileId, type, toastMessage));
         }
     }
 
@@ -97,6 +103,7 @@ class ShareProfile extends React.Component {
             isAuthenticated,
             type,
             t: formatMessage,
+            children
         } = this.props;
         const {
             showShareModal,
@@ -105,10 +112,13 @@ class ShareProfile extends React.Component {
         let Profiletype = '';
         switch (type) {
             case 'beneficiaries':
-                Profiletype = 'Charity';
+                Profiletype = 'charity';
                 break;
             case 'groups':
-                Profiletype = 'Group';
+                Profiletype = 'group';
+                break;
+            case 'campaigns':
+                Profiletype = _capitalize('campaign');
                 break;
             default:
                 break;
@@ -186,6 +196,7 @@ class ShareProfile extends React.Component {
                             </Modal.Description>
                         </Modal.Content>
                     </Modal>
+                    {children}
                 </List>
             </Fragment>
         );
@@ -202,6 +213,7 @@ ShareProfile.defaultProps = {
     liked: false,
     name: '',
     profileId: '',
+    t: () => {},
     type: '',
 };
 
@@ -215,6 +227,7 @@ ShareProfile.propTypes = {
     liked: bool,
     name: string,
     profileId: string,
+    t: func,
     type: string,
 };
 
