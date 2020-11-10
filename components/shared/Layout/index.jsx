@@ -160,7 +160,7 @@ class Layout extends React.Component {
             keywords,
             url,
             disableMinHeight,
-            isCharityPage,
+            isProfilePage,
             stripe
         } = this.props;
 
@@ -209,7 +209,7 @@ class Layout extends React.Component {
                                 <div className={disableMinHeight ? "" : "chimpLayout"}>
                                     {children}
                                 </div>
-                                <Footer isAuthenticated={isAuthenticated} isCharityPage={isCharityPage} />
+                                <Footer isAuthenticated={isAuthenticated} isProfilePage={isProfilePage} />
                             </MobileHeader>
                             {!_.isEmpty(appErrors) &&
                                 <Container
