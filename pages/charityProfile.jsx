@@ -129,7 +129,7 @@ class CharityProfile extends React.Component {
                     title={title}
                     description={charityDescription}
                     url={url}
-                    isCharityPage
+                    isProfilePage
                 >
                     {!redirectToDashboard
                         && <CharityProfileWrapper {...this.props} />

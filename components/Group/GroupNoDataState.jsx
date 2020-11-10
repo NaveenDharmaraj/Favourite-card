@@ -40,7 +40,7 @@ const GroupNoDataState = (props) => {
             break;
         case 'transactions':
             contentData = 'No transactions yet';
-            subHeaderData = 'Gifts to this Giving Group and gifts sent to charities from this Giving Group will appear here.';
+            subHeaderData = 'Gifts sent to and from this Giving Group will appear here.';
             break;
         case 'common':
             contentData = 'Please check back later';

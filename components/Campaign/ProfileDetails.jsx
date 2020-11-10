@@ -2,166 +2,149 @@
 import React, { Fragment } from 'react';
 import {
     Card,
-    Container,
     Grid,
     Image,
     Header,
-    Tab,
+    Divider,
 } from 'semantic-ui-react';
 import ReactHtmlParser from 'react-html-parser';
+import {
+    PropTypes,
+} from 'prop-types';
 
+import { withTranslation } from '../../i18n';
 import ImageGallery from '../shared/ImageGallery';
 import noDataImg from '../../static/images/noresults.png';
 
-import SupportingGroups from './SupportingGroups';
+const noDataState = (formatMessage) => {
+    return (
+        <Card fluid className="noDataCard rightImg">
+            <Card.Content>
+                <Image
+                    floated="right"
+                    src={noDataImg}
+                />
+                <Card.Header className="font-s-14">
+                    <Header as="h4">
+                        <Header.Content>
+                            {formatMessage('campaignProfile:profileNoDataContent')}
+                            <Header.Subheader>{formatMessage('campaignProfile:profileNoDataSubHeader')}</Header.Subheader>
+                        </Header.Content>
+                    </Header>
+                </Card.Header>
+            </Card.Content>
+        </Card>
+    );
+};
 
 function ProfileDetails(props) {
-    const panes = [
-        {
-            menuItem: 'About',
-            render: () => {
-                const {
-                    campaignDetails: {
-                        attributes: {
-                            about,
-                            videoPlayerLink,
-                            formattedShort,
-                            formattedImpact,
-                        },
-                    },
-                    campaignImageGallery,
-                } = props;
-                const imageArray = [];
-                if (campaignImageGallery) {
-                    campaignImageGallery.forEach((singleImage) => {
-                        const singleImagePropObj = {};
-                        singleImagePropObj.src = singleImage.attributes.originalUrl;
-                        singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
-                        singleImagePropObj.thumbnailHeight = 196;
-                        singleImagePropObj.thumbnailWidth = 196;
-                        imageArray.push(singleImagePropObj);
-                    });
-                }
-                const noDataState = () => {
-                    return (
-                        <Card fluid className="noDataCard rightImg">
-                            <Card.Content>
-                                <Image
-                                    floated="right"
-                                    src={noDataImg}
-                                />
-                                <Card.Header className="font-s-14">
-                                    <Header as="h4">
-                                        <Header.Content>
-                                        Please check back later
-                                            <Header.Subheader>It looks like we haven’t yet received this information.</Header.Subheader>
-                                        </Header.Content>
-                                    </Header>
-                                </Card.Header>
-                            </Card.Content>
-                        </Card>
-                    );
-                };
-                return (
-                    <Tab.Pane attached={false}>
-                        <Container>
-
-                            {
-                                (!videoPlayerLink && !formattedShort && !formattedImpact && imageArray.length === 0) ? (
-                                    <Grid>
-                                        <Grid.Row>
-                                            <Grid.Column width={16}>
-                                                {noDataState()}
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    </Grid>
-                                ) : (
-                                    <Fragment>
-                                        <Grid>
-                                            <Grid.Row>
-                                                <Grid.Column width={16}>
-                                                    { ReactHtmlParser(formattedShort) }
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                        <Grid>
-                                            <Grid.Row>
-                                                <Grid.Column width={16}>
-                                                    { ReactHtmlParser(formattedImpact) }
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                        <Grid>
-                                            <Grid.Row>
-                                                <Grid.Column width={16}>
-                                                    <div className="mb-3 videoWrapper text-center">
-                                                        <embed
-                                                            title="video"
-                                                            src={videoPlayerLink}
-                                                            className="responsiveVideo"
-                                                        />
-                                                    </div>
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                        <Grid>
-                                            <Grid.Row>
-                                                <Grid.Column width={16}>
-                                                    <ImageGallery
-                                                        imagesArray={imageArray}
-                                                        enableImageSelection={false}
-                                                    />
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                    </Fragment>
-                                )
-                            }
-                        </Container>
-
-                    </Tab.Pane>
-                );
-            },
-        },
-        {
-            menuItem: 'Giving Groups supporting this Campaign',
-            render: () => {
-                const {
-                    campaignDetails,
-                    campaignSubGroupDetails,
-                    campaignSubGroupsShowMoreUrl,
-                    seeMoreLoaderStatus,
-                    subGroupListLoader,
-                    viewMoreFn,
-                } = props;
-                return (
-                    <Tab.Pane attached={false}>
-                        <SupportingGroups
-                            campaignDetails={campaignDetails}
-                            campaignSubGroupDetails={campaignSubGroupDetails}
-                            campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
-                            seeMoreLoaderStatus={seeMoreLoaderStatus}
-                            subGroupListLoader={subGroupListLoader}
-                            viewMoreFn={viewMoreFn}
-                        />
-                    </Tab.Pane>
-                );
-            },
-        },
-    ];
+    const {
+        about,
+        videoPlayerLink,
+        formattedShort,
+        formattedImpact,
+        campaignImageGallery,
+        t: formatMessage,
+    } = props;
+    const imageArray = [];
+    if (campaignImageGallery) {
+        campaignImageGallery.forEach((singleImage) => {
+            const singleImagePropObj = {};
+            singleImagePropObj.src = singleImage.attributes.originalUrl;
+            singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
+            singleImagePropObj.thumbnailHeight = 196;
+            singleImagePropObj.thumbnailWidth = 196;
+            imageArray.push(singleImagePropObj);
+        });
+    };
     return (
-        <Container>
-            <div className="charityTab">
-                <Tab
-                    menu={{
-                        pointing: true,
-                        secondary: true,
-                    }}
-                    panes={panes}
-                />
+        <div>
+            <Grid.Row>
+                <Divider className="mobHideDivider Divider-top" />
+                {about ? (
+                <Grid.Column width={16} className="ch_paragraph AboutProfile" >
+                <p>{about}</p>
+                </Grid.Column>
+                ) :
+                ''
+            }
+            </Grid.Row>
+            <div className="MyGallery">
+                <Grid.Row>
+                    {
+                        (!videoPlayerLink && !formattedShort && !formattedImpact && imageArray.length === 0) ? (
+                            <Grid>
+                                <Grid.Row>
+                                    <Grid.Column width={16}>
+                                        {noDataState(formatMessage)}
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        ) :
+                            (
+                                <Fragment>
+                                    <Grid.Column width={16}>
+                                        <p className="formattedShort">{ReactHtmlParser(formattedShort)}</p>
+                                    </Grid.Column>
+                                    <Grid.Column width={16}>
+                                       <p className ="formattedImpact"> {ReactHtmlParser(formattedImpact)}</p>
+                                    </Grid.Column>
+                                    <div className="fullwidth_v_G">
+                                        <div className={imageArray.length === 1 ? 'one_img_full GalleryWrapper' : 'GalleryWrapper'} style={{ display: imageArray.length === 0 ? 'none' : 'inline-block' }}>
+                                            <Grid className={!videoPlayerLink ? "fullwidth_gallery gallery_btn" : "fullwidth_gallery "}>
+                                                <Grid.Row>
+                                                    <Grid.Column width={16}>
+                                                        <ImageGallery
+                                                            imagesArray={imageArray}
+                                                            enableImageSelection={false}
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        </div>
+                                        <div className="videoWrapperfull" style={{ display: videoPlayerLink ? '' : 'none' }}>
+                                            <Grid>
+                                                <Grid.Row>
+                                                    <Grid.Column width={16}>
+                                                        <div className={imageArray.length === 1 ? 'one_video_wrapper videoWrapper' : 'videoWrapper'}>
+                                                            <embed
+                                                                title="video"
+                                                                src={videoPlayerLink}
+                                                                className="responsiveVideo"
+                                                            />
+                                                        </div>
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        </div>
+                                        <Divider className="mt-2 mobHideDivider" />
+                                    </div>
+                                </Fragment>
+                            )
+                    }
+                </Grid.Row>
             </div>
-        </Container>
+        </div>
     );
 }
 
-export default ProfileDetails;
+ProfileDetails.defaultProps = {
+    about: '',
+    videoPlayerLink: '',
+    formattedShort: '',
+    formattedImpact: '',
+    campaignImageGallery: [],
+    t: () => {},
+}
+
+// eslint-disable-next-line react/no-typos
+ProfileDetails.PropTypes = {
+    about: PropTypes.string,
+    videoPlayerLink: PropTypes.string,
+    formattedShort: PropTypes.string,
+    formattedImpact: PropTypes.string,
+    campaignImageGallery: PropTypes.array,
+    t: PropTypes.func,
+}
+
+export default withTranslation('claimProfile')(ProfileDetails);
