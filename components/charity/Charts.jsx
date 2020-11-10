@@ -250,6 +250,7 @@ class Charts extends React.Component {
 
     render() {
         const {
+            beneficiaryFinanceApiFail,
             chartLoader,
             t: formatMessage,
             i18n: {
@@ -391,7 +392,11 @@ class Charts extends React.Component {
                 </Fragment>
             );
         } else {
-            chartView = <CharityNoDataState />;
+            chartView = (
+                <CharityNoDataState
+                    beneficiaryFinanceApiFail={beneficiaryFinanceApiFail}
+                />
+            );
         }
         return (
             <Fragment>
@@ -428,19 +433,21 @@ class Charts extends React.Component {
 
 Charts.defaultProps = {
     beneficiaryFinance: [],
+    beneficiaryFinanceApiFail: false,
     charityDetails: {
         id: '',
     },
     chartLoader: true,
-    dispatch: () => {},
+    dispatch: () => { },
     isAuthenticated: false,
-    t: () => {},
+    t: () => { },
 };
 
 Charts.propTypes = {
     beneficiaryFinance: PropTypes.arrayOf(
         PropTypes.shape({}),
     ),
+    beneficiaryFinanceApiFail: PropTypes.bool,
     charityDetails: PropTypes.shape({
         id: string,
     }),
@@ -453,6 +460,7 @@ Charts.propTypes = {
 function mapStateToProps(state) {
     return {
         beneficiaryFinance: state.charity.beneficiaryFinance,
+        beneficiaryFinanceApiFail: state.charity.beneficiaryFinanceApiFail,
         charityDetails: state.charity.charityDetails,
         chartLoader: state.charity.chartLoader,
         isAuthenticated: state.auth.isAuthenticated,

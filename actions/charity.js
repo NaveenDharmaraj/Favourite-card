@@ -128,7 +128,7 @@ export const getBeneficiaryFromSlug = (slug, token = null) => async (dispatch) =
             return null;
         });
     } else {
-        //redirect('/dashboard');
+        // redirect('/dashboard');
     }
 };
 
@@ -136,6 +136,7 @@ export const getBeneficiaryFinance = (id, isAuthenticated) => (dispatch) => {
     const fsa = {
         payload: {
             beneficiaryFinance: [],
+            beneficiaryFinanceApiFail: false,
         },
         type: actionTypes.GET_BENEFICIARY_FINANCE_DETAILS,
     };
@@ -166,7 +167,15 @@ export const getBeneficiaryFinance = (id, isAuthenticated) => (dispatch) => {
             fsa.payload.beneficiaryFinance = result.data;
             dispatch(fsa);
         }
-    }).catch().finally(() => {
+    }).catch(() => {
+        dispatch({
+            payload: {
+                beneficiaryFinance: [],
+                beneficiaryFinanceApiFail: true,
+            },
+            type: actionTypes.GET_BENEFICIARY_FINANCE_DETAILS,
+        });
+    }).finally(() => {
         dispatch({
             payload: {
                 chartLoader: false,
