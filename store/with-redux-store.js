@@ -93,9 +93,14 @@ export default (App) => {
 
         render() {
             if (typeof window !== 'undefined') {
+                let event = '';
+                if (!_isEmpty(window.location.pathname)) {
+                    event = `ci${window.location.pathname.replace(/\//g, '_')}`;
+                }
                 const tagManagerArgs = {
                     dataLayer: {
                         page: window.location.pathname,
+                        web_event: event,
                     },
                     dataLayerName: 'dataLayer',
                 };
