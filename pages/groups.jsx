@@ -13,7 +13,6 @@ const firstStep = 'new';
 
 const flowSteps = [
     firstStep,
-    'tax-receipt-profile',
     'review',
     'success',
     'error',
@@ -22,15 +21,21 @@ const flowSteps = [
 class Groups extends React.Component {
     static async getInitialProps({ query }) {
         return {
+            campaignId: query.campaign_id,
+            groupCampaignId: query.groupCampaign_id,
+            groupId: query.group_id,
             namespacesRequired: [
                 'authHeader',
                 'group',
                 'noteTo',
                 'accountTopUp',
                 'privacyOptions',
+                'review',
+                'taxReceipt',
+                'success',
+                'error',
             ],
             slug: query.slug,
-            sourceAccountHolderId: query.source_account_holder_id,
             step: (query.slug) ? `${query.slug}/${query.step}` : query.step,
         };
     }
@@ -56,13 +61,11 @@ class Groups extends React.Component {
         }
         return (
             <Layout authRequired stripe>
-                <Container>
-                    <div className="pageWraper">
-                        <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
-                            <Group />
-                        </GiveWrapper>
-                    </div>
-                </Container>
+                <div className="pageWraperGive">
+                    <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
+                        <Group />
+                    </GiveWrapper>
+                </div>
             </Layout>
         );
     }

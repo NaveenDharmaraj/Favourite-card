@@ -62,8 +62,16 @@ export default (App) => {
                 }
             }
             if (isServer) {
+                const windowSize = storage.get('windowSize', 'cookie', appContext.ctx.req.headers.cookie);
                 const result = new MobileDetect(appContext.ctx.req.headers['user-agent']);
-                const isMobile = !!result.mobile();
+                let isMobile = !!result.mobile();
+                if (!_isEmpty(windowSize)) {
+                    if (isMobile && windowSize > 991) {
+                        isMobile = false;
+                    } else if (!isMobile && windowSize < 992) {
+                        isMobile = true;
+                    }
+                }
                 reduxStore.dispatch({
                     payload: {
                         isMobile,

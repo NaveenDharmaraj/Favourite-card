@@ -26,12 +26,14 @@ const profile = (state = {}, action) => {
                     ...state,
                     campaignSubGroupDetails:[...uniqueArray],
                     campaignSubGroupsShowMoreUrl: action.payload.campaignSubGroupDetails.links.next,
+                    subgroupCount: action.payload.campaignSubGroupDetails.meta.recordCount,
                 };
             } else {
                 newState = {
                     ...state,
                     campaignSubGroupDetails: Object.assign([], action.payload.campaignSubGroupDetails.data),
                     campaignSubGroupsShowMoreUrl: action.payload.campaignSubGroupDetails.links.next,
+                    subgroupCount: action.payload.campaignSubGroupDetails.meta.recordCount,
                 };
             }
             break;
@@ -65,6 +67,13 @@ const profile = (state = {}, action) => {
                 campaignImageGallery: Object.assign([], action.payload.campaignImageGallery),
             };
             break;
+        case 'GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN':
+
+            newState = {
+                ...state,
+                campaignRelatedBeneficiariesCount: action.payload.campaignRelatedBeneficiariesCount,
+            };
+            break;
         case 'SAVE_FOLLOW_STATUS_CAMPAIGN':
             newState = {
                 ...state,
@@ -82,6 +91,12 @@ const profile = (state = {}, action) => {
             newState = {
                 ...state,
                 slugApiErrorStats: action.payload.slugApiErrorStats,
+            };
+            break;
+        case 'STORE_SEARCH_KEY_FOR_CAMPAIGN':
+            newState = {
+                ...state,
+                searchData: action.payload.searchData,
             };
             break;
         default:

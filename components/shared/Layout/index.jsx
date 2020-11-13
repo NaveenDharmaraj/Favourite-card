@@ -26,6 +26,7 @@ import { isValidBrowser } from '../../../helpers/utils';
 import registerAppLozic from '../../../helpers/initApplozic';
 import { getParamStoreConfig } from '../../../actions/user';
 import configObj from '../../../helpers/configEnv';
+import storage from '../../../helpers/storage';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -43,8 +44,13 @@ class Layout extends React.Component {
             authRequired,
             currentUser,
             isAuthenticated,
+            isMobile,
             userInfo
         } = this.props;
+        if (window !== 'undefined' && ((isMobile && window.innerWidth > 991) || !isMobile && window.innerWidth < 992)) {
+            storage.set('windowSize', window.innerWidth, 'cookie');
+            location.reload();
+        }
         //re-route the app to /browser if browser version is unsupported
         if (window && isValidBrowser(window.navigator.userAgent)) {
             Router.pushRoute('/browser');
@@ -154,7 +160,7 @@ class Layout extends React.Component {
             keywords,
             url,
             disableMinHeight,
-            isCharityPage,
+            isProfilePage,
             stripe
         } = this.props;
 
@@ -177,7 +183,6 @@ class Layout extends React.Component {
                     <link rel="icon" type="image/x-icon" href="https://d1wjn4fmcgu4dn.cloudfront.net/web/favicon.ico" />
                     <link rel="manifest" href="/static/Manifest.json" />
                     <link
-                        async
                         rel="stylesheet"
                         href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
                     />
@@ -204,7 +209,7 @@ class Layout extends React.Component {
                                 <div className={disableMinHeight ? "" : "chimpLayout"}>
                                     {children}
                                 </div>
-                                <Footer isAuthenticated={isAuthenticated} isCharityPage={isCharityPage} />
+                                <Footer isAuthenticated={isAuthenticated} isProfilePage={isProfilePage} />
                             </MobileHeader>
                             {!_.isEmpty(appErrors) &&
                                 <Container

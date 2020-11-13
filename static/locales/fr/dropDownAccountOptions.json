@@ -8,5 +8,6 @@
     "personalAccountLabel": "Compte personnel",
     "companiesAccountLabel": "Entreprises",
     "groupHeader" : "Groupe",
-    "campaignHeader": "Campagne"
+    "campaignHeader": "Campagne",
+    "searchPlaceholder": "Find an account"
 }

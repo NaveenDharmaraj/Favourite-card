@@ -1,7 +1,20 @@
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
+import {
+    Container,
+    Grid,
+    Responsive,
+} from 'semantic-ui-react';
+import {
+    string, 
+    bool,
+    array, 
+    func,
+    object,
+    PropTypes,
+} from 'prop-types';
 
 import {
     campaignSubGroupSeeMore,
@@ -9,9 +22,11 @@ import {
 } from '../../actions/profile';
 import BreadcrumbDetails from '../shared/BreadCrumbs';
 import ProfilePageHead from '../shared/ProfilePageHead';
+import ProfileTitle from '../shared/ProfileTitle';
 
-import CampaignDetails from './CampaignDetails';
 import ProfileDetails from './ProfileDetails';
+import CampaignDetails from './CampaignDetails';
+import SupportingGroups from './SupportingGroups';
 
 const actionTypes = {
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
@@ -19,40 +34,28 @@ const actionTypes = {
 class CampaignProfileWrapper extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            pathDetails: [
-                'Explore',
-                'Campaigns',
-            ],
-        };
         this.viewMoreFn = this.viewMoreFn.bind(this);
     }
 
     componentDidMount() {
         const {
-            pathDetails,
-        } = this.state;
-        const {
-            campaignDetails: {
-                attributes,
-            },
             deepLink,
         } = this.props;
-        if (attributes.name) {
-            pathDetails.push(attributes.name);
-        }
-        this.setState({
-            pathDetails,
-        });
-        if (_.isEmpty(deepLink)) {
+        if (_isEmpty(deepLink)) {
             const {
-                currentUser,
-                campaignDetails,
+                currentUser: {
+                    id,
+                },
+                campaignDetails: {
+                    attributes: {
+                        groupId: profileId,
+                    }
+                },
                 dispatch,
             } = this.props;
-            let deepLinkApiUrl = `deeplink?profileType=campaignprofile&profileId=${campaignDetails.attributes.groupId}`;
-            if (currentUser && currentUser.id) {
-                deepLinkApiUrl += `sourceId=${currentUser.id}`;
+            let deepLinkApiUrl = `deeplink?profileType=campaignprofile&profileId=${profileId}`;
+            if (!_isEmpty(id)) {
+                deepLinkApiUrl += `sourceId=${id}`;
             }
             generateDeepLink(deepLinkApiUrl, dispatch);
         }
@@ -70,33 +73,70 @@ class CampaignProfileWrapper extends React.Component {
                 },
                 type: actionTypes.SEE_MORE_LOADER,
             });
-            campaignSubGroupSeeMore(campaignSubGroupsShowMoreUrl, dispatch, true);
+            dispatch(campaignSubGroupSeeMore(campaignSubGroupsShowMoreUrl,true));
         }
     }
 
     render() {
         const {
-            pathDetails,
-        } = this.state;
-        const {
             campaignDetails,
             campaignImageGallery,
             campaignSubGroupDetails,
             campaignSubGroupsShowMoreUrl,
-            currentUser,
-            deepLinkUrl,
-            dispatch,
-            disableFollow,
             seeMoreLoaderStatus,
             subGroupListLoader,
             isAuthenticated,
+            subgroupCount,
         } = this.props;
-        let bannerStyle = {
-            minHeight: '390px',
-        };
-        if (campaignDetails.attributes.banner) {
-            bannerStyle.backgroundImage = `url( ${campaignDetails.attributes.banner})`;
+        const {
+            campaignDetails: {
+                attributes: {
+                    about,
+                    avatar,
+                    causes,
+                    city,
+                    liked,
+                    groupId,
+                    name,
+                    province,
+                    banner,
+                    peopleInCampaign,
+                    groupsCount,
+                    slug,
+                    amountRaised,
+                    hasActiveMatch,
+                    activeMatch,
+                    videoPlayerLink,
+                    formattedShort,
+                    formattedImpact,
+                },
+                type,
+                id,
+            },
+            dispatch,
+            groupMatchingHistory: {
+                data: matchHistory,
+            },
+        } = this.props;
+        const bannerStyle = {};
+        let campaignBannerClassName = 'ch_headerImage greenBg greenBgnew ';
+        if (!_isEmpty(banner)) {
+            bannerStyle.backgroundImage = `url( ${banner})`;
+            campaignBannerClassName = 'CampaigBanner ch_headerImage greenBg greenBgnew';
         }
+        let locationDetails = '';
+        if (_isEmpty(city) && !_isEmpty(province)) {
+            locationDetails = province;
+        } else if (!_isEmpty(city) && _isEmpty(province)) {
+            locationDetails = city;
+        } else if (!_isEmpty(city) && !_isEmpty(province)) {
+            locationDetails = `${city}, ${province}`;
+        }
+        const pathDetails = [
+            'Explore',
+            'Campaigns',
+            name,
+        ];
         return (
             <React.Fragment>
                 <div className="top-breadcrumb">
@@ -104,42 +144,188 @@ class CampaignProfileWrapper extends React.Component {
                         pathDetails={pathDetails}
                     />
                 </div>
-                <div className="profile-header-image campaign" style={bannerStyle} />
-                {campaignDetails && (
-                    <ProfilePageHead
-                        pageDetails={campaignDetails}
-                        isAuthenticated={isAuthenticated}
-                    />
-                )}
-                {
-                    campaignDetails && (
-                        <CampaignDetails
-                            campaignDetails={campaignDetails}
-                            isAuthenticated={isAuthenticated}
-                            deepLinkUrl={deepLinkUrl}
-                            dispatch={dispatch}
-                            disableFollow={disableFollow}
-                            userId={(currentUser && currentUser.id) ? currentUser.id: ''}
+                <div className="CampaignWapper">
+                    <Container>
+                        <div
+                            className={campaignBannerClassName}
+                            style={bannerStyle}
                         />
-                    )
-                }
-                {
-                    campaignDetails && (
-                        <ProfileDetails
-                            campaignDetails={campaignDetails}
-                            campaignImageGallery={campaignImageGallery}
-                            campaignSubGroupDetails={campaignSubGroupDetails}
-                            campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
-                            isAuthenticated={isAuthenticated}
-                            seeMoreLoaderStatus={seeMoreLoaderStatus}
-                            subGroupListLoader={subGroupListLoader}
-                            viewMoreFn={this.viewMoreFn}
-                        />
-                    )
-                }
+                        <Grid.Row>
+                            <Grid>
+                                <Grid.Column mobile={16} tablet={10} computer={11}>
+                                    <Grid.Row>
+                                        <Grid>
+                                            {campaignDetails && (
+                                                <ProfileTitle
+                                                    avatar={avatar}
+                                                    causes={causes}
+                                                    // beneficiaryType={beneficiaryType}
+                                                    type={type}
+                                                    location={locationDetails}
+                                                    following={liked}
+                                                    name={name}
+                                                    profileId={groupId}
+                                                >
+                                                    <ProfilePageHead
+                                                        pageDetails={campaignDetails}
+                                                        dispatch={dispatch}
+                                                        hasActiveMatch={hasActiveMatch}
+                                                    />
+                                                </ProfileTitle>
+                                            )}
+                                            <Responsive minWidth={320} maxWidth={767}>
+                                                {
+                                                    campaignDetails && (
+                                                        <CampaignDetails
+                                                            activeMatch={activeMatch}
+                                                            hasActiveMatch={hasActiveMatch}
+                                                            peopleInCampaign={peopleInCampaign}
+                                                            groupsCount={groupsCount}
+                                                            slug={slug}
+                                                            amountRaised={amountRaised}
+                                                            isAuthenticated={isAuthenticated}
+                                                            type={type}
+                                                            matchHistory={matchHistory}
+                                                        />
+                                                    )
+                                                }
+                                            </Responsive>
+                                        </Grid>
+                                        {
+                                            campaignDetails && (
+                                                <React.Fragment>
+                                                    <ProfileDetails
+                                                        about={about}
+                                                        videoPlayerLink={videoPlayerLink}
+                                                        formattedShort={formattedShort}
+                                                        formattedImpact={formattedImpact}
+                                                        campaignImageGallery={campaignImageGallery}
+                                                        isAuthenticated={isAuthenticated}
+                                                    />
+                                                    <SupportingGroups
+                                                        campaignId={id}
+                                                        slug={slug}
+                                                        campaignSubGroupDetails={campaignSubGroupDetails}
+                                                        campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
+                                                        seeMoreLoaderStatus={seeMoreLoaderStatus}
+                                                        subGroupListLoader={subGroupListLoader}
+                                                        viewMoreFn={this.viewMoreFn}
+                                                        matchHistory={matchHistory}
+                                                        subgroupCount={subgroupCount}
+                                                    />
+                                                </React.Fragment>
+                                            )
+                                        }
+                                    </Grid.Row>
+                                </Grid.Column>
+                                <Grid.Column mobile={16} tablet={6} computer={5} >
+                                    <Responsive minWidth={768}>
+                                        {
+                                            campaignDetails && (
+                                                <CampaignDetails
+                                                    activeMatch={activeMatch}
+                                                    hasActiveMatch={hasActiveMatch}
+                                                    peopleInCampaign={peopleInCampaign}
+                                                    groupsCount={groupsCount}
+                                                    slug={slug}
+                                                    amountRaised={amountRaised}
+                                                    isAuthenticated={isAuthenticated}
+                                                    type={type}
+                                                    matchHistory={matchHistory}
+                                                />
+                                            )
+                                        }
+                                    </Responsive>
+                                </Grid.Column>
+                            </Grid>
+                        </Grid.Row>
+                    </Container>
+                </div>
             </React.Fragment>
         );
     }
 }
+
+CampaignProfileWrapper.defaultProps = {
+    campaignDetails: {
+        attributes: {
+            about: '',
+            avatar: '',
+            causes: [],
+            city: '',
+            liked: false,
+            groupId: '',
+            name: '',
+            province: '',
+            banner: '',
+            peopleInCampaign: '',
+            groupsCount: '',
+            slug: '',
+            amountRaised: '',
+            hasActiveMatch: false,
+            activeMatch: false,
+            videoPlayerLink: '',
+            formattedShort: '',
+            formattedImpact: '',
+        },
+        id: '',
+        type: '',
+    },
+    campaignImageGallery: [],
+    campaignSubGroupDetails: [],
+    campaignSubGroupsShowMoreUrl: '',
+    currentUser: PropTypes.shape({
+        id: '',
+    }),
+    deepLink: {},
+    dispatch: () => { },
+    groupMatchingHistory: {
+        data: [],
+    },
+    isAuthenticated: false,
+    seeMoreLoaderStatus: false,
+    subGroupListLoader: false,
+};
+
+CampaignProfileWrapper.PropTypes = {
+    campaignDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            about: string,
+            avatar: string,
+            causes: object,
+            city: string,
+            liked: false,
+            groupId: string,
+            name: string,
+            province: string,
+            banner: string,
+            peopleInCampaign: string,
+            groupsCount: string,
+            slug: string,
+            amountRaised: string,
+            hasActiveMatch: false,
+            activeMatch: false,
+            videoPlayerLink: string,
+            formattedShort: string,
+            formattedImpact: string,
+        }),
+        type: string,
+        id: string,
+    }),
+    campaignImageGallery: array,
+    campaignSubGroupDetails: array,
+    campaignSubGroupsShowMoreUrl: string,
+    currentUser: PropTypes.shape({
+        id: string,
+    }),
+    deepLink: object,
+    dispatch: func,
+    groupMatchingHistory: PropTypes.shape({
+        data: array,
+    }),
+    isAuthenticated: bool,
+    seeMoreLoaderStatus: bool,
+    subGroupListLoader: bool,
+};
 
 export default CampaignProfileWrapper;

@@ -1,5 +1,6 @@
 {
     "give": "Give",
+    "charityProfileChartApiFail": "It looks like we’re having difficulty displaying this information right now.",
     "charityInformation": "Charity information",
     "claimCharityInfo": "Is this your charity? You can claim your free profile page on our platfrom.",
     "claimCharityButtonText": "Claim charity",
