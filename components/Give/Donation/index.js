@@ -562,7 +562,7 @@ class Donation extends React.Component {
                     value: fund.id,
                 };
                 giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
-                giveData.taxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage), defaultTaxReceiptProfile.id);
+                giveData.taxReceipt = !_isEmpty(defaultTaxReceiptProfile) && getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage), defaultTaxReceiptProfile.id);
                 if (!_.isEmpty(this.props.donationMatchData)) {
                     const [
                         defaultMatch,
