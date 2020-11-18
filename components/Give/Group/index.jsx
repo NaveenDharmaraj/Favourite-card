@@ -921,7 +921,7 @@ class Group extends React.Component {
             matchingPolicyDetails = giveTo &&
                 checkMatchPolicy(giveTo, giftType.value, formatMessage, matchingPolicyDetails.matchingPolicyExpiry);
         } else {
-            giveData.matchingPolicyDetails = {
+            matchingPolicyDetails = {
                 hasMatchingPolicy: false,
                 isValidMatchPolicy: false,
                 matchPolicyTitle: '',
