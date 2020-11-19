@@ -4,7 +4,8 @@ import _isEmpty from 'lodash/isEmpty';
 const getSelectedYear = (beneficiaryFinance) => {
     let selectedYear = null;
     beneficiaryFinance.some((year) => {
-        if (year.expenses.find((o) => o.name === 'total_expense').value > 0) {
+        if ((year.expenses.find((o) => o.name === 'total_expense').value > 0)
+        || (year.revenues.find((o) => o.name === 'revenue_total').value > 0)) {
             selectedYear = year.returns_year;
             return true;
         }
