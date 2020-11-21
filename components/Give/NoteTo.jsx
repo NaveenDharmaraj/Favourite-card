@@ -31,11 +31,12 @@ const labelTextIds = {
     campaigns: 'noteToSelfLabelReview',
     companies: 'noteToCompanyLabel',
     groups: 'noteToGroupLabel',
-    user: 'noteToSelfLabelReview',
+    user: 'noteToSelfLabel',
 };
 
 const NoteTo = (props) => {
     const {
+        allocationType,
         formatMessage,
         giveFrom,
         handleInputOnBlur,
@@ -51,28 +52,28 @@ const NoteTo = (props) => {
     const labelText = labelTextIds[giveFromType];
     return (
         <Fragment>
-            <Form.Field>
-                <Header as="h3" className="f-weight-n mt-1">
-                    {formatMessage('noteTo:includeMessageLabel')}
-                </Header>
-            </Form.Field>
-            <Form.Field>
+            <Form.Field className="give_flow_field">
                 <label htmlFor="noteToCharity">
-                    {formatMessage('noteTo:fortheCharityLabel')}
+                    {formatMessage(`noteTo:include${allocationType}MessageLabel`)}
                 </label>
-                <Popup
-                    content={formatMessage('noteTo:allocationsForthCharityPopup')}
-                    position="top center"
-                    trigger={(
-                        <Icon
-                            color="blue"
-                            name="question circle"
-                            size="large"
-                        />
-                    )}
-                />
+                <span className="givingInfoText">
+                    {formatMessage(`noteTo:forthe${allocationType}Label`)}
+                    <Popup
+                        content={formatMessage('noteTo:allocationsForthCharityPopup')}
+                        position="top center"
+                        trigger={(
+                            <Icon
+                                color="blue"
+                                name="question circle"
+                                size="large"
+                                className="popupMargin-6"
+                            />
+                        )}
+                    />
+                </span>
+
                 <Form.Field
-                    className="with-info"
+                    className="with-info noteToSelf"
                     control={TextAreaWithInfo}
                     error={!validity.isValidNoteToCharity}
                     name="noteToCharity"
@@ -92,42 +93,48 @@ const NoteTo = (props) => {
                 condition={!validity.isValidNoteToCharityText}
                 errorMessage={formatMessage('giveCommon:errorMessages.invalidNoteTextError')}
             />
-            <Form.Field>
-                <label htmlFor="noteToSelf" id="noteToSelfLabel">
-                    {formatMessage(`noteTo:${labelText}`)}
-                </label>
-                <Popup
-                    content={formatMessage('noteTo:givingNoteToSelfPopup')}
-                    position="top center"
-                    trigger={(
-                        <Icon
-                            color="blue"
-                            name="question circle"
-                            size="large"
+            {/* PM-585 Remove note to self for company and campaigns */}
+            {(giveFromType === 'groups' || giveFromType === 'user') && (
+                <Fragment>
+                    <Form.Field className="give_flow_field">
+                        <label htmlFor="noteToSelf" id="noteToSelfLabel">
+                            {formatMessage(`noteTo:${labelText}`)}
+                        </label>
+                        <Popup
+                            content={formatMessage(`noteTo:givingNoteToSelfPopup${giveFromType}`)}
+                            position="top center"
+                            trigger={(
+                                <Icon
+                                    color="blue"
+                                    name="question circle"
+                                    size="large"
+                                />
+                            )}
                         />
-                    )}
-                />
-                <Form.TextArea
-                    className="with-info"
-                    control={TextAreaWithInfo}
-                    error={!validity.isValidNoteToSelf}
-                    name="noteToSelf"
-                    id="noteToSelf"
-                    info={infoNoteToSelf}
-                    onChange={(e) => { handleInputChange(e, props); }}
-                    onBlur={handleInputOnBlur}
-                    placeholder={formatMessage('noteTo:noteToSelfPlaceHolder')}
-                    value={noteToSelf}
-                />
-            </Form.Field>
-            <FormValidationErrorMessage
-                condition={!validity.isNoteToSelfInLimit}
-                errorMessage={formatMessage('giveCommon:errorMessages.invalidLengthError')}
-            />
-            <FormValidationErrorMessage
-                condition={!validity.isValidNoteSelfText}
-                errorMessage={formatMessage('giveCommon:errorMessages.invalidNoteTextError')}
-            />
+                        <Form.TextArea
+                            className="with-info noteToSelf"
+                            control={TextAreaWithInfo}
+                            error={!validity.isValidNoteToSelf}
+                            name="noteToSelf"
+                            id="noteToSelf"
+                            info={infoNoteToSelf}
+                            onChange={(e) => { handleInputChange(e, props); }}
+                            onBlur={handleInputOnBlur}
+                            placeholder={formatMessage(`noteTo:noteToSelfPlaceHolder${giveFromType}`)}
+                            value={noteToSelf}
+                        />
+                    </Form.Field>
+                    <FormValidationErrorMessage
+                        condition={!validity.isNoteToSelfInLimit}
+                        errorMessage={formatMessage('giveCommon:errorMessages.invalidLengthError')}
+                    />
+                    <FormValidationErrorMessage
+                        condition={!validity.isValidNoteSelfText}
+                        errorMessage={formatMessage('giveCommon:errorMessages.invalidNoteTextError')}
+                    />
+                </Fragment>
+            )}
+
         </Fragment>
     );
 };

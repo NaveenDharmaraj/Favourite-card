@@ -110,7 +110,7 @@ class LandingPageTaxReceipt extends React.Component {
                                 <Grid.Row>
                                     <Grid.Column mobile={16} tablet={12} computer={13}>
                                         <p className="font-s-16 bold mb-1-2">Tax receipt recipients</p>
-                                        <p className="font-s-13">Manage the legal names and addresses that appear on tax receipts. You can have multiple recepients on one account (for example, a spouse).</p>
+                                        <p className="font-s-13">Manage the legal names and addresses that appear on tax receipts. You can have multiple recipients on one account (for example, a spouse).</p>
                                     </Grid.Column>
                                     <Grid.Column mobile={16} tablet={4} computer={3} className="text-right">
                                         <Button className="success-btn-rounded-def" onClick={() => { this.onEdit(); }}>+ Add new recipient</Button>

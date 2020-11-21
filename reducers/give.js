@@ -99,6 +99,28 @@ const give = (state = {}, action) => {
                 creditCardApiCall: action.payload.creditCardApiCall,
             };
             break;
+        case 'SET_COMPANY_PAYMENT_ISTRUMENTS':
+            newState = {
+                ...state,
+                companyData: {
+                    ...state.companyData,
+                    companyPaymentInstrumentsData: action.payload.companyPaymentInstrumentsData,
+                },
+            };
+            break;
+        case 'GET_ALL_COMPANY_TAX_RECEIPT_PROFILES':
+            newState = {
+                ...state,
+                companyData: {
+                    ...state.companyData,
+                    companyDefaultTaxReceiptProfile: {
+                        ...state.companyData.companyDefaultTaxReceiptProfile,
+                        ...action.payload.companyDefaultTaxReceiptProfile,
+                    },
+                    taxReceiptProfiles: action.payload.taxReceiptProfiles,
+                },
+            };
+            break;
         case 'GET_MATCHING_DETAILS_FOR_GROUPS':
             newState = {
                 ...state,

@@ -66,60 +66,63 @@ class DedicateGift extends Component {
         } = this.props;
         return (
             <Fragment>
-                <Header as="h3" className="f-weight-n">
-                    Dedicate this gift (optional)
-                </Header>
-                <Accordion>
-                    <Accordion.Title
-                        as={Checkbox}
-                        checked={activeIndex === 0}
-                        label="In honour of"
-                        name="inHonorOf"
-                        className="cp_chkbx round font-w-n mb-1"
-                        value={dedicateValue}
-                        index={0}
-                        onClick={(e, data) => { this.handleOnInputChangeWrapper(e, data); }}
-                    />
-                    <br />
-                    <Accordion.Title
-                        as={Checkbox}
-                        checked={activeIndex === 1}
-                        label="In memory of"
-                        name="inMemoryOf"
-                        className="cp_chkbx round font-w-n mb-1"
-                        value={dedicateValue}
-                        index={1}
-                        onClick={(e, data) => { this.handleOnInputChangeWrapper(e, data); }}
-                    />
-                    <Accordion.Content
-                        as={Input}
-                        className="inputInline"
-                        active={activeIndex === 0 || activeIndex === 1}
-                        name={currentName}
-                        onChange={(e, {
-                            name, newIndex, value,
-                        }) => {
-                            handleInputChange(e, {
-                                name,
-                                newIndex,
-                                value,
-                            });
-                        }}
-                        onBlur={(e) => {
-                            const name = currentName;
-                            handleInputOnBlur(e, {
-                                name,
-                                dedicateValue,
-                            });
-                        }}
-                        value={dedicateValue}
-                    />
+                <div className="give_flow_field dedicate-flow">
+                    <label>Dedicate this gift (optional)</label>
+                    <span className="givingInfoText">Only you will see this in your Account Details.</span>
+                    <Accordion>
+                        <Accordion.Title
+                            data-test="Give_DedicateGift_accordian_inhonor"
+                            as={Checkbox}
+                            checked={activeIndex === 0}
+                            label="In honour of"
+                            name="inHonorOf"
+                            className="cp_chkbx round font-w-n mb-1"
+                            value={dedicateValue}
+                            index={0}
+                            onClick={(e, data) => { this.handleOnInputChangeWrapper(e, data); }}
+                        />
+                        <Accordion.Title
+                            as={Checkbox}
+                            checked={activeIndex === 1}
+                            label="In memory of"
+                            name="inMemoryOf"
+                            className="cp_chkbx round font-w-n"
+                            value={dedicateValue}
+                            index={1}
+                            onClick={(e, data) => { this.handleOnInputChangeWrapper(e, data); }}
+                        />
+                        <Accordion.Content
+                            as={Input}
+                            className="inputInline field"
+                            error={validity && !validity.isDedicateGiftEmpty}
+                            active={activeIndex === 0 || activeIndex === 1}
+                            name={currentName}
+                            placeholder="Who are you dedicating this gift to? "
+                            onChange={(e, {
+                                name, newIndex, value,
+                            }) => {
+                                handleInputChange(e, {
+                                    name,
+                                    newIndex,
+                                    value,
+                                });
+                            }}
+                            onBlur={(e) => {
+                                const name = currentName;
+                                handleInputOnBlur(e, {
+                                    name,
+                                    dedicateValue,
+                                });
+                            }}
+                            value={dedicateValue}
+                        />
 
-                </Accordion>
-                <FormValidationErrorMessage
-                    condition={validity && !validity.isDedicateGiftEmpty}
-                    errorMessage="Field should not be empty"
-                />
+                    </Accordion>
+                    <FormValidationErrorMessage
+                        condition={validity && !validity.isDedicateGiftEmpty}
+                        errorMessage="Add a note to remember who you've dedicated this gift to."
+                    />
+                </div>
             </Fragment>
         );
     }
@@ -139,3 +142,4 @@ DedicateGift.defaultProps = {
 
 
 export default DedicateGift;
+export { DedicateGift };

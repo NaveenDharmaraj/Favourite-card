@@ -36,10 +36,13 @@
     "messageToRecipientsLabel": "Message au(x) destinataire(s)",
     "privacyShareOrganizersCampaignLabel": "À partager avec les organisateurs de la Campagne",
     "privacyShareOrganizersGroupLabel": "À partager avec les organisateurs du Groupe de dons",
+    "privacyShareOrganizersGroupCampaignLabel": "Info to share with Giving Group and Campaign admins",
     "privacyShareGivingCampaignLabel" :	"À partager avec la Campagne de dons",
     "privacyShareGivingGroupLabel":	"À partager avec le Groupe de dons",
     "allocationGiveMoney": "Envoyez votre don",
     "allocationRecurringGiveMoney": "Établir un don mensuel",
+    "notApplicable": "N/A",
+    "reviewGiftAmount": "Gift amount:",
     "givingGroups": {
         "privacyShareGiftAndName": "Partager mon nom et le montant du don",
         "privacyShareNameHideGift": "Partager mon nom mais cacher le montant du don",
