@@ -131,6 +131,7 @@ class SecondStep extends React.Component {
                                 && <Button type='submit' primary onClick={handleSubmit}>Continue</Button>
                                 } */}
                                 <Button
+                                    id="signUpCreateEmail"
                                     type='submit'
                                     primary
                                     tabIndex="0"
@@ -142,6 +143,7 @@ class SecondStep extends React.Component {
                                 />
                                 <Button
                                     className="blue-bordr-btn-round-def leftBtn"
+                                    id="backSignUpCreateEmail"
                                     content="Back"
                                     onClick={handleBack}
                                 />

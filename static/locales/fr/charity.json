@@ -1,5 +1,6 @@
 {
-    "coverFeeLabel": "Less a third-party processing fee of {{amount}}.",
+    "coverFeeLabel": "Less a third-party processing fee.",
+    "coverFeeLabelWithAmount": "Less a third-party processing fee of {{amount}}.",
     "coverFeeModalHeader": "Why is there a third-party processing fee?",
     "coverFeeModalContentFirst" : "Banks and credit card companies charge charities, including Charitable Impact, a fee to process online donations. We don't set or benefit from this fee, but we do recover it. When you give to a charity from your Impact Account, the charity receives your gift minus this fee.",
     "coverFeeModalContentSecond" : "However, Charitable Impact has access to lower bank and credit card fees than most other charity websites. This means more money can get to charity when you give from your Impact Account.",
@@ -15,6 +16,8 @@
     "feeAmountCoveragePopup": "Les banques et sociétés de cartes de crédit exigent des frais de traitement pour les transactions en ligne, y compris les dons en ligne. CHARITABLE IMPACT ne profite pas de ces frais, mais nous les transmettons aux donataires. Vous avez l’option de couvrir ces frais pour que le destinataire reçoive 100% de votre contribution.",
     "feeAmountCoverageNote": "Couvrez {{feeAmount}} en frais de traitement par un tiers pour que l’organisme de bienfaisance reçoive le don de {{totalAmount}} en entier.",
     "giftTypeSingle": "Ceci est un don unique",
-    "learnMore" : "Learn more."
+    "learnMore" : "Learn more.",
+    "donationRecurringDateNote": "Your first gift will be scheduled for {{recurringDate}}."
+
 }
 

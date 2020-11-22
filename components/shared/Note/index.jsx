@@ -67,31 +67,43 @@ const Note = ({
     enableCharacterCount,
     fieldName,
     formatMessage,
+    fromP2P,
     handleOnInputBlur,
     handleOnInputChange,
     labelText,
     placeholderText,
     popupText,
     text,
+    hideLabel,
 }) => (
     <Fragment>
-        <Form.Field>
-            <label htmlFor={fieldName}>
-                {labelText}
-            </label>
-            <Popup
-                content={popupText}
-                position="top center"
-                trigger={
-                    <Icon
-                        color="blue"
-                        name="question circle"
-                        size="large"
+        <Form.Field className="give_field">
+            {!hideLabel
+            && (
+                <Fragment>
+                    <label htmlFor={fieldName}>
+                        {labelText}
+                    </label>
+
+                    <Popup
+                        content={popupText}
+                        position="top center"
+                        trigger={
+                            (
+                                <Icon
+                                    color="blue"
+                                    name="question circle"
+                                    size="large"
+                                />
+                            )
+                        }
                     />
-                }
-            />
+                    {fromP2P && <span className="givingInfoText">Friends will receive this message with your gift.</span>}
+                </Fragment>
+            )
+            }
             <Form.Field
-                className="with-info"
+                className="with-info noteToSelf"
                 control={TextAreaWithInfo}
                 error={!isValidText(enableCharacterCount, text)}
                 name={fieldName}
@@ -122,12 +134,14 @@ const Note = ({
 
 Note.defaultProps = {
     enableCharacterCount: true,
+    fromP2P: false,
     text: null,
 };
 
 Note.propTypes = {
     enableCharacterCount: bool,
     fieldName: string.isRequired,
+    fromP2P: bool,
     handleOnInputBlur: func.isRequired,
     handleOnInputChange: func.isRequired,
     labelText: string.isRequired,

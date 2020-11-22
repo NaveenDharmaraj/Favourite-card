@@ -20,7 +20,7 @@ const Error = (props) => {
     }, []);
     const formatMessage = props.t;
     return (
-        <div>
+        <div className="error_page">
             <Grid
                 className="u-margin-bottom-lg u-margin-top-lg"
                 container

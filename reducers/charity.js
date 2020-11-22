@@ -48,6 +48,7 @@ const charity = (state = {}, action) => {
             newState = {
                 ...state,
                 beneficiaryFinance: action.payload.beneficiaryFinance,
+                beneficiaryFinanceApiFail: action.payload.beneficiaryFinanceApiFail,
             };
             break;
         case 'CHARITY_CHART_LOADER':

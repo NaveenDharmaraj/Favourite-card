@@ -172,7 +172,7 @@ class MyProfile extends React.Component {
                 <BasicProfile userData={userData} avatar={userAvatar} />
                 <div className="pb-3">
                     <Container>
-                        <div className="charityTab n-border">
+                        <div className="charityTab n-border user-profile-settings">
                             <Tab
                                 activeIndex={activeTabIndex}
                                 menu={{

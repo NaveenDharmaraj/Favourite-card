@@ -646,7 +646,7 @@ class MyCreditCards extends React.Component {
                 <List celled verticalAlign="middle">
                     {cardList}
                 </List>
-                <div className="db-pagination right-align pt-2">
+                <div className="db-pagination  pt-2">
                     {
                         !_.isEmpty(userCreditCardList) && userCreditCardList.pageCount > 1 && (
                             <Pagination

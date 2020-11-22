@@ -54,7 +54,7 @@ class Charts extends React.Component {
             charitable_activities_programs: formatMessage('charityProfile:charitableActivities'),
             expenditure_charity_activites: formatMessage('charityProfile:expenditures'),
             fundraising: formatMessage('charityProfile:fundraising'),
-            gifts_to_charities_donees: formatMessage('charityProfile:giftsToDonee'),
+            gifts_total: formatMessage('charityProfile:giftsToDonee'),
             management_admin: formatMessage('charityProfile:management'),
             other: formatMessage('charityProfile:other'),
             poilitical_activities: formatMessage('charityProfile:politicalActivity'),
@@ -127,6 +127,7 @@ class Charts extends React.Component {
                 thirdData,
                 fourthData,
                 fifthData,
+                sixthData,
             },
         } = this.state;
         const data = {
@@ -165,6 +166,11 @@ class Charts extends React.Component {
                 {
                     backgroundColor: this.colorArr[4].concat('70'),
                     data: fifthData,
+                    fill: false,
+                },
+                {
+                    backgroundColor: this.colorArr[5].concat('70'),
+                    data: sixthData,
                     fill: false,
                 },
             ],
@@ -206,6 +212,7 @@ class Charts extends React.Component {
             chartInstance.getDatasetMeta(3).data[chartIndex]._model.backgroundColor = this.colorArr[2];
             chartInstance.getDatasetMeta(4).data[chartIndex]._model.backgroundColor = this.colorArr[3];
             chartInstance.getDatasetMeta(5).data[chartIndex]._model.backgroundColor = this.colorArr[4];
+            chartInstance.getDatasetMeta(6).data[chartIndex]._model.backgroundColor = this.colorArr[5];
         }
     }
 
@@ -243,6 +250,7 @@ class Charts extends React.Component {
 
     render() {
         const {
+            beneficiaryFinanceApiFail,
             chartLoader,
             t: formatMessage,
             i18n: {
@@ -384,7 +392,11 @@ class Charts extends React.Component {
                 </Fragment>
             );
         } else {
-            chartView = <CharityNoDataState />;
+            chartView = (
+                <CharityNoDataState
+                    beneficiaryFinanceApiFail={beneficiaryFinanceApiFail}
+                />
+            );
         }
         return (
             <Fragment>
@@ -421,19 +433,21 @@ class Charts extends React.Component {
 
 Charts.defaultProps = {
     beneficiaryFinance: [],
+    beneficiaryFinanceApiFail: false,
     charityDetails: {
         id: '',
     },
     chartLoader: true,
-    dispatch: () => {},
+    dispatch: () => { },
     isAuthenticated: false,
-    t: () => {},
+    t: () => { },
 };
 
 Charts.propTypes = {
     beneficiaryFinance: PropTypes.arrayOf(
         PropTypes.shape({}),
     ),
+    beneficiaryFinanceApiFail: PropTypes.bool,
     charityDetails: PropTypes.shape({
         id: string,
     }),
@@ -446,6 +460,7 @@ Charts.propTypes = {
 function mapStateToProps(state) {
     return {
         beneficiaryFinance: state.charity.beneficiaryFinance,
+        beneficiaryFinanceApiFail: state.charity.beneficiaryFinanceApiFail,
         charityDetails: state.charity.charityDetails,
         chartLoader: state.charity.chartLoader,
         isAuthenticated: state.auth.isAuthenticated,
