@@ -40,16 +40,16 @@ const columnComponent = (column, placeholderType) => {
             );
         } else if (placeholderType === 'singleCard') {
             columnComponents.push(
-                <Grid.Column width={14}>
-                    <div className="profile-social-wraper groupSupportsWraper">
-                        <Placeholder className="bgTransparent" data-test="Shared_Placeholder_singlecard">
+                <div className="charityInfowrap fullwidth">
+                    <Segment raised className="no-box-shadow">
+                        <Placeholder data-test="Shared_Placeholder_singlecard">
                             <Placeholder.Header image>
                                 <Placeholder.Line />
                                 <Placeholder.Line />
                             </Placeholder.Header>
                         </Placeholder>
-                    </div>
-                </Grid.Column>,
+                    </Segment>
+                </div>,
             );
         } else if (placeholderType === 'multiLine') {
             columnComponents.push(
@@ -64,9 +64,42 @@ const columnComponent = (column, placeholderType) => {
                     </div>
                 </Grid.Column>,
             );
-        }
-
-        else {
+        } else if (placeholderType === 'usersList') {
+            columnComponents.push(
+                <div className="lodingGroupPrfile">
+                    <ul>
+                        <li>
+                            <Placeholder className="lodingImg">
+                                <Placeholder.Image />
+                            </Placeholder>
+                        </li>
+                        <li>
+                            <Placeholder className="loding-text">
+                                <Placeholder.Line />
+                            </Placeholder>
+                        </li>
+                    </ul>
+                </div>,
+            );
+        } else if (placeholderType === 'activityList') {
+            columnComponents.push(
+                <div className="lodingActivity">
+                    <ul>
+                        <li>
+                            <Placeholder className="lodingImg">
+                                <Placeholder.Image />
+                            </Placeholder>
+                        </li>
+                        <li>
+                            <Placeholder className="loding-text">
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                            </Placeholder>
+                        </li>
+                    </ul>
+                </div>,
+            );
+        } else {
             columnComponents.push(
                 <Grid.Column>
                     <Segment raised>
@@ -113,9 +146,7 @@ const PlaceholderGrid = (props) => {
             );
         } else if (placeholderType === 'singleCard') {
             placeHolderComponent.push(
-                <Grid.Row>
-                    {columnComponent(column, placeholderType)}
-                </Grid.Row>,
+                columnComponent(column, placeholderType)
             );
         } else if (placeholderType === 'multiLine') {
             placeHolderComponent.push(
@@ -123,9 +154,19 @@ const PlaceholderGrid = (props) => {
                     {columnComponent(column, placeholderType)}
                 </Grid.Row>,
             );
-        }
-
-        else {
+        } else if (placeholderType === 'usersList') {
+            placeHolderComponent.push(
+                <Grid.Row>
+                    {columnComponent(column, placeholderType)}
+                </Grid.Row>,
+            );
+        } else if (placeholderType === 'activityList') {
+            placeHolderComponent.push(
+                <Grid.Row>
+                    {columnComponent(column, placeholderType)}
+                </Grid.Row>,
+            );
+        } else {
             placeHolderComponent.push(
                 <Grid.Row>
                     {columnComponent(column)}

@@ -1,3 +1,4 @@
+
 /* eslint-disable react/prop-types */
 import React, {
     Fragment,
@@ -5,13 +6,15 @@ import React, {
 import {
     connect,
 } from 'react-redux';
-import _ from 'lodash';
+import _cloneDeep from 'lodash/cloneDeep';
+import _isEmpty from 'lodash/isEmpty';
+import _find from 'lodash/find';
 import {
     Form,
     Icon,
-    Input,
+    Placeholder,
     Popup,
-    Select,
+    Dropdown,
 } from 'semantic-ui-react';
 
 import {
@@ -21,6 +24,22 @@ import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage'
 import { withTranslation } from '../../../i18n';
 
 class DropDownAccountOptions extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            updatePlaceHolder: false,
+        };
+        this.handleDropdown = this.handleDropdown.bind(this);
+    }
+
+    handleDropdown() {
+        const {
+            updatePlaceHolder,
+        } = this.state;
+        this.setState({
+            updatePlaceHolder: !updatePlaceHolder,
+        });
+    }
 
     renderDropDownFeild() {
         const {
@@ -29,8 +48,8 @@ class DropDownAccountOptions extends React.Component {
             fund,
             giveTo,
             giveFromUrl,
-            userCampaigns,
-            userGroups,
+            userAdminCampaigns,
+            userAdminGroups,
             userAccountsFetched,
             selectedValue,
             validity,
@@ -38,6 +57,7 @@ class DropDownAccountOptions extends React.Component {
             parentOnBlurChange,
             name,
             type,
+            reviewBtnFlag,
         } = this.props;
         let dropDownData = null;
         const formatMessage = this.props.t;
@@ -54,9 +74,18 @@ class DropDownAccountOptions extends React.Component {
                 lastName,
             },
         } = currentUser;
+        const {
+            updatePlaceHolder,
+        } = this.state;
+        const userGroups = _cloneDeep(userAdminGroups);
+        const userCampaigns = _cloneDeep(userAdminCampaigns);
         const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
         const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
-        if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
+        const newPlaceholder = updatePlaceHolder ? formatMessage('searchPlaceholder') : giveFromPlaceHolder;
+        const errorMessage = (type === 'donations') ? formatMessage('giveCommon:blankError') : formatMessage('giveCommon:allocationBlankError');
+        let newPlaceholderValue = '';
+        let dropdownText = '';
+        if (!_isEmpty(fund)) {
             if (giveTo && giveTo.value && giveFromUrl) {
                 dropDownData = populateAccountOptions({
                     avatar,
@@ -87,38 +116,56 @@ class DropDownAccountOptions extends React.Component {
                 });
             }
         }
-        dropDownData = !_.isEmpty(dropDownData) ? dropDownData : null;
-        let fieldData = (
-            <Form.Field
-                className="field-loader"
-                control={Input}
-                disabled
-                id={name}
-                icon={<Icon name="spinner" loading />}
-                iconPosition="left"
-                name={name}
-                placeholder={formatMessage('preloadedAccountPlaceHolder')}
-            />
-        );
-        if (!_.isEmpty(dropDownData)) {
+        dropDownData = !_isEmpty(dropDownData) ? dropDownData : null;
+        let fieldData = null;
+        if (!userAccountsFetched) {
             fieldData = (
-                <Form.Field
-                    control={Select}
-                    error={!validity}
-                    id={name}
-                    name={name}
-                    onBlur={parentOnBlurChange}
-                    onChange={parentInputChange}
-                    options={dropDownData}
-                    placeholder={giveFromPlaceHolder}
-                    value={selectedValue}
-                />
+                <Placeholder>
+                    <Placeholder.Header>
+                        <Placeholder.Line />
+                        <Placeholder.Line />
+                    </Placeholder.Header>
+                </Placeholder>
+            );
+        } else {
+            newPlaceholderValue = selectedValue ? selectedValue.toString() : '';
+            if (!_isEmpty(dropDownData) && !_isEmpty(newPlaceholderValue)) {
+                _find(dropDownData, (item) => {
+                    if (item.value === selectedValue) {
+                        dropdownText = item.text;
+                        return dropdownText;
+                    }
+                    return '';
+                });
+            }
+            fieldData = (
+                <div className="dropdownSearch dropdownWithArrowParentnotbg medium giveFromAccount">
+                    <Dropdown
+                        className="dropdownsearchField grouped medium"
+                        error={!validity || reviewBtnFlag}
+                        onChange={parentInputChange}
+                        onBlur={parentOnBlurChange}
+                        onOpen={this.handleDropdown}
+                        onClose={this.handleDropdown}
+                        placeholder={giveFromPlaceHolder}
+                        fluid
+                        selection
+                        options={dropDownData}
+                        id={name}
+                        name={name}
+                        value={selectedValue}
+                        selectOnBlur={false}
+                        search
+                        selectOnNavigation={false}
+                        text={_isEmpty(newPlaceholderValue) ? newPlaceholder : dropdownText}
+                    />
+                </div>
             );
         }
-        if (!userAccountsFetched || !_.isEmpty(dropDownData)) {
-            return (
-                <Fragment>
-                    <Form.Field>
+        return (
+            <Fragment>
+                <Form.Field>
+                    <div className="paymentMethodDropdown">
                         <label htmlFor="giveFrom">
                             {giveFromHeader}
                         </label>
@@ -133,16 +180,21 @@ class DropDownAccountOptions extends React.Component {
                                 />
                             )}
                         />
+                        {((type !== 'donations') && (
+                            <p className="givingInfoText">
+                                You can give from your personal account or those you administer.
+                            </p>
+                        ))}
+
                         {fieldData}
-                    </Form.Field>
-                    <FormValidationErrorMessage
-                        condition={!validity}
-                        errorMessage={formatMessage('giveCommon:blankError')}
-                    />
-                </Fragment>
-            );
-        }
-        return null;
+                    </div>
+                </Form.Field>
+                <FormValidationErrorMessage
+                    condition={!validity}
+                    errorMessage={errorMessage}
+                />
+            </Fragment>
+        );
     }
 
     render() {
@@ -168,8 +220,8 @@ const mapStateToProps = (state, props) => {
         currentUser: state.user.info,
         fund: state.user.fund,
         userAccountsFetched: state.user.userAccountsFetched,
-        userCampaigns: state.user.userCampaigns,
-        userGroups: state.user.userGroups,
+        userAdminCampaigns: state.user.userCampaigns,
+        userAdminGroups: state.user.userGroups,
     };
 };
 

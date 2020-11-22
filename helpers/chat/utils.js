@@ -1,5 +1,4 @@
 import getConfig from 'next/config';
-
 import _forEach from 'lodash/forEach';
 import _find from 'lodash/find';
 import _isEmpty from 'lodash/isEmpty';
@@ -77,13 +76,13 @@ const getBase64 = (file, cb) => {
     reader.onerror = function (error) {
         // console.log('Error: ', error);
     };
-}
+};
 
 
 const groupMessagesByDate = (msgs, msgsByDate = {}) => {
     msgs = msgs.sort((a, b) => (a.createdAtTime - b.createdAtTime));
 
-    _forEach(msgs, function (msg) {
+    _forEach(msgs, (msg) => {
         const dateStr = getDateString(msg.createdAtTime);
 
         if (!msgsByDate[dateStr]) {
@@ -92,7 +91,7 @@ const groupMessagesByDate = (msgs, msgsByDate = {}) => {
         msgsByDate[dateStr].push(msg);
     });
     return msgsByDate;
-}
+};
 
 const debounceFunction = ({
     dispatch,
@@ -122,7 +121,7 @@ const conversationHead = (msg, groupFeeds, muteUserList, userDetails, userInfo) 
         const info = !_isEmpty(groupFeeds) ? groupFeeds[msg.groupId] : {};
         const groupHead = {
             image: (info.imageUrl ? info.imageUrl : placeholderGroup),
-            imagePresent: (info.imageUrl && info.imageUrl !== '' && info.imageUrl != null && info.imageUrl !== CHAT_GROUP_DEFAULT_AVATAR ? true : false),
+            imagePresent: (!!(info.imageUrl && info.imageUrl !== '' && info.imageUrl != null && info.imageUrl !== CHAT_GROUP_DEFAULT_AVATAR)),
             info,
             isMuted: (info.notificationAfterTime && info.notificationAfterTime > new Date().getTime()),
             title: info.name,
@@ -135,7 +134,7 @@ const conversationHead = (msg, groupFeeds, muteUserList, userDetails, userInfo) 
         const muteInfo = !_isEmpty(muteUserList) ? muteUserList[msg.contactIds] : {};
         const convHead = info ? {
             image: (info.imageLink ? info.imageLink : placeholderUser),
-            imagePresent: (info.imageLink && info.imageLink !== '' && info.imageLink != null ? true : false),
+            imagePresent: (!!(info.imageLink && info.imageLink !== '' && info.imageLink != null)),
             info,
             isMuted: (muteInfo && muteInfo.notificationAfterTime && muteInfo.notificationAfterTime > new Date().getTime()),
             title: info.displayName,
@@ -202,10 +201,10 @@ const defaultSelectedConversation = (msgId, newMessgaeArr, selectedConversation,
     // userdetails is thr group details is thr but no message then select the msgId from url and the compose as true.
     if (_isEmpty(selectedConversation) && Number(msgId)) {
         if (userDetails[msgId]) {
-            userDetails[msgId].contactIds = msgId
+            userDetails[msgId].contactIds = msgId;
             selectedConversation = userDetails[msgId];
         } else if (groupFeeds[msgId]) {
-            groupFeeds[msgId].contactIds = msgId
+            groupFeeds[msgId].contactIds = msgId;
             selectedConversation = groupFeeds[msgId];
         }
     }
@@ -214,7 +213,7 @@ const defaultSelectedConversation = (msgId, newMessgaeArr, selectedConversation,
         newMessgaeArr[0].conversationInfo.info.unreadCount = 0;
         selectedConversation = newMessgaeArr[0];
     }
-    if ((newMessgaeArr && newMessgaeArr.length <= 0) || msgId == 'new') {
+    if ((newMessgaeArr && newMessgaeArr.length <= 0 && _isEmpty(userDetails[msgId])) || msgId == 'new') {
         compose = true;
         selectedConversation = {};
     }

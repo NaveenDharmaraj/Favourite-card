@@ -1,95 +1,85 @@
-import React from 'react';
 
+import React, { Fragment } from 'react';
 import _isEmpty from 'lodash/isEmpty';
-import {
-    Grid,
-    Header,
-    Container,
-} from 'semantic-ui-react';
 
-import { formatCurrency } from '../../helpers/give/utils';
-import ShareDetails from '../shared/ShareSectionProfilePage';
 import ActiveMatchBlock from '../shared/ActiveMatchBlock';
+import ExpiredMatchBlock from '../shared/ExpiredMatchBlock';
+import {
+    PropTypes,
+} from 'prop-types';
 
-const detailsView = (valuesObject) => {
-
-    const currency = 'USD';
-    const language = 'en';
-    const formattedAmount = formatCurrency(valuesObject.amountRaised, language, currency);
-    return (
-        <div className="pt-2 campaign-amount">
-            <Grid stackable columns={3}>
-                <Grid.Row>
-                    <Grid.Column>
-                        <Header as='h2'>
-                            {formattedAmount.slice(0, -3)}
-                            <Header.Subheader className="small">All time total raised</Header.Subheader>
-                        </Header>
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Header as='h2'>
-                            {valuesObject.peopleInCampaign}
-                            <Header.Subheader className="small">Campaign participants</Header.Subheader>
-                        </Header>
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Header as='h2'>
-                            {valuesObject.groupsCount}
-                            <Header.Subheader className="small">Groups supporting this campaign</Header.Subheader>
-                        </Header>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-        </div>
-    );
-};
+import MoneyRaised from './MoneyRaised';
+import CampaignSupporters from './CampaignSupporters';
 
 const CampaignDetails = (props) => {
     const {
-        campaignDetails,
-        deepLinkUrl,
-        dispatch,
+        activeMatch,
+        hasActiveMatch,
+        peopleInCampaign,
+        groupsCount,
+        slug,
+        amountRaised,
         isAuthenticated,
-        userId,
+        type,
+        matchHistory,
     } = props;
+    const hasMatchingHistory = !_isEmpty(matchHistory);
     return (
-        <div className="profile-info-wraper pb-3">
-            <Container>
-                <div className="profile-info-card campaign">
-                    <Header as="h3">
-                        Campaign information
-                    </Header>
-                    <Grid stackable>
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={10} computer={10}>
-                                {((!_isEmpty(campaignDetails.attributes))
-                                && detailsView(campaignDetails.attributes))}
-                            </Grid.Column>
-                        
-                            <ShareDetails
-                                isAuthenticated={isAuthenticated}
-                                profileDetails={campaignDetails}
-                                deepLinkUrl={deepLinkUrl}
-                                dispatch={dispatch}
-                                userId={userId}
-                            />
-                        
-
-                        </Grid.Row>
-                    </Grid>
-                </div>
-                {
-                    (campaignDetails.attributes.hasActiveMatch) ? 
-                        (
-                            <ActiveMatchBlock
-                                entityDetails={campaignDetails}
-                            />
-                        )
-                        : null
-                }
-            </Container>
-        </div>
+        <Fragment>
+            <MoneyRaised
+                amountRaised={amountRaised}
+                slug={slug}
+                isAuthenticated={isAuthenticated}
+            />
+            {hasActiveMatch
+                && (
+                    <ActiveMatchBlock
+                        activeMatch={activeMatch}
+                        type={type}
+                        hasActiveMatch={hasActiveMatch}
+                        hasMatchingHistory={hasMatchingHistory}
+                    />
+                )}
+            {(!hasActiveMatch && hasMatchingHistory)
+                && (
+                    <ExpiredMatchBlock
+                        matchHistory={matchHistory[0]}
+                        type={type}
+                        hasMatchingHistory={hasMatchingHistory}
+                    />
+                )}
+            <CampaignSupporters
+                peopleInCampaign={peopleInCampaign}
+                groupsCount={groupsCount}
+                slug={slug}
+            />
+        </Fragment>
     );
 };
+
+CampaignDetails.defaultProps = {
+    activeMatch: false,
+    hasActiveMatch: false,
+    peopleInCampaign: '',
+    groupsCount: '',
+    slug: '',
+    amountRaised: '',
+    isAuthenticated: false,
+    type: '',
+    matchHistory: [],
+}
+
+// eslint-disable-next-line react/no-typos
+CampaignDetails.PropTypes = {
+    activeMatch: PropTypes.bool,
+    hasActiveMatch: PropTypes.bool,
+    peopleInCampaign: PropTypes.string,
+    groupsCount: PropTypes.string,
+    slug: PropTypes.string,
+    amountRaised: PropTypes.string,
+    isAuthenticated: PropTypes.bool,
+    type: PropTypes.string,
+    matchHistory: PropTypes.array,
+}
 
 export default CampaignDetails;

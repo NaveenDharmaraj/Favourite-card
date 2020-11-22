@@ -8,7 +8,7 @@
   border: 0px;
   padding:45px 0px 36px 0px;
   .footer-search{
-    border-bottom: 1/@rem solid @card-border;
+    border-bottom: 1/@rem solid #DDE8FA;
     padding-bottom:38px;
     .best_news{
       font-size: 18px;
@@ -105,19 +105,26 @@
     }
   }
   .copy-right{
-    border-top: 1/@rem solid @card-border;margin-bottom: 40px;
+    border-top: 1/@rem solid #DDE8FA;
+    margin-bottom: 40px;
     .ui{
       &.horizontal{
         &.list{
           .copyright-text{
-            margin-top: 20px;
-            font-size: 14px;    line-height: 22px;color: #4E4E4E !important;font-family: 'ProximaNova-Light';
+            margin-top: 13px;
+            font-size: 14px;
+            line-height: 22px;
+            color: #263238 !important;
+            font-family: 'ProximaNova-Regular';
           }
         }
       }
     }
     .social{
-      margin-top: 20px;
+      margin-top: 10px;
+      .item{
+        margin-left: 19px;
+      }
     }
   }
 }
@@ -196,12 +203,6 @@
 }
 }
 @media only screen and (max-width:482px) {
-  .ui.centered.grid>.column:not(.aligned):not(.justified):not(.row), .ui.centered.grid>.row>.column:not(.aligned):not(.justified), .ui.grid .centered.row>.column:not(.aligned):not(.justified) {
-    text-align:left!important;
-    width: 100% !important;
-    margin: auto;
-    margin-bottom: 20px !important;
-  }
   .my-footer .footer-search .footer-subscribe .ui.button.blue-btn-rounded-def {
     padding: 15px 35px;
     font-size: 14px;

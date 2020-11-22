@@ -11,11 +11,17 @@ import Layout from '../components/shared/Layout';
 class Friends extends React.Component {
     static async getInitialProps({ query }) {
         return {
+            campaignId: query.campaign_id,
+            groupId: query.group_id,
             namespacesRequired: [
                 'authHeader',
                 'giveCommon',
                 'friends',
                 'accountTopUp',
+                'review',
+                'taxReceipt',
+                'success',
+                'error',
             ],
             step: query.step,
         };
@@ -24,13 +30,11 @@ class Friends extends React.Component {
     render() {
         return (
             <Layout authRequired stripe>
-                <Container>
-                    <div className="pageWraper">
-                        <GiveWrapper {...this.props} baseUrl="/give/to/friend">
-                            <Friend />
-                        </GiveWrapper>
-                    </div>
-                </Container>
+                <div className="pageWraperGive">
+                    <GiveWrapper {...this.props} baseUrl='/give/to/friend'>
+                        <Friend />
+                    </GiveWrapper>
+                </div>
             </Layout>
         );
     }
