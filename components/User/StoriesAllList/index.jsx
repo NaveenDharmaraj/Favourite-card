@@ -106,7 +106,7 @@ class StoriesAllList extends React.Component {
                         <Grid stackable>
                             <Grid.Row stretched>
                                 <Grid.Column mobile={16} tablet={5} computer={5}>
-                                    <div className="leftSideImage" style={{backgroundImage:`url(${displayAvatar})`}}></div>
+                                    <div className="leftSideImage" style={{ backgroundImage: `url('${displayAvatar}')` }} />
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={7} computer={8} verticalAlign="top">
                                     <div className=" description">
