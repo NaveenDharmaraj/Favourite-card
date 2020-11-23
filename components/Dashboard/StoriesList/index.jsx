@@ -71,7 +71,7 @@ class StoriesList extends React.Component {
         if (!src) {
             return;
         }
-        img.style.backgroundImage = `url(${src})`;
+        img.style.backgroundImage = `url('${src}')`;
     };
     componentDidUpdate(prevProps, prevState) {
         const {
