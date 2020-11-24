@@ -185,6 +185,7 @@ const saveCharityAllocation = (allocation) => {
         coverFees,
         dedicateGift,
         giveAmount,
+        giveFrom,
         infoToShare,
         noteToCharity,
         noteToSelf,
@@ -194,8 +195,8 @@ const saveCharityAllocation = (allocation) => {
         coverFees,
         noteToCharity,
         noteToSelf,
-        privacyData: infoToShare.privacyData,
-        privacySetting: infoToShare.privacySetting,
+        privacyData: (giveFrom.type === 'user') ? infoToShare.privacyData : null,
+        privacySetting: (giveFrom.type === 'user') ? infoToShare.privacySetting : infoToShare.value,
     };
     if (!_.isEmpty(dedicateGift.dedicateType)) {
         attributes = {
