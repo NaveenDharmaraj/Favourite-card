@@ -1334,5 +1334,4 @@ export default withTranslation([
     'accountTopUp',
     'privacyOptions',
     'specialInstruction',
-])(connect(mapStateToProps)(Group))
-
+])(connect(mapStateToProps)(Group));
