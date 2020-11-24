@@ -8,9 +8,9 @@ import {
     Responsive,
 } from 'semantic-ui-react';
 import {
-    string, 
+    string,
     bool,
-    array, 
+    array,
     func,
     object,
     PropTypes,
@@ -49,7 +49,7 @@ class CampaignProfileWrapper extends React.Component {
                 campaignDetails: {
                     attributes: {
                         groupId: profileId,
-                    }
+                    },
                 },
                 dispatch,
             } = this.props;
@@ -73,7 +73,7 @@ class CampaignProfileWrapper extends React.Component {
                 },
                 type: actionTypes.SEE_MORE_LOADER,
             });
-            dispatch(campaignSubGroupSeeMore(campaignSubGroupsShowMoreUrl,true));
+            dispatch(campaignSubGroupSeeMore(campaignSubGroupsShowMoreUrl, true));
         }
     }
 
@@ -121,7 +121,7 @@ class CampaignProfileWrapper extends React.Component {
         const bannerStyle = {};
         let campaignBannerClassName = 'ch_headerImage greenBg greenBgnew ';
         if (!_isEmpty(banner)) {
-            bannerStyle.backgroundImage = `url( ${banner})`;
+            bannerStyle.backgroundImage = `url('${banner}')`;
             campaignBannerClassName = 'CampaigBanner ch_headerImage greenBg greenBgnew';
         }
         let locationDetails = '';
@@ -218,7 +218,7 @@ class CampaignProfileWrapper extends React.Component {
                                         }
                                     </Grid.Row>
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={6} computer={5} >
+                                <Grid.Column mobile={16} tablet={6} computer={5}>
                                     <Responsive minWidth={768}>
                                         {
                                             campaignDetails && (

@@ -17,7 +17,6 @@ import {
 } from '../../../../../helpers/utils';
 import placeholderCharity from '../../../../../static/images/no-data-avatar-charity-profile.png';
 import placeholderGroup from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
-
 import PlaceholderGrid from '../../../../shared/PlaceHolder';
 import DiscoveredForYouNoData from '../../../../shared/DiscoveredForYouNoData';
 
@@ -106,7 +105,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                             <Grid.Row stretched key={i}>
                                 <Grid.Column mobile={16} tablet={5} computer={5} largeScreen={5}>
                                     {/* <Image src={displayAvatar} className="search-left-img" /> */}
-                                    <div className="leftSideImage" style={{backgroundImage:`url(${displayAvatar})`}}></div>
+                                    <div className="leftSideImage" style={{ backgroundImage: `url('${displayAvatar}')` }} />
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={6} computer={7} largeScreen={8} verticalAlign="middle">
                                     <div className=" description">
@@ -129,9 +128,9 @@ class SearchResultSingleCharityGroups extends React.Component {
 
                                         { this.state[`loader${i}`] ? <Icon name="spinner" loading />
                                             : (
-                                                <a href={anchorRoute} onClick={(e) => { this.handleAnchorClick(e) }}>
+                                                <a href={anchorRoute} onClick={(e) => { this.handleAnchorClick(e); }}>
                                                     <Button
-                                                        className="view-btn" 
+                                                        className="view-btn"
                                                         onClick={() => { this.handleRoute(type, slug, is_campaign, i); }}
                                                     >
 

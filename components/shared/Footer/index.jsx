@@ -146,8 +146,11 @@ const Footer = (props) => {
                                                 </List>
                                             </Grid.Column>
                                             <Grid.Column mobile={16} tablet={4} computer={4}>
-                                                <Header as="h4"><a href={`${CORP_DOMAIN}/charities/`}>Charitable Impact for charities</a></Header>
-                                                <div className="footer-border"></div>
+                                                <Header as="h4" content="Solutions" />
+                                                <List link className="solutionsLinks">
+                                                    <List.Item as="a" href={`${CORP_DOMAIN}/advisors/`}>For Advisors</List.Item>
+                                                    <List.Item as="a" href={`${CORP_DOMAIN}/charities/`}>For Charities</List.Item>
+                                                </List>
                                                 <div className="app_logo">
                                                     <Header as="h5">Get the app</Header>
                                                     <Image
