@@ -1,7 +1,7 @@
 {
     "repeatThisGiftLabel": "Répéter ce don?",
     "giveToLabel": "Donner à",
-    "giveGroupToEqualGiveFrom": "Le groupe d’origine doit être différent du groupe de destination",
+    "giveGroupToEqualGiveFrom": "The recipient you give to cannot be the same as the account you give from",
     "amountLabel": "Montant",
     "giveFromLabel": "Donner de la part de",
     "donorGiveFromPopup": "Nous vous demandons de sélectionner un compte puisque vous administrez plus d'un Compte CHARITABLE IMPACT.",

@@ -4,7 +4,7 @@ import React, {
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
-    fetchGroupMatchAmount,
+    fetchFinalGroupMatchAmount,
     reInitNextStep,
     proceed
 } from '../../../actions/give';
@@ -60,14 +60,8 @@ class Review extends React.Component {
                 matchingPolicyDetails,
             }
         } = flowObject;
-        if(giveTo.type === 'groups' && !_.isEmpty(giveGroupDetails)) {
-            if(matchingPolicyDetails.isValidMatchPolicy &&
-                (_.isEmpty(groupMatchingDetails) ||
-                    (!_.isEmpty(groupMatchingDetails) && (groupMatchingDetails.giveFromFund !== giveFrom.value || groupMatchingDetails.giveAmount !== giveAmount))
-                )
-            ) {
-                    dispatch(fetchGroupMatchAmount(giveAmount, giveFrom.value, giveTo.value));
-            }
+        if(giveTo.type === 'groups' && matchingPolicyDetails.isValidMatchPolicy) {
+                    dispatch(fetchFinalGroupMatchAmount(giveAmount, giveFrom.value, giveTo.value));
         }
         window.scrollTo(0, 0);
     }
@@ -90,7 +84,7 @@ class Review extends React.Component {
                                 <Table.Row data-test="Give_Review_transaction_details">
                                     <Table.Cell className="tableOne" >{formatMessage(data.name)}</Table.Cell>
                                     <Table.Cell className="tabletwo" >{ data.value}</Table.Cell>
-                                    <Table.Cell ></Table.Cell>
+                                    <Table.Cell className="tablethree"></Table.Cell>
                                 </Table.Row>
                         )
                     })}
@@ -165,6 +159,7 @@ class Review extends React.Component {
                 toURL = `${toURL}?groupCampaign_id=${groupCampaignId}`;
                 isGiveFrom = true;
             }
+
             if(type === 'donations'){
                 reviewData = populateDonationReviewPage(giveData, {
                         companiesAccountsData,
@@ -306,7 +301,7 @@ class Review extends React.Component {
                                     <Grid.Column mobile={16} tablet={14} computer={12}>
                                         {(!!isGroupWithMatching) && (
                                             <div className="review-top-table">
-                                                <Table unstackable basic='very' className="no-border-table">
+                                                <Table unstackable basic='very' className="no-border-table layoutfixed">
                                                     <Table.Body>
                                                         <Table.Row verticalAlign='top'>
                                                             <Table.Cell>
@@ -317,22 +312,24 @@ class Review extends React.Component {
                                                             </Table.Cell>
                                                             <Table.Cell textAlign='right'>{mainDisplayAmount}</Table.Cell>
                                                         </Table.Row>
-                                                        <Table.Row>
+                                                        <Table.Row verticalAlign='top'>
                                                             <Table.Cell>
-                                                                {toDetailsForMatching.matchingHeading}
-                                                                <Popup
-                                                                    content={toDetailsForMatching.popUpMessage}
-                                                                    position="bottom center"
-                                                                    className="matching-popup"
-                                                                    inverted
-                                                                    trigger={(
-                                                                        <Icon
-                                                                            color="blue"
-                                                                            name="question circle"
-                                                                            size="large"
-                                                                        />
-                                                                    )}
-                                                                />
+                                                                <div className='matchingAmount'>
+                                                                    <span>{toDetailsForMatching.matchingHeading}</span>
+                                                                    <Popup
+                                                                        content={toDetailsForMatching.popUpMessage}
+                                                                        position="bottom right"
+                                                                        className="matching-popup"
+                                                                        inverted
+                                                                        trigger={(
+                                                                            <Icon
+                                                                                color="blue"
+                                                                                name="question circle"
+                                                                                size="large"
+                                                                            />
+                                                                        )}
+                                                                    />
+                                                                </div>
                                                                 {
                                                                     (toDetailsForMatching.subHeading !== '') && (
                                                                         <div className="note">

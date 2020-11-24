@@ -63,14 +63,14 @@ function DonationFrequency(props) {
                 </Form.Field>
                 {
                     (recurringDisabled && (
-                        <span className="givingInfoText">This {(isCampaign ? 'Campaign': 'Giving group' )} does not accept monthly gifts.</span>
+                        <span data-test="Give_DonationFrequency_givingInfoText"  className="givingInfoText">This {(isCampaign ? 'Campaign': 'Giving Group' )} does not accept monthly gifts.</span>
                     ))
                 }
             </div>
             {
                 ((giftType.value > 0) && (
                     <>
-                        <div className="mt-1 mb-1">
+                        <div data-test="Give_DonationFrequency_gifttype" className="mt-1 mb-1">
                             <Button
                                 className={(giftType.value ===1 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
                                 size="small"
@@ -108,3 +108,4 @@ function DonationFrequency(props) {
     )
 }
 export default DonationFrequency;
+export { DonationFrequency };

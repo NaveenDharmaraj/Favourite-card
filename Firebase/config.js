@@ -11,6 +11,7 @@ const firebaseConfig = {
             storageBucket: FIREBASE_PARAMS[`${this.firebaseEnvKeys.FIREBASE_STORAGE_BUCKET}`],
             messagingSenderId: FIREBASE_PARAMS[`${this.firebaseEnvKeys.FIREBASE_MSG_SENDER_ID}`] || '745841700240',
             appId: FIREBASE_PARAMS[`${this.firebaseEnvKeys.FIREBASE_APP_ID}`],
+            measurementId: FIREBASE_PARAMS[`${this.firebaseEnvKeys.FIREBASE_MEASUREMENT_ID}`],
         };
     },
     firebaseEnvKeys: {
@@ -18,6 +19,7 @@ const firebaseConfig = {
         FIREBASE_APP_ID: 'FIREBASE_APP_ID',
         FIREBASE_AUTH_DOMAIN: 'FIREBASE_AUTH_DOMAIN',
         FIREBASE_DATABASE_URL: 'FIREBASE_DATABASE_URL',
+        FIREBASE_MEASUREMENT_ID: 'FIREBASE_MEASUREMENT_ID',
         FIREBASE_MSG_SENDER_ID: 'FIREBASE_MSG_SENDER_ID',
         FIREBASE_PROJECT_ID: 'FIREBASE_PROJECT_ID',
         FIREBASE_STORAGE_BUCKET: 'FIREBASE_STORAGE_BUCKET',

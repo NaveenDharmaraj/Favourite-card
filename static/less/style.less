@@ -921,8 +921,8 @@ h4{
             overflow-y: hidden;
             scrollbar-width: none;
             &::-webkit-scrollbar {
-              width: 3px;
-              height: 5px;
+              width: 0px;
+              height: 0px;
               border-radius:6px;
             }
             &::-webkit-scrollbar-track {
@@ -930,7 +930,7 @@ h4{
                 background-color: transparent;
             }
             &::-webkit-scrollbar-thumb {
-              background-color: #ddd;
+              background-color: transparent;
               //outline: 1px solid slategrey;
               border-radius:6px;
             }
@@ -1002,7 +1002,7 @@ h4{
       &.segment{
         &.tab{
           border: none;
-          padding-top: 25px;
+          padding-top: 0rem;
         }
       }
     }
@@ -1079,6 +1079,7 @@ h4{
           margin-top: -1rem;
           .ui.grid >.row{
             padding-top: 0px;
+            padding-bottom: 2rem;
             
           }
           .user-left-menu{
@@ -1157,18 +1158,19 @@ h4{
       padding-bottom: 0px!important;
     }
     &.pMethodHead{
-      padding-top: 3px !important;
+      // padding-top: 3px !important;
+      .ui.grid{
+        margin-top: 0;
+      }
     }
     p{
       >a{
         text-decoration: underline;
       }
     }
-    &:first-child{
-      padding-top: 0px;
-    }
     &:last-child{
       border-bottom: 0px solid transparent;
+      padding-bottom:0 !important ;
     }
     .success-btn-rounded-def{
       min-width: 166px;
@@ -1178,6 +1180,9 @@ h4{
         &.list{
           &.userList{
             padding-bottom: 20px;
+            &:last-child{
+              padding-bottom:0 ;
+            }
             .item{
               &:last-child{
                 border-bottom: 1px solid rgba(34,36,38,.15);
@@ -1199,12 +1204,21 @@ h4{
         &.header{
           font-size: 17px;
           line-height: 15px;
+          margin-top: 0;
         }
       }
     }
     p{
       line-height: 28/@rem;
       font-size: 1rem;
+      &:last-child{
+        margin-bottom: -4px;
+      }
+    }
+    button.ui.button.success-btn-rounded-def{
+      @media only screen and (max-width: 991px){
+        margin-top: 5px;
+      }
     }
   }
 }
@@ -1346,6 +1360,9 @@ h4{
   +.border-top{
     .settingsTab{
       border-top: 1px solid @grey-lighten-2;
+      > div .ui.grid{
+        margin-top: 0;
+      }
     }
   }
 }
@@ -3881,7 +3898,7 @@ label.giftNotSent{
                   }
                 }
                 @media only screen and (max-width:400px) {
-                  bottom: 9px;
+                  bottom: 5px;
                 }
                 
               }
@@ -3951,8 +3968,8 @@ label.giftNotSent{
             font-weight: 400;
           }
           @media only screen and (max-width:400px) {
-            font-size: 13px;
-            line-height: 13px;
+            font-size: 12px;
+            line-height: 12px;
           }
         }
       }
@@ -5767,7 +5784,7 @@ body{
          }
         max-width: 335px;	
         width: 100%;
-        border-radius: 10px;	
+        border-radius: 10px;
         background-color: #FFFFFF;	
         box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
         margin-left: auto;
@@ -6602,7 +6619,7 @@ button.ui.button.blue-bordr-btn-round-def{
             .content{
               padding-left: 0px;
               .header{
-                padding-bottom: 7px;
+                padding-bottom: 0px;
                 .pending{
                   display: inline-block;
                   margin-left: 10px;
@@ -6632,6 +6649,7 @@ button.ui.button.blue-bordr-btn-round-def{
   .ui{
     &.list{
       &.celled{
+        margin-bottom: 0;
         .item{
           padding: 2rem 0rem; 
           .ellipsis{
@@ -6640,6 +6658,7 @@ button.ui.button.blue-bordr-btn-round-def{
                 width: 30px;
                 &::before{
                   content: url("@{img_url}/images/icons/ellipsis.svg");
+                  top: 10px;
                 }
               }
             }
@@ -6746,6 +6765,12 @@ button.ui.button.blue-bordr-btn-round-def{
           }
         }
       }
+    }
+  }
+  .db-pagination{
+    text-align: right;
+    .ui.menu{
+      min-height: auto;
     }
   }
 }
@@ -8320,10 +8345,16 @@ body .userEllips{
 .error_page{
   margin-top:100px;
 }
+.footer-border{
+  border-top: 1px solid #DDE8FA;
+  @media only screen and (max-width: 768px) {
+    width: 200px;
+    margin: auto;
+  }
+}
 .app_logo{
-  border-top: 1px solid #C0C3D4;
   margin-top: 5px;
-  padding-top: 20px;
+  padding-top: 17px;
   h5{
     &.ui{
       &.header{
@@ -8336,9 +8367,8 @@ body .userEllips{
     }
     }
   img{
-    width: 130px;
+    width: 120px;
       @media only screen and (max-width: 768px) {
-        width: 150px !important;
         padding: 0px;
         margin: auto;
         text-align: center;
@@ -8521,6 +8551,11 @@ body{
 .charityTab{
   &.user-profile-settings{
     margin-bottom: 0px;
+    .user-messaging{
+      .ui.pointing.secondary.menu{
+        margin-bottom: 0;
+      }
+    }
     .settingsTab{
       margin-bottom: -3rem;
       >div{

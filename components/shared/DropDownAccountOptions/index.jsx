@@ -8,6 +8,7 @@ import {
 } from 'react-redux';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEmpty from 'lodash/isEmpty';
+import _find from 'lodash/find';
 import {
     Form,
     Icon,
@@ -83,6 +84,7 @@ class DropDownAccountOptions extends React.Component {
         const newPlaceholder = updatePlaceHolder ? formatMessage('searchPlaceholder') : giveFromPlaceHolder;
         const errorMessage = (type === 'donations') ? formatMessage('giveCommon:blankError') : formatMessage('giveCommon:allocationBlankError');
         let newPlaceholderValue = '';
+        let dropdownText = '';
         if (!_isEmpty(fund)) {
             if (giveTo && giveTo.value && giveFromUrl) {
                 dropDownData = populateAccountOptions({
@@ -127,6 +129,15 @@ class DropDownAccountOptions extends React.Component {
             );
         } else {
             newPlaceholderValue = selectedValue ? selectedValue.toString() : '';
+            if (!_isEmpty(dropDownData) && !_isEmpty(newPlaceholderValue)) {
+                _find(dropDownData, (item) => {
+                    if (item.value === selectedValue) {
+                        dropdownText = item.text;
+                        return dropdownText;
+                    }
+                    return '';
+                });
+            }
             fieldData = (
                 <div className="dropdownSearch dropdownWithArrowParentnotbg medium giveFromAccount">
                     <Dropdown
@@ -146,7 +157,7 @@ class DropDownAccountOptions extends React.Component {
                         selectOnBlur={false}
                         search
                         selectOnNavigation={false}
-                        text={_isEmpty(newPlaceholderValue) ? newPlaceholder : undefined}
+                        text={_isEmpty(newPlaceholderValue) ? newPlaceholder : dropdownText}
                     />
                 </div>
             );

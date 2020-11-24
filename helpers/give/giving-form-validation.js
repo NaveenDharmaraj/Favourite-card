@@ -56,10 +56,10 @@ export const isNumberOfEmailsLessThanMax = (input, max) => {
  * Determine if array contains duplicates
  * @param {array} input an array of values
  * @param {string} senderEmail an array of values
- * @return {boolean} true if array contains not duplicates, false, otherwise
+ * @return {boolean} true if array contains duplicates, false, otherwise
  */
 export const isEmailListContainsSenderEmail = (input, senderEmail) => {
-    return !_.includes(parseEmails(input), senderEmail);
+    return _.isEmpty(_.intersection(input, senderEmail));
 };
 
 // Check if the input length is less than 1000
