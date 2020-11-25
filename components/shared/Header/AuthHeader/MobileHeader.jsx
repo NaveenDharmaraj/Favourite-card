@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import {
     Icon,
     Image,
@@ -16,6 +16,7 @@ import {
   connect,
 } from 'react-redux';
 import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
 
 import { withTranslation } from '../../../../i18n';
 import logo from '../../../../static/images/CharitableImpact.svg';
@@ -30,6 +31,7 @@ import { Link } from '../../../../routes';
 import Notifications from './Notifications';
 import Chat from './Chat';
 import Give from './Give';
+import SwitchAccountModal from './SwitchAccountModal';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -47,6 +49,8 @@ const NavBarMobile = ({
   notificationUpdate,
   handleClick,
   activeIndex,
+  onSwitchClick,
+  otherAccounts,
 }) => {
     const {
         accountType,
@@ -130,6 +134,16 @@ const NavBarMobile = ({
                         </a>
                     )
                 }
+                {/* {
+                    !_isEmpty(otherAccounts) && (
+                        <Menu.Item
+                            as="a"
+                            onClick={onSwitchClick}
+                        >
+                            {formatMessage('switchAccounts')}
+                        </Menu.Item>
+                    )
+                } */}
                 <Link route='/users/logout'>
                     <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={logoutIcon}/></span>Log out</Menu.Item>
                 </Link>
@@ -171,7 +185,8 @@ const NavBarMobile = ({
 
 class MobileHeader extends Component {
   state = {
-    visible: false
+    visible: false,
+    open: false,
   };
   state = { activeIndex: -1 };
 
@@ -185,11 +200,22 @@ class MobileHeader extends Component {
 
   handlePusher = () => {
     const { visible } = this.state;
-
     if (visible) this.setState({ visible: false });
   };
 
   handleToggle = () => this.setState({ visible: !this.state.visible });
+
+  openModal = () => {
+    this.setState({
+        open: true,
+    });
+  };
+
+    closeModal = () => {
+        this.setState({
+            open: false,
+        });
+    };
 
   render() {
     const {
@@ -201,18 +227,32 @@ class MobileHeader extends Component {
     const { visible } = this.state;
     const { activeIndex } = this.state
     return (
-        <NavBarMobile
-        onPusherClick={this.handlePusher}
-        onToggle={this.handleToggle}
-        handleClick={this.handleClick}
-        visible={visible}
-        currentAccount={currentAccount}
-        formatMessage={formatMessage}
-        activeIndex={activeIndex}
-        notificationUpdate={notificationUpdate}
-        >
-            {children}
-        </NavBarMobile>
+        <Fragment>
+            <NavBarMobile
+            onPusherClick={this.handlePusher}
+            onToggle={this.handleToggle}
+            handleClick={this.handleClick}
+            visible={this.state.visible}
+            currentAccount={currentAccount}
+            formatMessage={formatMessage}
+            activeIndex={activeIndex}
+            notificationUpdate={notificationUpdate}
+            onSwitchClick={this.openModal}
+            otherAccounts={this.props.otherAccounts}
+            >
+                {children}
+            </NavBarMobile>
+            {
+                this.state.open && (
+                    <SwitchAccountModal
+                        accounts={this.props.otherAccounts}
+                        close={this.closeModal}
+                        open={this.state.open}
+                    />
+                )
+            }
+        </Fragment>
+
     );
   }
 }
@@ -220,6 +260,7 @@ class MobileHeader extends Component {
 const mapStateToProps = (state) => ({
     currentAccount: state.user.currentAccount,
     notificationUpdate: state.firebase.notificationUpdate,
+    otherAccounts: state.user.otherAccounts,
 });
 
 export default withTranslation('authHeader')(connect(mapStateToProps)(MobileHeader));

@@ -1,3 +1,4 @@
+/* eslint-disable no-else-return */
 /* eslint-disable import/exports-last */
 import _ from 'lodash';
 
@@ -20,11 +21,16 @@ import {
 import {
     triggerUxCritialErrors,
 } from './error';
+import {
+    getTaxReceiptProfileMakeDefault,
+} from './taxreceipt';
 
 export const actionTypes = {
     ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
     COVER_AMOUNT_DISPLAY: 'COVER_AMOUNT_DISPLAY',
     COVER_FEES: 'COVER_FEES',
+    GET_ALL_COMPANY_TAX_RECEIPT_PROFILES: 'GET_ALL_COMPANY_TAX_RECEIPT_PROFILES',
+    GET_ALL_USER_TAX_RECEIPT_PROFILES: 'GET_ALL_USER_TAX_RECEIPT_PROFILES',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
@@ -34,7 +40,10 @@ export const actionTypes = {
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
     SET_COMPANY_ACCOUNT_FETCHED: 'SET_COMPANY_ACCOUNT_FETCHED',
+    SET_COMPANY_PAYMENT_ISTRUMENTS: 'SET_COMPANY_PAYMENT_ISTRUMENTS',
+    SET_USER_PAYMENT_INSTRUMENTS: 'SET_USER_PAYMENT_INSTRUMENTS',
     TAX_RECEIPT_API_CALL_STATUS: 'TAX_RECEIPT_API_CALL_STATUS',
+    UPDATE_COMPANY_BALANCE: 'UPDATE_COMPANY_BALANCE',
 };
 
 const setDonationData = (donation) => {
@@ -101,7 +110,6 @@ const createToken = (cardDetails, cardHolderName) => new Promise((resolve, rejec
 const saveDonations = (donation) => {
     const {
         giveData: {
-            automaticDonation,
             giftType,
             noteToSelf,
         },
@@ -109,7 +117,7 @@ const saveDonations = (donation) => {
     let donationUrl = '/donations';
     const donationData = setDonationData(donation);
     donationData.attributes.reason = noteToSelf;
-    if (automaticDonation) {
+    if (giftType.value !== 0) {
         donationData.attributes.dayOfMonth = giftType.value;
         donationData.type = 'recurringDonations';
         donationUrl = '/recurringDonations';
@@ -133,13 +141,9 @@ const postAllocation = async (allocationData) => {
 const initializeAndCallAllocation = (allocation, attributes, type) => {
     const {
         giveData,
-        selectedTaxReceiptProfile,
     } = allocation;
 
     const {
-        creditCard,
-        donationAmount,
-        donationMatch,
         giftType,
         giveFrom,
         giveTo,
@@ -165,46 +169,10 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
     if (giftType.value === 0) {
         allocationData.type = (type === 'charity')
             ? 'allocations' : 'groupAllocations';
-        if (donationAmount) {
-            return saveDonations({
-                selectedTaxReceiptProfile,
-                giveData: {
-                    automaticDonation: false,
-                    creditCard,
-                    donationAmount,
-                    donationMatch,
-                    giveTo : giveFrom,
-                    noteToSelf: '',
-                },
-            }).then((result) => {
-                allocationData.relationships.donation = {
-                    data: {
-                        id: result.data.id,
-                        type: 'donations',
-                    },
-                };
-                return postAllocation(allocationData);
-            });
-        }
     } else {
-        allocationData.type = 'recurringAllocations';
         allocationData.type = (type === 'charity')
             ? 'recurringAllocations' : 'recurringGroupAllocations';
         allocationData.attributes.dayOfMonth = giftType.value;
-        if (donationMatch.value > 0) {
-            allocationData.relationships.employeeRole = {
-                data: {
-                    id: donationMatch.value,
-                    type: 'roles',
-                },
-            };
-        }
-        allocationData.relationships.paymentInstrument = {
-            data: {
-                id: creditCard.value,
-                type: 'paymentInstruments',
-            },
-        };
     }
     return postAllocation(allocationData);
 };
@@ -217,6 +185,7 @@ const saveCharityAllocation = (allocation) => {
         coverFees,
         dedicateGift,
         giveAmount,
+        giveFrom,
         infoToShare,
         noteToCharity,
         noteToSelf,
@@ -226,8 +195,8 @@ const saveCharityAllocation = (allocation) => {
         coverFees,
         noteToCharity,
         noteToSelf,
-        privacyData: (infoToShare.id) ? infoToShare.id : null,
-        privacySetting: _.split(infoToShare.value, '|')[0],
+        privacyData: (giveFrom.type === 'user') ? infoToShare.privacyData : null,
+        privacySetting: (giveFrom.type === 'user') ? infoToShare.privacySetting : infoToShare.value,
     };
     if (!_.isEmpty(dedicateGift.dedicateType)) {
         attributes = {
@@ -250,20 +219,21 @@ const saveGroupAllocation = (allocation) => {
         noteToCharity,
         noteToSelf,
         privacyShareAddress,
+        privacyShareAdminName,
         privacyShareAmount,
         privacyShareEmail,
         privacyShareName,
     } = giveData;
-
     let attributes = {
         amount: giveAmount,
         noteToGroup: noteToCharity,
         noteToSelf,
         privacyShareAddress,
-        privacyShareAmount,
+        privacyShareAdminName,
+        privacyShareAmount: giveData.giveTo.isCampaign ? false : privacyShareAmount,
         privacyShareEmail,
-        privacyShareName,
-        privacyTrpId: privacyShareAddress ? infoToShare.id : null,
+        privacyShareName: giveData.giveTo.isCampaign && privacyShareAdminName ? true : privacyShareName,
+        privacyTrpId: privacyShareAddress ? infoToShare.privacyData : null,
     };
     if (!_.isEmpty(dedicateGift.dedicateType)) {
         attributes = {
@@ -285,7 +255,7 @@ const postP2pAllocations = async (allocations) => {
                     parentAllocation: {
                         data: {
                             type: 'fundAllocations',
-                            id: parentAllocationId ,
+                            id: parentAllocationId,
                         },
                     },
                 },
@@ -299,15 +269,15 @@ const postP2pAllocations = async (allocations) => {
         //     data: data,
         // };
         const result = await coreApi.post(`/${allocationData.type}`, {
-            data : {
+            data: {
                 ...data,
             },
         });
-        if  (result && result.data) {
+        if (result && result.data) {
             parentAllocationId = result.data.id;
         }
         results.push(result);
-    };
+    }
 
     return results;
 };
@@ -318,7 +288,6 @@ const initializeP2pAllocations = (
     noteToRecipients,
     noteToSelf,
     giveFrom,
-    donationId,
 ) => {
     const allocations = [];
     // _.each(recipients, (recipient) => {
@@ -339,15 +308,6 @@ const initializeP2pAllocations = (
             },
         },
     };
-
-    if (donationId > 0) {
-        allocationData.relationships.donation = {
-            data: {
-                id: donationId,
-                type: 'donations',
-            },
-        };
-    }
     allocationData.type = 'fundAllocations';
     allocations.push(allocationData);
     // });
@@ -362,43 +322,17 @@ const initializeP2pAllocations = (
 const saveP2pAllocations = (allocation) => {
     const {
         giveData: {
-            creditCard,
-            donationAmount,
-            donationMatch,
             giveAmount,
             giveFrom,
             noteToRecipients,
             noteToSelf,
             recipients,
+            selectedFriendsList,
         },
-        selectedTaxReceiptProfile,
     } = allocation;
-
-    if (donationAmount) {
-        return saveDonations({
-            selectedTaxReceiptProfile,
-            giveData: {
-                automaticDonation: false,
-                creditCard,
-                donationAmount,
-                donationMatch,
-                giveTo: giveFrom,
-                noteToSelf: '',
-            },
-        }).then((result) => {
-            const allocations = initializeP2pAllocations(
-                recipients,
-                giveAmount,
-                noteToRecipients,
-                noteToSelf,
-                giveFrom,
-                result.data.id,
-            );
-            return postP2pAllocations(allocations);
-        });
-    }
+    const emailArray = _.concat(selectedFriendsList.map((friend) => friend.email), recipients);
     const allocations = initializeP2pAllocations(
-        recipients,
+        emailArray,
         giveAmount,
         noteToRecipients,
         noteToSelf,
@@ -419,7 +353,7 @@ const checkForQuaziSuccess = (error) => {
         if (!_.isEmpty(checkQuaziSuccess.meta)
             && !_.isEmpty(checkQuaziSuccess.meta.recoverableState)
             && (checkQuaziSuccess.meta.recoverableState === 'true'
-            || checkQuaziSuccess.meta.recoverableState === true)) {
+                || checkQuaziSuccess.meta.recoverableState === true)) {
             return true;
         }
     }
@@ -466,7 +400,7 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
             },
         },
     );
-    
+
     Promise.all([
         fetchData,
         paymentInstruments,
@@ -499,10 +433,12 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
                         type,
                     });
                 }
-                fsa.payload.companyPaymentInstrumentsData = [
-                    ...result[1].data,
-                ];
             });
+        }
+        if (!_.isEmpty(result[1])) {
+            fsa.payload.companyPaymentInstrumentsData = [
+                ...result[1].data,
+            ];
         }
         dispatch({
             payload: {
@@ -546,13 +482,230 @@ const transformStripeErrorToJsonApi = (err) => {
     };
 };
 
+const getAllActivePaymentInstruments = (id, dispatch, type = 'user') => {
+    const url = (type === 'companies')
+        ? `/companies/${id}/activePaymentInstruments?&sort=-default`
+        : `/users/${id}/activePaymentInstruments?sort=-default`;
+    return coreApi.get(
+        url,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    );
+};
+
+const setUserDefaultCreditCard = (paymentInstrumentId) => coreApi.patch(`/paymentInstruments/${Number(paymentInstrumentId)}/set_as_default`);
+
+const checkForDuplicateCcError = (error) => {
+    if (!_.isEmpty(error) && error.length === 1) {
+        const checkCcError = error[0];
+        if (!_.isEmpty(checkCcError.title) && (checkCcError.title === 'This credit card number has already been added.')) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export const addNewCardAndLoad = (flowObject, isDefaultCard) => (dispatch) => {
+    dispatch({
+        payload: {
+            creditCardApiCall: true,
+        },
+        type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+    });
+    const {
+        giveData: {
+            giveFrom,
+            giveTo,
+        },
+    } = flowObject;
+    const accountDetails = {
+        id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
+        type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
+    };
+    let addedCreditCard = null;
+    return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
+        const paymentInstrumentsData = {
+            attributes: {
+                stripeToken: token.id,
+            },
+            relationships: {
+                paymentable: {
+                    data: {
+                        id: accountDetails.id,
+                        type: accountDetails.type,
+                    },
+                },
+            },
+            type: 'paymentInstruments',
+        };
+        return savePaymentInstrument(paymentInstrumentsData);
+    }).then((result) => {
+        addedCreditCard = result;
+        if (isDefaultCard) {
+            return setUserDefaultCreditCard(Number(result.data.id));
+        }
+        return null;
+    }).then((response) => getAllActivePaymentInstruments(accountDetails.id, dispatch, accountDetails.type))
+        .then((res) => {
+            const userFsa = {
+                payload: {
+                    paymentInstrumentsData: [
+                        ...res.data,
+                    ],
+                },
+                type: actionTypes.SET_USER_PAYMENT_INSTRUMENTS,
+            };
+            const companyFsa = {
+                payload: {
+                    companyPaymentInstrumentsData: [
+                        ...res.data,
+                    ],
+                },
+                type: actionTypes.SET_COMPANY_PAYMENT_ISTRUMENTS,
+            };
+            if (accountDetails.type === 'companies') {
+                dispatch(companyFsa);
+            } else {
+                dispatch(userFsa);
+            }
+            return addedCreditCard;
+        })
+        .catch((err) => {
+            if (checkForDuplicateCcError(err.errors)) {
+                const duplicateError = [
+                    {
+                        detail: 'This credit card number has already been added.',
+                    },
+                ];
+                triggerUxCritialErrors(duplicateError, dispatch);
+            } else {
+                triggerUxCritialErrors(err.errors || err, dispatch);
+            }
+            return Promise.reject(err);
+        })
+        .finally(() => {
+            dispatch({
+                payload: {
+                    creditCardApiCall: false,
+                },
+                type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+            });
+        });
+};
+
+// eslint-disable-next-line import/exports-last
+export const getAllTaxReceipts = (id, dispatch, type = 'user') => {
+    const accountType = (type === 'user') ? 'users' : 'companies';
+    return coreApi.get(
+        `/${accountType}/${id}?include=defaultTaxReceiptProfile,taxReceiptProfiles`,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    );
+};
+
+const addNewTaxReceiptProfile = (taxReceiptProfile) => coreApi.post('/taxReceiptProfiles', {
+    data: taxReceiptProfile,
+});
+// eslint-disable-next-line max-len
+export const addNewTaxReceiptProfileAndLoad = (flowObject, selectedTaxReceiptProfile, isDefaultChecked) => (dispatch) => {
+    const {
+        giveData: {
+            giveTo,
+            giveFrom,
+        },
+    } = flowObject;
+    const fsa = {
+        payload: {
+            companyDefaultTaxReceiptProfile: {},
+            defaultTaxReceiptProfile: {},
+            taxReceiptProfiles: [],
+        },
+        type: actionTypes.GET_ALL_USER_TAX_RECEIPT_PROFILES,
+    };
+    let newTaxReceipt = {};
+    const accountDetails = {
+        id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
+        type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
+    };
+
+    return addNewTaxReceiptProfile(selectedTaxReceiptProfile).then((result) => {
+        newTaxReceipt = result;
+        const {
+            id,
+        } = result.data;
+        if (isDefaultChecked) {
+            return getTaxReceiptProfileMakeDefault(id);
+        }
+        return null;
+    }).then((response) => {
+        const {
+            attributes,
+        } = newTaxReceipt.data;
+        attributes.isDefault = isDefaultChecked;
+        return getAllTaxReceipts(Number(accountDetails.id), dispatch, accountDetails.type);
+    }).then((resultData) => {
+        if (accountDetails.type === 'companies') {
+            fsa.type = actionTypes.GET_ALL_COMPANY_TAX_RECEIPT_PROFILES;
+        }
+        if (!_.isEmpty(resultData.included)) {
+            const { included } = resultData;
+            let defaultTaxReceiptId = null;
+            if (!_.isEmpty(resultData.data.relationships.defaultTaxReceiptProfile.data)) {
+                defaultTaxReceiptId = resultData.data.relationships.defaultTaxReceiptProfile.data.id;
+            }
+            included.map((item) => {
+                const {
+                    attributes,
+                    id,
+                    type,
+                } = item;
+                if (type === 'taxReceiptProfiles') {
+                    if (id === defaultTaxReceiptId && accountDetails.type === 'companies') {
+                        fsa.payload.companyDefaultTaxReceiptProfile = {
+                            attributes,
+                            id,
+                            type,
+                        };
+                    }
+                    if (id === defaultTaxReceiptId && accountDetails.type === 'user') {
+                        fsa.payload.defaultTaxReceiptProfile = {
+                            attributes,
+                            id,
+                            type,
+                        };
+                    }
+                    fsa.payload.taxReceiptProfiles.push({
+                        attributes,
+                        id,
+                        type,
+                    });
+                }
+            });
+            dispatch(fsa);
+            return newTaxReceipt;
+        }
+    })
+        .catch((err) => {
+            triggerUxCritialErrors(err.errors || err, dispatch);
+            return Promise.reject(err);
+        });
+};
+
 export const proceed = (
     flowObject, nextStep, stepIndex, lastStep = false, currentUserId = null,
 ) => {
     if (lastStep) {
         return (dispatch) => {
             let fn;
-            let successData = _.merge({}, flowObject);
+            const successData = _.merge({}, flowObject);
             let nextStepToProcced = nextStep;
             switch (flowObject.type) {
                 case 'donations':
@@ -577,15 +730,7 @@ export const proceed = (
                 ],
             ).then((results) => {
                 if (!_.isEmpty(results[0])) {
-                    successData.result = results[0];
-                    //successData = _.merge({}, flowObject);
-                    // For p2p, we create an array of arrays, I'm not to clear on the
-                    // the correct syntax to make this more redable.
-                    // if (flowObject.type === 'give/to/friend') {
-                    //     successData.allocationData = results[0];
-                    // } else {
-                    //     successData.allocationData = results[0].data;
-                    // }
+                    successData.result = results[0].data;
                 }
             }).catch((err) => {
                 if (checkForQuaziSuccess(err.errors)) {
@@ -602,7 +747,7 @@ export const proceed = (
                     type: actionTypes.SAVE_SUCCESS_DATA,
                 });
                 const defaultProps = {
-                    'donations': donationDefaultProps,
+                    donations: donationDefaultProps,
                     'give/to/charity': beneficiaryDefaultProps,
                     'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
@@ -624,102 +769,10 @@ export const proceed = (
     }
     return (dispatch) => {
         flowObject.nextStep = nextStep;
-        const {
-            giveData: {
-                giveFrom,
-                giveTo,
-                creditCard,
-            },
-        } = flowObject;
-        const accountDetails = {
-            id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
-            type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
-        };
-        if (flowObject.taxReceiptProfileAction !== 'no_change' && stepIndex === 1) {
-            dispatch({
-                payload: {
-                    taxReceiptApiCall: true,
-                },
-                type: actionTypes.TAX_RECEIPT_API_CALL_STATUS,
-            });
-            updateTaxReceiptProfile(
-                flowObject.selectedTaxReceiptProfile,
-                flowObject.taxReceiptProfileAction, dispatch,
-            ).then((result) => {
-                flowObject.selectedTaxReceiptProfile = result.data;
-                dispatch({
-                    payload: flowObject,
-                    type: actionTypes.SAVE_FLOW_OBJECT,
-                });
-                callApiAndDispatchData(dispatch, accountDetails);
-            }).catch((err) => {
-                triggerUxCritialErrors(err.errors || err, dispatch);
-                // console.log(err);
-            }).finally(() => {
-                dispatch({
-                    payload: {
-                        taxReceiptApiCall: false,
-                    },
-                    type: actionTypes.TAX_RECEIPT_API_CALL_STATUS,
-                });
-            });
-        } else if (creditCard.value === 0 && stepIndex === 0) {
-            dispatch({
-                payload: {
-                    creditCardApiCall: true,
-                },
-                type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
-            });
-            return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
-                const paymentInstrumentsData = {
-                    attributes: {
-                        stripeToken: token.id,
-                    },
-                    relationships: {
-                        paymentable: {
-                            data: {
-                                id: accountDetails.id,
-                                type: accountDetails.type,
-                            },
-                        },
-                    },
-                    type: 'paymentInstruments',
-                };
-                return savePaymentInstrument(paymentInstrumentsData);
-            }).then((result) => {
-                const {
-                    data: {
-                        attributes: {
-                            description,
-                        },
-                        id,
-                    },
-                } = result;
-                flowObject.giveData.creditCard.id = id;
-                flowObject.giveData.creditCard.value = id;
-                flowObject.giveData.creditCard.text = description;
-                flowObject.giveData.newCreditCardId = id;
-                dispatch({
-                    payload: flowObject,
-                    type: actionTypes.SAVE_FLOW_OBJECT,
-                });
-                callApiAndDispatchData(dispatch, accountDetails);
-            }).catch((err) => {
-                triggerUxCritialErrors(err.errors || err, dispatch);
-            }).finally(() => {
-                dispatch({
-                    payload: {
-                        creditCardApiCall: false,
-                    },
-                    type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
-                });
-            });
-        } else {
-            dispatch({
-                payload: flowObject,
-                type: actionTypes.SAVE_FLOW_OBJECT,
-            });
-        }
+        dispatch({
+            payload: flowObject,
+            type: actionTypes.SAVE_FLOW_OBJECT,
+        });
     };
 };
 
@@ -731,15 +784,17 @@ export const reInitNextStep = (dispatch, flowObject) => {
     });
 };
 
-export const getBeneficiariesForGroup = (dispatch, groupId) => {
-    if (groupId !== null) {
+export const getBeneficiariesForGroup = (dispatch, id, type) => {
+    if (id !== null) {
         const fsa = {
             payload: {
                 benificiaryDetails: [],
+                fromType: type,
             },
             type: actionTypes.GET_BENIFICIARY_FOR_GROUP,
         };
-        callApiAndGetData(`/groups/${groupId}/groupBeneficiaries`,
+
+        callApiAndGetData(`/${type}/${id}/groupBeneficiaries`,
             {
                 params: {
                     dispatch,
@@ -811,7 +866,7 @@ const getCoverFeesApi = async (amount, fundId) => {
 
     const giveAmountData = await coreApi.post(`/allocationFees`, {
         data: params,
-        //uxCritical: true,
+        // uxCritical: true,
     });
 
     return giveAmountData;
@@ -870,31 +925,30 @@ export const getCoverAmount = async (fundId, giveAmount, dispatch) => {
     dispatch(fsa);
 };
 
-export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
-    return callApiAndGetData(`/companies/${companyId}/taxReceiptProfiles?page[size]=50&sort=-id`).then((result) => {
-        // return dispatch(setTaxReceiptProfile(result, type = ''));
-        const fsa = {
-            payload: {
-                companyTaxReceiptProfiles: (!_.isEmpty(result)) ? result : [],
-                taxReceiptGetApiStatus: true,
-            },
-            type: actionTypes.GET_COMPANY_TAXRECEIPTS,
-        };
-        return dispatch(fsa);
-    }).catch((error) => {
-        // console.log(error);
-    });
-};
+export const getCompanyTaxReceiptProfile = (dispatch, companyId) => callApiAndGetData(`/companies/${companyId}/taxReceiptProfiles?page[size]=50&sort=-id`).then((result) => {
+    // return dispatch(setTaxReceiptProfile(result, type = ''));
+    const fsa = {
+        payload: {
+            companyTaxReceiptProfiles: (!_.isEmpty(result)) ? result : [],
+            taxReceiptGetApiStatus: true,
+        },
+        type: actionTypes.GET_COMPANY_TAXRECEIPTS,
+    };
+    return dispatch(fsa);
+}).catch((error) => {
+    // console.log(error);
+});
 
 
 export const getGroupsFromSlug = (dispatch, slug) => {
-    return coreApi.get(`groups/find_by_slug`, {
+    const groupsFromSlugPromise = coreApi.get(`groups/find_by_slug`, {
         params: {
             dispatch,
             slug,
             uxCritical: true,
         },
-    }).then(
+    });
+    groupsFromSlugPromise.then(
         (result) => {
             dispatch({
                 payload: {
@@ -906,40 +960,147 @@ export const getGroupsFromSlug = (dispatch, slug) => {
     ).catch(() => {
         Router.pushRoute('/give/error');
     });
-};
-
-export const fetchGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId) => (dispatch) => {
-    const bodyData = {
-        data: {
-            attributes: {
-                amount: giveAmount,
-            },
-            relationships: {
-                destinationFund: {
-                    data: {
-                        id: giveToFundId,
-                        type: 'accountHolders',
-                    },
-                },
-                fund: {
-                    data: {
-                        id: giveFromFundId,
-                        type: 'accountHolders',
-                    },
-                },
-            },
-        },
-    };
-    coreApi.post('/groupAllocations/fetchMatchAmount', bodyData).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
-            dispatch({
-                payload: result.data,
-                type: actionTypes.GET_MATCHING_DETAILS_FOR_GROUPS,
-            });
-        }
-    }).catch();
+    return groupsFromSlugPromise;
 };
 
 export {
     createToken,
+};
+
+const fetchCompanyDetails = (dispatch, companyId) => coreApi.get(
+    `/companies/${companyId}`,
+    {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    },
+).then((result) => {
+    const payload = {
+        companyDetails: result.data,
+    };
+    dispatch({
+        payload,
+        type: actionTypes.UPDATE_COMPANY_BALANCE,
+    });
+});
+
+
+export const walletTopUp = (reloadObject, successMessage) => {
+    const accountDetails = {
+        id: reloadObject.giveData.giveTo.id,
+        type: reloadObject.giveData.giveTo.type,
+    };
+    return (dispatch) => saveDonations(reloadObject).then((result) => {
+        if (accountDetails.type === 'user') {
+            return getUserFund(dispatch, accountDetails.id);
+        } else if (accountDetails.type === 'companies') {
+            return fetchCompanyDetails(dispatch, accountDetails.id);
+        }
+    }).then(() => {
+        const statusMessageProps = {
+            message: successMessage,
+            type: 'success',
+        };
+        dispatch({
+            payload: {
+                errors: [
+                    statusMessageProps,
+                ],
+            },
+            type: 'TRIGGER_UX_CRITICAL_ERROR',
+        });
+    }).catch((error) => {
+        triggerUxCritialErrors(error.errors || error, dispatch);
+        return Promise.reject(error);
+    });
+};
+
+export const resetFlowObject = (type, dispatch) => {
+    const defaultProps = {
+        charity: beneficiaryDefaultProps,
+        donations: donationDefaultProps,
+        friend: p2pDefaultProps,
+        group: groupDefaultProps,
+    };
+    const defaultPropsData = _.cloneDeep(defaultProps[type]);
+    const payload = {
+        ...defaultPropsData.flowObject,
+    };
+    const fsa = {
+        payload,
+        type: actionTypes.SAVE_FLOW_OBJECT,
+    };
+    dispatch(fsa);
+};
+
+export const fetchGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId, dispatchMatchData = true) => async (dispatch) => {
+    // const bodyData = {
+    //     data: {
+    //         attributes: {
+    //             amount: giveAmount,
+    //         },
+    //         relationships: {
+    //             destinationFund: {
+    //                 data: {
+    //                     id: giveToFundId,
+    //                     type: 'accountHolders',
+    //                 },
+    //             },
+    //             fund: {
+    //                 data: {
+    //                     id: giveFromFundId,
+    //                     type: 'accountHolders',
+    //                 },
+    //             },
+    //         },
+    //     },
+    // };
+    const queryParam = {
+        amount: giveAmount,
+        destinationFund: giveToFundId,
+        fund: giveFromFundId,
+    };
+    try {
+        const result = await coreApi.get('/groupAllocations/fetchMatchAmount',
+            {
+                params: queryParam,
+            });
+        if (result && !_.isEmpty(result.data)) {
+            const matchingData = result.data;
+            matchingData.giveFromFund = giveFromFundId;
+            // if (dispatchMatchData) {
+            //     dispatch({
+            //         payload: matchingData,
+            //         type: actionTypes.GET_MATCHING_DETAILS_FOR_GROUPS,
+            //     });
+            // }
+            return Number(result.data.attributes.matchAvailable) === 1;
+        }
+    } catch (err) {
+        //
+    }
+};
+
+export const fetchFinalGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId) => (dispatch) => {
+    const queryParam = {
+        amount: giveAmount,
+        destinationFund: giveToFundId,
+        fund: giveFromFundId,
+    };
+    coreApi.get(`/groupAllocations/fetchMatchAmount`,
+        {
+            params: queryParam,
+        }
+    ).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            const matchingData = result.data;
+            matchingData.giveFromFund = giveFromFundId;
+            matchingData.giveAmount = giveAmount;
+            dispatch({
+                payload: matchingData,
+                type: actionTypes.GET_MATCHING_DETAILS_FOR_GROUPS,
+            });
+        }
+    }).catch();
 };

@@ -52,7 +52,7 @@ class ShareDetails extends React.Component {
         }
         const likeFlag = (profileDetails.type === 'beneficiaries') ? profileDetails.attributes.following : profileDetails.attributes.liked;
 
-        (likeFlag) ? unfollowProfile(dispatch, userId, targetId, profileDetails.type) : followProfile(dispatch, userId, targetId, profileDetails.type);
+        (likeFlag) ? dispatch(unfollowProfile(userId, targetId, profileDetails.type)) : dispatch(followProfile(userId, targetId, profileDetails.type));
 
     }
 

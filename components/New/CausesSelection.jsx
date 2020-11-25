@@ -63,10 +63,12 @@ function CausesSelection(props) {
                     <div className="reg-btn-wraper">
                         <Button
                             className="blue-bordr-btn-round-def"
+                            id="backSignUpCreateCause"
                             content="Back"
                             onClick={handleBack}
                         />
                         <Button
+                            id="signUpCreateCause"
                             type="submit"
                             primary
                             onClick={handleSubmit}

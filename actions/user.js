@@ -1,3 +1,4 @@
+/* eslint-disable import/exports-last */
 /* eslint-disable no-else-return */
 
 import _ from 'lodash';
@@ -19,6 +20,9 @@ import storage from '../helpers/storage';
 const { publicRuntimeConfig } = getConfig();
 const {
     BASIC_AUTH_KEY,
+    PARAMSTORE_APP_NAME,
+    PARAMSTORE_ENV_NAME,
+    PARAMSTORE_NAME_SPACE
 } = publicRuntimeConfig;
 let BASIC_AUTH_HEADER = null;
 if (!_.isEmpty(BASIC_AUTH_KEY)) {
@@ -29,7 +33,10 @@ if (!_.isEmpty(BASIC_AUTH_KEY)) {
     };
 }
 
+
 export const actionTypes = {
+    APPLICATION_ENV_CONFIG_VARIABLES: 'APPLICATION_ENV_CONFIG_VARIABLES',
+    GET_FRIENDS_LIST: 'GET_FRIENDS_LIST',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
@@ -39,6 +46,7 @@ export const actionTypes = {
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SET_USER_INFO: 'SET_USER_INFO',
     SET_USER_ACCOUNT_FETCHED: 'SET_USER_ACCOUNT_FETCHED',
+    SHOW_FRIENDS_DROPDOWN: 'SHOW_FRIENDS_DROPDOWN',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
     GIVING_GROUPS_AND_CAMPAIGNS: 'GIVING_GROUPS_AND_CAMPAIGNS',
     DISABLE_GROUP_SEE_MORE: 'DISABLE_GROUP_SEE_MORE',
@@ -48,6 +56,7 @@ export const actionTypes = {
     USER_FAVORITES: 'USER_FAVORITES',
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
+    UPDATE_USER_INFO_SHARE_PREFERENCES: 'UPDATE_USER_INFO_SHARE_PREFERENCES',
     CLAIM_CHARITY_ERROR_MESSAGE: 'CLAIM_CHARITY_ERROR_MESSAGE',
 };
 
@@ -307,7 +316,7 @@ const setDataToPayload = ({
     return data;
 };
 
-export const getUser = (dispatch, userId, token = null) => {
+export const getUser = async (dispatch, userId, token = null) => {
     const fsa = {
         payload: {},
         type: actionTypes.SET_USER_INFO,
@@ -321,11 +330,67 @@ export const getUser = (dispatch, userId, token = null) => {
             },
         };
     }
-    const userDetails = coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`, params);
-    const administeredCompanies = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`, params);
-    const administeredBeneficiaries = callApiAndGetData(`/users/${userId}/administeredBeneficiaries?page[size]=50&sort=-id`, params);
-    const beneficiaryAdminRoles = callApiAndGetData(`/users/${userId}/beneficiaryAdminRoles?page[size]=50&sort=-id`, params);
-    const companyAdminRoles = callApiAndGetData(`/users/${userId}/companyAdminRoles?page[size]=50&sort=-id`, params);
+    await coreApi.get(`/users/${userId}?include=activeRole`, params).then((result) => {
+        isAuthenticated = true;
+        const { data } = result;
+        const dataMap = {
+            BeneficiaryAdminRole: 'charity',
+            CompanyAdminRole: 'company',
+            DonorRole: 'personal',
+            ChimpAdminRole: 'personal',
+        };
+        const {
+            activeRoleId,
+        } = data.attributes;
+        _.merge(fsa.payload, {
+            activeRoleId,
+            info: data,
+            isAdmin: false,
+        });
+        if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
+            fsa.payload.isAdmin = true;
+        }
+        const {
+            attributes,
+            id,
+        } = result.included[0];
+        const {
+            roleType,
+            roleDetails,
+        } = attributes;
+        fsa.payload.currentAccount = {
+            accountType: dataMap[roleType],
+            avatar: roleDetails.avatar,
+            balance: `$${roleDetails.balance}`,
+            id: (dataMap[roleType] === 'company') ? attributes.companyId : null,
+            location: `/contexts/${id}`,
+            name: roleDetails.name,
+            slug: !_.isEmpty(roleDetails.slug) ? roleDetails.slug : null,
+        };
+    }).catch((error) => {
+        console.log(JSON.stringify(error));
+        isAuthenticated = false;
+    }).finally(() => {
+        dispatch({
+            payload: {
+                isAuthenticated,
+            },
+            type: 'SET_AUTH',
+        });
+        dispatch(fsa);
+    });
+};
+
+export const getUserAllDetails = (dispatch, userId, roles) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.SET_USER_INFO,
+    };
+    const userDetails = coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`);
+    const administeredCompanies = (_.includes(roles, 'CompanyAdminRole')) ? callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`) : null;
+    const administeredBeneficiaries = (_.includes(roles, 'BeneficiaryAdminRole')) ? callApiAndGetData(`/users/${userId}/administeredBeneficiaries?page[size]=50&sort=-id`) : null;
+    const beneficiaryAdminRoles = (_.includes(roles, 'BeneficiaryAdminRole')) ? callApiAndGetData(`/users/${userId}/beneficiaryAdminRoles?page[size]=50&sort=-id`) : null;
+    const companyAdminRoles = (_.includes(roles, 'CompanyAdminRole')) ? callApiAndGetData(`/users/${userId}/companyAdminRoles?page[size]=50&sort=-id`) : null;
     return Promise.all([
         userDetails,
         administeredCompanies,
@@ -335,7 +400,6 @@ export const getUser = (dispatch, userId, token = null) => {
     ])
         .then(
             (allData) => {
-                isAuthenticated = true;
                 const userData = allData[0];
                 const { data } = userData;
                 const {
@@ -358,9 +422,22 @@ export const getUser = (dispatch, userId, token = null) => {
                 if (hasAdminAccess) {
                     fsa.payload.isAdmin = true;
                 }
-                const includedData = _.concat(
+                /* const includedData = _.concat(
                     userData.included, allData[1], allData[2], allData[3], allData[4],
-                );
+                ); */
+                let includedData = userData.included;
+                if (!_.isEmpty(allData[1])) {
+                    includedData = _.concat(includedData, allData[1]);
+                }
+                if (!_.isEmpty(allData[2])) {
+                    includedData = _.concat(includedData, allData[2]);
+                }
+                if (!_.isEmpty(allData[3])) {
+                    includedData = _.concat(includedData, allData[3]);
+                }
+                if (!_.isEmpty(allData[4])) {
+                    includedData = _.concat(includedData, allData[4]);
+                }
                 if (!_.isEmpty(includedData)) {
                     const accounts = [];
                     const contexts = [];
@@ -374,8 +451,10 @@ export const getUser = (dispatch, userId, token = null) => {
                             const { roleType } = attributes;
                             const entityType = _.snakeCase(roleType).split('_')[0];
                             if (entityType.slice(-1) === 'y') {
+                                const typeOfAccount = (entityType === 'beneficiary') ? 'charity' : entityType;
                                 contexts.push({
-                                    accountType: (entityType === 'beneficiary') ? 'charity' : entityType,
+                                    accountId: (typeOfAccount === 'company') ? attributes.companyId : null,
+                                    accountType: typeOfAccount,
                                     entityId: attributes[`${entityType}Id`],
                                     roleId: id,
                                 });
@@ -405,6 +484,7 @@ export const getUser = (dispatch, userId, token = null) => {
                         if (!_.isEmpty(account)) {
                             account.location = `/contexts/${roleId}`;
                             account.accountType = context.accountType;
+                            account.id = context.accountId;
                             if (roleId == activeRoleId) {
                                 fsa.payload.currentAccount = account;
                             } else {
@@ -413,17 +493,11 @@ export const getUser = (dispatch, userId, token = null) => {
                         }
                     });
                 }
+                return fsa.payload.otherAccounts;
             },
         ).catch((error) => {
             // console.log(JSON.stringify(error));
-            isAuthenticated = false;
         }).finally(() => {
-            dispatch({
-                payload: {
-                    isAuthenticated,
-                },
-                type: 'SET_AUTH',
-            });
             dispatch(fsa);
         });
 };
@@ -580,8 +654,6 @@ export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, pr
         dispatch(fsa);
     });
 };
-
-
 
 export const leaveGroup = (dispatch, group, allData, type) => {
     const fsa = {
@@ -853,6 +925,53 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
     });
 };
 
+export const getAllFriendsList = async (userId, pageNumber = 1) => {
+    const result = await graphApi.get(`user/myfriends`, {
+        params: {
+            'page[number]': pageNumber,
+            'page[size]': 100,
+            status: 'accepted',
+            userid: userId,
+        },
+    });
+    const dataArray = result.data;
+    if (pageNumber < result.meta.pageCount) {
+        return dataArray.concat(await getAllFriendsList(userId, pageNumber + 1));
+    }
+    return dataArray;
+};
+
+export const getFriendsList = (userId) => {
+    return async (dispatch) => {
+        const fsa = {
+            payload: {
+                friendsList: [],
+            },
+            type: actionTypes.GET_FRIENDS_LIST,
+        };
+        const friendsList = await (getAllFriendsList(userId));
+        if (!_.isEmpty(friendsList)) {
+            fsa.payload.friendsList = friendsList;
+            dispatch(fsa);
+        } else {
+            dispatch({
+                payload: {
+                    showFriendDropDown: false,
+                },
+                type: actionTypes.SHOW_FRIENDS_DROPDOWN,
+            });
+        }
+    };
+};
+
+export const updateInfoShareUserPreferences = (infoData) => (dispatch) => {
+    dispatch({
+        payload: {
+            info: infoData,
+        },
+        type: actionTypes.UPDATE_USER_INFO_SHARE_PREFERENCES,
+    });
+};
 export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) => {
     return coreApi.post(`/claimCharities`, {
         data: {
@@ -870,12 +989,14 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
                     }
                 }
             } = result;
-            getUser(dispatch, userId, null).then(() => {
+            // Doing the other accounts API call on componentDidMount of success page. This is to make sure that it will 
+            // work fine in login scenario too.
+            // getUserAllDetails(dispatch, userId).then(() => {
                 Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
-            });
+            // });
         }
     ).catch(() => {
-        const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below.";
+        const errorMessage = 'That code doesn\'t look right or it\'s expired. Try again or claim without a code below.';
         dispatch(claimCharityErrorCondition(errorMessage));
     });
 };
@@ -911,10 +1032,10 @@ export const validateClaimCharityAccessCode = (accessCode) => (dispatch) => {
                 Router.pushRoute('/users/new?isClaimCharity=true');
             }
         }).catch(() => {
-            const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below.";
+            const errorMessage = 'That code doesn\'t look right or it\'s expired. Try again or claim without a code below.';
             dispatch(claimCharityErrorCondition(errorMessage));
         });
-}
+};
 
 export const claimCharityErrorCondition = (message) => (dispatch) =>{
     dispatch({
@@ -923,4 +1044,29 @@ export const claimCharityErrorCondition = (message) => (dispatch) =>{
         },
         type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
     });
-}
+};
+
+export const getParamStoreConfig = (params = []) => async (dispatch) => {
+    try {
+        const paramStoreConfigResponse = await securityApi.post('/paramStore/readParams', {
+            appName: PARAMSTORE_APP_NAME,
+            envName: PARAMSTORE_ENV_NAME,
+            nameSpace: PARAMSTORE_NAME_SPACE,
+            ssmKey: [
+                ...params,
+            ],
+        });
+        let paramStoreConfigObj = {};
+        paramStoreConfigResponse.data.filter((item) => {
+            paramStoreConfigObj = {
+                ...paramStoreConfigObj,
+                [`${item.attributes.key}`]: item.attributes.value,
+            };
+        });
+        dispatch({
+            payload: paramStoreConfigObj,
+            type: 'APPLICATION_ENV_CONFIG_VARIABLES',
+        });
+        return paramStoreConfigObj;
+    } catch (err) { }
+};

@@ -296,7 +296,7 @@ class Favorites extends React.Component {
             userProfileBasicData,
         } = this.props;
         let favouriteVisible = 0;
-        if (!_.isEmpty(userProfileBasicData)) {
+        if (!_.isEmpty(userProfileBasicData) && userProfileBasicData.data) {
             favouriteVisible = userProfileBasicData.data[0].attributes.favourites_visibility;
         }
         const favouritePrivacyColumn = 'favourites_visibility';

@@ -70,12 +70,13 @@ export const validateNewUser = (dispatch, emailId) => {
             },
             type: actionTypes.USER_API_VALIDATING,
         });
-        return dispatch({
+        dispatch({
             payload: {
                 userExists: result.data[0].attributes.email_exists,
             },
             type: actionTypes.USER_EXISTS,
         });
+        return result.data[0].attributes.email_exists;
     }).catch((error) => {
         // console.log(error);
     });

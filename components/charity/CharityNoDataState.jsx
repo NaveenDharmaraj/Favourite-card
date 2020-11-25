@@ -14,6 +14,7 @@ import noDataImg from '../../static/images/noresults.png';
 
 const CharityNoDataState = (props) => {
     const {
+        beneficiaryFinanceApiFail,
         t: formatMessage,
     } = props;
     return (
@@ -30,7 +31,9 @@ const CharityNoDataState = (props) => {
                                 {formatMessage('charityProfile:noDataHeader')}
                                 <Header.Subheader>
                                     <Header.Content>
-                                        {formatMessage('charityProfile:noDataContent')}
+                                        {beneficiaryFinanceApiFail ? formatMessage('charityProfile:charityProfileChartApiFail')
+                                            : formatMessage('charityProfile:noDataContent')
+                                        }
                                     </Header.Content>
                                 </Header.Subheader>
                             </Header>
@@ -43,10 +46,12 @@ const CharityNoDataState = (props) => {
 };
 
 CharityNoDataState.defaultProps = {
-    t: () => {},
+    beneficiaryFinanceApiFail: false,
+    t: () => { },
 };
 
 CharityNoDataState.propTypes = {
+    beneficiaryFinanceApiFail: PropTypes.bool,
     t: PropTypes.func,
 };
 
