@@ -44,7 +44,7 @@ import {
 import {
     getLocation,
 } from '../../../helpers/profiles/utils';
-import findFriendImg from '../../../static/images/find-friends.png';
+import findFriendImg from '../../../static/images/findfriends_box.png';
 import friendAvatarPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 
 import FriendListCard from './friendListCard';
@@ -137,7 +137,6 @@ class UserFriendList extends React.Component {
             hideFriendPage,
         } = this.props;
         const friendListArray = [];
-        debugger;
         dataArray.map((data) => {
             friendListArray.push(
                 <FriendListCard
@@ -466,12 +465,10 @@ class UserFriendList extends React.Component {
             friendTypeAheadData,
         } = this.props;
         const selectedUser = [];
-        debugger;
         this.setState({
             friendSearchText: data.result.title,
         });
         selectedUser.push(friendTypeAheadData[_findIndex(friendTypeAheadData, (friend) => friend.attributes.user_id === data.result.id)]);
-        debugger;
         const fsa = {
             payload: {
                 count: 1,
