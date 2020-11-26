@@ -10,7 +10,6 @@ import {
     string,
     func,
 } from 'prop-types';
-import _ from 'lodash';
 import getConfig from 'next/config';
 
 const { publicRuntimeConfig } = getConfig();
@@ -97,15 +96,15 @@ class LeaveModal extends React.Component {
 }
 
 LeaveModal.defaultProps = {
-    callLeaveGroup: _.noop,
-    close: _.noop,
+    callLeaveGroup: () => {},
+    close: () => {},
     errorMessage: {
         message: '',
     },
     id: '',
     leaveButtonLoader: false,
     name: '',
-    open: _.noop,
+    open: () => {},
     showError: false,
     showMangeGroups: false,
     slug: '',

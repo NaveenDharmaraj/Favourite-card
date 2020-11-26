@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import _uniqBy from 'lodash/uniqBy';
+import _findIndex from 'lodash/findIndex';
+import _isEmpty from 'lodash/isEmpty';
+
 const group = (state = {}, action) => {
     let newState = {
         ...state,
@@ -11,72 +14,39 @@ const group = (state = {}, action) => {
             };
             break;
         case 'GET_GROUP_MEMBERS_DETAILS':
-            if (state.groupMembersDetails && state.groupMembersDetails.data && action.payload.isViewMore) {
-                newState = {
-                    ...state,
-                    groupMembersDetails: {
-                        ...state.groupMembersDetails,
-                        data: state.groupMembersDetails.data.concat(action.payload.data),
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            } else {
-                newState = {
-                    ...state,
-                    groupMembersDetails: {
-                        ...state.groupMembersDetails,
-                        data: action.payload.data,
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            }
+            newState = {
+                ...state,
+                groupMembersDetails: {
+                    ...state.groupMembersDetails,
+                    data: action.payload.data,
+                    pageCount: action.payload.pageCount,
+                    totalCount: action.payload.totalCount,
+                },
+            };
             break;
         case 'GET_GROUP_ADMIN_DETAILS':
-            if (state.groupAdminsDetails && state.groupAdminsDetails.data && action.payload.isViewMore) {
-                newState = {
-                    ...state,
-                    groupAdminsDetails: {
-                        ...state.groupAdminsDetails,
-                        data: state.groupAdminsDetails.data.concat(action.payload.data),
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            } else {
-                newState = {
-                    ...state,
-                    groupAdminsDetails: {
-                        ...state.groupAdminsDetails,
-                        data: action.payload.data,
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            }
+            newState = {
+                ...state,
+                groupAdminsDetails: {
+                    ...state.groupAdminsDetails,
+                    data: action.payload.data,
+                    totalCount: action.payload.totalCount,
+                },
+            };
             break;
         case 'GET_GROUP_BENEFICIARIES':
-            if (state.groupBeneficiaries && state.groupBeneficiaries.data) {
-                newState = {
-                    ...state,
-                    groupBeneficiaries: {
-                        ...state.groupBeneficiaries,
-                        data: state.groupBeneficiaries.data.concat(action.payload.data),
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            } else {
-                newState = {
-                    ...state,
-                    groupBeneficiaries: {
-                        ...state.groupBeneficiaries,
-                        data: action.payload.data,
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            }
+            newState = {
+                ...state,
+                groupBeneficiaries: {
+                    ...state.groupBeneficiaries,
+                    data: action.payload.data,
+                },
+            };
             break;
         case 'GET_GROUP_TRANSACTION_DETAILS':
             newState = {
                 ...state,
-                groupTransactions: Object.assign({}, state.groupTransactions, action.payload.groupTransactions),
+                groupTransactions: Object.assign({}, action.payload.groupTransactions),
             };
             break;
         case 'GET_GROUP_ACTIVITY_DETAILS':
@@ -86,7 +56,7 @@ const group = (state = {}, action) => {
                     ...state,
                     groupActivities: {
                         ...state.groupActivities,
-                        data: _.uniqBy(data,
+                        data: _uniqBy(data,
                             (e) => {
                                 return e.id;
                             }),
@@ -101,7 +71,7 @@ const group = (state = {}, action) => {
                         ...state,
                         groupActivities: {
                             ...state.groupActivities,
-                            data: _.uniqBy(data,
+                            data: _uniqBy(data,
                                 (e) => {
                                     return e.id;
                                 }),
@@ -116,7 +86,6 @@ const group = (state = {}, action) => {
                             data: action.payload.groupActivities.data,
                             nextLink: action.payload.nextLink,
                         },
-                        // groupActivities: Object.assign({}, state.groupActivities, action.payload.groupActivities),
                         loadComments: false,
                     };
                 }
@@ -128,47 +97,55 @@ const group = (state = {}, action) => {
                         data: action.payload.groupActivities.data,
                         nextLink: action.payload.nextLink,
                     },
-                    // groupActivities: Object.assign({}, state.groupActivities, action.payload.groupActivities),
                     loadComments: false,
                 };
             }
             break;
-        case 'GET_GROUP_COMMENTS':
-            if (action.payload.isReply) {
-                if (state.groupComments && state.groupComments[action.payload.activityId]) {
-                    newState = {
-                        ...state,
-                        groupComments: {
-                            ...state.groupComments,
-                            [action.payload.activityId]: action.payload.groupComments.concat(state.groupComments[action.payload.activityId]),
-                            loadComments: true,
-    
-                        },
-                    };
-                } else {
-                    newState = {
-                        ...state,
-                        groupComments: {
-                            ...state.groupComments,
-                            [action.payload.activityId]: action.payload.groupComments,
-                            loadComments: true,
-                        },
-                    };
-                }
+        case 'POST_NEW_COMMENT':
+            const groupActivityIndex = _findIndex(state.groupActivities.data, (data) => data.id === action.payload.activityId);
+            const activityArray = state.groupActivities.data;
+            activityArray[groupActivityIndex].attributes.commentsCount++;
+            if (state.groupComments && state.groupComments[action.payload.activityId]) {
+                newState = {
+                    ...state,
+                    groupActivities: {
+                        ...state.groupActivities,
+                        data: activityArray,
+                    },
+                    groupComments: {
+                        ...state.groupComments,
+                        [action.payload.activityId]: action.payload.groupComments.concat(state.groupComments[action.payload.activityId]),
+                        loadComments: true,
+                    },
+                };
             } else {
                 newState = {
                     ...state,
+                    groupActivities: {
+                        ...state.groupActivities,
+                        data: activityArray,
+                    },
                     groupComments: {
                         ...state.groupComments,
                         [action.payload.activityId]: action.payload.groupComments,
                         loadComments: true,
                     },
-    
                 };
             }
             break;
+        case 'GET_GROUP_COMMENTS':
+            newState = {
+                ...state,
+                groupComments: {
+                    ...state.groupComments,
+                    [action.payload.activityId]: action.payload.groupComments,
+                    loadComments: true,
+                },
+
+            };
+            break;
         case 'ACTIVITY_LIKE_STATUS':
-            const activityIndex = _.findIndex(state.groupActivities.data, (data) => data.id === action.payload.eventId);
+            const activityIndex = _findIndex(state.groupActivities.data, (data) => data.id === action.payload.eventId);
             const dataArray = state.groupActivities.data;
             dataArray[activityIndex].attributes.isLiked = action.payload.activityStatus;
             if (action.payload.activityStatus) {
@@ -275,11 +252,11 @@ const group = (state = {}, action) => {
             newState = {};
             break;
         case 'TOGGLE_TRANSACTION_VISIBILITY':
-            const transactionIndex = _.findIndex(state.groupTransactions.data, (data) => data.id === action.payload.transactionId);
+            const transactionIndex = _findIndex(state.groupTransactions.data, (data) => data.id === action.payload.transactionId);
             const transactionArray = state.groupTransactions.data;
             transactionArray[transactionIndex] = action.payload.data;
-            if (state.groupActivities && !_.isEmpty(state.groupActivities.data)) {
-                const NewActivityIndex = _.findIndex(state.groupActivities.data, (data) => data.id === action.payload.transactionId);
+            if (state.groupActivities && !_isEmpty(state.groupActivities.data)) {
+                const NewActivityIndex = _findIndex(state.groupActivities.data, (data) => data.id === action.payload.transactionId);
                 const NewActivityArray = state.groupActivities.data;
                 NewActivityArray[NewActivityIndex] = action.payload.data;
                 newState = {
@@ -307,6 +284,47 @@ const group = (state = {}, action) => {
             newState = {
                 ...state,
                 redirectToPrivateGroupErrorPage: action.payload.redirectToErrorPage,
+            };
+            break;
+        case 'GET_GROUP_TAB_INDEX':
+            newState = {
+                ...state,
+                activeIndex: action.payload.activeIndex,
+            };
+            break;
+        case 'GET_GROUP_TAB_OFFSET':
+            newState = {
+                ...state,
+                scrollOffset: action.payload.scrollOffset,
+            };
+            break;
+        case 'GROUP_MEMBER_UPDATE_FRIEND_STATUS':
+            const friendIndex = _findIndex(state.groupMembersDetails.data, (data) => data.id === action.payload.memberUserId);
+            const memberArray = state.groupMembersDetails.data;
+            memberArray[friendIndex].attributes.friendStatus = action.payload.status;
+            newState = {
+                ...state,
+                groupMembersDetails: {
+                    ...state.groupMembersDetails,
+                    data: memberArray,
+                },
+            };
+            break;
+        case 'CHARITY_SUPPORT_PLACEHOLDER_STATUS':
+            newState = {
+                ...state,
+                charityLoader: action.payload.showPlaceholder,
+            };
+            break;
+        case 'GROUP_MATCHING_HISTORY':
+            newState = {
+                ...state,
+                groupMatchingHistory: {
+                    ...state.groupMatchingHistory,
+                    data: action.payload.data,
+                    pageCount: action.payload.pageCount,
+                    totalMatch: action.payload.totalMatch,
+                },
             };
             break;
         default:

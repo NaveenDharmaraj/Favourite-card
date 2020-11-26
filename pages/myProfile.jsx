@@ -65,7 +65,7 @@ class MyProfile extends React.Component {
     }
 
     getPageIndexByName(pageName) {
-        switch(pageName) {
+        switch (pageName) {
             case 'basic':
                 return 0;
             case 'charitableinterest':
@@ -80,19 +80,19 @@ class MyProfile extends React.Component {
     }
 
     handleTab(event, data) {
-        switch(data.activeIndex){
+        switch (data.activeIndex) {
             case 0:
                 Router.pushRoute('/user/profile/basic');
-            break;
+                break;
             case 1:
                 Router.pushRoute('/user/profile/charitableinterest');
-            break;
+                break;
             case 2:
                 Router.pushRoute('/user/profile/friends');
-            break;
+                break;
             case 3:
                 Router.pushRoute('/user/profile/settings');
-            break;
+                break;
             default:
                 break;
         }
@@ -113,8 +113,8 @@ class MyProfile extends React.Component {
                     && userProfileBasicData.data
                     && _.size(userProfileBasicData.data) > 0) {
                     userData = userProfileBasicData.data[0].attributes;
-                }             
-                return(
+                }
+                return (
                     <Tab.Pane attached={false}>
                         <EditProfileBasic userData={userData} />
                     </Tab.Pane>
@@ -122,7 +122,7 @@ class MyProfile extends React.Component {
             }
         },
         {
-            
+
             menuItem: 'Your causes and topics',
             render: () => {
                 return (
@@ -165,15 +165,15 @@ class MyProfile extends React.Component {
             userData = userProfileBasicData.data[0].attributes;
         }
         let userAvatar = '';
-        if(!_.isEmpty(currentUser)) {
+        if (!_.isEmpty(currentUser)) {
             userAvatar = currentUser.attributes.avatar;
         }
         return (
-            <Layout authRequired>
+            <Layout authRequired stripe>
                 {/* <BasicProfile userData={userData} avatar={userAvatar}/>
                 <div className="pb-3">
                     <Container>
-                        <div className="charityTab n-border">
+                        <div className="charityTab n-border user-profile-settings">
                             <Tab
                                 activeIndex={activeTabIndex}
                                 menu={{
@@ -201,7 +201,7 @@ function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         userProfileBasicData: state.userProfile.userProfileBasicData,
-        userCausesList: state.userProfile.userCausesList,   
+        userCausesList: state.userProfile.userCausesList,
     };
 }
 

@@ -179,7 +179,7 @@ const isValidBrowser = (userAgent) => {
             iOS: {
                 Chrome: '>67',
                 Chromium: '>67',
-                Firefox: '>58',
+                Firefox: '>15',
                 'Internet Explorer': '>15',
                 'Microsoft Edge': '>17',
                 safari: '>10',
@@ -196,7 +196,7 @@ const isValidBrowser = (userAgent) => {
             iOS: {
                 Chrome: '>67',
                 Chromium: '>67',
-                Firefox: '>58',
+                Firefox: '>15',
                 'Internet Explorer': '>15',
                 'Microsoft Edge': '>17',
                 safari: '>10',

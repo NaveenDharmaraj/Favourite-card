@@ -2,7 +2,13 @@
     "donationAmountIsLess": "Top up your account balance by ${{topupAmount}} or more to send this gift.",
     "donationMatchLabel": "Matching partner",
     "donationsMatchPopup": "If there’s an opportunity for this money to be matched, it will appear here. A request will go to the matching party (your employer, for example) who can then choose to match it according to their policy.",
+    "donationMatchPolicyNote": "{{companyName}}’s matches {{policyPercentage}} for each $1.00 you add, up to {{policyMax}} each {{policyPeriod}}.",
+    "donationMatchNote": "So far, {{companyName}} has matched {{totalMatched}} in {{donationMonth}}.",
+    "policyPeriodMonth": "month",
+    "policyPeriodYear": "year",
     "creditCardLabel": "Credit card",
     "creditCardPlaceholder": "Select Credit Card ",
-    "accountTopUpHeaderLabel": "Top up your account balance to give this gift"
+    "accountTopUpHeaderLabel": "Top up your account balance to give this gift",
+    "noteToSelfPlaceHolder": "Why did you add money today?"
+
 }

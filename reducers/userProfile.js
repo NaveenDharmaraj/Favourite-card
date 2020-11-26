@@ -227,6 +227,18 @@ const userProfile = (state = {}, action) => {
                 showAddButtonLoader: action.payload.showAddButtonLoader,
             };
             break;
+        case 'USER_INFO_TO_SHARE_OPTIONS':
+            newState = {
+                ...state,
+                infoShareOptions: action.payload.infoShareOptions,
+            };
+            break;
+        case 'USER_INFO_TO_SHARE_OPTIONS_LOADER':
+            newState = {
+                ...state,
+                infoShareDropDownLoader: action.payload.infoShareDropDownLoader,
+            };
+            break;
         case 'DELETE_CREDIT_CARD_MSG_POPUP_LOADER':
             newState = {
                 ...state,
@@ -271,6 +283,21 @@ const userProfile = (state = {}, action) => {
                 userFindFriendsList: {
                     ...state.userFindFriendsList,
                     data: selectedFriendsArray,
+                },
+            };
+            break;
+        case 'USER_CHARITY_INFO_TO_SHARE_OPTIONS':
+            newState = {
+                ...state,
+                charityShareInfoOptions: action.payload.charityShareInfoOptions,
+            };
+            break;
+        case 'USER_GROUP_CAMPAIGN_ADMIN_INFO_TO_SHARE_OPTIONS':
+            newState = {
+                ...state,
+                infoOptions: {
+                    groupCampaignAdminShareInfoOptions: action.payload.infoOptions.groupCampaignAdminShareInfoOptions,
+                    ...(action.payload.infoOptions.groupMemberInfoToShare && { groupMemberInfoToShare: action.payload.infoOptions.groupMemberInfoToShare }),
                 },
             };
             break;

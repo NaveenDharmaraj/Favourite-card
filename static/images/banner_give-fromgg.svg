@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440px" height="150px" viewBox="0 0 1440 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>banner_give-fromgg</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="1440" height="150"/>
+    </defs>
+    <g id="Give-|-from-a-Giving-Group" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="3-Give-from-a-Giving-Group---to-User" transform="translate(0.000000, -81.000000)">
+            <g id="banner_give-fromgg" transform="translate(0.000000, 81.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"/>
+                </mask>
+                <use id="Mask" fill="#F2F7FE" xlink:href="#path-1"/>
+                <rect id="Rectangle" fill="#84ABEA" mask="url(#mask-2)" x="1240" y="33.9282869" width="47" height="7.96812749"/>
+                <rect id="Rectangle" fill="#93EBB2" mask="url(#mask-2)" x="1179" y="16" width="13" height="10.9561753"/>
+                <rect id="Rectangle-Copy-17" fill="#6194E5" opacity="0.778762091" mask="url(#mask-2)" x="230" y="5.97609562" width="17" height="9.96015936"/>
+                <rect id="Rectangle" fill="#F7BC5F" mask="url(#mask-2)" transform="translate(285.000000, 27.888446) scale(-1, 1) translate(-285.000000, -27.888446) " x="267" y="23.9043825" width="36" height="7.96812749"/>
+                <rect id="Rectangle" fill="#DB0163" mask="url(#mask-2)" x="1170" y="142" width="47" height="7.96812749"/>
+                <rect id="Rectangle" fill="#93EBB2" mask="url(#mask-2)" x="525" y="143.426295" width="47" height="7.96812749"/>
+                <rect id="Rectangle" fill="#F7BC5F" mask="url(#mask-2)" transform="translate(736.000000, 131.474104) scale(-1, 1) translate(-736.000000, -131.474104) " x="718" y="127.49004" width="36" height="7.96812749"/>
+                <rect id="Rectangle" fill="#9B8FBB" mask="url(#mask-2)" x="1297" y="122.50996" width="24" height="7.96812749"/>
+                <rect id="Rectangle" fill="#84ABEA" mask="url(#mask-2)" x="610" y="10" width="47" height="7.96812749"/>
+                <rect id="Rectangle" fill="#FCC7AD" mask="url(#mask-2)" x="661" y="10" width="7" height="8"/>
+                <rect id="Rectangle" fill="#ED803B" mask="url(#mask-2)" transform="translate(1112.000000, 29.500000) rotate(-180.000000) translate(-1112.000000, -29.500000) " x="1100" y="21" width="24" height="17"/>
+                <rect id="Rectangle" fill="#F7BC5F" mask="url(#mask-2)" transform="translate(1090.000000, 29.500000) rotate(-180.000000) translate(-1090.000000, -29.500000) " x="1087" y="21" width="6" height="17"/>
+            </g>
+        </g>
+    </g>
+</svg>

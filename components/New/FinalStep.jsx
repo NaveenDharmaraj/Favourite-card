@@ -40,11 +40,13 @@ function FinalStep(props) {
                     <Form>
                         <div className="create-btn-wraper">
                             <Button
+                                id="backSignUpCreateAccount"
                                 className="blue-bordr-btn-round-def w-160 pt-1 pb-1"
                                 content="Back"
                                 onClick={handleBack}
                             />
                             <Button
+                                id="signUpCreateAccount"
                                 type="submit"
                                 disabled={buttonClicked}
                                 onClick={handleSubmit}

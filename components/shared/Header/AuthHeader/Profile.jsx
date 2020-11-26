@@ -22,10 +22,13 @@ import {
 import { withRouter } from 'next/router';
 import getConfig from 'next/config';
 
-import { default as placeholderUser } from '../../../../static/images/no-data-avatar-user-profile.png';
+import {
+    getUserAllDetails,
+} from '../../../../actions/user';
 import { withTranslation } from '../../../../i18n';
 import { Link } from '../../../../routes';
-import IconIndividual from '../../../../static/images/chimp-icon-individual.png';
+import IconIndividual from '../../../../static/images/no-data-avatar-user-profile.png';
+
 import SwitchAccountModal from './SwitchAccountModal';
 
 const { publicRuntimeConfig } = getConfig();
@@ -45,10 +48,23 @@ class Profile extends React.Component {
         this.closeModal = this.closeModal.bind(this);
     }
 
+    componentDidMount() {
+        const {
+            dispatch,
+            userInfo: {
+                attributes: {
+                    roles,
+                },
+                id,
+            },
+        } = this.props;
+        getUserAllDetails(dispatch, id, roles);
+    }
+
     openModal() {
         this.setState({
             open: true,
-            popupOpen : false,
+            popupOpen: false,
         });
     }
 
@@ -68,9 +84,11 @@ class Profile extends React.Component {
             },
             CurrentUserId,
             isAdmin,
+            otherAccounts,
             router,
+            t,
         } = this.props;
-        const formatMessage = this.props.t;
+        const formatMessage = t;
         let accountSettingsText = formatMessage('accountSettings');
         let accountUrl = `/user/profile/basic`;
         if (accountType === 'company') {
@@ -93,7 +111,7 @@ class Profile extends React.Component {
                     onClose={() => { this.setState({popupOpen: !this.state.popupOpen}); }}
                     trigger={(
                         <Menu.Item as="a" className={router.asPath.search('/user/profile') !== -1 ? 'user-img active' : 'user-img'}>
-                            <Image src={avatar || placeholderUser}  circular />
+                            <Image src={avatar || IconIndividual} style={{ width: '35px' }} circular />
                         </Menu.Item>
                     )}
                 >
@@ -101,7 +119,7 @@ class Profile extends React.Component {
                         <Table>
                             <Link route={`/users/profile/myprofile`}>
                                 <Table.Row>
-                                    <Table.Cell><Image src={avatar || placeholderUser} style={{ width: '80px' }} circular /></Table.Cell>
+                                    <Table.Cell><Image src={avatar || IconIndividual} style={{ width: '80px' }} circular /></Table.Cell>
                                     <Table.Cell>
                                         {name}
                                     </Table.Cell>
@@ -129,7 +147,7 @@ class Profile extends React.Component {
                                 </List.Item>
                             </Link>
                             {
-                                !_isEmpty(this.props.otherAccounts) && (
+                                !_isEmpty(otherAccounts) && (
                                     <Fragment>
                                         <List.Item as="a" onClick={() => { this.openModal(); }}>
                                             <List.Icon name='switchAcc' />
@@ -170,7 +188,7 @@ class Profile extends React.Component {
                 {
                     this.state.open && (
                         <SwitchAccountModal
-                            accounts={this.props.otherAccounts}
+                            accounts={otherAccounts}
                             close={this.closeModal}
                             open={this.state.open}
                         />
@@ -188,11 +206,15 @@ Profile.defaultProps = {
         name: '',
     },
     CurrentUserId: '',
+    dispatch: _noop,
     isAdmin: false,
     router: {
         asPath: '',
     },
     t: _noop,
+    userInfo: {
+        id: '',
+    },
 };
 
 Profile.propTypes = {
@@ -201,11 +223,15 @@ Profile.propTypes = {
         name: string,
     },
     CurrentUserId: string,
+    dispatch: func,
     isAdmin: bool,
     router: {
         asPath: string,
     },
     t: func,
+    userInfo: {
+        id: string,
+    },
 };
 
 const mapStateToProps = (state) => ({
@@ -213,6 +239,7 @@ const mapStateToProps = (state) => ({
     CurrentUserId: state.user.info.id,
     isAdmin: state.user.isAdmin,
     otherAccounts: state.user.otherAccounts,
+    userInfo: state.user.info,
 });
 
 export default withRouter(withTranslation('authHeader')(connect(mapStateToProps)(Profile)));

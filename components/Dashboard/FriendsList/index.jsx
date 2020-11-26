@@ -29,7 +29,6 @@ class FriendsList extends React.Component {
         this.state = {
             friendListLoader: !props.friendsData,
         };
-
         this.giveButtonClick = this.giveButtonClick.bind(this);
     }
 
@@ -38,10 +37,10 @@ class FriendsList extends React.Component {
             currentUser,
             dispatch,
         } = this.props;
-        getFriendsList(dispatch, currentUser.attributes.email)
+        getFriendsList(dispatch, currentUser.attributes.email);
+        this.lazyLoadImage();
     }
-
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         const {
             friendsData,
         } = this.props;
@@ -56,13 +55,53 @@ class FriendsList extends React.Component {
                 friendListLoader,
             });
         }
+        if (!_.isEqual(this.state.friendListLoader, prevState.friendListLoader)) {
+            this.lazyLoadImage();
+        }
     }
+    lazyLoadImage = () => {
+        const options = {
+            root: null,
+            threshold: 0,
+            rootMargin: '0px 0px 0px 0px',
+        };
+        const _imageElements = document.querySelectorAll('.friends-lazyLoad');
+        if ('IntersectionObserver' in window) {
+            // LazyLoad images using IntersectionObserver
+            const imgObserver = new IntersectionObserver(((entries, imgObserver) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) {
+                        return
+                    } else {
+                        this.preloadImage(entry.target);
+                        imgObserver.unobserve(entry.target);
+                    }
+                });
+            }), options);
+            _imageElements.forEach((element) => {
+                imgObserver.observe(element);
+            });
+        } else {
+            // Load all images at once
+            _imageElements.forEach((element) => {
+                this.preloadImage(element)
+            });
+        }
 
-    giveButtonClick(email, name) {
+    };
+
+    preloadImage = (img) => {
+        const src = img.getAttribute('data-src');
+        if (!src) {
+            return;
+        }
+        img.firstChild.src = src;
+    };
+    giveButtonClick(email, name, image) {
         const {
             dispatch,
         } = this.props;
-        storeEmailIdToGive(dispatch, email, name);
+        storeEmailIdToGive(dispatch, email, name, image);
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -73,13 +112,13 @@ class FriendsList extends React.Component {
                     <Grid verticalAlign="middle">
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={8} computer={8}>
-                                <Image src={noDataFriends} className="noDataLeftImg" />
+                                <Image data-src={noDataFriends} className="noDataLeftImg friends-lazyLoad" />
                             </Grid.Column>
                             <Grid.Column mobile={16} tablet={8} computer={8}>
                                 <div className="givingGroupNoDataContent">
                                     <Header as="h4">
                                         <Header.Content>
-                                        Connect with people you know on Charitable Impact.
+                                            Connect with people you know on Charitable Impact.
                                         </Header.Content>
                                     </Header>
                                     <div>
@@ -111,10 +150,11 @@ class FriendsList extends React.Component {
                 return (
                     <Grid.Column key={index}>
                         <Card>
-                            <Link  route={`/users/profile/${data.attributes.user_id}`} passHref>
+                            <Link route={`/users/profile/${data.attributes.user_id}`} passHref>
                                 <Image
-                                    className="pointer"
-                                    src={data.attributes.avatar}
+                                    className="pointer friends-lazyLoad"
+                                    src={''}
+                                    data-src={data.attributes.avatar}
                                     circular
                                 />
                             </Link>
@@ -122,7 +162,7 @@ class FriendsList extends React.Component {
                                 <Card.Header>{name}</Card.Header>
                                 <Card.Description>
                                     <Link className="lnkChange" route="/give/to/friend/new" passHref>
-                                        <Button className="give-frnds-btn" onClick={() => this.giveButtonClick(email, name)}>Give</Button>
+                                        <Button className="give-frnds-btn" onClick={() => this.giveButtonClick(email, name, data.attributes.avatar)}>Give</Button>
                                     </Link>
                                 </Card.Description>
                             </Card.Content>
@@ -205,7 +245,7 @@ class FriendsList extends React.Component {
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
-                    { friendListLoader ? <PlaceholderGrid row={1} column={7} /> : (
+                    {friendListLoader ? <PlaceholderGrid row={1} column={7} /> : (
                         this.friendsList()
                     )}
                 </Container>

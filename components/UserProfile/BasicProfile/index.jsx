@@ -182,11 +182,11 @@ class UserBasicProfile extends React.Component {
         });
     }
 
-    giveButtonClick(email, name) {
+    giveButtonClick(email, name, avatar) {
         const {
             dispatch,
         } = this.props;
-        storeEmailIdToGive(dispatch, email, name);
+        storeEmailIdToGive(dispatch, email, name, avatar);
     }
 
     handleUnfriendModal() {
