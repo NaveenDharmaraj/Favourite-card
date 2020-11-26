@@ -29,7 +29,6 @@ const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage
 class Privacy extends React.Component {
     constructor(props) {
         super(props);
-        debugger;
         this.state = {
             buttonClicked: false,
             blockedUserListLoader: !props.userBlockedFriendsList,

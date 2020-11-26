@@ -174,7 +174,6 @@ class EditBasicProfile extends React.Component {
     }
 
     handleInputChange(event, data) {
-        debugger;
         const {
             name,
             options,
@@ -202,7 +201,6 @@ class EditBasicProfile extends React.Component {
     }
 
     handleInputOnBlur(event, data) {
-        debugger;
         const {
             name,
             value,
