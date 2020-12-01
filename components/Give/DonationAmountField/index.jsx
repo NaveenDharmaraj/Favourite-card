@@ -8,6 +8,7 @@ import ReactHtmlParser from 'react-html-parser';
 import {
     PropTypes,
 } from 'prop-types';
+import _isEmpty from 'lodash/isEmpty';
 
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import {
@@ -39,7 +40,7 @@ function DonationAmountField(props) {
         handleInputChange(event, data);
     };
     const handleAmountBlur = (event, data) => {
-        if (event && event.relatedTarget && event.relatedTarget.name === 'give_amount_button') {
+        if (event && event.relatedTarget && event.relatedTarget.name === 'give_amount_button' && _isEmpty(amount)) {
             handlePresetAmountClick(event, event.relatedTarget);
         } else {
             handleInputOnBlur(event, data);
