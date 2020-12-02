@@ -40,11 +40,11 @@ function DonationAmountField(props) {
         handleInputChange(event, data);
     };
     const handleAmountBlur = (event, data) => {
-        if (event && event.relatedTarget && event.relatedTarget.name === 'give_amount_button' && _isEmpty(amount)) {
-            handlePresetAmountClick(event, event.relatedTarget);
-        } else {
+        // if (event && event.relatedTarget && event.relatedTarget.name === 'give_amount_button' && _isEmpty(amount)) {
+        //     handlePresetAmountClick(event, event.relatedTarget);
+        // } else {
             handleInputOnBlur(event, data);
-        }
+        //}
     };
     return (
         <Form.Field>
