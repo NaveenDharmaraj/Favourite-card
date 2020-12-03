@@ -222,16 +222,6 @@ class Privacy extends React.Component {
             },
             dispatch,
         } = this.props;
-        // const {
-        //     privacyValues: {
-        //         friends_visibility,
-        //         giving_goal_visibility,
-        //         causes_visibility,
-        //         giving_group_manage_visibility,
-        //         giving_group_member_visibility,
-        //         favourites_visibility,
-        //     }
-        // } = this.state;
         const {
             id: fieldName,
             value,

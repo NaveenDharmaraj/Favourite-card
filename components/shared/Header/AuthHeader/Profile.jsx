@@ -82,7 +82,6 @@ class Profile extends React.Component {
                 name,
                 slug,
             },
-            CurrentUserId,
             isAdmin,
             otherAccounts,
             router,
@@ -99,7 +98,6 @@ class Profile extends React.Component {
         }
         return (
             <Fragment>
-                
                 <Popup
                     basic
                     on="click"
@@ -205,7 +203,6 @@ Profile.defaultProps = {
         avatar: IconIndividual,
         name: '',
     },
-    CurrentUserId: '',
     dispatch: _noop,
     isAdmin: false,
     router: {
@@ -222,7 +219,6 @@ Profile.propTypes = {
         avatar: string,
         name: string,
     },
-    CurrentUserId: string,
     dispatch: func,
     isAdmin: bool,
     router: {
@@ -236,7 +232,6 @@ Profile.propTypes = {
 
 const mapStateToProps = (state) => ({
     currentAccount: state.user.currentAccount,
-    CurrentUserId: state.user.info.id,
     isAdmin: state.user.isAdmin,
     otherAccounts: state.user.otherAccounts,
     userInfo: state.user.info,

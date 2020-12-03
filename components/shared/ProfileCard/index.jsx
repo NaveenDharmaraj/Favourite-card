@@ -57,9 +57,7 @@ const ProfileCard = (props) => {
     return (
         <Card>
             <Card.Content>
-                {/* <Link className="lnkChange" route={`/${route}/${slug}`} passHref> */}
                 <Fragment>
-                    {/* <Link className="lnkChange" route={`/${route}/${slug}`} passHref> */}
                     <div className="cardPrflImg">
                         <Link className="lnkChange" route={`/${route}/${slug}`} passHref>
                             <Image src={avatar} />
@@ -87,9 +85,7 @@ const ProfileCard = (props) => {
                             <p>{`Total Raised: ${formatCurrency(totalMoneyRaised, language, currency)}`}</p>
                         )}
                     </div>
-                    {/* </Link> */}
                 </Fragment>
-                {/* </Link> */}
             </Card.Content>
         </Card>
     );

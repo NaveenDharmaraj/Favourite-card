@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import React, {
     Fragment,
 } from 'react';
@@ -123,13 +122,9 @@ class UserFriendList extends React.Component {
         };
         if (!_.isEqual(friendTypeAheadData, prevProps.friendTypeAheadData)) {
             this.setState({
-                // showDropdownLoader: false,
                 friendDropdownList: this.getFriendDropdownList(),
             });
         }
-        // if (!_.isEqual(userFindFriendsList, prevProps.userFindFriendsList)) {
-            
-        // }
     }
 
     showFriendsList(dataArray, type, isMyProfile) {
@@ -177,9 +172,6 @@ class UserFriendList extends React.Component {
         } else {
             getMyFriendsList(dispatch, email, 1);
         }
-        // this.setState({
-        //     searchText: '',
-        // });
         this.setState({
             searchClicked: true,
         });
@@ -250,7 +242,6 @@ class UserFriendList extends React.Component {
 
     validateEmailIds(emailIds) {        
         let isValidEmail = true;
-        // let splitedEmails = emailIds.split(',');
         if(emailIds.length === 0) {
             return false
         }
@@ -277,9 +268,7 @@ class UserFriendList extends React.Component {
             var value = userEmailId.trim();
             let isEmailIdValid = this.isEmail(userEmailId);
             this.setState({ isValidEmails: isEmailIdValid });
-            // if (value && isEmailIdValid) {
-                emailIdsArray = [...userEmailIdsArray, userEmailId];               
-            // }
+            emailIdsArray = [...userEmailIdsArray, userEmailId];
         }
         const emailsValid = this.validateEmailIds(emailIdsArray);
         this.setState({ isValidEmails: emailsValid });
@@ -331,11 +320,9 @@ class UserFriendList extends React.Component {
         } = this.state;
         switch (type) {
             case 'twitter':
-                // title = encodeURIComponent(`Check out ${name} on @wearecharitable.`);
                 window.open(`https://twitter.com/share?url=${signUpDeeplink}`, '_blank');
                 break;
             case 'facebook':
-                // title = encodeURIComponent(`Give to any canadian ${type}`);
                 window.open(`http://www.facebook.com/sharer.php?u=${signUpDeeplink}`, '_blank');
                 break;
             default:
@@ -366,11 +353,6 @@ class UserFriendList extends React.Component {
         this.setState({
             friendSearchText: queryString,
         });
-        // if (!_isEmpty(queryString)) {
-        //     this.setState({
-        //         friendSearchText: queryString,
-        //     });
-        // }
         if (!_isEmpty(queryString) && queryString.length >= 4) {
             this.setState({
                 showDropdownLoader: true,
@@ -398,9 +380,7 @@ class UserFriendList extends React.Component {
             friendTypeAheadData.map((friend) => {
                 let option = {
                     id: friend.attributes.user_id,
-                    // key: `${friend.attributes.first_name} ${friend.attributes.last_name}`,
                     title: `${friend.attributes.first_name} ${friend.attributes.last_name}`,
-                    // value: `${friend.attributes.first_name} ${friend.attributes.last_name}`,
                     image: {
                         className: 'avatarImage',
                         avatar: true,
@@ -409,26 +389,12 @@ class UserFriendList extends React.Component {
                             : friendAvatarPlaceholder),
                     }
                 };
-                // option.text = ReactHtmlParser(
-                //     <span
-                //         className='menuItem'
-                //     >
-                //         <Image
-                //             avatar
-                            // src={!_isEmpty(friend.attributes.avatar)
-                            //     ? avatar
-                            //     : friendAvatarPlaceholder}
-                //         />
-                //         {`${friend.attributes.first_name} ${friend.attributes.last_name}`}
-                //     </span>
-                // );
                 resultArr.push(option);
             })
         }
         return resultArr;
     }
 
-    //friendSearchText
     clearSearch() {
         const {
             dispatch,
@@ -455,7 +421,6 @@ class UserFriendList extends React.Component {
         const {
             friendSearchText,
         } = this.state;
-        // this.setState({ currentActivePage: 1 });
         getFriendsByText(dispatch, id, friendSearchText, 1);
     }
 
@@ -583,37 +548,10 @@ class UserFriendList extends React.Component {
                     render: () => (
                         <Tab.Pane>
                             <div className='findFriendsSearch'>
-                                {/* <Dropdown
-                                    // options= {friendDropdownList}
-                                    placeholder="Find friends already on Charitable Impact"
-                                    search
-                                    fluid
-                                    selection
-                                    default={false}
-                                    // open={!_isEmpty(friendDropdownList) ? true : false}
-                                    // icon={null}
-                                    // loading={true}
-                                    // icon={<Icon
-                                    //     className='delete'
-                                    //     onClick={this.clearSearch}
-                                    //     />}
-                                    icon={<Icon
-                                        className='search'
-                                        onClick={this.handleFriendSearch}
-                                        />}
-                                    value={friendSearchText}
-                                    onSearchChange={this.handleTypeAheadSearch}
-                                    {...(showDropdownLoader ? ({loading: true}) : undefined)}
-                                    {...(!_isEmpty(friendDropdownList) ? ({open: true}) : ({open: false}))}
-                                    {...(!_isEmpty(friendDropdownList) ? ({options: friendDropdownList}) : undefined)}
-                                /> */}
                                 <Search
                                     fluid
                                     placeholder="Find friends already on Charitable Impact"
                                     {...(showDropdownLoader ? ({loading: true}) : undefined)}
-                                    // onResultSelect={(e, data) =>
-                                    //     dispatch({ type: 'UPDATE_SELECTION', selection: data.result.title })
-                                    // }
                                     onResultSelect={this.handleResultSelect}
                                     onSearchChange={this.handleTypeAheadSearch}
                                     results={friendDropdownList}
@@ -828,48 +766,6 @@ class UserFriendList extends React.Component {
                                             )}
                                         
                                     </div>
-                                    {/* <div className='userfriendsWrap'>
-                                        <Header as='h3'>{headerText}</Header>
-                                        {(isMyProfile && !_isEmpty(invitationData))
-                                        && (
-                                            <div className='invitationsWrap'>
-                                                <Header as='h4'>Invitations</Header>
-                                                <List divided verticalAlign="middle" className="users_List">
-                                                    {this.showFriendsList(invitationData, 'invitation')}
-                                                </List>
-                                            </div>
-                                        )}
-                                        <div className="friendsSearch">
-                                            <Header as="h4">Friends</Header>
-                                            <div className="searchBox">
-                                                <Input
-                                                    className="searchInput"
-                                                    placeholder="Search friends"
-                                                    fluid
-                                                    onChange={this.handleOnChangeSearch}
-                                                    value={searchText}
-                                                />
-                                                <a
-                                                    className="search-btn"
-                                                    onClick={this.handleSearchFriendList}
-                                                >
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <List divided verticalAlign="middle" className="users_List">
-                                            {(!_isEmpty(friendData))
-                                            && (
-                                                this.showFriendsList(friendData, 'friends')
-                                            )
-                                            }
-                                            {(_isEmpty(friendData) && searchClicked)
-                                            && (
-                                                <p>
-                                                    Sorry, there are no friends by that name.
-                                                </p>
-                                            )}
-                                        </List>
-                                    </div> */}
                                 </div>
                             </div>
                         </div>

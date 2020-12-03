@@ -135,10 +135,6 @@ const userProfile = (state = {}, action) => {
                     data: friendsArray,
                 },
             };
-            // newState = {
-            //     ...state,
-            //     userAddFriendRequestData: Object.assign({}, action.payload),
-            // };
             break;
         case 'USER_PROFILE_FRIEND_ACCEPT':
             newState = {

@@ -46,7 +46,6 @@ import {
 } from '../../../helpers/profiles/utils';
 
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
-// import EditProfile from '../../../pages/user-profile/editProfile';
 import EditBasicProfile from '../EditBasicProfile';
 
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
@@ -282,7 +281,6 @@ class UserBasicProfile extends React.Component {
             },
             handlePreviewPage,
             hanldeFriendPage,
-            // userData,
             userProfileProfilelink,
         } = this.props;
         const {
@@ -306,48 +304,13 @@ class UserBasicProfile extends React.Component {
         if (!_.isEmpty(userProfileProfilelink)) {
             userProfileDeeplink = userProfileProfilelink.data.attributes['short-link'];
         }
-        // const avatar = (typeof userData.avatar === 'undefined') || (userData.avatar === null) ? UserPlaceholder : userData.avatar;
-        // const friendsVisibility = (typeof userData.friends_visibility === 'undefined') ? 0 : userData.friends_visibility;
-        let isBlocked = false;
-        let isFriendPending = false;
-        let isFriend = false;
-        let isLimited = false;
-        let isProfileOut = false;
-        let isProfileIn = false;
-        isBlocked = (profile_type.substring(0, 7) === 'blocked') ? true : false;
-        isFriendPending = (profile_type.substring(0, 7) === 'pending') ? true : false;
-        isFriend = (profile_type === 'friends_profile') ? true : false;
-        isLimited = (profile_type === 'limited_profile') ? true : false;
-        isProfileOut = (profile_type === 'pending_profile_out') ? true : false;
-        isProfileIn = (profile_type === 'pending_profile_in') ? true : false;
+        const isBlocked = (profile_type.substring(0, 7) === 'blocked') ? true : false;
+        const isFriendPending = (profile_type.substring(0, 7) === 'pending') ? true : false;
+        const isFriend = (profile_type === 'friends_profile') ? true : false;
+        const isLimited = (profile_type === 'limited_profile') ? true : false;
+        const isProfileOut = (profile_type === 'pending_profile_out') ? true : false;
+        const isProfileIn = (profile_type === 'pending_profile_in') ? true : false;
         let email = ((!_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : ''));
-        // let profileType = ''; let userProfileDeeplink = '';
-        // let locationDetails = '';
-        // let profileTypeValidation = '';
-        // if (!_.isEmpty(userData)) {
-        //     const profile = userData.profile_type;
-        //     isBlocked = profile.substring(0, 7) === 'blocked' ? true : false;
-        //     isFriendPending = profile.substring(0, 7) === 'pending' ? true : false;
-        //     isFriend = profile === 'friends_profile' ? true : false;
-        //     isLimited = profile === 'limited_profile' ? true : false;
-        //     isProfileOut = profile === 'pending_profile_out' ? true : false;
-        //     isProfileIn = profile === 'pending_profile_in' ? true : false;
-        //     email = Buffer.from(userData.email_hash, 'base64').toString('ascii');
-        //     profileType = profile.substring(0, 7) === 'limited' ? '' : profile.substring(0, 7);
-        //     const locationDetailsCity = (!_.isEmpty(userData.city)) && userData.city !== 'null' ? userData.city : '';
-        //     const locationDetailsProvince = (!_.isEmpty(userData.province)) && userData.province !== 'null' ? userData.province : '';
-        //     if (locationDetailsCity === '' && locationDetailsProvince !== '') {
-        //         locationDetails = locationDetailsProvince;
-        //     } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
-        //         locationDetails = locationDetailsCity;
-        //     } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
-        //         locationDetails = `${userData.city}, ${userData.province}`;
-        //     }
-        //     profileTypeValidation = userData.profile_type.toUpperCase();
-        // }
-        // if (!_.isEmpty(userProfileProfilelink)) {
-        //     userProfileDeeplink = userProfileProfilelink.data.attributes['short-link'];
-        // }
         return (
             <Fragment>
                 <div className="user_profileImage">
@@ -461,7 +424,6 @@ class UserBasicProfile extends React.Component {
                                         <ProfilePrivacySettings
                                             columnName='friends_visibility'
                                             columnValue={friends_visibility}
-                                            // iconName={currentPrivacyType}
                                         />
                                     )}
                                 </div>
@@ -595,7 +557,6 @@ class UserBasicProfile extends React.Component {
                         && (
                             <Button
                                     className="grey-btn-rounded-def"
-                                    // onClick={() => this.handleAddToFriends(user_id, email)}
                                     disabled={true}
                                 >
                                     Block
@@ -640,7 +601,6 @@ class UserBasicProfile extends React.Component {
                             </Fragment>
                         )
                         }
-                        {/* TODO Buttons logic */}
                     </div>
                 </div>
             </Fragment>

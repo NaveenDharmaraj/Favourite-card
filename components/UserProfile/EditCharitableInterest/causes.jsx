@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -125,40 +124,6 @@ class MyCauses extends React.Component {
                         )}
                 </div>
             </div>
-            // <div>
-            //     <p className="mb-1-2">
-            //         <strong>Your causes and topics</strong>
-            //         <PrivacySetting
-            //             columnName={privacyColumn}
-            //             columnValue={causesVisible}
-            //         />
-            //     </p>
-            //     <p className="mb-1-2 mt-1">
-            //         Select causes, topics, or both to discover charities and Giving Groups that might interest you.
-            //     </p>
-            //     <div className="font-s-10">
-            //         Only you can see causes and topics you care about unless you decide to share them on your personal profile. We don’t share your selected causes and topics with charities or anyone else.
-            //     </div>
-            //     <p className="mb-1-2 mt-1">
-            //         <strong>Causes</strong>
-            //     </p>
-            //     <p>
-            //         Causes represent broader areas of charitable interests.
-            //     </p>
-            //     <div className="prefered-wraper noImg pb-2">
-            //         <Grid>
-            //             <Grid.Row>
-            //                 <Grid.Column mobile={16} tablet={14} computer={14}>
-            //                     <Grid className="select-btn-wraper" stretched columns="6" doubling stackable>
-            //                         <Grid.Row>
-            //                             {this.renderCauses()}
-            //                         </Grid.Row>
-            //                     </Grid>
-            //                 </Grid.Column>
-            //             </Grid.Row>
-            //         </Grid>
-            //     </div>
-            // </div>
         );
     }
 }

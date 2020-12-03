@@ -74,7 +74,6 @@ class FriendListCard extends React.Component {
             },
             dispatch,
         } = this.props;
-        // const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         rejectFriendInvite(dispatch, currentUserId, friendUserId, email, type);
     }
 

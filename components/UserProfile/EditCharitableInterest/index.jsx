@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -21,19 +20,12 @@ import {
 
 import MyCauses from './causes';
 import MyTags from './tags';
-// const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
-//     ssr: false
-// });
 
-// eslint-disable-next-line react/prefer-stateless-function
 class EditCharitableInterest extends React.Component {
     constructor(props) {
         super(props);
         const userCauses = [];
         const userTags = [];
-        // this.state = {
-        //     showEditCauseModal: false,
-        // };
         if (!_.isEmpty(props.userCausesList)) {
             props.userCausesList.forEach((cause) => {
                 if (typeof cause.attributes.status !== 'undefined') {
@@ -244,39 +236,6 @@ class EditCharitableInterest extends React.Component {
                     </Grid>
                 </Modal.Content>
             </Modal>
-            // <div>
-            //     {
-            //         statusMessage && (
-            //             <div className="mb-2">
-            //                 <ModalStatusMessage 
-            //                     message = {!_.isEmpty(successMessage) ? successMessage : null}
-            //                     error = {!_.isEmpty(errorMessage) ? errorMessage : null}
-            //                 />
-            //             </div>
-            //         )
-            //     }
-            //     {
-            //         statusMessageTags && (
-            //             <div className="mb-2">
-            //                 <ModalStatusMessage 
-            //                     message = {!_.isEmpty(successMessageTag) ? successMessageTag : null}
-            //                     error = {!_.isEmpty(errorMessageTag) ? errorMessageTag : null}
-            //                 />
-            //             </div>
-            //         )
-            //     }
-            //     <MyCauses getSelectedCauses={this.getSelectedCausesSave} />
-            //     <MyTags getSelectedTags={this.getSelectedTagsSave} saveClickedTags={saveClicked} resetSaveClicked={this.resetSaveClicked} />
-            //     <div className="pt-2">
-            //         <Button
-            //             className="blue-btn-rounded-def w-140"
-            //             onClick={this.handleCharitableInterestSubmit}
-            //             disabled={buttonClicked}
-            //         >
-            //         Save
-            //         </Button>
-            //     </div>
-            // </div>
         );
     }
 }

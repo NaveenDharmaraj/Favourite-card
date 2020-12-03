@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import _ from 'lodash';
 import {
     Container,
     Header,
@@ -9,7 +8,6 @@ import {
 import {
     connect,
 } from 'react-redux';
-
 import _isEmpty from 'lodash/isEmpty';
 import {
     array,
@@ -28,9 +26,7 @@ import {
 } from '../../../helpers/profiles/utils';
 import ProfileCard from '../../shared/ProfileCard';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
-import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
-import LeftImageCard from '../../shared/LeftImageCard';
 
 class UserMemberGroupList extends React.Component {
     componentDidMount() {
@@ -43,17 +39,6 @@ class UserMemberGroupList extends React.Component {
         } = this.props;
         getUserMemberGroup(dispatch, friendUserId, id);
     }
-
-    // componentWillUnmount() {
-    //     const {
-    //         dispatch,
-    //     } = this.props;
-    //     dispatch({
-    //         payload: {
-    //         },
-    //         type: 'USER_PROFILE_MEMBER_GROUP',
-    //     });
-    // }
 
     showMemberCard() {
         const {

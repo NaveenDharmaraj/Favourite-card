@@ -489,18 +489,6 @@ class EditBasicProfile extends React.Component {
         const isPreview = uploadImagePreview !== '' ? true : false;
         return (
             <Grid>
-                {/* {
-                    statusMessage && (
-                        <Grid.Row>
-                            <Grid.Column width={16}>
-                                <ModalStatusMessage
-                                    message={!_.isEmpty(successMessage) ? successMessage : null}
-                                    error={!_.isEmpty(errorMessage) ? errorMessage : null}
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    )
-                } */}
                 <Grid.Row>
                     <Grid.Column mobile={16} tablet={12} computer={10}>
                         <Form>

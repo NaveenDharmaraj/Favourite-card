@@ -532,7 +532,7 @@ function searchFriendsObj(friendList, toSearch) {
     return friendList;
 }
 
-const sendFriendRequest = (dispatch, requestObj) => { //sourceUserId, sourceEmail, avatar, firstName, displayName, userData, searchWord, pageNumber, userFindFriendsList) => {
+const sendFriendRequest = (dispatch, requestObj) => {
     const fsa = {
         payload: {
         },
@@ -561,26 +561,10 @@ const sendFriendRequest = (dispatch, requestObj) => { //sourceUserId, sourceEmai
                 fsa.payload.status = 'PENDING_OUT';
                 dispatch(fsa);
             }
-            // fsa.payload = {
-            //     data: result.data,
-            // };
-            // const newFriendList = searchFriendsObj(userFindFriendsList, Number(userData.attributes.user_id));
-            // const friendListFsa = {
-            //     payload: {
-            //     },
-            //     type: actionTypes.USER_PROFILE_FIND_FRIENDS,
-            // };
-            // friendListFsa.payload = {
-            //     count: newFriendList.record_count,
-            //     data: newFriendList.data,
-            // };
-            // dispatch(friendListFsa);
-            // // getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
         },
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
-        // dispatch(fsa);
     });
     return sendFriendRequestResponse;
 };
@@ -1517,7 +1501,7 @@ const rejectFriendInvite = (dispatch, currentUserId, friendUserId, email, type =
             dispatch,
             ignore401: true,
         },
-    }).then((result) => { //friendSearch
+    }).then((result) => {
         if (type === 'invitation') {
             getFriendsInvitations(dispatch, email, 1);
             getMyFriendsList(dispatch, email, 1);

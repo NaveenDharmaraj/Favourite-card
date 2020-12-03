@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import _ from 'lodash';
 import {
     Container,
     Header,
@@ -21,16 +20,12 @@ import {
 import {
     getUserFavourites,
 } from '../../../actions/userProfile';
-
 import {
     getLocation,
     getPrivacyType,
 } from '../../../helpers/profiles/utils';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
-import placeholderCharity from '../../../static/images/no-data-avatar-charity-profile.png';
-import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
-import LeftImageCard from '../../shared/LeftImageCard';
 import ProfileCard from '../../shared/ProfileCard';
 
 class FavouritesList extends React.Component {
@@ -41,77 +36,6 @@ class FavouritesList extends React.Component {
         } = this.props;
         getUserFavourites(dispatch, friendUserId);
     }
-
-    // componentWillUnmount() {
-    //     const {
-    //         dispatch,
-    //     } = this.props;
-    //     dispatch({
-    //         payload: {
-    //         },
-    //         type: 'USER_PROFILE_FAVOURITES',
-    //     });
-    // }
-
-    // favouriteList() {
-    //     const {
-    //         userProfileFavouritesData,
-    //     } = this.props;
-    //     let favouritesList = 'Nothing to show here yet.';
-    //     if (userProfileFavouritesData
-    //         && userProfileFavouritesData.data
-    //         && _.size(userProfileFavouritesData.data) > 0) {
-    //         favouritesList = userProfileFavouritesData.data.map((data) => {
-    //             const entityName = data.attributes.name;
-    //             let locationDetails = '';
-    //             const locationDetailsCity = (!_.isEmpty(data.attributes.city)) ? data.attributes.city : '';
-    //             const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) ? data.attributes.province : '';
-    //             if (locationDetailsCity === '' && locationDetailsProvince !== '') {
-    //                 locationDetails = locationDetailsProvince;
-    //             } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
-    //                 locationDetails = locationDetailsCity;
-    //             } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
-    //                 locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
-    //             }
-    //             const type = data.attributes.type === 'group' ? 'giving group' : 'charity';
-    //             const typeClass = data.attributes.type === 'group' ? 'chimp-lbl group' : 'chimp-lbl charity';
-    //             const placeholder = data.attributes.type === 'group' ? placeholderGroup : placeholderCharity;
-    //             const imageType = (!_.isEmpty(data.attributes.avatar)) ? data.attributes.avatar : placeholder;
-    //             const urlEntity = data.attributes.type === 'group' ? 'groups' : 'charities';
-    //             const url = `/${urlEntity}/${data.attributes.slug}`;
-    //             return (
-    //                 <LeftImageCard
-    //                     entityName={entityName}
-    //                     location={locationDetails}
-    //                     placeholder={imageType}
-    //                     typeClass={typeClass}
-    //                     type={type}
-    //                     url={url}
-    //                 />
-    //             );
-    //         });
-    //     }
-    //     return (
-    //         <Grid columns="equal" stackable doubling columns={3}>
-    //             <Grid.Row>
-    //                 {
-    //                     !_.isEmpty(userProfileFavouritesData) && (_.size(userProfileFavouritesData.data) > 0) && (
-    //                         <React.Fragment>
-    //                             {favouritesList}
-    //                         </React.Fragment>
-    //                     )
-    //                 }
-    //                 {
-    //                     !_.isEmpty(userProfileFavouritesData) && (_.size(userProfileFavouritesData.data) === 0) && (
-    //                         <Grid.Column>
-    //                             {favouritesList}
-    //                         </Grid.Column>
-    //                     )
-    //                 }
-    //             </Grid.Row>
-    //         </Grid>
-    //     );
-    // }
 
     showMemberCard() {
         const {

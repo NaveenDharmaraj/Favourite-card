@@ -240,52 +240,6 @@ class MyTags extends React.Component {
                 {this.renderTags(userFindTagsList)}
                 <a className='EditTopicseeMore'><Icon className='share'></Icon>See more topics</a>
             </Grid.Column>
-            // <div>
-            //     <div className="pt-1">
-            //         {userTagsFollowedList && (!_.isEmpty(userTagsFollowedList.data))
-            //             && (
-            //                 <div>
-            //                     <p className="mb-1"><strong>Topics you care about</strong></p>
-            //                     {this.renderTags(userTagsFollowedList)}
-            //                 </div>
-            //             )}
-            //         <div className="pt-2">
-            //             <strong>All topics</strong>
-            //         </div>
-            //         <div className="pt-1 mb-1">
-            //             Topics represent specific areas of charitable interests.
-            //         </div>
-            //         <Grid>
-            //             <Grid.Row>
-            //                 <Grid.Column mobile={16} tablet={14} computer={8} largeScreen={8}>
-            //                     <div className="pb-3 searchbox no-padd">
-                                    // <Input
-                                    //     className="searchInput"
-                                    //     placeholder="Search topics"
-                                    //     onChange={this.handleInputChange}
-                                    //     fluid
-                                    //     onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleTagsSearch() : null; }}
-                                    // />
-            //                         <a
-            //                             className="search-btn"
-            //                         >
-            //                             <Icon
-            //                                 name="search"
-            //                                 onClick={this.handleTagsSearch}
-            //                             />
-            //                         </a>
-            //                     </div>
-            //                 </Grid.Column>
-            //             </Grid.Row>
-            //         </Grid>
-            //         <div className="pt-2">
-            //             {this.renderTags(userFindTagsList)}
-            //         </div>
-            //         <div className="pt-1 mb-2">
-            //             {this.renderSeeMore()}
-            //         </div>
-            //     </div>
-            // </div>
         );
     }
 }

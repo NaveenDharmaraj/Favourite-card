@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import React, {
     Fragment,
 } from 'react';
@@ -22,7 +21,6 @@ import {
     number,
     PropTypes,
 } from 'prop-types';
-import _isEmpty from 'lodash/isEmpty';
 
 import { withTranslation } from '../../../i18n';
 import UserRightColumnList from '../UserRightColumnList';

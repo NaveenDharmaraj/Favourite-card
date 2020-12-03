@@ -45,7 +45,6 @@ class MyProfile extends React.Component {
         this.state = {
             activeTabIndex,
         };
-        this.handleTab = this.handleTab.bind(this);
     }
 
     componentDidMount() {
@@ -79,77 +78,6 @@ class MyProfile extends React.Component {
         }
     }
 
-    handleTab(event, data) {
-        switch (data.activeIndex) {
-            case 0:
-                Router.pushRoute('/user/profile/basic');
-                break;
-            case 1:
-                Router.pushRoute('/user/profile/charitableinterest');
-                break;
-            case 2:
-                Router.pushRoute('/user/profile/friends');
-                break;
-            case 3:
-                Router.pushRoute('/user/profile/settings');
-                break;
-            default:
-                break;
-        }
-        this.setState({
-            activeTabIndex: data.activeIndex
-        });
-    }
-
-    panes = [
-        {
-            menuItem: 'Basics',
-            render: () => {
-                const {
-                    userProfileBasicData,
-                } = this.props;
-                let userData = '';
-                if (userProfileBasicData
-                    && userProfileBasicData.data
-                    && _.size(userProfileBasicData.data) > 0) {
-                    userData = userProfileBasicData.data[0].attributes;
-                }
-                return (
-                    <Tab.Pane attached={false}>
-                        <EditProfileBasic userData={userData} />
-                    </Tab.Pane>
-                );
-            }
-        },
-        {
-
-            menuItem: 'Your causes and topics',
-            render: () => {
-                return (
-                    <Tab.Pane attached={false}>
-                        <EditCharitableInterest />
-                    </Tab.Pane>
-                );
-            },
-        },
-        {
-            menuItem: 'Friends',
-            render: () => (
-                <Tab.Pane attached={false} className="user-messaging">
-                    <Friends settingName={this.props.settingName} />
-                </Tab.Pane>
-            ),
-        },
-        {
-            menuItem: 'Settings',
-            render: () => (
-                <Tab.Pane attached className="user-messaging">
-                    <Settings settingName={this.props.settingName} />
-                </Tab.Pane>
-            ),
-        },
-    ];
-
     render() {
         const {
             userProfileBasicData,
@@ -170,22 +98,6 @@ class MyProfile extends React.Component {
         }
         return (
             <Layout authRequired stripe>
-                {/* <BasicProfile userData={userData} avatar={userAvatar}/>
-                <div className="pb-3">
-                    <Container>
-                        <div className="charityTab n-border user-profile-settings">
-                            <Tab
-                                activeIndex={activeTabIndex}
-                                menu={{
-                                    pointing: true,
-                                    secondary: true,
-                                }}
-                                panes={this.panes}
-                                onTabChange={this.handleTab}
-                            />
-                        </div>
-                    </Container>
-                </div> */}
                 <Container>
                     <div className='account-settings-wrap'>
                         <Header>Account settings</Header>

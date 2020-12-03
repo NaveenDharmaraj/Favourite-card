@@ -67,7 +67,6 @@ class UserAdminGroupList extends React.Component {
             },
         } = this.props;
         const adminArray = [];
-        // const isMyProfile = (profile_type === 'my_profile');
         if (!_isEmpty(adminData)) {
             adminData.map((admin) => {
                 adminArray.push(
