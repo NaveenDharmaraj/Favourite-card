@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import _ from 'lodash';
+import _isEqual from 'lodash/isEqual';
+import _isEmpty from 'lodash/isEmpty';
+import _size from 'lodash/size';
 import {
     Button,
     Header,
@@ -19,7 +21,6 @@ import {
     unblockFriend,
     updateUserPreferences,
     savePrivacySetting,
-    getUserFriendProfile,
 } from '../../../actions/userProfile';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
@@ -32,7 +33,7 @@ class Privacy extends React.Component {
         this.state = {
             buttonClicked: false,
             blockedUserListLoader: !props.userBlockedFriendsList,
-            discoverability: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.discoverability : false,
+            discoverability: (!_isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.discoverability : false,
             errorMessage: null,
             statusMessage: false,
             successMessage: '',
@@ -60,8 +61,8 @@ class Privacy extends React.Component {
             dispatch,
             userProfileBasicData,
         } = this.props;
-        getBlockedFriends(dispatch, currentUserId);
-        if (!_.isEmpty(userProfileBasicData)) {
+        dispatch(getBlockedFriends(currentUserId));
+        if (!_isEmpty(userProfileBasicData)) {
             this.setState({
                 privacyValues: {
                     friends_visibility: userProfileBasicData.data[0].attributes.friends_visibility,
@@ -84,11 +85,11 @@ class Privacy extends React.Component {
         let {
             blockedUserListLoader,
         } = this.state;
-        if (!_.isEqual(userBlockedFriendsList, prevProps.userBlockedFriendsList)) {
+        if (!_isEqual(userBlockedFriendsList, prevProps.userBlockedFriendsList)) {
             blockedUserListLoader = false;
             this.setState({ blockedUserListLoader });
         }
-        if (!_.isEqual(userProfileBasicData, prevProps.userProfileBasicData)) {
+        if (!_isEqual(userProfileBasicData, prevProps.userProfileBasicData)) {
             this.setState({
                 privacyValues: {
                     friends_visibility: userProfileBasicData.data[0].attributes.friends_visibility,
@@ -100,7 +101,7 @@ class Privacy extends React.Component {
                 }
             });
         }
-        if (!_.isEqual(userFriendProfileData, prevProps.userFriendProfileData)) {
+        if (!_isEqual(userFriendProfileData, prevProps.userFriendProfileData)) {
             this.setState({
                 privacyValues: {
                     friends_visibility: userFriendProfileData.attributes.friends_visibility,
@@ -165,13 +166,13 @@ class Privacy extends React.Component {
             buttonClicked,
         } = this.state;
         let friendsBlockedList = 'Users you block will appear here.';
-        if (!_.isEmpty(userBlockedFriendsList) && _.size(userBlockedFriendsList.data) > 0) {
+        if (!_isEmpty(userBlockedFriendsList) && _size(userBlockedFriendsList.data) > 0) {
             friendsBlockedList = userBlockedFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
                 const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg' : data.attributes.avatar;
                 let locationDetails = '';
-                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) && data.attributes.city !== 'null' ? data.attributes.city : '';
-                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) && data.attributes.province !== 'null' ? data.attributes.province : '';
+                const locationDetailsCity = (!_isEmpty(data.attributes.city)) && data.attributes.city !== 'null' ? data.attributes.city : '';
+                const locationDetailsProvince = (!_isEmpty(data.attributes.province)) && data.attributes.province !== 'null' ? data.attributes.province : '';
                 if (locationDetailsCity === '' && locationDetailsProvince !== '') {
                     locationDetails = locationDetailsProvince;
                 } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
@@ -348,8 +349,8 @@ class Privacy extends React.Component {
                             statusMessage && (
                                 <div className="mt-1 mb-2">
                                     <ModalStatusMessage 
-                                        message = {!_.isEmpty(successMessage) ? successMessage : null}
-                                        error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                        message = {!_isEmpty(successMessage) ? successMessage : null}
+                                        error = {!_isEmpty(errorMessage) ? errorMessage : null}
                                     />
                                 </div>
                             )

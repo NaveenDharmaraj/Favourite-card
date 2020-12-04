@@ -247,7 +247,7 @@ class EditBasicProfile extends React.Component {
                 isImageChanged,
                 userBasicDetails,
             } = this.state;
-            saveUserBasicProfile(dispatch, userBasicDetails, id, email, true).then(() => {
+            dispatch(saveUserBasicProfile(userBasicDetails, id, email, true)).then(() => {
                 this.setState({
                     buttonClicked: true,
                 });

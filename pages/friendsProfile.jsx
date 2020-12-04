@@ -44,7 +44,7 @@ class FriendProfile extends React.Component {
             friendUserId,
         } = this.props;
         const updatedFriendId = (friendUserId === 'myprofile') ? currentUserId : friendUserId;
-        getUserFriendProfile(dispatch, email, updatedFriendId, currentUserId);
+        dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
     }
 
     componentDidUpdate(prevProps) {
@@ -65,7 +65,7 @@ class FriendProfile extends React.Component {
                 },
                 type: 'USER_PROFILE_RESET_DATA',
             });
-            getUserFriendProfile(dispatch, email, updatedFriendId, currentUserId);
+            dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
         }
     }
 

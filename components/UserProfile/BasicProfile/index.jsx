@@ -255,7 +255,7 @@ class UserBasicProfile extends React.Component {
                 },
             },
         } = this.props;
-        rejectFriendInvite(dispatch, currentUserId, friendUserId, email, 'myProfile');
+        dispatch(rejectFriendInvite(currentUserId, friendUserId, email, 'myProfile'));
     }
 
     render() {

@@ -49,7 +49,7 @@ class UserAdminGroupList extends React.Component {
             dispatch,
             friendUserId,
         } = this.props;
-        getUserAdminGroup(dispatch, friendUserId, id);
+        dispatch(getUserAdminGroup(friendUserId, id));
     }
 
     showAdminCard() {
