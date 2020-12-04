@@ -1,16 +1,13 @@
 import React from 'react';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 import {
     Modal,
     Button,
-    Header,
     Grid,
     Responsive,
-    Icon,
-    Input,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import dynamic from 'next/dynamic';
 
 import {
     saveCharitableCauses,
@@ -26,14 +23,14 @@ class EditCharitableInterest extends React.Component {
         super(props);
         const userCauses = [];
         const userTags = [];
-        if (!_.isEmpty(props.userCausesList)) {
+        if (!_isEmpty(props.userCausesList)) {
             props.userCausesList.forEach((cause) => {
                 if (typeof cause.attributes.status !== 'undefined') {
                     userCauses.push(cause.attributes.name);
                 }
             });
         }
-        if (!_.isEmpty(props.userTagsFollowedList)) {
+        if (!_isEmpty(props.userTagsFollowedList)) {
             props.userTagsFollowedList.data.forEach((tag) => {
                 userTags.push(tag.attributes.name);
             });
@@ -69,14 +66,14 @@ class EditCharitableInterest extends React.Component {
             userCauses,
             userTags,
         } = this.state;
-        if (!_.isEqual(userCausesList, prevProps.userCausesList) && !_.isEmpty(userCausesList)) {
+        if (!_isEqual(userCausesList, prevProps.userCausesList) && !_isEmpty(userCausesList)) {
             userCausesList.forEach((cause) => {
                 if (typeof cause.attributes.status !== 'undefined') {
                     userCauses.push(cause.attributes.name);
                 }
             });
         }
-        if (!_.isEqual(userTagsFollowedList, prevProps.userTagsFollowedList) && !_.isEmpty(userTagsFollowedList)) {
+        if (!_isEqual(userTagsFollowedList, prevProps.userTagsFollowedList) && !_isEmpty(userTagsFollowedList)) {
             userTagsFollowedList.data.forEach((tag) => {
                 userTags.push(tag.attributes.name);
             });

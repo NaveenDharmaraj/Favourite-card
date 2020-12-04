@@ -1,17 +1,14 @@
 import React from 'react';
-import _ from 'lodash';
 import {
     Dimmer,
-    Button,
     Header,
-    Grid,
     Loader,
-    Icon,
-    Input,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
-
+import _isEqual from 'lodash/isEqual';
+import _includes from 'lodash/includes';
+import _pull from 'lodash/pull';
 import {
     getUserProfileCauses,
 } from '../../../actions/userProfile';
@@ -21,7 +18,7 @@ class MyCauses extends React.Component {
     constructor(props) {
         super(props);
         const userCauses = [];
-        if (!_.isEmpty(props.userCausesList)) {
+        if (!_isEmpty(props.userCausesList)) {
             props.userCausesList.forEach((cause) => {
                 if (typeof cause.attributes.status !== 'undefined') {
                     userCauses.push(cause.attributes.name);
@@ -51,7 +48,7 @@ class MyCauses extends React.Component {
         const {
             userCauses,
         } = this.state;
-        if (!_.isEqual(userCausesList, prevProps.userCausesList) && !_.isEmpty(userCausesList)) {
+        if (!_isEqual(userCausesList, prevProps.userCausesList) && !_isEmpty(userCausesList)) {
             userCausesList.forEach((cause) => {
                 if (typeof cause.attributes.status !== 'undefined') {
                     userCauses.push(cause.attributes.name);
@@ -68,8 +65,8 @@ class MyCauses extends React.Component {
         const {
             userCauses,
         } = this.state;
-        if (_.includes(userCauses, name)) {
-            _.pull(userCauses, name);
+        if (_includes(userCauses, name)) {
+            _pull(userCauses, name);
         } else {
             userCauses.push(name);
         }
@@ -87,7 +84,7 @@ class MyCauses extends React.Component {
             userCauses,
         } = this.state;
         const causesBlock = [];
-        if (!_.isEmpty(userCausesList)) {
+        if (!_isEmpty(userCausesList)) {
             userCausesList.forEach((cause, i) => {
                 causesBlock.push(<SingleCause
                     parentHandleCauses={this.handleCauses}
@@ -106,7 +103,7 @@ class MyCauses extends React.Component {
             userCausesList,
         } = this.props;
         let causesVisible = 0;
-        if (!_.isEmpty(userProfileBasicData)) {
+        if (!_isEmpty(userProfileBasicData)) {
             causesVisible = userProfileBasicData.data[0].attributes.causes_visibility;
         }
         const privacyColumn = 'causes_visibility';

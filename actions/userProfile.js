@@ -110,7 +110,7 @@ const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
     });
 };
 
-const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
+const getUserFriendProfile = (email, userId, loggedInUserId) => dispatch => {
     const fsa = {
         payload: {
             data: [],
@@ -211,7 +211,7 @@ const getUserMemberGroup = (userId, sourceUserId) => (dispatch) => {
     });
 };
 
-const getUserAdminGroup = (dispatch, userId, sourceUserId) => {
+const getUserAdminGroup = (userId, sourceUserId) => dispatch => {
     const fsa = {
         payload: {
             userId,
@@ -224,8 +224,13 @@ const getUserAdminGroup = (dispatch, userId, sourceUserId) => {
         },
         type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
     });
-
-    coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType,totalMoneyRaised&page[number]=1&page[size]=9`).then(
+    const params = {
+        'friend_id':`${Number(userId)}`,
+        'fields[groups]':'name,city,province,slug,avatar,groupType,totalMoneyRaised',
+        'page[number]':1,
+        'page[size]':9
+    };
+    coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups`,{params}).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -332,7 +337,7 @@ const getUserTagsRecommended = (dispatch, userId, pageNumber) => {
     });
 };
 
-const getMyFriendsList = (dispatch, email, pageNumber) => {
+const getMyFriendsList = (email, pageNumber) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -360,7 +365,7 @@ const getMyFriendsList = (dispatch, email, pageNumber) => {
     });
 };
 
-const getFriendsInvitations = (dispatch, email, pageNumber) => {
+const getFriendsInvitations = (email, pageNumber) => dispatch=> {
     const fsa = {
         payload: {
         },
@@ -389,7 +394,7 @@ const getFriendsInvitations = (dispatch, email, pageNumber) => {
     });
 };
 
-const getBlockedFriends = (dispatch, userId) => {
+const getBlockedFriends = (userId) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -408,7 +413,7 @@ const getBlockedFriends = (dispatch, userId) => {
     });
 };
 
-const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
+const getFriendsByText = (userId, searchText, pageNumber) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -491,7 +496,7 @@ const getMyCreditCards = (dispatch, userId, pageNumber, updatedCurrentActivePage
     });
 };
 
-const saveUserBasicProfile = (dispatch, userData, userId, email , isMyprofile = false) => {
+const saveUserBasicProfile = (userData, userId, email , isMyprofile = false) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -517,7 +522,7 @@ const saveUserBasicProfile = (dispatch, userData, userId, email , isMyprofile = 
                 data: result.data,
             };
             if (isMyprofile) {
-                getUserFriendProfile(dispatch, email, userId, userId);
+                dispatch(getUserFriendProfile(email, userId, userId));
             } else {
                 getUserProfileBasic(dispatch, email, userId, userId);
                 getUser(dispatch, userId, null);
@@ -540,7 +545,7 @@ function searchFriendsObj(friendList, toSearch) {
     return friendList;
 }
 
-const sendFriendRequest = (dispatch, requestObj) => {
+const sendFriendRequest = (requestObj) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -604,10 +609,10 @@ const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar
                 data: result.data,
             };
             if (pageName === 'MYFRIENDS') {
-                getFriendsInvitations(dispatch, sourceEmailId, pageNumber);
-                getMyFriendsList(dispatch, sourceEmailId, 1);
+                dispatch(getFriendsInvitations(sourceEmailId, pageNumber));
+                dispatch(getMyFriendsList(sourceEmailId, 1));
             } else {
-                getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
+                dispatch(getFriendsByText(sourceUserId, searchWord, pageNumber));
             }
         },
     ).catch((error) => {
@@ -635,7 +640,7 @@ const blockUser = (dispatch, sourceUserId, sourceEmailId, destinationUserId) => 
             fsa.payload = {
                 data: result.data,
             };
-            getUserFriendProfile(dispatch, sourceEmailId, destinationUserId, sourceUserId);
+            dispatch(getUserFriendProfile(sourceEmailId, destinationUserId, sourceUserId));
         },
     ).catch((error) => {
         fsa.error = error;
@@ -662,7 +667,7 @@ const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
             fsa.payload = {
                 data: result.data,
             };
-            getBlockedFriends(dispatch, sourceUserId);
+            dispatch(getBlockedFriends(sourceUserId));
         },
     ).catch((error) => {
         fsa.error = error;
@@ -929,7 +934,7 @@ const savePrivacySetting = (dispatch, userId, email, columnName, columnValue) =>
             fsa.payload = {
                 data: result.data,
             };
-            getUserFriendProfile(dispatch, email, userId, userId);
+            dispatch(getUserFriendProfile(email, userId, userId));
         },
     ).catch((error) => {
         fsa.error = error;
@@ -1059,7 +1064,7 @@ const addToFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceFi
             fsa.payload = {
                 data: result.data,
             };
-            getUserFriendProfile(dispatch, sourceEmail, destinationUserId, sourceUserId);
+            dispatch(getUserFriendProfile(sourceEmail, destinationUserId, sourceUserId));
         },
     ).catch((error) => {
         fsa.error = error;
@@ -1094,7 +1099,7 @@ const acceptFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceF
             fsa.payload = {
                 data: result.data,
             };
-            getUserFriendProfile(dispatch, sourceEmail, destinationUserId, sourceUserId);
+            dispatch(getUserFriendProfile(sourceEmail, destinationUserId, sourceUserId));
         },
     ).catch((error) => {
         fsa.error = error;
@@ -1134,7 +1139,7 @@ const inviteFriends = (dispatch, inviteEmailIds) => {
     return inviteFriendsResponse;
 };
 
-const generateDeeplinkSignup = (dispatch, profileType) => {
+const generateDeeplinkSignup = (profileType) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -1202,7 +1207,7 @@ const removeFriend = (dispatch, sourceUserId, sourceEmail, destinationUserId) =>
             fsa.payload = {
                 data: result.data,
             };
-            getUserFriendProfile(dispatch, sourceEmail, destinationUserId, sourceUserId);
+            dispatch(getUserFriendProfile(sourceEmail, destinationUserId, sourceUserId));
         },
     ).catch((error) => {
         fsa.error = error;
@@ -1484,7 +1489,7 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
     }).catch().finally();
 };
 
-const rejectFriendInvite = (dispatch, currentUserId, friendUserId, email, type = '') => {
+const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => dispatch => {
     const fsa = {
         payload: {},
         type: actionTypes.USER_PROFILE_FIND_DROPDOWN_FRIENDS,
@@ -1511,15 +1516,15 @@ const rejectFriendInvite = (dispatch, currentUserId, friendUserId, email, type =
         },
     }).then((result) => {
         if (type === 'invitation') {
-            getFriendsInvitations(dispatch, email, 1);
-            getMyFriendsList(dispatch, email, 1);
-            getUserFriendProfile(dispatch, email, friendUserId, currentUserId);
+            dispatch(getFriendsInvitations(email, 1));
+            dispatch(getMyFriendsList(email, 1));
+            dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
         } else if (type === 'friendSearch') {
             fsa.payload.userId = friendUserId;
             fsa.payload.status = '';
             dispatch(fsa);
         } else if (type === 'myProfile') {
-            getUserFriendProfile(dispatch, email, friendUserId, currentUserId);
+            dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
         }
     }).catch(err=>{
         // hanlde error message

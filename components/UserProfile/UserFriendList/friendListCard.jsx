@@ -31,8 +31,6 @@ import {
 import { withTranslation } from '../../../i18n';
 import {
     acceptFriendRequest,
-    getMyFriendsList,
-    getFriendsInvitations,
     rejectFriendInvite,
     sendFriendRequest,
 } from '../../../actions/userProfile';
@@ -74,7 +72,7 @@ class FriendListCard extends React.Component {
             },
             dispatch,
         } = this.props;
-        rejectFriendInvite(dispatch, currentUserId, friendUserId, email, type);
+        dispatch(rejectFriendInvite(currentUserId, friendUserId, email, type));
     }
 
     handleAddFriendClick(userEmail, userId) {
@@ -99,7 +97,7 @@ class FriendListCard extends React.Component {
             requesterFirstName: firstName,
             requesterUserId: currentUserId,
         };
-        sendFriendRequest(dispatch, requestObj);
+        dispatch(sendFriendRequest(requestObj));
     }
 
     render() {

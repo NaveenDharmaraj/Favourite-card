@@ -102,10 +102,10 @@ class UserFriendList extends React.Component {
         } = this.props;
         const isMyprofile = user_id === Number(userId);
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
-        getMyFriendsList(dispatch, email, 1);
-        generateDeeplinkSignup(dispatch, 'signup');
+        dispatch(getMyFriendsList(email, 1));
+        dispatch(generateDeeplinkSignup('signup'));
         if (isMyprofile) {
-            getFriendsInvitations(dispatch, email, 1);
+            dispatch(getFriendsInvitations(email, 1));
         }
     }
 
@@ -170,7 +170,7 @@ class UserFriendList extends React.Component {
         if (!_isEmpty(searchText)) {
             dispatch(searchMyfriend(userId, searchText));
         } else {
-            getMyFriendsList(dispatch, email, 1);
+            dispatch(getMyFriendsList(email, 1));
         }
         this.setState({
             searchClicked: true,
@@ -421,7 +421,7 @@ class UserFriendList extends React.Component {
         const {
             friendSearchText,
         } = this.state;
-        getFriendsByText(dispatch, id, friendSearchText, 1);
+        dispatch(getFriendsByText(id, friendSearchText, 1));
     }
 
     handleResultSelect(event, data) {
