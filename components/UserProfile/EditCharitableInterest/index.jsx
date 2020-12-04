@@ -160,7 +160,7 @@ class EditCharitableInterest extends React.Component {
             this.setState({
                 showEditCauseModal: false,
             });
-            getUserCharitableInterests(dispatch, user_id);
+            dispatch(getUserCharitableInterests(user_id));
         });
     }
 

@@ -90,7 +90,7 @@ class UserFriendList extends React.Component {
     componentDidMount() {
         const {
             currentUser: {
-                id: UserId,
+                id: userId,
             },
             dispatch,
             userFriendProfileData: {
@@ -100,7 +100,7 @@ class UserFriendList extends React.Component {
                 },
             },
         } = this.props;
-        const isMyprofile = user_id === Number(UserId);
+        const isMyprofile = user_id === Number(userId);
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         getMyFriendsList(dispatch, email, 1);
         generateDeeplinkSignup(dispatch, 'signup');
@@ -155,7 +155,7 @@ class UserFriendList extends React.Component {
         const {
             dispatch,
             currentUser: {
-                id: UserId,
+                id: userId,
             },
             userFriendProfileData: {
                 attributes: {
@@ -168,7 +168,7 @@ class UserFriendList extends React.Component {
         } = this.state;
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         if (!_isEmpty(searchText)) {
-            searchMyfriend(dispatch, UserId, searchText);
+            dispatch(searchMyfriend(userId, searchText));
         } else {
             getMyFriendsList(dispatch, email, 1);
         }
@@ -336,7 +336,7 @@ class UserFriendList extends React.Component {
     handleTypeAheadSearch(event, data) {
         const {
             currentUser: {
-                id: UserId,
+                id: userId,
             },
             dispatch,
         } = this.props;
@@ -362,7 +362,7 @@ class UserFriendList extends React.Component {
             }
             const self = this;
             this.timeout = setTimeout(function() {
-                dispatch(searchFriendByUserInput(queryString, UserId)).then(() => {
+                dispatch(searchFriendByUserInput(queryString, userId)).then(() => {
                     self.setState({
                         showDropdownLoader: false,
                     });

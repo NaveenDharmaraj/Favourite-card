@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 
 import graphApi from '../services/graphApi';
@@ -139,7 +138,7 @@ const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
     }).finally();
 };
 
-const getUserCharitableInterests = (dispatch, userId) => {
+const getUserCharitableInterests = (userId) => dispatch => {
     const fsa = {
         payload: {
             userId,
@@ -152,7 +151,10 @@ const getUserCharitableInterests = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS,
     });
-    graphApi.get(`/get/user/causetags?userid=${Number(userId)}`).then(
+    const params = {
+        userid:`${Number(userId)}`,
+    };
+    graphApi.get(`/get/user/causetags`, {params}).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -171,7 +173,7 @@ const getUserCharitableInterests = (dispatch, userId) => {
     });
 };
 
-const getUserMemberGroup = (dispatch, userId, sourceUserId) => {
+const getUserMemberGroup = (userId, sourceUserId) => (dispatch) => {
     const fsa = {
         payload: {
             userId,
@@ -184,7 +186,13 @@ const getUserMemberGroup = (dispatch, userId, sourceUserId) => {
         },
         type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
     });
-    coreApi.get(`/users/${Number(sourceUserId)}/friendGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType,totalMoneyRaised&page[number]=1&page[size]=9`).then(
+    const params = {
+        'friend_id':`${Number(userId)}`,
+        'fields[groups]':'name,city,province,slug,avatar,groupType,totalMoneyRaised',
+        'page[number]':1,
+        'page[size]':9,
+    }
+    coreApi.get(`/users/${Number(sourceUserId)}/friendGroups`, {params}).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -1513,10 +1521,12 @@ const rejectFriendInvite = (dispatch, currentUserId, friendUserId, email, type =
         } else if (type === 'myProfile') {
             getUserFriendProfile(dispatch, email, friendUserId, currentUserId);
         }
+    }).catch(err=>{
+        // hanlde error message
     });
 };
 
-const searchMyfriend = (dispatch, userId, queryText) => {
+const searchMyfriend = (userId, queryText) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -1533,15 +1543,20 @@ const searchMyfriend = (dispatch, userId, queryText) => {
         ],
         text: queryText,
     };
-    return searchApi.post(`/users?page[number]=1&page[size]=10&user_id=${Number(userId)}`,
-        payloadObj).then((result) => {
-        console.log('result', result);
+    const params = {
+        'page[number]':1,
+        'page[size]':10,
+        'user_id':`${Number(userId)}`,
+    };
+    return searchApi.post(`/users`, payloadObj, { params }).then((result) => {
         fsa.payload = {
             count: result.meta.record_count,
             data: result.data,
             pageCount: result.meta.pageCount,
         };
         dispatch(fsa);
+    }).catch(err=>{
+        // handle error message
     });
 };
 

@@ -37,7 +37,7 @@ class UserMemberGroupList extends React.Component {
             dispatch,
             friendUserId,
         } = this.props;
-        getUserMemberGroup(dispatch, friendUserId, id);
+        dispatch(getUserMemberGroup(friendUserId, id));
     }
 
     showMemberCard() {

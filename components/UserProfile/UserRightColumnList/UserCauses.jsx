@@ -50,7 +50,7 @@ class UserCauses extends React.Component {
             friendUserId,
         } = this.props;
         if (!_isEmpty(friendUserId)) {
-            getUserCharitableInterests(dispatch, friendUserId);
+            dispatch(getUserCharitableInterests(friendUserId));
         }
     }
 

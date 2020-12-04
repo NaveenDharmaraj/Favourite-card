@@ -112,15 +112,13 @@ class EditBasicProfile extends React.Component {
         } = this.state;
         userBasicDetails.givingGoal = formatAmount(amount);
         userBasicDetails.formatedGoalAmount = formatCurrency(userBasicDetails.givingGoal, 'en', 'USD');
+        validity = this.validateUserProfileBasicForm('givingGoal', amount, validity);
         this.setState({
             buttonClicked: false,
             userBasicDetails: {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
             },
-        });
-        validity = this.validateUserProfileBasicForm('givingGoal', amount, validity);
-        this.setState({
             validity,
         });
     }
