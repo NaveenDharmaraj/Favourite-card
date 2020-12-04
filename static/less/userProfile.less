@@ -194,6 +194,12 @@
         &::-webkit-scrollbar-thumb{
           background: #78909C;
         }
+        .user_badgeButton {
+          cursor: auto;
+        }
+      }
+      .nodata{
+        margin-top: 20px;
       }
       .ui.button.blue-bordr-btn-round-def{
         padding: 7.2px 19.5px;
@@ -386,7 +392,7 @@
   }
   @media only screen and (max-width:767px) {
     .userHeaderBanner {
-      margin: -12px -20px 20px;
+      margin: 0px -20px 20px;
     }
   }
 }
@@ -408,6 +414,7 @@
 
         .ui.image {
           width: 100%;
+          height: 100%;
         }
       }
       .editprflButtonWrap{
@@ -503,10 +510,11 @@
         }
       }
       .ui.form{
-        .ui.button.save{
+        .btnWrp .ui.button.save{
           width: 100%;
           height: 48px;
           font-size: 17px;
+          margin-bottom: 16px;
         }
       }
     }
@@ -579,7 +587,9 @@
             }
           }
         }
-        
+        .ui.inverted.dimmer{
+          background: transparent;
+        }
 
       
       }
@@ -695,7 +705,7 @@
           margin-bottom: 25px;
         }
         .ui.grid + .grid{
-          margin: 30px 0 20px;
+          margin: 0px -14px 16px;
         }
         .ui.button.save{
           width: 100%;
@@ -760,132 +770,152 @@
   max-width: 500px;
   margin: auto;
   position: relative;
-  .ui.selection.dropdown{
+  margin-top: 40px;
+  .ui.fluid.search{
     height: 50px;       
     border-radius: 25px !important;
     display: flex;
     align-items: center;
-    font-size: 16px;
     border: 0;
-    >input{
-      height: 50px;       
-      border-radius: 25px !important;
-      padding: 16.6px 15px !important;
-      background-color: #ffffff !important;
-      border: 1px solid #dddddd !important;
+    box-shadow: 0 2px 7px 0px rgba(135,135,135,0.3);
+    .ui.input{
+      width: 100%;
+      z-index: 3;
+      input{
+        height: 50px;       
+        border-radius: 25px !important;
+        padding: 16.6px 80px 16.6px 15px!important;
+        background-color: #ffffff !important;
+        border: 1px solid #dddddd !important;
+        font-size: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+      }
+      .icon.delete{
+        cursor: pointer;
+        position: absolute;
+        right: 55px;
+        top: 0px;
+        bottom: 0;
+        margin: auto;
+        font-size: 18px;
+        z-index: 99;
+        opacity: 1;
+        width: 15px;
+        pointer-events: auto;
+        &::before{
+          content: '';
+          background-image: url(../images/icons/close.svg) !important;
+          background-size: contain !important;
+          width: 15px;
+          height: 15px;
+          position: absolute;
+          right: 0px;
+          top: 0px;
+          background-repeat: no-repeat !important;
+          margin: auto;
+          bottom: 0;
+        }
+      }
+      .search.icon{
+        width: 40px !important;
+        height: 40px !important;
+        padding: 0;
+        position: absolute;
+        right: 5px !important;
+        top: 0 !important;
+        bottom: 0;
+        margin: auto !important;
+        background-color: #EEEEEE;
+        border-radius: 30px;
+        cursor: pointer;
+        opacity: 1;
+        &:before{
+          content: "";
+          background-image: url('../images/icons/icon-search.svg') !important;
+          background-repeat: no-repeat !important;
+          background-size: contain !important;
+          background-position: center !important;
+          height: 18px;
+          width: 18px;
+          position: absolute;
+          margin: auto !important;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          border: 0;
+          border-radius: 0;
+        }
+      }
     }
-    &.active{
-      box-shadow: none;
-      >input{
+    &.focus{
+      .ui.input input{
         border-color: #055CE5 !important;
       }
-      .menu{
-        box-shadow: 0 2px 4px 0px rgba(0,0,0,0.29);
+     
+    }
+    &.loading{
+      .ui.input{
+        .icon{
+          &.search{
+            &::after{
+              content: none;
+            }
+          }
+          &.delete{
+            &::before{
+              content: none;
+            }
+          }
+        }
+      }
+    }
+    .results{
+      box-shadow: 0 2px 4px 0px rgba(0,0,0,0.29);
+      border: 0;
+      padding-top: 40px;
+      background-color: #ffffff;
+      border-bottom-left-radius: 26px;
+      border-bottom-right-radius: 26px;
+      margin: 0 0px;
+      top: 25px;
+      overflow: auto;
+      max-height: 380px;
+      z-index: 2;
+      > .result {
+        display: flex;
+        align-items: center;
         border: 0;
-        z-index: -1;
-        padding-top: 40px;
-        background-color: transparent;
-        border-bottom-left-radius: 26px;
-        border-bottom-right-radius: 26px;
-        margin: 0 2px;
-        min-width: calc(100% - 2px);
-        width: calc(100%);
-        top: 25px;
-        > .item {
-          background-color: #ffffff !important;
-          .text.menuItem{
-            .ui.avatar.image{
-              width: 32px;
-              height: 32px;
-              margin-right: 20px;
-            }
-            .icon.close{
-              display: none;
-            }
+        padding: 5px 14px;
+        .image{
+          float: none;
+          width: 32px;
+          height: 32px;
+          margin-right: 20px;
+          border-radius: 50%;
+        }
+        .content{
+          .title{
             font-size: 14px;
+            .primeFont();
+            color: @font-color;
           }
         }
-      }
-    }
-    >input{
-      padding: 16.6px 15px;
-    }
-    .dropdown.icon{
-      padding: 0 !important;
-      position: absolute;
-      right: 0;
-      width: 40px;
-      height: 40px !important;
-      margin: auto;
-      top: 0;
-      bottom: 0;
-    }
-    .text{
-      width: 100%;
-      .menuItem{
-        width: 100%;
-        font-size: 16px;
-        .ui.avatar.image{
-          display: none;
-        }
-        .icon.close{
-          position: absolute;
-          right: 15px;
-          &::before{
-          }
+        &:last-child{
+          padding-bottom: 20px;
         }
       }
-    }
-  }
-  .icon.delete{
-    cursor: pointer;
-    position: absolute;
-    right: 55px;
-    top: 0px;
-    bottom: 0;
-    margin: auto;
-    font-size: 18px;
-    z-index: 99;
-    &::before{
-      content: '';
-      background-image: url(../images/icons/close.svg) !important;
-      background-size: contain !important;
-      width: 15px;
-      height: 15px;
-      position: absolute;
-      right: 0px;
-      top: 0px;
-      background-repeat: no-repeat !important;
-      margin: auto;
-    bottom: 0;
-    }
-  }
-  .search.icon{
-    width: 40px !important;
-    height: 40px !important;
-    padding: 0;
-    position: absolute;
-    right: 5px !important;
-    top: 0 !important;
-    bottom: 0;
-    margin: auto !important;
-    background-color: #EEEEEE;
-    border-radius: 30px;
-    cursor: pointer;
-    &:before{
-      content: "";
-      background-image: url('../images/icons/icon-search.svg') !important;
-      background-repeat: no-repeat !important;
-      background-size: contain !important;
-      background-position: center !important;
-      height: 18px;
-      width: 18px;
-      position: absolute;
-      margin: auto !important;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      .message.empty{
+        padding: 0 1em 1em;
+        .header{
+          .primeFont();
+        }
+      }
     }
   }
 }
@@ -1004,7 +1034,7 @@
   &.userfriendtab{
     margin-top: 47px;
     .ui.secondary.pointing.menu{
-      margin-bottom: 40px;
+      margin-bottom: 0px;
       .item{
         font-size: 14px;
         padding: 0 20px 15px;
@@ -1041,24 +1071,26 @@
       max-width: 390px;
       margin: 0 10px 20px 10px;
       flex: auto;
+      height: 145px;
       .content{
         padding: 10px;
         display: flex;
         align-items: flex-start;
         .cardPrflImg{
-          min-width: 85px;
-          max-width: 85px;
-          width: 100%;
+          // min-width: 85px;
+          // max-width: 85px;
+          width: 23%;
           border-radius: 5px;
           overflow: hidden;
           
         }
         .cardcontentWrap{
-          margin-left: 14px;
-          width: 100%;
+          margin: 0 0 0 14px;
+          width: 77%;
           h6{
             font-size: 10px;
             margin: 0 0 5px;
+            text-transform: uppercase;
             &.groupClr{
               color: #009EA2;
             }
@@ -1067,6 +1099,7 @@
             }
             a.edit{
               float: right;
+              text-transform: capitalize;
             }
             .heart.icon{
               float: right;
@@ -1081,6 +1114,20 @@
             margin: 0 0 2px;
             line-height: 22px;
             cursor: pointer;
+            display: block;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            +p{
+              display: block;
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
           }
           p{
             margin-bottom: 2px;
@@ -1172,7 +1219,7 @@
   }
   .invitationsWrap{
     background-color: #F1F6FD;
-    margin: 0px 0 0 0px;
+    margin: 40px 0 0 0px;
     padding:0 53px 26px 53px;
     .ui.placeholder, .ui.placeholder .image.header::after, .ui.placeholder .line, .ui.placeholder .line::after, .ui.placeholder > ::before{
       background-color: #F1F6FD;
@@ -1201,6 +1248,8 @@
         .header>a{
           color: @font-color !important;
           margin-bottom: 2px;
+          display: block;
+          .primeFont-semi-bold()
         }
         .description{
           color: @font-color !important;
@@ -1363,6 +1412,7 @@
   &.ui.popup{
     min-width: 200px;
     padding: 0;
+    z-index: 2;
     >.header{
       padding: 10px 15px;
       font-size: 14px;
@@ -1378,6 +1428,7 @@
             display: flex;
             align-items: center;
             font-size: 14px;
+            .primeFont();
           .icon{
             font-size: 18px;
             margin-right: 15px;
@@ -1413,6 +1464,7 @@
         &:hover,&.active{
           a.header{
           color:@purple !important;
+          .primeFont-semi-bold();
           }
           .icon{
             filter: invert(36%) sepia(13%) saturate(2607%) hue-rotate(246deg) brightness(92%) contrast(92%);
@@ -1612,13 +1664,14 @@
                 color: #ffffff;
                 border-radius: 13px;
                 font-size: 12px;
-                padding: 4px 35px 4px 15px;
+                padding: 6px 35px 6px 15px;
                 .primeFont();
                 font-weight: normal;
                 margin-right: 10px;
+                line-height: normal;
                 i.icon.delete{
                   position: absolute;
-                  top: 7px;
+                  top: 8px;
                   right: 10px;
                   margin: 0;
                   cursor: pointer;
@@ -1653,10 +1706,11 @@
             margin: 0;
             width: 100%;
             .ui.input{
-              input{
-                border: 0;
-                padding-left: 0;
-              }
+              width: 100%;
+            }
+            input{
+              border: 0;
+              padding: 0;
             }
           }
           .ui.button{
@@ -1685,6 +1739,7 @@
           margin-right: 21px;
           font-size: 18px;
           color: #055CE5;
+          cursor: pointer;
         }
       }
   }
@@ -1697,21 +1752,5 @@
   font-size: 14px;
   width: 126px;
 }
-.findFriendsSearch{
-  .ui.input{
-    width: 500px;
-    .icon.delete{
-      right: 39px !important;
-      width: 1.671429em !important;
-      pointer-events: auto !important;
-    }
-    .icon.search{
-      pointer-events: auto !important;
-    }
-  }
-  .results.transition{
-    .image{
-      float: left !important;
-    }
-  }
-}
+
+

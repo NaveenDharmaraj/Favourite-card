@@ -698,13 +698,15 @@ class EditBasicProfile extends React.Component {
                                     <Button basic size="tiny" onClick={() => this.handleAmount(1000)}>$1,000</Button>
                                 </div>
                             </div>
-                            <Button
+                            <div className='btnWrp'>
+                                <Button
                                     className="blue-btn-rounded-def save"
                                     onClick={this.handleSubmit}
                                     disabled={buttonClicked}
                                 >
                                     Save
                                 </Button>
+                            </div>
                         </Form>
                     </div>
                 </Modal.Content>

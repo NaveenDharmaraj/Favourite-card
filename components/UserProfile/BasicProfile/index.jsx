@@ -1,7 +1,7 @@
 import React, {
     Fragment,
 } from 'react';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
 import {
     Container,
     Header,
@@ -444,7 +444,12 @@ class UserBasicProfile extends React.Component {
                         </Modal>
                     </div>
                     <div className="userCity_friends">
-                        <p>{getLocation(city,province)}</p>
+                        {!_isEmpty(getLocation(city,province))
+                        &&
+                        (
+                            <p>{getLocation(city,province)}</p>
+                        )} 
+                        
                         {((number_of_friends > 0) && (showUserFriends))
                         && (
                                 <div
