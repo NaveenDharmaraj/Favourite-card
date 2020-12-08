@@ -748,7 +748,7 @@ class UserFriendList extends React.Component {
                                         )}
                                         
                                         <div className="userfriends">
-                                            <Header as='h5'>{number_of_friends} friends</Header>
+                                            <Header as='h5'><span>{number_of_friends} friends</span></Header>
                                         </div>
                                     </div>
                                     {!isMyFriendsPage

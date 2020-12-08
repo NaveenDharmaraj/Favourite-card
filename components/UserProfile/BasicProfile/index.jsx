@@ -383,9 +383,9 @@ class UserBasicProfile extends React.Component {
                                 <Modal.Description>
                                     They won't be able to find your profile or message you on Charitable Impact. We won't let them know you blocked them.
                                 </Modal.Description>
-                                <div className="btn-wraper pt-3 text-right">
+                                <div className="block-unfriend-Modal-buttons">
                                     <Button
-                                        className="danger-btn-rounded-def"
+                                        className="red-btn-rounded-def"
                                         onClick={() => this.handleBlockUser(user_id)}
                                         disabled={blockButtonClicked}
                                     >
@@ -421,19 +421,19 @@ class UserBasicProfile extends React.Component {
                                 {last_name}?
                             </Modal.Header>
                             <Modal.Content>
-                                <Modal.Description className="font-s-16">
+                                <Modal.Description>
                                     Are you sure you want to unfriend this person?
                                 </Modal.Description>
-                                <div className="btn-wraper pt-3 text-right">
+                                <div className="block-unfriend-Modal-buttons">
                                     <Button
-                                        className="danger-btn-rounded-def c-small"
+                                        className="red-btn-rounded-def"
                                         onClick={() => this.handleUnfriendUser(user_id)}
                                         disabled={unfriendButtonClicked}
                                     >
                                         Unfriend
                                     </Button>
                                     <Button
-                                        className="blue-bordr-btn-round-def c-small"
+                                        className="blue-bordr-btn-round-def"
                                         onClick={this.handleUnfriendCancelClick}
                                         disabled={unfriendButtonClicked}
                                     >
