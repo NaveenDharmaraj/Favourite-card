@@ -18,7 +18,6 @@ import {
 import dynamic from 'next/dynamic';
 import {
     bool,
-    func,
     string,
     number,
     PropTypes,
@@ -27,7 +26,6 @@ import _isEmpty from 'lodash/isEmpty';
 
 import { withTranslation } from '../../../i18n';
 import { Link } from '../../../routes';
-import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 import {
     addToFriend,
     blockUser,
@@ -35,6 +33,7 @@ import {
     generateDeeplinkUserProfile,
     acceptFriend,
     rejectFriendInvite,
+    actionTypes,
 } from '../../../actions/userProfile';
 import {
     storeEmailIdToGive,
@@ -42,15 +41,10 @@ import {
 
 import {
     getLocation,
-    getPrivacyType,
 } from '../../../helpers/profiles/utils';
 
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import EditBasicProfile from '../EditBasicProfile';
-
-const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
-    ssr: false
-});
 
 class UserBasicProfile extends React.Component {
     constructor(props) {
@@ -58,12 +52,10 @@ class UserBasicProfile extends React.Component {
         this.state = {
             addButtonClicked: false,
             blockButtonClicked: false,
-            errorMessage: null,
             unfriendButtonClicked: false,
             acceptButtonClicked: false,
             confirmBlockModal: false,
             confirmUnfriendModal: false,
-            statusMessage: false,
             successMessage: '',
         };
 
@@ -227,17 +219,42 @@ class UserBasicProfile extends React.Component {
     }
 
     handleCopyLink(e) {
-        const data = document.getElementById('txtDeeplinkUser');
-        data.type = 'text';
-        data.select();
-        document.execCommand('copy');
-        data.type = 'hidden';
-        e.target.focus();
-        this.setState({
-            errorMessage: null,
-            successMessage: 'Copied to clipboard',
-            statusMessage: true,
-        })
+        const {
+            dispatch
+        } = this.props;
+        try {
+            const data = document.getElementById('txtDeeplinkUser');
+            data.type = 'text';
+            data.select();
+            document.execCommand('copy');
+            data.type = 'hidden';
+            e.target.focus();
+            const statusMessageProps = {
+                message: 'Copied to clipboard',
+                type: 'success',
+            };
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+        } catch (err) {
+            const statusMessageProps = {
+                message: 'Failed to copy to clipboard',
+                type: 'error',
+            };
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+        }
     }
 
     handleRejectRequest() {
@@ -287,12 +304,9 @@ class UserBasicProfile extends React.Component {
             acceptButtonClicked,
             addButtonClicked,
             blockButtonClicked,
-            errorMessage,
             unfriendButtonClicked,
             confirmBlockModal,
             confirmUnfriendModal,
-            statusMessage,
-            successMessage,
         } = this.state;
         let userProfileDeeplink = '';
         const isMyProfile = (profile_type === 'my_profile');
@@ -300,7 +314,7 @@ class UserBasicProfile extends React.Component {
         const showUserFriends = (friends_visibility === 0 ||
             (profile_type === 'friends_profile' && friends_visibility === 1) ||
             (isMyProfile && !isPreviewMode) || (isPreviewMode && friends_visibility === previewValue));
-        
+
         if (!_.isEmpty(userProfileProfilelink)) {
             userProfileDeeplink = userProfileProfilelink.data.attributes['short-link'];
         }
@@ -407,81 +421,81 @@ class UserBasicProfile extends React.Component {
                         </Modal>
                     </div>
                     <div className="userCity_friends">
-                        <p>{getLocation(city,province)}</p>
+                        <p>{getLocation(city, province)}</p>
                         {((number_of_friends > 0) && (showUserFriends))
-                        && (
+                            && (
                                 <div
                                     className="userfriends"
                                 >
                                     <Header
-                                    as='h5'
-                                    onClick={hanldeFriendPage}
+                                        as='h5'
+                                        onClick={hanldeFriendPage}
                                     >
                                         {`${(number_of_friends) && number_of_friends} ${friendText}`}
                                     </Header>
                                     {(isMyProfile && !isPreviewMode)
-                                    && (
-                                        <ProfilePrivacySettings
-                                            columnName='friends_visibility'
-                                            columnValue={friends_visibility}
-                                        />
-                                    )}
+                                        && (
+                                            <ProfilePrivacySettings
+                                                columnName='friends_visibility'
+                                                columnValue={friends_visibility}
+                                            />
+                                        )}
                                 </div>
-                        )}
+                            )}
                     </div>
                     <p className='textAboutuser'>{description}</p>
                     <div className="userButtonsWrap">
                         {(isMyProfile && !isPreviewMode)
-                        && (
-                            <Fragment>
-                                <Button
-                                    className='blue-bordr-btn-round-def m-w-100'
-                                    onClick={handlePreviewPage}
-                                >
-                                View what others see
+                            && (
+                                <Fragment>
+                                    <Button
+                                        className='blue-bordr-btn-round-def m-w-100'
+                                        onClick={handlePreviewPage}
+                                    >
+                                        View what others see
                                 </Button>
-                                <EditBasicProfile />
-                                <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left'>
-                                    <Dropdown.Menu >
-                                        <Dropdown.Item
-                                            text='Copy profile URL'
-                                            onClick={this.handleCopyLink}
-                                        />
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Fragment>
-                        )}
+                                    <EditBasicProfile />
+                                    <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left'>
+                                        <Dropdown.Menu >
+                                            <Dropdown.Item
+                                                text='Copy profile URL'
+                                                onClick={this.handleCopyLink}
+                                            />
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </Fragment>
+                            )}
                         {isPreviewMode
-                        && (
-                            <Fragment>
-                            <Button
-                                className='blue-btn-rounded-def'
-                                disabled={true}
-                                >
-                                    Add Friend
+                            && (
+                                <Fragment>
+                                    <Button
+                                        className='blue-btn-rounded-def'
+                                        disabled={true}
+                                    >
+                                        Add Friend
                             </Button>
-                            <Button
-                                className='blue-bordr-btn-round-def'
-                                disabled={true}
-                            >
-                                Give
+                                    <Button
+                                        className='blue-bordr-btn-round-def'
+                                        disabled={true}
+                                    >
+                                        Give
                             </Button>
-                            <Dropdown 
-                                className='userProfile_drpbtn threeDotBtn'
-                                direction='left'
-                                disabled={true}
-                            >
-                                    <Dropdown.Menu >
-                                        <Dropdown.Item
-                                            text='Copy profile URL'
-                                            onClick={this.handleCopyLink}
-                                        />
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Fragment>
-                        )}
+                                    <Dropdown
+                                        className='userProfile_drpbtn threeDotBtn'
+                                        direction='left'
+                                        disabled={true}
+                                    >
+                                        <Dropdown.Menu >
+                                            <Dropdown.Item
+                                                text='Copy profile URL'
+                                                onClick={this.handleCopyLink}
+                                            />
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </Fragment>
+                            )}
                         {(!isMyProfile && !isFriendPending && !isFriend && !isBlocked)
-                        && (
+                            && (
                                 <Button
                                     className="blue-btn-rounded"
                                     onClick={() => this.handleAddToFriends(user_id, email)}
@@ -504,7 +518,7 @@ class UserBasicProfile extends React.Component {
                                         >
                                             Pending
                                         </Button>
-                                    )} 
+                                    )}
                                 >
                                     <Dropdown.Menu >
                                         <Dropdown.Item
@@ -517,17 +531,17 @@ class UserBasicProfile extends React.Component {
                         }
                         {
                             isProfileIn && (
-                                <Dropdown 
-                                    className='userProfile_drpbtn m-w-100' 
-                                    icon='chevron down' 
+                                <Dropdown
+                                    className='userProfile_drpbtn m-w-100'
+                                    icon='chevron down'
                                     direction='left'
                                     trigger={(
                                         <Button
-                                        className='blue-btn-rounded-def'
-                                >
-                                    Respond to friend request
-                                </Button>
-                                )} >
+                                            className='blue-btn-rounded-def'
+                                        >
+                                            Respond to friend request
+                                        </Button>
+                                    )} >
                                     <Dropdown.Menu >
                                         <Dropdown.Item
                                             onClick={() => this.handleAcceptFriend(user_id, email)}
@@ -554,52 +568,52 @@ class UserBasicProfile extends React.Component {
                             )
                         }
                         {isBlocked
-                        && (
-                            <Button
+                            && (
+                                <Button
                                     className="grey-btn-rounded-def"
                                     disabled={true}
                                 >
                                     Block
                                 </Button>
-                        )}
+                            )}
                         {!isMyProfile
-                        && (
-                            <Fragment>
-                                {!isBlocked
-                                && (
-                                    <Link className="lnkChange" route="/give/to/friend/new">
-                                        <Button
-                                            className="blue-bordr-btn-round"
-                                            onClick={() => this.giveButtonClick(email, `${first_name} ${last_name}`, avatar)}
-                                        >
-                                            Give
+                            && (
+                                <Fragment>
+                                    {!isBlocked
+                                        && (
+                                            <Link className="lnkChange" route="/give/to/friend/new">
+                                                <Button
+                                                    className="blue-bordr-btn-round"
+                                                    onClick={() => this.giveButtonClick(email, `${first_name} ${last_name}`, avatar)}
+                                                >
+                                                    Give
                                         </Button>
-                                </Link>
-                                )}
-                                <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left'>
-                                    <Dropdown.Menu >
-                                        <Dropdown.Item
-                                            text='Copy profile URL'
-                                            onClick={this.handleCopyLink}
-                                        />
-                                        {isFriend
-                                        && (
-                                        <Dropdown.Item
-                                            text='Unfriend'
-                                            onClick={this.handleUnfriendModal}
-                                        />
+                                            </Link>
                                         )}
-                                        {!isBlocked
-                                        && (
-                                        <Dropdown.Item
-                                            text='Block'
-                                            onClick={this.handleBlockModal}
-                                        />
-                                        )}
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Fragment>
-                        )
+                                    <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left'>
+                                        <Dropdown.Menu >
+                                            <Dropdown.Item
+                                                text='Copy profile URL'
+                                                onClick={this.handleCopyLink}
+                                            />
+                                            {isFriend
+                                                && (
+                                                    <Dropdown.Item
+                                                        text='Unfriend'
+                                                        onClick={this.handleUnfriendModal}
+                                                    />
+                                                )}
+                                            {!isBlocked
+                                                && (
+                                                    <Dropdown.Item
+                                                        text='Block'
+                                                        onClick={this.handleBlockModal}
+                                                    />
+                                                )}
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </Fragment>
+                            )
                         }
                     </div>
                 </div>

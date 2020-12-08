@@ -21,22 +21,17 @@ import {
     unblockFriend,
     updateUserPreferences,
     savePrivacySetting,
+    actionTypes,
 } from '../../../actions/userProfile';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
-const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
-    ssr: false
-});
 
 class Privacy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            buttonClicked: false,
             blockedUserListLoader: !props.userBlockedFriendsList,
+            currentButtonClicked: null,
             discoverability: (!_isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.discoverability : false,
-            errorMessage: null,
-            statusMessage: false,
-            successMessage: '',
             privacyValues: {
                 friends_visibility: '',
                 giving_goal_visibility: '',
@@ -117,8 +112,7 @@ class Privacy extends React.Component {
 
     handleFriendUnblockClick(userId) {
         this.setState({
-            buttonClicked: true,
-            statusMessage: false,
+            currentButtonClicked: userId,
         });
         if (userId !== null) {
             const {
@@ -128,17 +122,36 @@ class Privacy extends React.Component {
                 dispatch,
             } = this.props;
             unblockFriend(dispatch, id, userId).then(() => {
+                const statusMessageProps = {
+                    message: 'User unblocked.',
+                    type: 'success',
+                };
+                dispatch({
+                    payload: {
+                        errors: [
+                            statusMessageProps,
+                        ],
+                    },
+                    type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+                });
                 this.setState({
-                    errorMessage: null,
-                    successMessage: 'User unblocked.',
-                    statusMessage: true,
-                    buttonClicked: false,
+                    currentButtonClicked: null,
                 });
             }).catch((err) => {
+                const statusMessageProps = {
+                    message: 'Error in Unblocking user.',
+                    type: 'error',
+                };
+                dispatch({
+                    payload: {
+                        errors: [
+                            statusMessageProps,
+                        ],
+                    },
+                    type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+                });
                 this.setState({
-                    errorMessage: 'Error in Unblocking user.',
-                    statusMessage: true,
-                    buttonClicked: false,
+                    currentButtonClicked: null,
                 });
             });
         }
@@ -163,7 +176,7 @@ class Privacy extends React.Component {
             userBlockedFriendsList,
         } = this.props;
         const {
-            buttonClicked,
+            currentButtonClicked,
         } = this.state;
         let friendsBlockedList = 'Users you block will appear here.';
         if (!_isEmpty(userBlockedFriendsList) && _size(userBlockedFriendsList.data) > 0) {
@@ -188,7 +201,7 @@ class Privacy extends React.Component {
                             <Button
                                 className="blue-bordr-btn-round-def c-small"
                                 onClick={() => this.handleFriendUnblockClick(data.attributes.user_id)}
-                                disabled={buttonClicked}
+                                disabled={currentButtonClicked === data.attributes.user_id}
                             >
                                 Unblock
                             </Button>
@@ -232,9 +245,6 @@ class Privacy extends React.Component {
 
     render() {
         const {
-            errorMessage,
-            statusMessage,
-            successMessage,
             blockedUserListLoader,
             discoverability,
             privacyValues: {
@@ -345,16 +355,6 @@ class Privacy extends React.Component {
                     </div>
                     <div className="settingsDetailWraper">
                         <Header as="h4">Blocked users</Header>
-                        {
-                            statusMessage && (
-                                <div className="mt-1 mb-2">
-                                    <ModalStatusMessage 
-                                        message = {!_isEmpty(successMessage) ? successMessage : null}
-                                        error = {!_isEmpty(errorMessage) ? errorMessage : null}
-                                    />
-                                </div>
-                            )
-                        }
                         { blockedUserListLoader
                             ? (
                                 <Table padded unstackable className="no-border-table">
