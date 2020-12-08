@@ -65,6 +65,9 @@ export const actionTypes = {
     USER_PROFILE_FRIEND_REQUEST: 'USER_PROFILE_FRIEND_REQUEST',
     USER_PROFILE_FRIEND_TYPE_AHEAD_SEARCH: 'USER_PROFILE_FRIEND_TYPE_AHEAD_SEARCH',
     USER_PROFILE_GET_EMAIL_LIST: 'USER_PROFILE_GET_EMAIL_LIST',
+    USER_PROFILE_MEMBER_GROUP_SEE_MORE_LOADER: 'USER_PROFILE_MEMBER_GROUP_SEE_MORE_LOADER',
+    USER_PROFILE_USER_FAVOURITES_SEE_MORE_LOADER: 'USER_PROFILE_USER_FAVOURITES_SEE_MORE_LOADER',
+    USER_PROFILE_USER_ADMIN_GROUP_SEE_MORE_LOADER: 'USER_PROFILE_USER_ADMIN_GROUP_SEE_MORE_LOADER',
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
     USER_PROFILE_INVITE_FRIENDS: 'USER_PROFILE_INVITE_FRIENDS',
     USER_PROFILE_LOCATION_SEARCH: 'USER_PROFILE_LOCATION_SEARCH',
@@ -152,9 +155,9 @@ const getUserCharitableInterests = (userId) => dispatch => {
         type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS,
     });
     const params = {
-        userid:`${Number(userId)}`,
+        userid: `${Number(userId)}`,
     };
-    graphApi.get(`/get/user/causetags`, {params}).then(
+    graphApi.get(`/get/user/causetags`, { params }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -173,112 +176,181 @@ const getUserCharitableInterests = (userId) => dispatch => {
     });
 };
 
-const getUserMemberGroup = (userId, sourceUserId) => (dispatch) => {
+const getUserMemberGroup = (userId, sourceUserId, pageNumber = 1, seeMoreLoader = false) => (dispatch) => {
     const fsa = {
         payload: {
             userId,
         },
         type: actionTypes.USER_PROFILE_MEMBER_GROUP,
     };
-    dispatch({
-        payload: {
-            userProfileMemberGroupsLoadStatus: true,
-        },
-        type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
-    });
-    const params = {
-        'friend_id':`${Number(userId)}`,
-        'fields[groups]':'name,city,province,slug,avatar,groupType,totalMoneyRaised',
-        'page[number]':1,
-        'page[size]':9,
+    if (seeMoreLoader) {
+        dispatch({
+            payload: {
+                userProfileMemberGroupsSeeMoreLoader: true,
+            },
+            type: actionTypes.USER_PROFILE_MEMBER_GROUP_SEE_MORE_LOADER,
+        });
+    } else {
+        dispatch({
+            payload: {
+                userProfileMemberGroupsLoadStatus: true,
+            },
+            type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
+        });
     }
-    coreApi.get(`/users/${Number(sourceUserId)}/friendGroups`, {params}).then(
+    const params = {
+        'friend_id': `${Number(userId)}`,
+        'fields[groups]': 'name,city,province,slug,avatar,groupType,totalMoneyRaised',
+        'page[number]': Number(pageNumber),
+        'page[size]': 10,
+    }
+    const userMemberGroupPromise = coreApi.get(`/users/${Number(sourceUserId)}/friendGroups`, { params });
+    userMemberGroupPromise.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
+                totalMemberGroupRecordCount: result.meta.recordCount,
             };
         },
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
-        dispatch({
-            payload: {
-                userProfileMemberGroupsLoadStatus: false,
-            },
-            type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
-        });
+        if (seeMoreLoader) {
+            dispatch({
+                payload: {
+                    userProfileMemberGroupsSeeMoreLoader: false,
+                },
+                type: actionTypes.USER_PROFILE_MEMBER_GROUP_SEE_MORE_LOADER,
+            });
+        } else {
+            dispatch({
+                payload: {
+                    userProfileMemberGroupsLoadStatus: false,
+                },
+                type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
+            });
+        }
         dispatch(fsa);
     });
+    return userMemberGroupPromise;
 };
 
-const getUserAdminGroup = (userId, sourceUserId) => dispatch => {
+const getUserAdminGroup = (userId, sourceUserId, pageNumber = 1, seeMoreLoader = false) => dispatch => {
     const fsa = {
         payload: {
             userId,
         },
         type: actionTypes.USER_PROFILE_ADMIN_GROUP,
     };
-    dispatch({
-        payload: {
-            userProfileAdminGroupsLoadStatus: true,
-        },
-        type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
-    });
+    if (seeMoreLoader) {
+        dispatch({
+            payload: {
+                userProfileUserAdminGroupSeeMoreLoader: true,
+            },
+            type: actionTypes.USER_PROFILE_USER_ADMIN_GROUP_SEE_MORE_LOADER,
+        });
+    } else {
+        dispatch({
+            payload: {
+                userProfileAdminGroupsLoadStatus: true,
+            },
+            type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
+        });
+    }
     const params = {
-        'friend_id':`${Number(userId)}`,
-        'fields[groups]':'name,city,province,slug,avatar,groupType,totalMoneyRaised',
-        'page[number]':1,
-        'page[size]':9
+        'friend_id': `${Number(userId)}`,
+        'fields[groups]': 'name,city,province,slug,avatar,groupType,totalMoneyRaised',
+        'page[number]': pageNumber,
+        'page[size]': 10
     };
-    coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups`,{params}).then(
+    const userAdminGroupPromise =  coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups`, { params });
+    userAdminGroupPromise.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
+                totalUserAdminGroupRecordCount: result.meta.recordCount,
             };
         },
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
-        dispatch({
-            payload: {
-                userProfileAdminGroupsLoadStatus: false,
-            },
-            type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
-        });
+        if (seeMoreLoader) {
+            dispatch({
+                payload: {
+                    userProfileUserAdminGroupSeeMoreLoader: false,
+                },
+                type: actionTypes.USER_PROFILE_USER_ADMIN_GROUP_SEE_MORE_LOADER,
+            });
+        } else {
+            dispatch({
+                payload: {
+                    userProfileAdminGroupsLoadStatus: false,
+                },
+                type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
+            });
+        }
         dispatch(fsa);
     });
+    return userAdminGroupPromise;
 };
 
-const getUserFavourites = (dispatch, userId) => {
+const getUserFavourites = (userId, pageNumber = 1, seeMoreLoader = false) => dispatch => {
     const fsa = {
         payload: {
             userId,
         },
         type: actionTypes.USER_PROFILE_FAVOURITES,
     };
-    dispatch({
-        payload: {
-            userProfileFavouritesLoadStatus: true,
-        },
-        type: actionTypes.USER_PROFILE_FAVOURITES_LOAD_STATUS,
-    });
-    graphApi.get(`/user/favourites?userid=${Number(userId)}`).then(
+    if (seeMoreLoader) {
+        dispatch({
+            payload: {
+                userProfileUserFavouritesSeeMoreLoader: true,
+            },
+            type: actionTypes.USER_PROFILE_USER_FAVOURITES_SEE_MORE_LOADER,
+        });
+    } else {
+        dispatch({
+            payload: {
+                userProfileFavouritesLoadStatus: true,
+            },
+            type: actionTypes.USER_PROFILE_FAVOURITES_LOAD_STATUS,
+        });
+    }
+    const params = {
+        'userid': `${Number(userId)}`,
+        'page[number]': Number(pageNumber),
+        'page[size]': 10,
+
+    }
+    const userFavouritePromise = graphApi.get(`/user/favourites`, { params });
+    userFavouritePromise.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
+                totalUserFavouritesRecordCount: result.meta.recordCount,
             };
         },
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
-        dispatch({
-            payload: {
-                userProfileFavouritesLoadStatus: false,
-            },
-            type: actionTypes.USER_PROFILE_FAVOURITES_LOAD_STATUS,
-        });
+        if (seeMoreLoader) {
+            dispatch({
+                payload: {
+                    userProfileUserFavouritesSeeMoreLoader: false,
+                },
+                type: actionTypes.USER_PROFILE_USER_FAVOURITES_SEE_MORE_LOADER,
+            });
+        } else {
+            dispatch({
+                payload: {
+                    userProfileFavouritesLoadStatus: false,
+                },
+                type: actionTypes.USER_PROFILE_FAVOURITES_LOAD_STATUS,
+            });
+        }
         dispatch(fsa);
     });
+    return userFavouritePromise;
 };
 
 const getUserProfileCauses = (dispatch, userId) => {
@@ -365,7 +437,7 @@ const getMyFriendsList = (email, pageNumber) => dispatch => {
     });
 };
 
-const getFriendsInvitations = (email, pageNumber) => dispatch=> {
+const getFriendsInvitations = (email, pageNumber) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -496,7 +568,7 @@ const getMyCreditCards = (dispatch, userId, pageNumber, updatedCurrentActivePage
     });
 };
 
-const saveUserBasicProfile = (userData, userId, email , isMyprofile = false) => dispatch => {
+const saveUserBasicProfile = (userData, userId, email, isMyprofile = false) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -1526,7 +1598,7 @@ const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => di
         } else if (type === 'myProfile') {
             dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
         }
-    }).catch(err=>{
+    }).catch(err => {
         // hanlde error message
     });
 };
@@ -1549,9 +1621,9 @@ const searchMyfriend = (userId, queryText) => dispatch => {
         text: queryText,
     };
     const params = {
-        'page[number]':1,
-        'page[size]':10,
-        'user_id':`${Number(userId)}`,
+        'page[number]': 1,
+        'page[size]': 10,
+        'user_id': `${Number(userId)}`,
     };
     return searchApi.post(`/users`, payloadObj, { params }).then((result) => {
         fsa.payload = {
@@ -1560,7 +1632,7 @@ const searchMyfriend = (userId, queryText) => dispatch => {
             pageCount: result.meta.pageCount,
         };
         dispatch(fsa);
-    }).catch(err=>{
+    }).catch(err => {
         // handle error message
     });
 };

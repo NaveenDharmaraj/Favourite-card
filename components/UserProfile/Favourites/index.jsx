@@ -1,14 +1,14 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import {
-    Container,
-    Header,
-    Grid,
+    Header, 
+    Button,
 } from 'semantic-ui-react';
 import {
     connect,
 } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
+import _size from 'lodash/size';
 import {
     array,
     bool,
@@ -29,14 +29,30 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 import ProfileCard from '../../shared/ProfileCard';
 
 class FavouritesList extends React.Component {
+    constructor(props){
+        super(props);
+        const {
+            userProfileFavouritesData: {
+                data: favouritesData,
+            },
+        } = props;
+        this.state = {
+            currentPageNumber: _isEmpty(favouritesData) ? 1 : Math.floor(_size(favouritesData)/10),
+        }
+    }
     componentDidMount() {
         const {
             dispatch,
             friendUserId,
+            userProfileFavouritesData: {
+                data: favouritesData,
+            },
         } = this.props;
-        getUserFavourites(dispatch, friendUserId);
+        const {
+            currentPageNumber
+        } = this.state;
+        _isEmpty(favouritesData) && dispatch(getUserFavourites(friendUserId, currentPageNumber, false));
     }
-
     showMemberCard() {
         const {
             userFriendProfileData: {
@@ -56,7 +72,7 @@ class FavouritesList extends React.Component {
             favouritesData.map((favourite) => {
                 let locationDetails = '';
                 if (!_isEmpty(favourite.attributes.city)
-                        && !_isEmpty(favourite.attributes.province)) {
+                    && !_isEmpty(favourite.attributes.province)) {
                     locationDetails = getLocation(favourite.attributes.city, favourite.attributes.province);
                 }
 
@@ -80,7 +96,52 @@ class FavouritesList extends React.Component {
         }
         return memberArray;
     }
-
+    handleSeeMore = () => {
+        const {
+            currentPageNumber
+        } = this.state;
+        const {
+            dispatch,
+            friendUserId,
+        } = this.props;
+        dispatch(getUserFavourites(friendUserId, currentPageNumber + 1, true))
+            .then(() => {
+                this.setState((prevState) => ({
+                    currentPageNumber: prevState.currentPageNumber + 1
+                }))
+            })
+            .catch((err) => {
+                // handle error
+            })
+    }
+    renderSeeMore = () => {
+        const {
+            userProfileUserFavouritesSeeMoreLoader,
+        } = this.props;
+        return (
+            <div className="text-centre">
+                <Button
+                    className="blue-bordr-btn-round-def"
+                    onClick={() => this.handleSeeMore()}
+                    loading={userProfileUserFavouritesSeeMoreLoader}
+                    disabled={userProfileUserFavouritesSeeMoreLoader}
+                    content="See more"
+                />
+            </div>
+        )
+    }
+    renderCount = () => {
+        const {
+            userProfileFavouritesData: {
+                data: favouritesData,
+                totalUserFavouritesRecordCount,
+            },
+        } = this.props;
+        const countText = `Showing ${_size(favouritesData)} of ${totalUserFavouritesRecordCount}`;
+        return (
+            <div className="result">{countText}</div>
+        );
+    }
     render() {
         const {
             previewMode: {
@@ -95,6 +156,7 @@ class FavouritesList extends React.Component {
             userProfileFavouritesLoadStatus,
             userProfileFavouritesData: {
                 data: favouritesData,
+                totalUserFavouritesRecordCount,
             },
         } = this.props;
         const isMyProfile = (profile_type === 'my_profile');
@@ -105,7 +167,7 @@ class FavouritesList extends React.Component {
         } else {
             noData = (
                 <div className="nodata-friendsprfl">
-                Nothing to show here yet
+                    Nothing to show here yet
                 </div>
             );
         }
@@ -132,11 +194,20 @@ class FavouritesList extends React.Component {
                             />
                         )}
                 </div>
-                {userProfileFavouritesLoadStatus
-                    ? (
-                        <PlaceholderGrid row={2} column={3} />
-                    )
-                    : dataElement}
+                {
+                    userProfileFavouritesLoadStatus
+                        ? (
+                            <PlaceholderGrid row={2} column={3} />
+                        )
+                        : dataElement
+                }
+                <div className="seeMore bigBtn mt-2-sm mt-2-xs">
+                    {
+                        (!_isEmpty(favouritesData) && (_size(favouritesData) < totalUserFavouritesRecordCount)) &&
+                        this.renderSeeMore()
+                    }
+                    {totalUserFavouritesRecordCount > 0 && this.renderCount()}
+                </div>
             </div>
         );
     }
@@ -154,6 +225,7 @@ FavouritesList.defaultProps = {
     },
     userProfileFavouritesData: {
         data: [],
+        totalUserFavouritesRecordCount: 0,
     },
     userProfileFavouritesLoadStatus: true,
 };
@@ -170,6 +242,7 @@ FavouritesList.propTypes = {
     }),
     userProfileFavouritesData: PropTypes.shape({
         data: array,
+        totalUserFavouritesRecordCount: number,
     }),
     userProfileFavouritesLoadStatus: bool,
 };
@@ -181,6 +254,7 @@ function mapStateToProps(state) {
         userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileFavouritesData: state.userProfile.userProfileFavouritesData,
         userProfileFavouritesLoadStatus: state.userProfile.userProfileFavouritesLoadStatus,
+        userProfileUserFavouritesSeeMoreLoader: state.userProfile.userProfileUserFavouritesSeeMoreLoader,
     };
 }
 
