@@ -4,11 +4,13 @@ import {
     Container,
     Header,
     Grid,
+    Button,
 } from 'semantic-ui-react';
 import {
     connect,
 } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
+import _size from 'lodash/size';
 import {
     array,
     bool,
@@ -23,12 +25,26 @@ import {
 import {
     getLocation,
     getPrivacyType,
+    displayRecordCount,
+    displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
 import ProfileCard from '../../shared/ProfileCard';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 
 class UserMemberGroupList extends React.Component {
+    constructor(props){
+        super(props);
+        const {
+            userProfileMemberGroupData: {
+                data: memberData,
+            },
+        } = props;
+        this.state = {
+            currentPageNumber: _isEmpty(memberData) ? 1 : Math.floor(_size(memberData)/10),
+        }
+    }
+    
     componentDidMount() {
         const {
             currentUser: {
@@ -36,8 +52,14 @@ class UserMemberGroupList extends React.Component {
             },
             dispatch,
             friendUserId,
+            userProfileMemberGroupData: {
+                data: memberData,
+            },
         } = this.props;
-        dispatch(getUserMemberGroup(friendUserId, id));
+        const {
+            currentPageNumber
+        } = this.state;
+        _isEmpty(memberData) && dispatch(getUserMemberGroup(friendUserId, id, currentPageNumber, false));
     }
 
     showMemberCard() {
@@ -77,7 +99,27 @@ class UserMemberGroupList extends React.Component {
         }
         return memberArray;
     }
-
+    handleSeeMore = () => {
+        const {
+            currentPageNumber
+        } = this.state;
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+            friendUserId,
+        } = this.props;
+        dispatch(getUserMemberGroup(friendUserId, id, currentPageNumber + 1, true))
+            .then(() => {
+                this.setState((prevState) => ({
+                    currentPageNumber: prevState.currentPageNumber + 1
+                }))
+            })
+            .catch((err) => {
+                // handle error
+            })
+    }
     render() {
         const {
             previewMode: {
@@ -91,8 +133,10 @@ class UserMemberGroupList extends React.Component {
             },
             userProfileMemberGroupData: {
                 data: memberData,
+                totalMemberGroupRecordCount,
             },
             userProfileMemberGroupsLoadStatus,
+            userProfileMemberGroupsSeeMoreLoader,
         } = this.props;
         const isMyProfile = (profile_type === 'my_profile');
         const currentPrivacyType = getPrivacyType(giving_group_member_visibility);
@@ -102,7 +146,7 @@ class UserMemberGroupList extends React.Component {
         } else {
             noData = (
                 <div className="nodata-friendsprfl">
-                Nothing to show here yet
+                    Nothing to show here yet
                 </div>
             );
         }
@@ -133,6 +177,13 @@ class UserMemberGroupList extends React.Component {
                     ? <PlaceholderGrid row={2} column={3} />
                     : dataElement
                 }
+                <div className="seeMore bigBtn mt-2-sm mt-2-xs">
+                    {
+                        (!_isEmpty(memberData) && (_size(memberData) < totalMemberGroupRecordCount )) &&
+                        displaySeeMoreButton(userProfileMemberGroupsSeeMoreLoader, this.handleSeeMore)
+                    }
+                    {totalMemberGroupRecordCount > 0 && displayRecordCount(memberData, totalMemberGroupRecordCount)}
+                </div>
             </div>
         );
     }
@@ -150,8 +201,10 @@ UserMemberGroupList.defaultProps = {
     },
     userProfileMemberGroupData: {
         data: [],
+        totalMemberGroupRecordCount: 0,
     },
     userProfileMemberGroupsLoadStatus: true,
+    userProfileMemberGroupsSeeMoreLoader: false
 };
 
 UserMemberGroupList.propTypes = {
@@ -166,8 +219,10 @@ UserMemberGroupList.propTypes = {
     }),
     userProfileMemberGroupData: PropTypes.shape({
         data: array,
+        totalMemberGroupRecordCount: number,
     }),
     userProfileMemberGroupsLoadStatus: bool,
+    userProfileMemberGroupsSeeMoreLoader: bool,
 };
 
 function mapStateToProps(state) {
@@ -177,6 +232,7 @@ function mapStateToProps(state) {
         userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileMemberGroupData: state.userProfile.userProfileMemberGroupData,
         userProfileMemberGroupsLoadStatus: state.userProfile.userProfileMemberGroupsLoadStatus,
+        userProfileMemberGroupsSeeMoreLoader: state.userProfile.userProfileMemberGroupsSeeMoreLoader,
     };
 }
 

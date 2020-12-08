@@ -238,7 +238,6 @@ class MyTags extends React.Component {
                     </a>
                 </div>
                 {this.renderTags(userFindTagsList)}
-                <a className='EditTopicseeMore'><Icon className='share'></Icon>See more topics</a>
             </Grid.Column>
         );
     }

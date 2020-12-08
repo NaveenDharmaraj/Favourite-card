@@ -5,11 +5,13 @@ import {
     Container,
     Header,
     Card,
+    Button,
 } from 'semantic-ui-react';
 import {
     connect,
 } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
+import _size from 'lodash/size';
 import {
     array,
     bool,
@@ -21,21 +23,26 @@ import {
 import {
     getUserAdminGroup,
 } from '../../../actions/userProfile';
-import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
-import LeftImageCard from '../../shared/LeftImageCard';
-
 import ProfileCard from '../../shared/ProfileCard';
 import {
     getLocation,
     getPrivacyType,
+    displayRecordCount,
+    displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 
 class UserAdminGroupList extends React.Component {
     constructor(props) {
         super(props);
+        const {
+            userProfileAdminGroupData: {
+                data: adminData,
+            },
+        } = props;
         this.state = {
+            currentPageNumber: _isEmpty(adminData) ? 1 : Math.floor(_size(adminData)/10),
             show: false,
         };
         this.showAdminCard = this.showAdminCard.bind(this);
@@ -48,8 +55,14 @@ class UserAdminGroupList extends React.Component {
             },
             dispatch,
             friendUserId,
+            userProfileAdminGroupData: {
+                data: adminData,
+            },
         } = this.props;
-        dispatch(getUserAdminGroup(friendUserId, id));
+        const {
+            currentPageNumber
+        } = this.state;
+        _isEmpty(adminData) && dispatch(getUserAdminGroup(friendUserId, id, currentPageNumber, false));
     }
 
     showAdminCard() {
@@ -89,7 +102,27 @@ class UserAdminGroupList extends React.Component {
         }
         return adminArray;
     }
-
+    handleSeeMore = () => {
+        const {
+            currentPageNumber
+        } = this.state;
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+            friendUserId,
+        } = this.props;
+        dispatch(getUserAdminGroup(friendUserId, id, currentPageNumber + 1, true))
+            .then(() => {
+                this.setState((prevState) => ({
+                    currentPageNumber: prevState.currentPageNumber + 1
+                }))
+            })
+            .catch((err) => {
+                // handle error
+            })
+    }
     render() {
         const {
             previewMode: {
@@ -97,6 +130,7 @@ class UserAdminGroupList extends React.Component {
             },
             userProfileAdminGroupData: {
                 data: adminData,
+                totalUserAdminGroupRecordCount,
             },
             userFriendProfileData: {
                 attributes: {
@@ -105,6 +139,7 @@ class UserAdminGroupList extends React.Component {
                 },
             },
             userProfileAdminGroupsLoadStatus,
+            userProfileUserAdminGroupSeeMoreLoader,
         } = this.props;
         const isMyProfile = (profile_type === 'my_profile');
         const currentPrivacyType = getPrivacyType(giving_group_manage_visibility);
@@ -114,7 +149,7 @@ class UserAdminGroupList extends React.Component {
         } else {
             noData = (
                 <div className="nodata-friendsprfl">
-                Nothing to show here yet
+                    Nothing to show here yet
                 </div>
             );
         }
@@ -145,6 +180,13 @@ class UserAdminGroupList extends React.Component {
                     ? <PlaceholderGrid row={2} column={3} />
                     : dataElement
                 }
+                <div className="seeMore bigBtn mt-2-sm mt-2-xs">
+                    {
+                        (!_isEmpty(adminData) && (_size(adminData) < totalUserAdminGroupRecordCount)) &&
+                        displaySeeMoreButton(userProfileUserAdminGroupSeeMoreLoader, this.handleSeeMore)
+                    }
+                    {totalUserAdminGroupRecordCount > 0 && displayRecordCount(adminData, totalUserAdminGroupRecordCount)}
+                </div>
             </div>
         );
     }
@@ -162,6 +204,7 @@ UserAdminGroupList.defaultProps = {
     },
     userProfileAdminGroupData: {
         data: [],
+        totalUserAdminGroupRecordCount: 0,
     },
     userProfileAdminGroupsLoadStatus: true,
 };
@@ -178,6 +221,7 @@ UserAdminGroupList.propTypes = {
     }),
     userProfileAdminGroupData: PropTypes.shape({
         data: array,
+        totalUserAdminGroupRecordCount: number,
     }),
     userProfileAdminGroupsLoadStatus: bool,
 };
@@ -189,6 +233,7 @@ function mapStateToProps(state) {
         userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileAdminGroupData: state.userProfile.userProfileAdminGroupData,
         userProfileAdminGroupsLoadStatus: state.userProfile.userProfileAdminGroupsLoadStatus,
+        userProfileUserAdminGroupSeeMoreLoader: state.userProfile.userProfileUserAdminGroupSeeMoreLoader,
     };
 }
 

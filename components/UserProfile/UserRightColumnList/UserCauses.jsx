@@ -70,9 +70,9 @@ class UserCauses extends React.Component {
     }
 
     handleViewAll() {
-        this.setState({
-            viewButtonClicked: true,
-        });
+        this.setState((prevState) => ({
+            viewButtonClicked: !prevState.viewButtonClicked,
+        }))
     }
 
     render() {
@@ -136,14 +136,14 @@ class UserCauses extends React.Component {
                     : (
                         <p className='nodata'>Nothing to show here yet.</p>
                     )}
-                {(!_isEmpty(dataArray) && dataArray.length > 10 && !viewButtonClicked)
+                {(!_isEmpty(dataArray) && dataArray.length > 10)
                 && (
                     <div className="text-center">
                         <Button
                             className="blue-bordr-btn-round-def"
                             onClick={this.handleViewAll}
                         >
-                        View all
+                        {!viewButtonClicked ? 'View all' : 'Show less'}
                         </Button>
                     </div>
                 )}

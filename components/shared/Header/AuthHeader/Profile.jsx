@@ -109,7 +109,7 @@ class Profile extends React.Component {
                     onClose={() => { this.setState({popupOpen: !this.state.popupOpen}); }}
                     trigger={(
                         <Menu.Item as="a" className={router.asPath.search('/user/profile') !== -1 ? 'user-img active' : 'user-img'}>
-                            <Image src={avatar || IconIndividual} style={{ width: '35px' }} circular />
+                            <Image src={avatar || IconIndividual} circular />
                         </Menu.Item>
                     )}
                 >
