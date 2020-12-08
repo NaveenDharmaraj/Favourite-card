@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import _findIndex from 'lodash/findIndex';
+import _isEmpty from 'lodash/isEmpty';
 
 const userProfile = (state = {}, action) => {
     let newState = {
@@ -25,18 +25,39 @@ const userProfile = (state = {}, action) => {
             };
             break;
         case 'USER_PROFILE_MEMBER_GROUP':
+            if (!_isEmpty(state.userProfileMemberGroupData)) {
+                action.payload.data = [...state.userProfileMemberGroupData.data, ...action.payload.data];
+                return newState = {
+                    ...state,
+                    userProfileMemberGroupData: Object.assign({}, action.payload),
+                };
+            }
             newState = {
                 ...state,
                 userProfileMemberGroupData: Object.assign({}, action.payload),
             };
             break;
         case 'USER_PROFILE_ADMIN_GROUP':
+            if (!_isEmpty(state.userProfileAdminGroupData)) {
+                action.payload.data = [...state.userProfileAdminGroupData.data, ...action.payload.data];
+                return newState = {
+                    ...state,
+                    userProfileAdminGroupData: Object.assign({}, action.payload),
+                };
+            }
             newState = {
                 ...state,
                 userProfileAdminGroupData: Object.assign({}, action.payload),
             };
             break;
         case 'USER_PROFILE_FAVOURITES':
+            if (!_isEmpty(state.userProfileFavouritesData)) {
+                action.payload.data = [...state.userProfileFavouritesData.data, ...action.payload.data];
+                return newState = {
+                    ...state,
+                    userProfileFavouritesData: Object.assign({}, action.payload),
+                };
+            }
             newState = {
                 ...state,
                 userProfileFavouritesData: Object.assign({}, action.payload),
@@ -188,6 +209,24 @@ const userProfile = (state = {}, action) => {
             newState = {
                 ...state,
                 userProfileCharitableInterestsLoadStatus: action.payload.userProfileCharitableInterestsLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_MEMBER_GROUP_SEE_MORE_LOADER':
+            newState = {
+                ...state,
+                userProfileMemberGroupsSeeMoreLoader: action.payload.userProfileMemberGroupsSeeMoreLoader,
+            };
+            break;
+        case 'USER_PROFILE_USER_ADMIN_GROUP_SEE_MORE_LOADER':
+            newState = {
+                ...state,
+                userProfileUserAdminGroupSeeMoreLoader: action.payload.userProfileUserAdminGroupSeeMoreLoader,
+            };
+            break;
+        case 'USER_PROFILE_USER_FAVOURITES_SEE_MORE_LOADER':
+            newState = {
+                ...state,
+                userProfileUserFavouritesSeeMoreLoader: action.payload.userProfileUserFavouritesSeeMoreLoader,
             };
             break;
         case 'USER_PROFILE_RESET_TAG_LIST':
