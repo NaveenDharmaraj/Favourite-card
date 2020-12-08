@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import {
-    Header, 
+    Header,
     Button,
 } from 'semantic-ui-react';
 import {
@@ -23,13 +23,15 @@ import {
 import {
     getLocation,
     getPrivacyType,
+    displayRecordCount,
+    displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import ProfileCard from '../../shared/ProfileCard';
 
 class FavouritesList extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         const {
             userProfileFavouritesData: {
@@ -37,7 +39,7 @@ class FavouritesList extends React.Component {
             },
         } = props;
         this.state = {
-            currentPageNumber: _isEmpty(favouritesData) ? 1 : Math.floor(_size(favouritesData)/10),
+            currentPageNumber: _isEmpty(favouritesData) ? 1 : Math.floor(_size(favouritesData) / 10),
         }
     }
     componentDidMount() {
@@ -114,34 +116,6 @@ class FavouritesList extends React.Component {
                 // handle error
             })
     }
-    renderSeeMore = () => {
-        const {
-            userProfileUserFavouritesSeeMoreLoader,
-        } = this.props;
-        return (
-            <div className="text-centre">
-                <Button
-                    className="blue-bordr-btn-round-def"
-                    onClick={() => this.handleSeeMore()}
-                    loading={userProfileUserFavouritesSeeMoreLoader}
-                    disabled={userProfileUserFavouritesSeeMoreLoader}
-                    content="See more"
-                />
-            </div>
-        )
-    }
-    renderCount = () => {
-        const {
-            userProfileFavouritesData: {
-                data: favouritesData,
-                totalUserFavouritesRecordCount,
-            },
-        } = this.props;
-        const countText = `Showing ${_size(favouritesData)} of ${totalUserFavouritesRecordCount}`;
-        return (
-            <div className="result">{countText}</div>
-        );
-    }
     render() {
         const {
             previewMode: {
@@ -158,6 +132,7 @@ class FavouritesList extends React.Component {
                 data: favouritesData,
                 totalUserFavouritesRecordCount,
             },
+            userProfileUserFavouritesSeeMoreLoader,
         } = this.props;
         const isMyProfile = (profile_type === 'my_profile');
         const currentPrivacyType = getPrivacyType(favourites_visibility);
@@ -204,9 +179,9 @@ class FavouritesList extends React.Component {
                 <div className="seeMore bigBtn mt-2-sm mt-2-xs">
                     {
                         (!_isEmpty(favouritesData) && (_size(favouritesData) < totalUserFavouritesRecordCount)) &&
-                        this.renderSeeMore()
+                        displaySeeMoreButton(userProfileUserFavouritesSeeMoreLoader, this.handleSeeMore)
                     }
-                    {totalUserFavouritesRecordCount > 0 && this.renderCount()}
+                    {totalUserFavouritesRecordCount > 0 && displayRecordCount(favouritesData, totalUserFavouritesRecordCount)}
                 </div>
             </div>
         );

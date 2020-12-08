@@ -25,6 +25,8 @@ import {
 import {
     getLocation,
     getPrivacyType,
+    displayRecordCount,
+    displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
 import ProfileCard from '../../shared/ProfileCard';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
@@ -118,34 +120,6 @@ class UserMemberGroupList extends React.Component {
                 // handle error
             })
     }
-    renderSeeMore = () => {
-        const {
-            userProfileMemberGroupsSeeMoreLoader,
-        } = this.props;
-        return (
-            <div className="text-centre">
-                <Button
-                    className="blue-bordr-btn-round-def"
-                    onClick={() => this.handleSeeMore()}
-                    loading={userProfileMemberGroupsSeeMoreLoader}
-                    disabled={userProfileMemberGroupsSeeMoreLoader}
-                    content="See more"
-                />
-            </div>
-        )
-    }
-    renderCount = () => {
-        const {
-            userProfileMemberGroupData: {
-                data: memberData,
-                totalMemberGroupRecordCount,
-            },
-        } = this.props;
-        const countText = `Showing ${_size(memberData)} of ${totalMemberGroupRecordCount}`;
-        return (
-            <div className="result">{countText}</div>
-        );
-    }
     render() {
         const {
             previewMode: {
@@ -162,6 +136,7 @@ class UserMemberGroupList extends React.Component {
                 totalMemberGroupRecordCount,
             },
             userProfileMemberGroupsLoadStatus,
+            userProfileMemberGroupsSeeMoreLoader,
         } = this.props;
         const isMyProfile = (profile_type === 'my_profile');
         const currentPrivacyType = getPrivacyType(giving_group_member_visibility);
@@ -205,9 +180,9 @@ class UserMemberGroupList extends React.Component {
                 <div className="seeMore bigBtn mt-2-sm mt-2-xs">
                     {
                         (!_isEmpty(memberData) && (_size(memberData) < totalMemberGroupRecordCount )) &&
-                        this.renderSeeMore()
+                        displaySeeMoreButton(userProfileMemberGroupsSeeMoreLoader, this.handleSeeMore)
                     }
-                    {totalMemberGroupRecordCount > 0 && this.renderCount()}
+                    {totalMemberGroupRecordCount > 0 && displayRecordCount(memberData, totalMemberGroupRecordCount)}
                 </div>
             </div>
         );
