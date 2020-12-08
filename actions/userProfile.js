@@ -1783,6 +1783,17 @@ const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) 
     });
 };
 
+const updateUserProfileToastMsg = (statusMessageProps = {}) => dispatch => {
+    dispatch({
+        payload: {
+            errors: [
+                statusMessageProps,
+            ],
+        },
+        type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+    });
+}
+
 export {
     getCharityInfoToShare,
     getGroupCampaignAdminInfoToShare,
@@ -1836,4 +1847,5 @@ export {
     searchMyfriend,
     searchFriendByUserInput,
     updateInfoUserPreferences,
+    updateUserProfileToastMsg,
 };
