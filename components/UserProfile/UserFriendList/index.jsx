@@ -584,7 +584,30 @@ class UserFriendList extends React.Component {
                         <Tab.Pane>
                             
                             <div className='findFriendsSearch'>
-                                
+                                {/* <Dropdown
+                                    // options= {friendDropdownList}
+                                    placeholder="Find friends already on Charitable Impact"
+                                    search
+                                    fluid
+                                    selection
+                                    default={false}
+                                    // open={!_isEmpty(friendDropdownList) ? true : false}
+                                    // icon={null}
+                                    // loading={true}
+                                    // icon={<Icon
+                                    //     className='delete'
+                                    //     onClick={this.clearSearch}
+                                    //     />}
+                                    icon={<Icon
+                                        className='search'
+                                        onClick={this.handleFriendSearch}
+                                        />}
+                                    value={friendSearchText}
+                                    onSearchChange={this.handleTypeAheadSearch}
+                                    {...(showDropdownLoader ? ({loading: true}) : undefined)}
+                                    {...(!_isEmpty(friendDropdownList) ? ({open: true}) : ({open: false}))}
+                                    {...(!_isEmpty(friendDropdownList) ? ({options: friendDropdownList}) : undefined)}
+                                /> */}
                                 <Search
                                     fluid
                                     placeholder="Find friends already on Charitable Impact"
@@ -742,11 +765,7 @@ class UserFriendList extends React.Component {
                                 <div className="user_profileDetails">
                                     <Header className="usrName">{`${first_name} ${last_name}`}</Header>
                                     <div className="userCity_friends">
-                                        {(!_isEmpty(getLocation(city, province)))
-                                        && (
-                                            <p>{getLocation(city, province)}</p>
-                                        )}
-                                        
+                                        <p>{getLocation(city, province)}</p>
                                         <div className="userfriends">
                                             <Header as='h5'><span>{number_of_friends} friends</span></Header>
                                         </div>
