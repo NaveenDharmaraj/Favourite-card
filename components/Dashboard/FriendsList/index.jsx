@@ -122,7 +122,7 @@ class FriendsList extends React.Component {
                                         </Header.Content>
                                     </Header>
                                     <div>
-                                        <Link className="lnkChange" route="/user/profile/friends/findfriends">
+                                        <Link className="lnkChange" route="/users/profile/myprofile/myfriends">
                                             <Button className="success-btn-rounded-def">Find friends</Button>
                                         </Link>
                                     </div>
@@ -182,7 +182,7 @@ class FriendsList extends React.Component {
                                         <Card.Content>
                                             <Card.Header>Find friends to give to </Card.Header>
                                             <Card.Description>
-                                                <Link className="lnkChange" route="/user/profile/friends/findfriends" passHref>
+                                                <Link className="lnkChange" route="/users/profile/myprofile/myfriends" passHref>
                                                     <Button className="give-frnds-btn">Find friends</Button>
                                                 </Link>
                                             </Card.Description>
