@@ -43,7 +43,7 @@ import {
 import {
     getLocation,
 } from '../../../helpers/profiles/utils';
-import findFriendImg from '../../../static/images/findfriends_box.png';
+import findFriendImg from '../../../static/images/find-friends.png';
 import friendAvatarPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 
 import FriendListCard from './friendListCard';
@@ -547,6 +547,7 @@ class UserFriendList extends React.Component {
                     menuItem: 'Find friends',
                     render: () => (
                         <Tab.Pane>
+                            
                             <div className='findFriendsSearch'>
                                 <Search
                                     fluid
@@ -702,9 +703,13 @@ class UserFriendList extends React.Component {
                                 <div className="user_profileDetails">
                                     <Header className="usrName">{`${first_name} ${last_name}`}</Header>
                                     <div className="userCity_friends">
-                                        <p>{getLocation(city, province)}</p>
+                                        {(!_isEmpty(getLocation(city, province)))
+                                        && (
+                                            <p>{getLocation(city, province)}</p>
+                                        )}
+                                        
                                         <div className="userfriends">
-                                            <Header as='h5'>{number_of_friends} friends</Header>
+                                            <Header as='h5'><span>{number_of_friends} friends</span></Header>
                                         </div>
                                     </div>
                                     {!isMyFriendsPage
