@@ -287,6 +287,9 @@
           }
           .user_profileDetails{
             margin-bottom: 30px;
+            &.friendsList{
+              margin-bottom: 0;
+            }
             .userButtonsWrap{
               .m-w-100{
                 width: 100%;
@@ -1039,6 +1042,8 @@
     margin-top: 47px;
     .ui.secondary.pointing.menu{
       margin-bottom: 0px;
+      box-shadow: none;
+      padding-bottom: 0;
       .item{
         font-size: 14px;
         padding: 0 20px 15px;
@@ -1238,7 +1243,7 @@
   .ui.list.users_List{
     margin: 0;
     >.item{
-      padding: 20px 0 !important;
+      padding: 16px 0 !important;
       border-top: 1px solid @border-light;
       display: flex;
       align-items: center;

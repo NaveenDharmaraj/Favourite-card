@@ -380,9 +380,9 @@ class UserBasicProfile extends React.Component {
                                 {last_name}?
                             </Modal.Header>
                             <Modal.Content>
-                                <Modal.Description>
+                                <p>
                                     They won't be able to find your profile or message you on Charitable Impact. We won't let them know you blocked them.
-                                </Modal.Description>
+                                </p>
                                 <div className="block-unfriend-Modal-buttons">
                                     <Button
                                         className="red-btn-rounded-def"
@@ -421,9 +421,9 @@ class UserBasicProfile extends React.Component {
                                 {last_name}?
                             </Modal.Header>
                             <Modal.Content>
-                                <Modal.Description>
+                                <p>
                                     Are you sure you want to unfriend this person?
-                                </Modal.Description>
+                                </p>
                                 <div className="block-unfriend-Modal-buttons">
                                     <Button
                                         className="red-btn-rounded-def"
@@ -444,7 +444,10 @@ class UserBasicProfile extends React.Component {
                         </Modal>
                     </div>
                     <div className="userCity_friends">
-                        <p>{getLocation(city,province)}</p>
+                        {(!_isEmpty(getLocation(city, province)))
+                        && (
+                            <p>{getLocation(city, province)}</p>      
+                        )}
                         {((number_of_friends > 0) && (showUserFriends))
                         && (
                                 <div
