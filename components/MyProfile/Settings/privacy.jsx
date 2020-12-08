@@ -14,14 +14,13 @@ import {
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 
 import {
     getBlockedFriends,
     unblockFriend,
     updateUserPreferences,
     savePrivacySetting,
-    actionTypes,
+    updateUserProfileToastMsg,
 } from '../../../actions/userProfile';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 
@@ -126,14 +125,7 @@ class Privacy extends React.Component {
                     message: 'User unblocked.',
                     type: 'success',
                 };
-                dispatch({
-                    payload: {
-                        errors: [
-                            statusMessageProps,
-                        ],
-                    },
-                    type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
-                });
+                dispatch(updateUserProfileToastMsg(statusMessageProps));
                 this.setState({
                     currentButtonClicked: null,
                 });
@@ -142,14 +134,7 @@ class Privacy extends React.Component {
                     message: 'Error in Unblocking user.',
                     type: 'error',
                 };
-                dispatch({
-                    payload: {
-                        errors: [
-                            statusMessageProps,
-                        ],
-                    },
-                    type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
-                });
+                dispatch(updateUserProfileToastMsg(statusMessageProps));
                 this.setState({
                     currentButtonClicked: null,
                 });

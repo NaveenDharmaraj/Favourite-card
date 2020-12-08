@@ -33,7 +33,7 @@ import {
     generateDeeplinkUserProfile,
     acceptFriend,
     rejectFriendInvite,
-    actionTypes,
+    updateUserProfileToastMsg,
 } from '../../../actions/userProfile';
 import {
     storeEmailIdToGive,
@@ -233,27 +233,13 @@ class UserBasicProfile extends React.Component {
                 message: 'Copied to clipboard',
                 type: 'success',
             };
-            dispatch({
-                payload: {
-                    errors: [
-                        statusMessageProps,
-                    ],
-                },
-                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
-            });
+            dispatch(updateUserProfileToastMsg(statusMessageProps));
         } catch (err) {
             const statusMessageProps = {
                 message: 'Failed to copy to clipboard',
                 type: 'error',
             };
-            dispatch({
-                payload: {
-                    errors: [
-                        statusMessageProps,
-                    ],
-                },
-                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
-            });
+            dispatch(updateUserProfileToastMsg(statusMessageProps));
         }
     }
 

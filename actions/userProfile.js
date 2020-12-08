@@ -152,9 +152,9 @@ const getUserCharitableInterests = (userId) => dispatch => {
         type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS,
     });
     const params = {
-        userid:`${Number(userId)}`,
+        userid: `${Number(userId)}`,
     };
-    graphApi.get(`/get/user/causetags`, {params}).then(
+    graphApi.get(`/get/user/causetags`, { params }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -187,12 +187,12 @@ const getUserMemberGroup = (userId, sourceUserId) => (dispatch) => {
         type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
     });
     const params = {
-        'friend_id':`${Number(userId)}`,
-        'fields[groups]':'name,city,province,slug,avatar,groupType,totalMoneyRaised',
-        'page[number]':1,
-        'page[size]':9,
+        'friend_id': `${Number(userId)}`,
+        'fields[groups]': 'name,city,province,slug,avatar,groupType,totalMoneyRaised',
+        'page[number]': 1,
+        'page[size]': 9,
     }
-    coreApi.get(`/users/${Number(sourceUserId)}/friendGroups`, {params}).then(
+    coreApi.get(`/users/${Number(sourceUserId)}/friendGroups`, { params }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -225,12 +225,12 @@ const getUserAdminGroup = (userId, sourceUserId) => dispatch => {
         type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
     });
     const params = {
-        'friend_id':`${Number(userId)}`,
-        'fields[groups]':'name,city,province,slug,avatar,groupType,totalMoneyRaised',
-        'page[number]':1,
-        'page[size]':9
+        'friend_id': `${Number(userId)}`,
+        'fields[groups]': 'name,city,province,slug,avatar,groupType,totalMoneyRaised',
+        'page[number]': 1,
+        'page[size]': 9
     };
-    coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups`,{params}).then(
+    coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups`, { params }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -365,7 +365,7 @@ const getMyFriendsList = (email, pageNumber) => dispatch => {
     });
 };
 
-const getFriendsInvitations = (email, pageNumber) => dispatch=> {
+const getFriendsInvitations = (email, pageNumber) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -496,7 +496,7 @@ const getMyCreditCards = (dispatch, userId, pageNumber, updatedCurrentActivePage
     });
 };
 
-const saveUserBasicProfile = (userData, userId, email , isMyprofile = false) => dispatch => {
+const saveUserBasicProfile = (userData, userId, email, isMyprofile = false) => dispatch => {
     const fsa = {
         payload: {
         },
@@ -1526,7 +1526,7 @@ const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => di
         } else if (type === 'myProfile') {
             dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
         }
-    }).catch(err=>{
+    }).catch(err => {
         // hanlde error message
     });
 };
@@ -1549,9 +1549,9 @@ const searchMyfriend = (userId, queryText) => dispatch => {
         text: queryText,
     };
     const params = {
-        'page[number]':1,
-        'page[size]':10,
-        'user_id':`${Number(userId)}`,
+        'page[number]': 1,
+        'page[size]': 10,
+        'user_id': `${Number(userId)}`,
     };
     return searchApi.post(`/users`, payloadObj, { params }).then((result) => {
         fsa.payload = {
@@ -1560,7 +1560,7 @@ const searchMyfriend = (userId, queryText) => dispatch => {
             pageCount: result.meta.pageCount,
         };
         dispatch(fsa);
-    }).catch(err=>{
+    }).catch(err => {
         // handle error message
     });
 };
@@ -1711,6 +1711,17 @@ const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) 
     });
 };
 
+const updateUserProfileToastMsg = (statusMessageProps = {}) => dispatch => {
+    dispatch({
+        payload: {
+            errors: [
+                statusMessageProps,
+            ],
+        },
+        type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+    });
+}
+
 export {
     getCharityInfoToShare,
     getGroupCampaignAdminInfoToShare,
@@ -1764,4 +1775,5 @@ export {
     searchMyfriend,
     searchFriendByUserInput,
     updateInfoUserPreferences,
+    updateUserProfileToastMsg,
 };
