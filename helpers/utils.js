@@ -112,13 +112,8 @@ const getMainNavItems = (accountType, slug) => {
             isExternal: false,
         });
         menuLinks.push({
-            location: '/user/favourites',
-            name: 'Favourites',
-            isExternal: false,
-        });
-        menuLinks.push({
             location: '/user/recurring-donations',
-            name: 'Tools',
+            name: 'Manage deposits and giving',
             isExternal: false,
         });
         menuLinks.push({

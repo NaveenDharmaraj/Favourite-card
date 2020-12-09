@@ -7,6 +7,7 @@ import {
     Input,
     Grid,
     Button,
+    Header,
     Icon,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
@@ -152,7 +153,7 @@ class MyTags extends React.Component {
             tagsBlock = tagsList.data.map((tag) => {
                 return (
                     <Button
-                        className={`badgeButton font-s-12 medium ${_.includes(userTags, tag.attributes.name) ? 'active' : ''}`}
+                        className={`user_badgeButton ${_.includes(userTags, tag.attributes.name) ? 'active' : ''}`}
                         id={tag.attributes.name}
                         name={tag.attributes.name}
                         onClick={this.handleTags}
@@ -163,7 +164,7 @@ class MyTags extends React.Component {
             });
         }
         return (
-            <div className="badge-group">
+            <div className="user-badge-group">
                 {tagsBlock}
             </div>
         );
@@ -215,52 +216,29 @@ class MyTags extends React.Component {
             userTagsFollowedList,
         } = this.props;
         return (
-            <div>
-                <div className="pt-1">
-                    {userTagsFollowedList && (!_.isEmpty(userTagsFollowedList.data))
-                        && (
-                            <div>
-                                <p className="mb-1"><strong>Topics you care about</strong></p>
-                                {this.renderTags(userTagsFollowedList)}
-                            </div>
-                        )}
-                    <div className="pt-2">
-                        <strong>All topics</strong>
-                    </div>
-                    <div className="pt-1 mb-1">
-                        Topics represent specific areas of charitable interests.
-                    </div>
-                    <Grid>
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={14} computer={8} largeScreen={8}>
-                                <div className="pb-3 searchbox no-padd">
-                                    <Input
-                                        className="searchInput"
-                                        placeholder="Search topics"
-                                        onChange={this.handleInputChange}
-                                        fluid
-                                        onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleTagsSearch() : null; }}
-                                    />
-                                    <a
-                                        className="search-btn"
-                                    >
-                                        <Icon
-                                            name="search"
-                                            onClick={this.handleTagsSearch}
-                                        />
-                                    </a>
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                    <div className="pt-2">
-                        {this.renderTags(userFindTagsList)}
-                    </div>
-                    <div className="pt-1 mb-2">
-                        {this.renderSeeMore()}
-                    </div>
+            <Grid.Column computer={6} mobile={16}>
+                <Header as='h4'>
+                    Topics you care about
+                </Header>
+                {this.renderTags(userTagsFollowedList)}
+                <Header as='h4'>All topics</Header>
+                <p>Topics represent specific areas of charitable interests.</p>
+                <div className="searchBox">
+                    <Input
+                        className="searchInput"
+                        placeholder="Search topics"
+                        onChange={this.handleInputChange}
+                        fluid
+                        onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleTagsSearch() : null; }}
+                    />
+                    <a
+                        className="search-btn"
+                        onClick={this.handleTagsSearch}
+                    >
+                    </a>
                 </div>
-            </div>
+                {this.renderTags(userFindTagsList)}
+            </Grid.Column>
         );
     }
 }

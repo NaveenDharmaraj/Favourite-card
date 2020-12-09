@@ -32,9 +32,9 @@ const MainNav = (props) => {
 
     return (
         <Menu.Menu position="right">
-            <Link route='/search' activeClassName="active">
+            <Link route='/dashboard' activeClassName="active">
                 <Menu.Item as="a">
-                    Explore
+                    Dashboard
                 </Menu.Item>
             </Link>
             {menuLinks.map((item) => <MainNavItem {...item} />)}

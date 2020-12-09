@@ -1,14 +1,14 @@
-/* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Fragment } from 'react';
 import _ from 'lodash';
 import {
     Button,
     Form,
     Grid,
-    Popup,
-    Icon,
+    Responsive,
+    Header,
     Image,
-    Select
+    Select,
+    Modal,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -23,20 +23,16 @@ import {
 } from '../../../actions/userProfile';
 import { actionTypes } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
-import PrivacySetting from '../../shared/Privacy';
-const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
-    ssr: false
-});
 import {
     formatAmount,
     formatCurrency,
     isValidGivingGoalAmount,
 } from '../../../helpers/give/utils';
 import {
-    isInputBlank,
+    getLocation,
+} from '../../../helpers/profiles/utils';
+import {
     isAmountLessThanOneBillionDollars,
-    isAmountMoreThanOneDollor,
-    isValidPositiveNumber,
 } from '../../../helpers/give/giving-form-validation';
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 
@@ -49,31 +45,37 @@ class EditBasicProfile extends React.Component {
                 attributes: {
                     logoFileName,
                 }
-            }
+            },
+            userFriendProfileData: {
+                attributes: {
+                    city,
+                    province,
+                    description,
+                    display_name,
+                    first_name,
+                    last_name,
+                    giving_goal_amt,
+                },
+            },
         } = props;
-        const givingGoalAmount = (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '';
-        const userDataProvince = props.userData.province ? `${props.userData.city ? ', ' : ''}${props.userData.province}` : '';
-        const locationString = `${props.userData.city ? props.userData.city : ''}${userDataProvince}`;
-        const location = locationString ? locationString.trim() : null;
+        const givingGoalAmount = (!_.isEmpty(giving_goal_amt) ? formatAmount(Number(giving_goal_amt)) : '');
+        const location = getLocation(city, province);
         this.state = {
+            showEditProfileModal: false,
             buttonClicked: true,
-            errorMessage: null,
             isImageChanged: false,
             isDefaultImage: logoFileName === null ? true : false,
             uploadImage: '',
             uploadImagePreview: '',
             searchQuery: (!_.isEmpty(location)) ? location : null,
             locationDropdownValue: '',
-            statusMessage: false,
-            successMessage: '',
             userBasicDetails: {
-                about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
-                firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
+                about: description,
+                firstName: first_name,
                 givingGoal: givingGoalAmount,
-                lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
-                displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
-                formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
-                location,
+                lastName: last_name,
+                displayName: display_name,
+                formatedGoalAmount: formatCurrency(giving_goal_amt, 'en', 'USD'),
             },
             validity: this.intializeValidations(),
         };
@@ -82,11 +84,11 @@ class EditBasicProfile extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
-        this.handleRemovePreview = this.handleRemovePreview.bind(this);
         this.handleRemoveProfilePhoto = this.handleRemoveProfilePhoto.bind(this);
         this.handleLocationSearchChange = this.handleLocationSearchChange.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
         this.handleCustomSearch = this.handleCustomSearch.bind(this);
+        this.handleAmount = this.handleAmount.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -94,25 +96,6 @@ class EditBasicProfile extends React.Component {
             currentUser,
             userData,
         } = this.props;
-        if (!_.isEqual(userData, prevProps.userData)) {
-            const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
-            const userDataProvince = userData.province ? `${userData.city ? ', ' : ''}${userData.province}` : '';
-            const locationString = `${userData.city ? userData.city : ''}${userDataProvince}`;
-            const location = locationString ? locationString.trim() : null;
-            this.setState({
-                searchQuery: (!_.isEmpty(location)) ? location : null,
-                locationDropdownValue: '',
-                userBasicDetails: {
-                    about: userData.description,
-                    firstName: userData.first_name,
-                    givingGoal: givingGoalAmount,
-                    lastName: userData.last_name,
-                    displayName: userData.display_name,
-                    formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
-                    location,
-                },
-            });
-        }
         if (!_.isEqual(currentUser, prevProps.currentUser)) {
             this.setState({
                 isDefaultImage: currentUser.attributes.logoFileName === null ? true : false,
@@ -128,17 +111,14 @@ class EditBasicProfile extends React.Component {
             validity,
         } = this.state;
         userBasicDetails.givingGoal = formatAmount(amount);
-        userBasicDetails.formatedGoalAmount = _.replace(formatCurrency(userBasicDetails.givingGoal, 'en', 'USD'), '$', '');
+        userBasicDetails.formatedGoalAmount = formatCurrency(userBasicDetails.givingGoal, 'en', 'USD');
+        validity = this.validateUserProfileBasicForm('givingGoal', amount, validity);
         this.setState({
             buttonClicked: false,
-            statusMessage: false,
             userBasicDetails: {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
             },
-        });
-        validity = this.validateUserProfileBasicForm('givingGoal', amount, validity);
-        this.setState({
             validity,
         });
     }
@@ -172,7 +152,6 @@ class EditBasicProfile extends React.Component {
         }
         this.setState({
             buttonClicked: false,
-            statusMessage: false,
             userBasicDetails: {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
@@ -194,7 +173,7 @@ class EditBasicProfile extends React.Component {
         if ((name === 'givingGoal') && !_.isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             userBasicDetails[name] = inputValue;
-            userBasicDetails.formatedGoalAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            userBasicDetails.formatedGoalAmount = formatCurrency(inputValue, 'en', 'USD');
         }
         validity = this.validateUserProfileBasicForm(name, inputValue, validity);
         this.setState({
@@ -206,7 +185,6 @@ class EditBasicProfile extends React.Component {
         });
     }
 
-    // eslint-disable-next-line class-methods-use-this
     validateUserProfileBasicForm(field, value, validity) {
         switch (field) {
             case 'firstName':
@@ -253,7 +231,6 @@ class EditBasicProfile extends React.Component {
     handleSubmit() {
         this.setState({
             buttonClicked: true,
-            statusMessage: false,
         });
         const isValid = this.validateForm();
         if (isValid) {
@@ -270,20 +247,20 @@ class EditBasicProfile extends React.Component {
                 isImageChanged,
                 userBasicDetails,
             } = this.state;
-            saveUserBasicProfile(dispatch, userBasicDetails, id, email).then(() => {
+            dispatch(saveUserBasicProfile(userBasicDetails, id, email, true)).then(() => {
                 this.setState({
-                    errorMessage: null,
-                    successMessage: 'Changes saved.',
-                    statusMessage: true,
                     buttonClicked: true,
                 });
             }).catch((err) => {
                 this.setState({
-                    errorMessage: 'Error in saving the profile.',
-                    statusMessage: true,
                     buttonClicked: true,
                 });
+            }).finally(() => {
+                this.setState({
+                    showEditProfileModal: false,
+                });
             });
+
             if (isImageChanged) {
                 const {
                     currentUser: {
@@ -328,7 +305,7 @@ class EditBasicProfile extends React.Component {
         this.setState({
             uploadImagePreview: '',
             isDefaultImage: true,
-        })
+        });
         this.getBase64(event.target.files[0], (result) => {
             this.setState({
                 isImageChanged: true,
@@ -337,20 +314,6 @@ class EditBasicProfile extends React.Component {
                 uploadImagePreview: result,
             });
         });
-    }
-
-    handleRemovePreview() {
-        const {
-            currentUser: {
-                attributes: {
-                    logoFileName,
-                }
-            },
-        } = this.props;
-        this.setState({
-            isDefaultImage: logoFileName === null ? true : false,
-            uploadImagePreview: '',
-        })
     }
 
     handleRemoveProfilePhoto() {
@@ -362,21 +325,18 @@ class EditBasicProfile extends React.Component {
         } = this.props;
         removeProfilePhoto(dispatch, id).then(() => {
             this.setState({
-                errorMessage: null,
-                successMessage: 'Profile photo removed successfully.',
-                statusMessage: true,
                 buttonClicked: true,
                 isDefaultImage: true,
+                buttonClicked: false,
             });
         }).catch((err) => {
             this.setState({
-                errorMessage: 'Error in removing profile photo.',
-                statusMessage: true,
                 buttonClicked: true,
                 isDefaultImage: true,
             });
-        });
+        }).finally();
     }
+
     handleLocationChange(event, data) {
         const locationValue = event.target.innerText;
         const {
@@ -419,7 +379,7 @@ class EditBasicProfile extends React.Component {
                 dispatch,
             } = this.props;
         const params = { dispatch, searchValue: event.target.value};
-            this.debounceFunction(params, 300);
+        this.debounceFunction(params, 300);
         }
         if (event.target.value.length === 0) {
             const {
@@ -449,22 +409,20 @@ class EditBasicProfile extends React.Component {
             locationDropdownValue: '',
         });
     }
+
     handleCustomSearch = (options) => {
         return options
     }
     render() {
         const {
+            showEditProfileModal,
             buttonClicked,
-            errorMessage,
-            statusMessage,
-            successMessage,
             isDefaultImage,
             locationDropdownValue,
             userBasicDetails: {
                 firstName,
                 lastName,
                 about,
-                givingGoal,
                 displayName,
                 formatedGoalAmount,
             },
@@ -473,7 +431,6 @@ class EditBasicProfile extends React.Component {
             validity,
         } = this.state;
         const {
-            userData,
             currentUser: {
                 attributes: {
                     avatar,
@@ -482,111 +439,106 @@ class EditBasicProfile extends React.Component {
             locationLoader,
             locationOptions,
         } = this.props;
-        const privacyColumn = 'giving_goal_visibility';
-        let aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
+        const aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
         const userAvatar = (avatar === '') || (avatar === null) ? UserPlaceholder : avatar;
         const imageView = uploadImagePreview !== '' ? uploadImagePreview : userAvatar;
         const isPreview = uploadImagePreview !== '' ? true : false;
         return (
-            <Grid>
-                {
-                    statusMessage && (
-                        <Grid.Row>
-                            <Grid.Column width={16}>
-                                <ModalStatusMessage
-                                    message={!_.isEmpty(successMessage) ? successMessage : null}
-                                    error={!_.isEmpty(errorMessage) ? errorMessage : null}
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    )
+            <Fragment>
+            <Modal
+                size="tiny"
+                dimmer="inverted"
+                closeIcon
+                className="chimp-modal"
+                open={showEditProfileModal}
+                onClose={()=>{this.setState({showEditProfileModal: false})}}
+                trigger={
+                    <Button className='blue-bordr-btn-round-def' onClick={() => this.setState({ showEditProfileModal: true })}>
+                        Edit profile
+                    </Button>
                 }
-                <Grid.Row>
-                    <Grid.Column mobile={16} tablet={12} computer={10}>
+            >
+                <Modal.Header>Edit profile</Modal.Header>
+                <Modal.Content>
+                    <Responsive minWidth={767}>
+                        <Header as='h5'>Profile photo</Header>
+                    </Responsive>
+                    <input
+                        id="myInput"
+                        accept="image/png, image/jpeg, image/jpg"
+                        type="file"
+                        ref={(ref) => this.upload = ref}
+                        style={{ display: 'none' }}
+                        onChange={(e) => this.handleUpload(event)}
+                    />
+                    <div className='editProfileModal'>
+                        <div className='editProfilePhotoWrap'>
+                            <div className="userProfileImg">
+                                <Image src={imageView} height="125px" width="125px"/>
+                            </div>
+                            <div className='editprflButtonWrap'>
+                                <Button
+                                    as="a"
+                                    className='success-btn-rounded-def'
+                                    onClick={(e) => this.upload.click()}
+                                >
+                                    Change profile photo
+                                </Button>
+                                {!isDefaultImage
+                                && (
+                                    <a 
+                                        className='remvephoto'
+                                        onClick={this.handleRemoveProfilePhoto}
+                                        >Remove photo
+                                    </a>
+                                )}
+                            </div>
+                        </div>
                         <Form>
-                            <Form.Field>
-                                <input
-                                    id="myInput"
-                                    accept="image/png, image/jpeg, image/jpg"
-                                    type="file"
-                                    ref={(ref) => this.upload = ref}
-                                    style={{ display: 'none' }}
-                                    onChange={(e) => this.handleUpload(event)}
-                                />
-                            </Form.Field>
-                            <Form.Field>
-                                <div className="changeImageWraper removable">
-                                    <div className="subHead">Profile photo</div>
-                                    <div className="proPicWraper">
-                                        <Image src={imageView} height="125px" width="125px" />
-                                        {
-                                            isPreview && (
-                                                <a
-                                                    href="#"
-                                                    className="removeBtn"
-                                                    onClick={this.handleRemovePreview}
-                                                />
-                                            )
-                                        }
-                                        {
-                                            !isDefaultImage && (
-                                                <a
-                                                    href="#"
-                                                    className="removeBtn"
-                                                    onClick={this.handleRemoveProfilePhoto}
-                                                />
-                                            )
-                                        }
-                                    </div>
-                                    <div className="rightBtnWraper">
-                                        <Button
-                                            as="a"
-                                            className="success-btn-rounded-def medium"
-                                            onClick={(e) => this.upload.click()}
-                                        >
-                                            Change profile photo
-                                    </Button>
-                                    </div>
-                                </div>
-                            </Form.Field>
-                            <Form.Group widths="equal">
-                                <Form.Field>
-                                    <Form.Input
-                                        fluid
-                                        label="First name"
-                                        placeholder="First name"
-                                        id="firstName"
-                                        name="firstName"
-                                        maxLength="30"
-                                        onChange={this.handleInputChange}
-                                        onBlur={this.handleInputOnBlur}
-                                        error={!validity.isFirstNameNotNull}
-                                        value={firstName}
-                                    />
-                                    <FormValidationErrorMessage
-                                        condition={!validity.isFirstNameNotNull}
-                                        errorMessage="Please input your first name"
-                                    />
-                                </Form.Field>
-                                <Form.Field>
-                                    <Form.Input
-                                        fluid
-                                        label="Last name"
-                                        id="lastName"
-                                        name="lastName"
-                                        placeholder="Last name"
-                                        maxLength="30"
-                                        onChange={this.handleInputChange}
-                                        onBlur={this.handleInputOnBlur}
-                                        error={!validity.isLastNameNotNull}
-                                        value={lastName}
-                                    />
-                                    <FormValidationErrorMessage
-                                        condition={!validity.isLastNameNotNull}
-                                        errorMessage="Please input your last name"
-                                    />
-                                </Form.Field>
-                            </Form.Group>
+                            <Grid>
+                                <Grid.Row>
+                                    <Grid.Column computer={8} mobile={16}>
+                                        <Form.Field>
+                                            <Form.Input
+                                                fluid
+                                                label="First name"
+                                                placeholder="First name"
+                                                id="firstName"
+                                                name="firstName"
+                                                maxLength="30"
+                                                onChange={this.handleInputChange}
+                                                onBlur={this.handleInputOnBlur}
+                                                error={!validity.isFirstNameNotNull}
+                                                value={firstName}
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition= {!validity.isFirstNameNotNull}
+                                                errorMessage="Please input your first name"
+                                            />
+                                        </Form.Field>
+                                    </Grid.Column>
+                                    <Grid.Column computer={8} mobile={16}>
+                                        <Form.Field>
+                                            <Form.Input
+                                                fluid
+                                                label="Last name"
+                                                id="lastName"
+                                                name="lastName"
+                                                placeholder="Last name"
+                                                maxLength="30"
+                                                onChange={this.handleInputChange}
+                                                onBlur={this.handleInputOnBlur}
+                                                error={!validity.isLastNameNotNull}
+                                                value={lastName}
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition= {!validity.isLastNameNotNull}
+                                                errorMessage= "Please input your last name"
+                                            />
+                                        </Form.Field>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
                             <Form.Field>
                                 <Form.Input
                                     fluid
@@ -607,8 +559,8 @@ class EditBasicProfile extends React.Component {
                             </Form.Field>
                             <Form.Field>
                                 <Form.TextArea
-                                    label="Bio (optional)"
-                                    placeholder="Tell us about yourself"
+                                    label="Bio"
+                                    placeholder="Bio..."
                                     id="about"
                                     name="about"
                                     maxLength="1000"
@@ -616,11 +568,11 @@ class EditBasicProfile extends React.Component {
                                     onBlur={this.handleInputOnBlur}
                                     value={about}
                                 />
-                                <div className="field-info mt--1-2 text-right">{aboutCharCount} of 1000 characters left</div>
+                                <div className="field-info">{aboutCharCount} of 1000 characters left</div>
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="location">
-                                    Location (optional)
+                                    Location
                                 </label>
                                 <Form.Field
                                     single
@@ -643,34 +595,18 @@ class EditBasicProfile extends React.Component {
                                     value={locationDropdownValue}
                                 />
                             </Form.Field>
-                            <Form.Field>
-                                <label>
-                                    Giving Goal  (optional){' '}
-                                    <Popup
-                                        content="Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account."
-                                        position="top center"
-                                        trigger={
-                                            <Icon
-                                                color="blue"
-                                                name="question circle"
-                                                size="large"
-                                            />
-                                        }
-                                    />
-                                    <span className="font-w-normal ml--1-2">
-                                        <PrivacySetting
-                                            columnName={privacyColumn}
-                                            columnValue={userData.giving_goal_visibility}
-                                        />
-                                    </span>
+                            <div className="field">
+                                <label for='form-input-control-givingGoal'>
+                                    Giving goal
                                 </label>
+                                <div className='label-info'>
+                                    Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account throughout the calendar year. Goals are reset to $0 at the start of each year, and you can update your goal anytime.
+                                </div>
                                 <Form.Field>
                                     <Form.Input
                                         placeholder="Giving Goal"
                                         id="givingGoal"
                                         name="givingGoal"
-                                        icon="dollar"
-                                        iconPosition="left"
                                         maxLength="11"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
@@ -682,16 +618,15 @@ class EditBasicProfile extends React.Component {
                                         errorMessage="Please choose an amount less than one billion dollars"
                                     />
                                 </Form.Field>
-
-                            </Form.Field>
-                            <Form.Field>
-                                <Button basic size="tiny" onClick={() => this.handleAmount(100)}>$100</Button>
-                                <Button basic size="tiny" onClick={() => this.handleAmount(500)}>$500</Button>
-                                <Button basic size="tiny" onClick={() => this.handleAmount(1000)}>$1,000</Button>
-                            </Form.Field>
-                            <div className="pt-2">
+                                <div className='price_btn'>
+                                    <Button basic size="tiny" onClick={() => this.handleAmount(100)}>$100</Button>
+                                    <Button basic size="tiny" onClick={() => this.handleAmount(500)}>$500</Button>
+                                    <Button basic size="tiny" onClick={() => this.handleAmount(1000)}>$1,000</Button>
+                                </div>
+                            </div>
+                            <div className='btnWrp'>
                                 <Button
-                                    className="blue-btn-rounded-def w-140"
+                                    className="blue-btn-rounded-def save"
                                     onClick={this.handleSubmit}
                                     disabled={buttonClicked}
                                 >
@@ -699,9 +634,10 @@ class EditBasicProfile extends React.Component {
                                 </Button>
                             </div>
                         </Form>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+                    </div>
+                </Modal.Content>
+            </Modal>
+            </Fragment>
         );
     }
 }
@@ -711,6 +647,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         locationLoader: state.userProfile.locationLoader,
         locationOptions: state.userProfile.locationOptions,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }
