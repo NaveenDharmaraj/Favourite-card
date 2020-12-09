@@ -28,6 +28,7 @@ import {
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 import _findIndex from 'lodash/findIndex';
+import _isEqual from 'lodash/isEqual';
 
 import { withTranslation } from '../../../i18n';
 import {
@@ -116,12 +117,12 @@ class UserFriendList extends React.Component {
             friendTypeAheadData,
             userFindFriendsList,
         } = this.props;
-        if (!_.isEqual(userProfileSignUpDeeplink, prevProps.userProfileSignUpDeeplink)) {
+        if (!_isEqual(userProfileSignUpDeeplink, prevProps.userProfileSignUpDeeplink)) {
             this.setState({
                 signUpDeeplink: userProfileSignUpDeeplink.data.attributes['short-link'],
             })
         };
-        if (!_.isEqual(friendTypeAheadData, prevProps.friendTypeAheadData)) {
+        if (!_isEmpty(friendTypeAheadData) && !_isEqual(friendTypeAheadData, prevProps.friendTypeAheadData)) {
             this.setState({
                 friendDropdownList: this.getFriendDropdownList(),
             });
@@ -202,7 +203,7 @@ class UserFriendList extends React.Component {
     handleInputChange(event, data) {
         const {
             value,
-        } = !_.isEmpty(data) ? data : event.target;
+        } = !_isEmpty(data) ? data : event.target;
         let {
             userEmailId,
         } = this.state;
@@ -347,6 +348,7 @@ class UserFriendList extends React.Component {
             },
             type: 'USER_PROFILE_FRIEND_TYPE_AHEAD_SEARCH',
         };
+        dispatch(fsa);
         this.setState({
             friendDropdownList: [],
         });
@@ -552,7 +554,7 @@ class UserFriendList extends React.Component {
                                     </p>
                             )}
                         </List>
-                        {(!_.isEmpty(friendData) && friendDataPageCount > 1) &&
+                        {(!_isEmpty(friendData) && friendDataPageCount > 1) &&
                             <div className="paginationWraper">
                                 <div className="db-pagination right-align pt-2">
                                     <Pagination
@@ -584,6 +586,8 @@ class UserFriendList extends React.Component {
                                     onSearchChange={this.handleTypeAheadSearch}
                                     results={friendDropdownList}
                                     value={friendSearchText}
+                                    minCharacters={4}
+                                    showNoResults = {showDropdownLoader ? false : true }
                                     icon={
                                         <Fragment>
                                             <Icon
