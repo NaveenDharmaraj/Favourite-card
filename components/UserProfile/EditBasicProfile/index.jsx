@@ -94,7 +94,6 @@ class EditBasicProfile extends React.Component {
     componentDidUpdate(prevProps) {
         const {
             currentUser,
-            userData,
         } = this.props;
         if (!_.isEqual(currentUser, prevProps.currentUser)) {
             this.setState({
@@ -384,9 +383,6 @@ class EditBasicProfile extends React.Component {
         if (event.target.value.length === 0) {
             const {
                 dispatch,
-                userData: {
-                    city,
-                }
             } = this.props;
             dispatch({
                 type: actionTypes.USER_PROFILE_LOCATION_SEARCH,
@@ -397,7 +393,7 @@ class EditBasicProfile extends React.Component {
             userBasicDetails['city'] = null;
             userBasicDetails['province'] = null;
             this.setState({
-                buttonClicked: city ? false : true,
+                buttonClicked: false,
                 userBasicDetails: {
                     ...this.state.userBasicDetails,
                     ...userBasicDetails,
@@ -593,6 +589,8 @@ class EditBasicProfile extends React.Component {
                                     placeholder="Search location"
                                     loading={locationLoader}
                                     value={locationDropdownValue}
+                                    selectOnBlur ={false}
+                                    selectOnNavigation={false}
                                 />
                             </Form.Field>
                             <div className="field">

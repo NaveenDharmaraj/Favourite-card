@@ -122,8 +122,8 @@ class FriendListCard extends React.Component {
         } = this.props;
         let buttonText = '';
         let buttonClass = 'blue-btn-rounded-def';
-        let searchFriendStatus = (!_isEmpty(friend_status) ? friend_status : '');
-        let updatedStatus = ((_isEmpty(status) && !_isEmpty(searchFriendStatus)) ? searchFriendStatus : '');
+        //let searchFriendStatus = (!_isEmpty(friend_status) ? friend_status : '');
+        let updatedStatus = ((!_isEmpty(status)) ? status : '');
         switch (updatedStatus) {
             case 'ACCEPTED':
                 buttonText = 'Message';
