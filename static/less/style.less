@@ -938,15 +938,11 @@ h4{
         }
       }
     }
-    .ui{
-      &.segment{
-        &.tab{
-          &.user-messaging{
-            margin-top: 0px !important;
-          }
-        }
-      }
+   
+    .user-messaging{
+      margin-top: 0px !important;
     }
+        
   }
 }
 @media only screen and (max-width:991px) and (min-width:767px) {
@@ -984,15 +980,9 @@ h4{
         }
       }
     }
-    .ui{
-      &.segment{
-        &.tab{
-          &.user-messaging{
-            margin-top: 0px !important;
-          }
-        }
-      }
-    }
+    .user-messaging{
+      margin-top: 0px !important;
+    }   
   }
 }
 .charityTab{
@@ -1003,6 +993,73 @@ h4{
         &.tab{
           border: none;
           padding-top: 0rem;
+        }
+      }
+    }
+    .user-messaging{
+      padding: 0px;
+      margin-top: -1rem;
+      .ui.grid >.row{
+        padding-top: 0px;
+        padding-bottom: 2rem;
+        
+      }
+      .user-left-menu{
+        border-right: 1px solid rgba(34,36,38,.15);
+        .ui{
+          &.selection{
+            &.list{
+              .item{
+                border-bottom: 1px solid @grey-lighten-2;
+                border-radius: 0;
+                padding: 20/@rem 1rem;
+                position: relative;
+                border-right: 1px solid transparent;
+                &::before{
+                  content: "\f107";
+                  font-family: Icons;
+                  position: absolute;
+                  font-size: 20px;
+                  font-weight: 600;
+                  right: 1rem;
+                  transform: rotate(-90deg);
+                  line-height: 22px;
+                }
+                &.active{
+                  border-right: 1px solid @blueButton;
+                  color: @chimpGreen;
+                  background: transparent;
+                  img{
+                    .imgColorGreen();
+                  }
+                  .content{
+                    .header{
+                      color: @chimpGreen;
+                    }
+                  }
+                }
+                &:hover{
+                  border-right: 1px solid @blueButton;
+                  color: @chimpGreen;
+                  background: transparent;
+                  .content{
+                    .header{
+                      color: @chimpGreen;
+                    }
+                  }
+                  img{
+                    .imgColorGreen();
+                  }
+                }
+              }
+            }
+          }
+        }
+        .menu{
+          width: 100%;
+          .item{
+            border-bottom: 1px solid @grey-lighten-2;
+          }
         }
       }
     }
@@ -1074,79 +1131,15 @@ h4{
             }
           }
         }
-        &.user-messaging{
-          padding: 0px;
-          margin-top: -1rem;
-          .ui.grid >.row{
-            padding-top: 0px;
-            padding-bottom: 2rem;
-            
-          }
-          .user-left-menu{
-            border-right: 1px solid rgba(34,36,38,.15);
-            .ui{
-              &.selection{
-                &.list{
-                  .item{
-                    border-bottom: 1px solid @grey-lighten-2;
-                    border-radius: 0;
-                    padding: 20/@rem 1rem;
-                    position: relative;
-                    border-right: 1px solid transparent;
-                    &::before{
-                      content: "\f107";
-                      font-family: Icons;
-                      position: absolute;
-                      font-size: 20px;
-                      font-weight: 600;
-                      right: 1rem;
-                      transform: rotate(-90deg);
-                      line-height: 22px;
-                    }
-                    &.active{
-                      border-right: 1px solid @blueButton;
-                      color: @chimpGreen;
-                      background: transparent;
-                      img{
-                        .imgColorGreen();
-                      }
-                      .content{
-                        .header{
-                          color: @chimpGreen;
-                        }
-                      }
-                    }
-                    &:hover{
-                      border-right: 1px solid @blueButton;
-                      color: @chimpGreen;
-                      background: transparent;
-                      .content{
-                        .header{
-                          color: @chimpGreen;
-                        }
-                      }
-                      img{
-                        .imgColorGreen();
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            .menu{
-              width: 100%;
-              .item{
-                border-bottom: 1px solid @grey-lighten-2;
-              }
-            }
-          }
-        }
+       
         .search-wraper{
 
         }
       }
     }
+    
   }
+
 }
 .userSettingsContainer{
   padding: 0rem 0rem 1rem;
@@ -1182,6 +1175,7 @@ h4{
             padding-bottom: 20px;
             &:last-child{
               padding-bottom:0 ;
+
             }
             .item{
               .content{
@@ -1190,7 +1184,8 @@ h4{
                 }
               }
               &:last-child{
-                padding: 16px 0rem 0;
+                padding: 16px 0rem 16px;
+                border-bottom: 1px solid rgba(34, 36, 38, 0.15);
               }
               .blockDateSec{
                 display: flex;
@@ -1199,6 +1194,12 @@ h4{
                   font-size: 12px;
                   margin-right:20px ;
                 }
+              }
+            }
+            &.shownamecheck{
+              .item{
+                padding-bottom: 0 !important;
+                border: 0 !important;
               }
             }
           }
@@ -1230,6 +1231,17 @@ h4{
     button.ui.button.success-btn-rounded-def{
       @media only screen and (max-width: 991px){
         margin-top: 5px;
+      }
+    }
+    &.privacyWraper{
+      padding-top: 38px;
+      h4{
+        margin-bottom: 30px !important;
+      }
+      .userList{
+        .item{
+          border-top: 1px solid rgba(34, 36, 38, 0.15);;
+        }
       }
     }
   }
@@ -6354,18 +6366,11 @@ body{
       .ui.segment.tab{
         border: 0;
         box-shadow: none;
-        padding: 0;
+        padding-top: 0;
         .userSettingsContainer{
-          padding: 30px 0 100px 42px;
           .ui.grid .row{
-            padding: 0px;
+            padding-top: 0px;
           }
-          .settingsDetailWraper.heading{
-            .ui.header{
-              font-size: 20px;
-            }
-          }
-
         }
       }
     }
@@ -6680,12 +6685,16 @@ button.ui.button.blue-bordr-btn-round-def{
                 display: block !important;
                 margin-left: 0 !important;
                 margin-top: 6px;
+                .primeFont-semi-bold();
               }
               .header{
                 padding-bottom: 0px;
+                .font-s-17{
+                  .primeFont-semi-bold();
+                  margin-right: 10px;
+                }
                 .pending{
                   display: inline-block;
-                  margin-left: 10px;
                   color: #BBBBBB;
                   text-transform: uppercase;
                   font-size: 12px;
@@ -6707,6 +6716,7 @@ button.ui.button.blue-bordr-btn-round-def{
             .ellipsis.horizontal.icon::before{
               top: 10px;
               width: 22px;
+              right: 0;
             }
           }
         }
@@ -8623,9 +8633,13 @@ body{
       .ui.pointing.secondary.menu{
         margin-bottom: 0;
       }
+      .charityTab{
+        .ui.segment.tab{
+          padding-bottom: 30px;
+        }
+      }
     }
     .settingsTab{
-      margin-bottom: -3rem;
       >div{
         >.ui.grid{
           >.column{
@@ -8649,14 +8663,6 @@ body{
             }
           }
         }
-      }
-    }
-  }
-  .ui.segment.tab.user-messaging{
-    margin-bottom: -3rem;
-    .charityTab{
-      .ui.segment.tab{
-        padding-bottom: 30px;
       }
     }
   }

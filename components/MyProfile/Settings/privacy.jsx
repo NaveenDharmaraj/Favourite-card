@@ -254,7 +254,7 @@ class Privacy extends React.Component {
                     <div className="settingsDetailWraper">
                         <Header as="h4">Discoverability </Header>
                             <p>Choose whether people can search for your personal profile on Charitable Impact.</p>
-                            <List divided verticalAlign="middle" className="userList">
+                            <List divided verticalAlign="middle" className="userList shownamecheck">
                             <List.Item>
                                 <List.Content floated="right">
                                 <Checkbox
@@ -274,7 +274,7 @@ class Privacy extends React.Component {
                             </List.Item>
                         </List>
                     </div>
-                    <div className="settingsDetailWraper">
+                    <div className="settingsDetailWraper privacyWraper ">
                         <Header as="h4">Profile settings</Header>
                         <p>Choose what to share on your personal profile.</p>
                         <div className='privacyDropdown'>
@@ -338,7 +338,7 @@ class Privacy extends React.Component {
                             />
                         </div>
                     </div>
-                    <div className="settingsDetailWraper">
+                    <div className="settingsDetailWraper privacyWraper">
                         <Header as="h4">Blocked users</Header>
                         { blockedUserListLoader
                             ? (
