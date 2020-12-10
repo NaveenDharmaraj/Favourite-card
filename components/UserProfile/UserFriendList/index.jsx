@@ -115,9 +115,8 @@ class UserFriendList extends React.Component {
         const {
             userProfileSignUpDeeplink,
             friendTypeAheadData,
-            userFindFriendsList,
         } = this.props;
-        if (!_isEqual(userProfileSignUpDeeplink, prevProps.userProfileSignUpDeeplink)) {
+        if (!_isEqual(userProfileSignUpDeeplink, prevProps.userProfileSignUpDeeplink) && !_isEmpty(userProfileSignUpDeeplink)) {
             this.setState({
                 signUpDeeplink: userProfileSignUpDeeplink.data.attributes['short-link'],
             })

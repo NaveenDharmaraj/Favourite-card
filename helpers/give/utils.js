@@ -42,7 +42,7 @@ const isCreditCardBlank = (giveData) => (_.isEmpty(giveData.creditCard) || giveD
 
 const isFieldBlank = (field) => (_.isEmpty(field) || field.value === null || field.value === 0);
 
-const formatCurrency = (value, language, currencyType) => {
+const formatCurrency = (value = 0, language, currencyType) => {
     const currencyFormat = {
         currency: currencyType,
         currencyDisplay: 'symbol',
