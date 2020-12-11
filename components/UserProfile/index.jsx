@@ -145,43 +145,44 @@ class UserProfileWrapper extends React.Component {
                 value: 1,
             },
         ];
+        const isBlocked = (profile_type.substring(0, 7) === 'blocked') ? true : false;
         return (
             <Fragment>
                 {isPreviewMode
-                && (
-                    <div className="previewHeader">
-                        <Container>
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column computer={8} tablet={8} mobile={16}>
-                                        <Header as="h4">
-                                            <Header.Content>
-                                                <div>This is how your profile looks to:</div>
-                                                <Dropdown
-                                                    inline
-                                                    options={options}
-                                                    value={previewValue}
-                                                    icon="chevron down"
-                                                    onChange={this.togglePreviewPage}
-                                                />
-                                            </Header.Content>
-                                        </Header>
-                                    </Grid.Column>
-                                    <Grid.Column computer={8} tablet={8} mobile={16}>
-                                        <div className='returnPrfl'>
-                                            <Button
-                                                className='white-btn-rounded-def'
-                                                onClick={this.hidePreviewPage}
-                                            >
-                                            Return to personal profile view
+                    && (
+                        <div className="previewHeader">
+                            <Container>
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column computer={8} tablet={8} mobile={16}>
+                                            <Header as="h4">
+                                                <Header.Content>
+                                                    <div>This is how your profile looks to:</div>
+                                                    <Dropdown
+                                                        inline
+                                                        options={options}
+                                                        value={previewValue}
+                                                        icon="chevron down"
+                                                        onChange={this.togglePreviewPage}
+                                                    />
+                                                </Header.Content>
+                                            </Header>
+                                        </Grid.Column>
+                                        <Grid.Column computer={8} tablet={8} mobile={16}>
+                                            <div className='returnPrfl'>
+                                                <Button
+                                                    className='white-btn-rounded-def'
+                                                    onClick={this.hidePreviewPage}
+                                                >
+                                                    Return to personal profile view
                                             </Button>
-                                        </div>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                        </Container>
-                    </div>
-                )}
+                                            </div>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+                            </Container>
+                        </div>
+                    )}
                 {(!showFriendsPage && !isMyFriendsPage)
                     ? (
                         <Container>
@@ -195,20 +196,21 @@ class UserProfileWrapper extends React.Component {
                                                 hanldeFriendPage={this.showFriendPage}
                                             />
                                         </div>
-                                        <ProfileDetails
+                                        {!isBlocked && <ProfileDetails
                                             friendUserId={updatedFriendId}
                                         />
+                                        }
                                     </div>
-                                    {!isSingleColumnLayout
-                            && (
-                                <div className="userrightColumn">
-                                    <Responsive minWidth={768}>
-                                        <UserRightColumnList
-                                            friendUserId={updatedFriendId}
-                                        />
-                                    </Responsive>
-                                </div>
-                            )}
+                                    {(!isSingleColumnLayout && !isBlocked)
+                                        && (
+                                            <div className="userrightColumn">
+                                                <Responsive minWidth={768}>
+                                                    <UserRightColumnList
+                                                        friendUserId={updatedFriendId}
+                                                    />
+                                                </Responsive>
+                                            </div>
+                                        )}
                                 </div>
                             </div>
                         </Container>
@@ -228,7 +230,7 @@ UserProfileWrapper.defaultProps = {
     currentUser: {
         id: '',
     },
-    dispatch: () => {},
+    dispatch: () => { },
     friendUserId: '',
     previewMode: {
         isPreviewMode: false,
