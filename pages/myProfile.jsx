@@ -48,9 +48,11 @@ class MyProfile extends React.Component {
         return (
             <Layout authRequired stripe>
                 <Container>
-                    <div className='account-settings-wrap'>
+                    <div className='account-settings-wrap charityTab n-border user-profile-settings'>
                         <Header>Account settings</Header>
-                        <Settings settingName={this.props.settingName} />
+                        <div className='user-messaging'>
+                            <Settings settingName={this.props.settingName} />
+                        </div>
                     </div>
                 </Container>
             </Layout>

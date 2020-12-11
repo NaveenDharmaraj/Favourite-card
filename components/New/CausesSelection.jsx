@@ -26,12 +26,16 @@ function CausesSelection(props) {
         const causesBlock = [];
         if (!_.isEmpty(causesList)) {
             causesList.forEach((cause, i) => {
-                causesBlock.push(<SingleCause
-                    parentHandleCauses={parentHandleCauses}
-                    userCauses={userCauses}
-                    cause={cause}
-                    index={i % 12}
-                />);
+                causesBlock.push(
+                    <Grid.Column computer={4} tablet={8} mobile={16}>
+                        <SingleCause
+                            parentHandleCauses={parentHandleCauses}
+                            userCauses={userCauses}
+                            cause={cause}
+                            index={i % 12}
+                        />
+                    </Grid.Column>
+                );
             });
         }
         return causesBlock;

@@ -176,7 +176,7 @@ class FavouritesList extends React.Component {
                         )
                         : dataElement
                 }
-                <div className="seeMore bigBtn mt-2-sm mt-2-xs">
+                <div className="seeMoreBtnWrap">
                     {
                         (!_isEmpty(favouritesData) && (_size(favouritesData) < totalUserFavouritesRecordCount)) &&
                         displaySeeMoreButton(userProfileUserFavouritesSeeMoreLoader, this.handleSeeMore)
