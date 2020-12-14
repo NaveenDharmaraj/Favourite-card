@@ -28,6 +28,7 @@ import {
     displayRecordCount,
     displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
+import { Link } from '../../../routes';
 import ProfileCard from '../../shared/ProfileCard';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import PlaceholderGrid from '../../shared/PlaceHolder';
@@ -158,9 +159,9 @@ class UserMemberGroupList extends React.Component {
                                         </Header.Content>
                                     </Header>
                                     <div>
-                                        <a href="">
+                                        <Link route="/search?result_type=Group" passHref>
                                             <Button className="white-btn-rounded-def">Find a Giving Group</Button>
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </Grid.Column>
@@ -199,7 +200,7 @@ class UserMemberGroupList extends React.Component {
                         )}
                 </div>
                 {userProfileMemberGroupsLoadStatus
-                    ? <PlaceholderGrid row={2} column={3} />
+                    ? <PlaceholderGrid row={1} column={6} placeholderType='CardNew' />
                     : dataElement
                 }
                 <div className="seeMoreBtnWrap">

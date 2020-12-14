@@ -33,9 +33,10 @@ import {
     displayRecordCount,
     displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
+import getConfig from 'next/config';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import NoDataManagedGroup_Image from '../../../static/images/givinggroupsyoumanage_nodata_illustration.png';
-import getConfig from 'next/config';
+
 const { publicRuntimeConfig } = getConfig();
 
 const {
@@ -211,7 +212,7 @@ class UserAdminGroupList extends React.Component {
                         )}
                 </div>
                 {userProfileAdminGroupsLoadStatus
-                    ? <PlaceholderGrid row={2} column={3} />
+                    ? <PlaceholderGrid row={1} column={6} placeholderType='CardNew' />
                     : dataElement
                 }
                 <div className="seeMoreBtnWrap">
