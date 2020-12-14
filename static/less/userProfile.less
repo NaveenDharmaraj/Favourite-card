@@ -774,6 +774,9 @@
       }
   }
 }
+.findFriendswrapper{
+  min-height: 200px;
+}
 .findFriendsSearch{
   max-width: 500px;
   margin: auto;
@@ -841,7 +844,9 @@
         background-color: #EEEEEE;
         border-radius: 30px;
         cursor: pointer;
+        pointer-events: auto;
         opacity: 1;
+        z-index: 99;
         &:before{
           content: "";
           background-image: url('../images/icons/icon-search.svg') !important;

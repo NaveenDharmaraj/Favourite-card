@@ -13,7 +13,7 @@ import {
     Accordion,
 } from "semantic-ui-react";
 import {
-  connect,
+    connect,
 } from 'react-redux';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
@@ -40,17 +40,17 @@ const {
 } = publicRuntimeConfig;
 
 const NavBarMobile = ({
-  children,
-  onPusherClick,
-  onToggle,
-  visible,
-  currentAccount,
-  formatMessage,
-  notificationUpdate,
-  handleClick,
-  activeIndex,
-  onSwitchClick,
-  otherAccounts,
+    children,
+    onPusherClick,
+    onToggle,
+    visible,
+    currentAccount,
+    formatMessage,
+    notificationUpdate,
+    handleClick,
+    activeIndex,
+    onSwitchClick,
+    otherAccounts,
 }) => {
     const {
         accountType,
@@ -85,20 +85,20 @@ const NavBarMobile = ({
                 <Menu.Item className="userPrifileHeader">
                     <List verticalAlign='middle'>
                         <List.Item>
-                            <Image avatar src={avatar}/>
+                            <Image avatar src={avatar} />
                             <List.Content>
-                                <div className="name">
+                                <Link route={`/users/profile/myprofile`} className="name">
                                     {name}
-                                </div>
+                                </Link>
                                 <div className="iconWraper smo-d-none">
                                     <Link route='/notifications/all'>
                                         <a className={`${notificationUpdate ? ' new' : ''}`}>
-                                            <Image src={notificationIcon}/>
+                                            <Image src={notificationIcon} />
                                         </a>
                                     </Link>
                                     <Link route='/chats/all'>
                                         <a>
-                                            <Image src={messageIcon}/>
+                                            <Image src={messageIcon} />
                                         </a>
                                     </Link>
                                 </div>
@@ -126,13 +126,13 @@ const NavBarMobile = ({
                 {
                     (!isExternal) ? (
                         <Link route={accountUrl}>
-                            <Menu.Item as='a'><span className="mobMenuLeftIcon settingsIcon"><Image src={settingsIcon}/></span>{accountSettingsText}</Menu.Item>
+                            <Menu.Item as='a'><span className="mobMenuLeftIcon settingsIcon"><Image src={settingsIcon} /></span>{accountSettingsText}</Menu.Item>
                         </Link>
                     ) : (
-                        <a href={accountUrl}>
-                            <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={settingsIcon}/></span>{accountSettingsText}</Menu.Item>
-                        </a>
-                    )
+                            <a href={accountUrl}>
+                                <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={settingsIcon} /></span>{accountSettingsText}</Menu.Item>
+                            </a>
+                        )
                 }
                 {/* {
                     !_isEmpty(otherAccounts) && (
@@ -145,7 +145,7 @@ const NavBarMobile = ({
                     )
                 } */}
                 <Link route='/users/logout'>
-                    <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={logoutIcon}/></span>Log out</Menu.Item>
+                    <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={logoutIcon} /></span>Log out</Menu.Item>
                 </Link>
             </Sidebar>
             <Sidebar.Pusher
@@ -164,15 +164,15 @@ const NavBarMobile = ({
                         <Chat />
                         <Menu.Item className="mobSearchIcon">
                             <Link route="/search">
-                                <Image src={searchIcon}/>
+                                <Image src={searchIcon} />
                             </Link>
                         </Menu.Item>
                         <Menu.Item onClick={onToggle}>
                             <div class="nav-icon3">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
                             </div>
                         </Menu.Item>
                     </Menu.Menu>
@@ -184,32 +184,32 @@ const NavBarMobile = ({
 }
 
 class MobileHeader extends Component {
-  state = {
-    visible: false,
-    open: false,
-  };
-  state = { activeIndex: -1 };
+    state = {
+        visible: false,
+        open: false,
+    };
+    state = { activeIndex: -1 };
 
-  handleClick = (e, titleProps) => {
-    const { index } = titleProps
-    const { activeIndex } = this.state
-    const newIndex = activeIndex === index ? -1 : index
+    handleClick = (e, titleProps) => {
+        const { index } = titleProps
+        const { activeIndex } = this.state
+        const newIndex = activeIndex === index ? -1 : index
 
-    this.setState({ activeIndex: newIndex })
-  }
+        this.setState({ activeIndex: newIndex })
+    }
 
-  handlePusher = () => {
-    const { visible } = this.state;
-    if (visible) this.setState({ visible: false });
-  };
+    handlePusher = () => {
+        const { visible } = this.state;
+        if (visible) this.setState({ visible: false });
+    };
 
-  handleToggle = () => this.setState({ visible: !this.state.visible });
+    handleToggle = () => this.setState({ visible: !this.state.visible });
 
-  openModal = () => {
-    this.setState({
-        open: true,
-    });
-  };
+    openModal = () => {
+        this.setState({
+            open: true,
+        });
+    };
 
     closeModal = () => {
         this.setState({
@@ -217,44 +217,44 @@ class MobileHeader extends Component {
         });
     };
 
-  render() {
-    const {
-        children,
-        currentAccount,
-        notificationUpdate,
-    } = this.props;
-    const formatMessage = this.props.t;
-    const { visible } = this.state;
-    const { activeIndex } = this.state
-    return (
-        <Fragment>
-            <NavBarMobile
-            onPusherClick={this.handlePusher}
-            onToggle={this.handleToggle}
-            handleClick={this.handleClick}
-            visible={this.state.visible}
-            currentAccount={currentAccount}
-            formatMessage={formatMessage}
-            activeIndex={activeIndex}
-            notificationUpdate={notificationUpdate}
-            onSwitchClick={this.openModal}
-            otherAccounts={this.props.otherAccounts}
-            >
-                {children}
-            </NavBarMobile>
-            {
-                this.state.open && (
-                    <SwitchAccountModal
-                        accounts={this.props.otherAccounts}
-                        close={this.closeModal}
-                        open={this.state.open}
-                    />
-                )
-            }
-        </Fragment>
+    render() {
+        const {
+            children,
+            currentAccount,
+            notificationUpdate,
+        } = this.props;
+        const formatMessage = this.props.t;
+        const { visible } = this.state;
+        const { activeIndex } = this.state
+        return (
+            <Fragment>
+                <NavBarMobile
+                    onPusherClick={this.handlePusher}
+                    onToggle={this.handleToggle}
+                    handleClick={this.handleClick}
+                    visible={this.state.visible}
+                    currentAccount={currentAccount}
+                    formatMessage={formatMessage}
+                    activeIndex={activeIndex}
+                    notificationUpdate={notificationUpdate}
+                    onSwitchClick={this.openModal}
+                    otherAccounts={this.props.otherAccounts}
+                >
+                    {children}
+                </NavBarMobile>
+                {
+                    this.state.open && (
+                        <SwitchAccountModal
+                            accounts={this.props.otherAccounts}
+                            close={this.closeModal}
+                            open={this.state.open}
+                        />
+                    )
+                }
+            </Fragment>
 
-    );
-  }
+        );
+    }
 }
 
 const mapStateToProps = (state) => ({
