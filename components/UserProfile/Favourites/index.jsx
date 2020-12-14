@@ -2,9 +2,6 @@
 import React from 'react';
 import {
     Header,
-    Button,
-    Grid,
-    Image,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -28,11 +25,11 @@ import {
     displayRecordCount,
     displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
-import { Link } from '../../../routes';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import ProfileCard from '../../shared/ProfileCard';
 import NoDataFavoritesGroup from '../../../static/images/favourites-illo-desktop.png';
+import NoDataState from '../NoDataState';
 
 class FavouritesList extends React.Component {
     constructor(props) {
@@ -143,29 +140,15 @@ class FavouritesList extends React.Component {
         let noData = null;
         if (isMyProfile) {
             noData = (
-                <div className="ggJoin ggFavorite noData">
-                    <Grid verticalAlign="middle">
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={6} computer={6}>
-                                <Image src={NoDataFavoritesGroup} className="noDataLeftImg" />
-                            </Grid.Column>
-                            <Grid.Column mobile={16} tablet={10} computer={10}>
-                                <div className="givingGroupNoDataContent">
-                                    <Header as="h4">
-                                        <Header.Content>
-                                             Your favourite charities and Giving Groups will appear here
-                                        </Header.Content>
-                                    </Header>
-                                    <div>
-                                        <Link route="/search?result_type=All" passHref>
-                                            <Button className="white-btn-rounded-def">Find a charity or Giving Group </Button>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                </div>
+                <NoDataState
+                    className="ggJoin ggFavorite noData"
+                    image={NoDataFavoritesGroup}
+                    content="Your favourite charities and Giving Groups will appear here"
+                    route="/search?result_type=All"
+                    ror={false}
+                    btnClass="white-btn-rounded-def"
+                    btnTitle="Find a charity or Giving Group"
+                />
             );
         } else {
             noData = (

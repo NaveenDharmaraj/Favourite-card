@@ -1,10 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import {
-    Image,
     Header,
-    Grid,
-    Button,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -28,11 +25,11 @@ import {
     displayRecordCount,
     displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
-import { Link } from '../../../routes';
 import ProfileCard from '../../shared/ProfileCard';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import NoDataJoinedGroup from '../../../static/images/givinggroupsyoujoined_nodata_illustration.png';
+import NoDataState from '../NoDataState';
 
 class UserMemberGroupList extends React.Component {
     constructor(props){
@@ -145,29 +142,15 @@ class UserMemberGroupList extends React.Component {
         let noData = null;
         if (isMyProfile) {
             noData = (
-                <div className="ggJoin noData">
-                    <Grid verticalAlign="middle">
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={6} computer={6}>
-                                <Image src={NoDataJoinedGroup} className="noDataLeftImg" />
-                            </Grid.Column>
-                            <Grid.Column mobile={16} tablet={10} computer={10}>
-                                <div className="givingGroupNoDataContent">
-                                    <Header as="h4">
-                                        <Header.Content>
-                                        Groups you've joined will appear here
-                                        </Header.Content>
-                                    </Header>
-                                    <div>
-                                        <Link route="/search?result_type=Group" passHref>
-                                            <Button className="white-btn-rounded-def">Find a Giving Group</Button>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                </div>
+                <NoDataState
+                    className="ggJoin noData"
+                    image={NoDataJoinedGroup}
+                    content="Groups you've joined will appear here"
+                    route="/search?result_type=Group"
+                    ror={false}
+                    btnClass="white-btn-rounded-def"
+                    btnTitle="Find a Giving Group"
+                />
             );
         } else {
             noData = (
