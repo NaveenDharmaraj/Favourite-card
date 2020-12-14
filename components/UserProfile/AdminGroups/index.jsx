@@ -6,6 +6,8 @@ import {
     Header,
     Card,
     Button,
+    Grid,
+    Image
 } from 'semantic-ui-react';
 import {
     connect,
@@ -32,6 +34,14 @@ import {
     displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
+import NoDataManagedGroup_Image from '../../../static/images/givinggroupsyoumanage_nodata_illustration.png';
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    HELP_CENTRE_URL,
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 class UserAdminGroupList extends React.Component {
     constructor(props) {
@@ -145,7 +155,31 @@ class UserAdminGroupList extends React.Component {
         const currentPrivacyType = getPrivacyType(giving_group_manage_visibility);
         let noData = null;
         if (isMyProfile) {
-            noData = <p>NO DATA MY PROFILE</p>;
+            noData = (
+                <div className="ggManage noData">
+                    <Grid verticalAlign="middle">
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={6} computer={6}>
+                                <Image src={NoDataManagedGroup_Image} className="noDataLeftImg" />
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={10} computer={10}>
+                                <div className="givingGroupNoDataContent">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                        Groups you manage will appear here
+                                        </Header.Content>
+                                    </Header>
+                                    <div>
+                                        <a href={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}>
+                                            <Button className="success-btn-rounded-def">Create a Giving Group</Button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </div>
+            );
         } else {
             noData = (
                 <div className="nodata-friendsprfl">

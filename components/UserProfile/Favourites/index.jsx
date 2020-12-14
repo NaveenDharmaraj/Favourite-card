@@ -3,6 +3,8 @@ import React from 'react';
 import {
     Header,
     Button,
+    Grid,
+    Image,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -29,6 +31,7 @@ import {
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import ProfileCard from '../../shared/ProfileCard';
+import NoDataFavoritesGroup from '../../../static/images/favourites-illo-desktop.png';
 
 class FavouritesList extends React.Component {
     constructor(props) {
@@ -138,7 +141,31 @@ class FavouritesList extends React.Component {
         const currentPrivacyType = getPrivacyType(favourites_visibility);
         let noData = null;
         if (isMyProfile) {
-            noData = <p>NO DATA MY PROFILE</p>;
+            noData = (
+                <div className="ggJoin ggFavorite noData">
+                    <Grid verticalAlign="middle">
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={6} computer={6}>
+                                <Image src={NoDataFavoritesGroup} className="noDataLeftImg" />
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={10} computer={10}>
+                                <div className="givingGroupNoDataContent">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                             Your favourite charities and Giving Groups will appear here
+                                        </Header.Content>
+                                    </Header>
+                                    <div>
+                                        <a href="">
+                                            <Button className="white-btn-rounded-def">Find a charity or Giving Group </Button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </div>
+            );
         } else {
             noData = (
                 <div className="nodata-friendsprfl">

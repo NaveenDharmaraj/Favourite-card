@@ -134,7 +134,7 @@ class UserCauses extends React.Component {
                         </div>
                     )
                     : (
-                        <p className='nodata'>Nothing to show here yet.</p>
+                        <p className='nodata'>Select causes and topics to see charities and Giving Groups that might interest you.</p>
                     )}
                 {(!_isEmpty(dataArray) && dataArray.length > 10)
                 && (

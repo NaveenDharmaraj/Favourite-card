@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import {
-    Container,
+    Image,
     Header,
     Grid,
     Button,
@@ -31,6 +31,7 @@ import {
 import ProfileCard from '../../shared/ProfileCard';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import NoDataJoinedGroup from '../../../static/images/givinggroupsyoujoined_nodata_illustration.png';
 
 class UserMemberGroupList extends React.Component {
     constructor(props){
@@ -142,7 +143,31 @@ class UserMemberGroupList extends React.Component {
         const currentPrivacyType = getPrivacyType(giving_group_member_visibility);
         let noData = null;
         if (isMyProfile) {
-            noData = <p>NO DATA MY PROFILE</p>;
+            noData = (
+                <div className="ggJoin noData">
+                    <Grid verticalAlign="middle">
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={6} computer={6}>
+                                <Image src={NoDataJoinedGroup} className="noDataLeftImg" />
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={10} computer={10}>
+                                <div className="givingGroupNoDataContent">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                        Groups you've joined will appear here
+                                        </Header.Content>
+                                    </Header>
+                                    <div>
+                                        <a href="">
+                                            <Button className="white-btn-rounded-def">Find a Giving Group</Button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </div>
+            );
         } else {
             noData = (
                 <div className="nodata-friendsprfl">
