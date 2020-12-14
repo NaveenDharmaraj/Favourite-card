@@ -202,7 +202,7 @@ class UserMemberGroupList extends React.Component {
                     ? <PlaceholderGrid row={2} column={3} />
                     : dataElement
                 }
-                <div className="seeMore bigBtn mt-2-sm mt-2-xs">
+                <div className="seeMoreBtnWrap">
                     {
                         (!_isEmpty(memberData) && (_size(memberData) < totalMemberGroupRecordCount )) &&
                         displaySeeMoreButton(userProfileMemberGroupsSeeMoreLoader, this.handleSeeMore)

@@ -25,7 +25,8 @@ function SingleCause(props) {
     return (
         <Button
             basic
-            className={`select-btn ${_.includes(userCauses, name) ? 'active' : ''}`}
+            fluid
+            className={`select-btn  ${_.includes(userCauses, name) ? 'active' : ''}`}
             id={name}
             name={name}
             onClick={parentHandleCauses}

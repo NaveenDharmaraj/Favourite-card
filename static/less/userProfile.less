@@ -565,6 +565,7 @@
             margin: 0 18px 18px 0;
             white-space: normal;
             padding: 0;
+            display: inline-block;
             &::before {
               content: '';
               position: absolute;
@@ -1174,8 +1175,11 @@
     .ui.button{
       width: 120px;
       margin-bottom: 10px;
+      margin-right: 0;
+      padding: 12.2px 0;
     }
     @media only screen and (max-width:767px) {
+      margin-top: 0px;
       .ui.button{
         width: 175px;
       }
@@ -1186,9 +1190,6 @@
       .ui.card{
         max-width: 300px;
       }
-    }
-    .seeMoreBtnWrap{
-      margin-top: 0px;
     }
   }
   @media only screen and (min-width:767px) and (max-width:992px) {
