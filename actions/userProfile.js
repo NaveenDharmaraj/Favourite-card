@@ -59,6 +59,7 @@ export const actionTypes = {
     USER_PROFILE_FAVOURITES_LOAD_STATUS: 'USER_PROFILE_FAVOURITES_LOAD_STATUS',
     USER_PROFILE_FIND_DROPDOWN_FRIENDS: 'USER_PROFILE_FIND_DROPDOWN_FRIENDS',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
+    USER_PROFILE_FIND_FRIENDS_LOADER: 'USER_PROFILE_FIND_FRIENDS_LOADER',
     USER_PROFILE_FIND_TAGS: 'USER_PROFILE_FIND_TAGS',
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
     USER_PROFILE_FRIEND_ACCEPT: 'USER_PROFILE_FRIEND_ACCEPT',
@@ -498,17 +499,30 @@ const getFriendsByText = (userId, searchText, pageNumber) => dispatch => {
         // },
         text: searchText,
     };
+    dispatch({
+        type: actionTypes.USER_PROFILE_FIND_FRIENDS_LOADER,
+        payload:{
+            userProfileFindFriendsLoader: true,
+        }
+    });
     return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${Number(userId)}`, bodyData).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.record_count,
                 data: result.data,
+                pageCount: result.meta.pageCount,
             };
         },
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
+        dispatch({
+            type: actionTypes.USER_PROFILE_FIND_FRIENDS_LOADER,
+            payload:{
+                userProfileFindFriendsLoader: false,
+            }
+        });
     });
 };
 
@@ -1794,7 +1808,15 @@ const updateUserProfileToastMsg = (statusMessageProps = {}) => dispatch => {
     });
 }
 
+const clearFindFriendsList = () => dispatch => {
+    dispatch({
+        payload: {},
+        type: actionTypes.USER_PROFILE_FIND_FRIENDS,
+    })
+};
+
 export {
+    clearFindFriendsList,
     getCharityInfoToShare,
     getGroupCampaignAdminInfoToShare,
     getInfoToShareDropdownOptions,

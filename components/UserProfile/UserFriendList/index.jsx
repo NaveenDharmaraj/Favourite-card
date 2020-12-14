@@ -14,6 +14,7 @@ import {
     Form,
     Dropdown,
     Search,
+    Loader,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -39,6 +40,7 @@ import {
     inviteFriends,
     searchFriendByUserInput,
     getFriendsByText,
+    clearFindFriendsList,
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 import {
@@ -54,6 +56,7 @@ class UserFriendList extends React.Component {
         super(props);
         this.state = {
             currentActivePage: 1,
+            currentFindFriendsActivePage: 1,
             searchText: '',
             searchClicked: false,
             inviteModalStatus: false,
@@ -348,6 +351,7 @@ class UserFriendList extends React.Component {
             type: 'USER_PROFILE_FRIEND_TYPE_AHEAD_SEARCH',
         };
         dispatch(fsa);
+        dispatch(clearFindFriendsList());
         this.setState({
             friendDropdownList: [],
         });
@@ -410,6 +414,7 @@ class UserFriendList extends React.Component {
             },
             type: 'USER_PROFILE_FRIEND_TYPE_AHEAD_SEARCH',
         };
+        dispatch(clearFindFriendsList());
         dispatch(fsa);
     }
 
@@ -423,7 +428,7 @@ class UserFriendList extends React.Component {
         const {
             friendSearchText,
         } = this.state;
-        dispatch(getFriendsByText(id, friendSearchText, 1));
+        (friendSearchText && friendSearchText.length > 3) && dispatch(getFriendsByText(id, friendSearchText, 1));
     }
 
     handleResultSelect(event, data) {
@@ -461,7 +466,24 @@ class UserFriendList extends React.Component {
             currentActivePage: data.activePage,
         });
     }
-
+    onFindFriendsPageChanged = (event, data) => {
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        const {
+            friendSearchText,
+        } = this.state;
+        (friendSearchText && friendSearchText.length > 3) && dispatch(getFriendsByText(id, friendSearchText, data.activePage));
+        this.setState({
+            currentFindFriendsActivePage: data.activePage,
+        });
+    }
+    onTabChange = (e, data) => {
+        (data && data.activeIndex != 1) && this.clearSearch();
+    }
     render() {
         const {
             friendTypeAheadData,
@@ -489,11 +511,14 @@ class UserFriendList extends React.Component {
             userFindFriendsList: {
                 count,
                 data: userFriendList,
+                pageCount: findFriendDataPageCount,
             },
+            userProfileFindFriendsLoader,
             isMyFriendsPage,
         } = this.props;
         const {
             currentActivePage,
+            currentFindFriendsActivePage,
             searchText,
             searchClicked,
             inviteModalStatus,
@@ -551,7 +576,7 @@ class UserFriendList extends React.Component {
                                     <p>
                                         Sorry, there are no friends by that name.
                                     </p>
-                            )}
+                                )}
                         </List>
                         {(!_isEmpty(friendData) && friendDataPageCount > 1) &&
                             <div className="paginationWraper">
@@ -575,7 +600,7 @@ class UserFriendList extends React.Component {
                     menuItem: 'Find friends',
                     render: () => (
                         <Tab.Pane>
-                            
+
                             <div className='findFriendsSearch'>
                                 <Search
                                     fluid
@@ -586,7 +611,7 @@ class UserFriendList extends React.Component {
                                     results={friendDropdownList}
                                     value={friendSearchText}
                                     minCharacters={4}
-                                    showNoResults = {showDropdownLoader ? false : true }
+                                    showNoResults={showDropdownLoader ? false : true}
                                     icon={
                                         <Fragment>
                                             <Icon
@@ -601,119 +626,135 @@ class UserFriendList extends React.Component {
                                     }
                                 />
                             </div>
-                            {!_isEmpty(userFriendList)
-                                ? (
-                                    <div className='searchresultwrp'>
-                                        {!_isEmpty(friendSearchText)
-                                            && (
-                                                <Fragment>
-                                                    <Header>{friendSearchText}</Header>
-                                                    <p>{`${count} results`}</p>
-                                                </Fragment>
-                                            )}
-                                        <List divided verticalAlign="middle" className="users_List">
-                                            {this.showFriendsList(userFriendList, 'friends', isMyProfile)}
-                                        </List>
-                                    </div>
-                                )
-                                : (
-                                    <div className="findFriendsWrap">
-                                        <Image src={findFriendImg} />
-                                        <Header>Find friends, send them charitable dollars, and give together.</Header>
-                                        <p className='invite_text_1'>You can find friends by name, and they can search for your personal profile too. You can also invite friends not yet on Charitable Impact.</p>
-                                        <p className='invite_text_2'>Your discoverability can be changed in Account Settings.</p>
-                                        <Button className='blue-btn-rounded-def' onClick={this.showInviteModal}>
-                                            Invite friends
-                                </Button>
-                                        <Modal
-                                            size="tiny"
-                                            dimmer="inverted"
-                                            closeIcon
-                                            className="chimp-modal inviteModal"
-                                            open={inviteModalStatus}
-                                            onClose={this.hideInviteModal}
-                                        >
-                                            <Modal.Header>Invite friends to join you on Charitable Impact</Modal.Header>
-                                            <Modal.Content>
-
-                                                <div className='inviteField'>
-                                                    <label>
-                                                        Enter as many email addresses as you like, separated by a comma:
-                                            </label>
-                                                    <div className='fieldWrap'>
-                                                        <div className='label-input-wrap'>
-                                                            <div className="email-labels">
-                                                                {!_isEmpty(userEmailIdsArray)
-                                                                    && (
-                                                                        userEmailIdsArray.map((email) => (
-                                                                            <label className="label">{email}
-                                                                                <Icon
-                                                                                    className='delete'
-                                                                                    onClick={() => this.handleDelete(email)}
-                                                                                />
-                                                                            </label>
-                                                                        ))
-                                                                    )}
-                                                            </div>
-                                                            <Form.Input
-                                                                placeholder="Email Address"
-                                                                error={!isValidEmails}
-                                                                id="userEmailId"
-                                                                name="userEmailId"
-                                                                onKeyDown={this.handleKeyDown}
-                                                                onChange={this.handleInputChange}
-                                                                ref={(ip) => this.myInp = ip}
-                                                                value={userEmailId}
+                            <div className="findFriendswrapper">
+                                {userProfileFindFriendsLoader ?
+                                    <Loader active />
+                                    :
+                                    !_isEmpty(userFriendList)
+                                        ? (
+                                            <div className='searchresultwrp'>
+                                                {!_isEmpty(friendSearchText)
+                                                    && (
+                                                        <Fragment>
+                                                            <Header>{friendSearchText}</Header>
+                                                            <p>{`${count} results`}</p>
+                                                        </Fragment>
+                                                    )}
+                                                <List divided verticalAlign="middle" className="users_List">
+                                                    {this.showFriendsList(userFriendList, 'friends', isMyProfile)}
+                                                </List>
+                                                {(!_isEmpty(userFriendList) && findFriendDataPageCount > 1) &&
+                                                    <div className="paginationWraper">
+                                                        <div className="db-pagination right-align pt-2">
+                                                            <Pagination
+                                                                activePage={currentFindFriendsActivePage}
+                                                                totalPages={findFriendDataPageCount}
+                                                                onPageChanged={this.onFindFriendsPageChanged}
                                                             />
                                                         </div>
-                                                        <Button
-                                                            className="blue-btn-rounded-def"
-                                                            onClick={this.handleInviteFriendsClick}
-                                                            disabled={inviteButtonClicked}
-                                                        >
-                                                            Invite
-                                                </Button>
                                                     </div>
-                                                </div>
-                                                <div className="inviteField copylink">
-                                                    <label>Or share a link:</label>
-                                                    <div className="fieldWrap">
-                                                        <div className="label-input-wrap">
-                                                            <Form.Field>
-                                                                <input
-                                                                    value={signUpDeeplink}
-                                                                    ref={(textarea) => this.textArea = textarea}
-                                                                />
-                                                            </Form.Field>
+                                                }
+                                            </div>
+                                        )
+                                        : (
+                                            <div className="findFriendsWrap">
+                                                <Image src={findFriendImg} />
+                                                <Header>Find friends, send them charitable dollars, and give together.</Header>
+                                                <p className='invite_text_1'>You can find friends by name, and they can search for your personal profile too. You can also invite friends not yet on Charitable Impact.</p>
+                                                <p className='invite_text_2'>Your discoverability can be changed in Account Settings.</p>
+                                                <Button className='blue-btn-rounded-def' onClick={this.showInviteModal}>
+                                                    Invite friends
+                                </Button>
+                                                <Modal
+                                                    size="tiny"
+                                                    dimmer="inverted"
+                                                    closeIcon
+                                                    className="chimp-modal inviteModal"
+                                                    open={inviteModalStatus}
+                                                    onClose={this.hideInviteModal}
+                                                >
+                                                    <Modal.Header>Invite friends to join you on Charitable Impact</Modal.Header>
+                                                    <Modal.Content>
+
+                                                        <div className='inviteField'>
+                                                            <label>
+                                                                Enter as many email addresses as you like, separated by a comma:
+                                            </label>
+                                                            <div className='fieldWrap'>
+                                                                <div className='label-input-wrap'>
+                                                                    <div className="email-labels">
+                                                                        {!_isEmpty(userEmailIdsArray)
+                                                                            && (
+                                                                                userEmailIdsArray.map((email) => (
+                                                                                    <label className="label">{email}
+                                                                                        <Icon
+                                                                                            className='delete'
+                                                                                            onClick={() => this.handleDelete(email)}
+                                                                                        />
+                                                                                    </label>
+                                                                                ))
+                                                                            )}
+                                                                    </div>
+                                                                    <Form.Input
+                                                                        placeholder="Email Address"
+                                                                        error={!isValidEmails}
+                                                                        id="userEmailId"
+                                                                        name="userEmailId"
+                                                                        onKeyDown={this.handleKeyDown}
+                                                                        onChange={this.handleInputChange}
+                                                                        ref={(ip) => this.myInp = ip}
+                                                                        value={userEmailId}
+                                                                    />
+                                                                </div>
+                                                                <Button
+                                                                    className="blue-btn-rounded-def"
+                                                                    onClick={this.handleInviteFriendsClick}
+                                                                    disabled={inviteButtonClicked}
+                                                                >
+                                                                    Invite
+                                                </Button>
+                                                            </div>
                                                         </div>
-                                                        <Button
-                                                            className="blue-bordr-btn-round-def"
-                                                            onClick={this.handleCopyLink}
-                                                        >
-                                                            Copy link
+                                                        <div className="inviteField copylink">
+                                                            <label>Or share a link:</label>
+                                                            <div className="fieldWrap">
+                                                                <div className="label-input-wrap">
+                                                                    <Form.Field>
+                                                                        <input
+                                                                            value={signUpDeeplink}
+                                                                            ref={(textarea) => this.textArea = textarea}
+                                                                        />
+                                                                    </Form.Field>
+                                                                </div>
+                                                                <Button
+                                                                    className="blue-bordr-btn-round-def"
+                                                                    onClick={this.handleCopyLink}
+                                                                >
+                                                                    Copy link
                                                 </Button>
-                                                    </div>
-                                                </div>
+                                                            </div>
+                                                        </div>
 
-                                                <div className="socailLinks">
-                                                    <a>
-                                                        <Icon
-                                                            className="twitter"
-                                                            onClick={() => this.handleShareClick('twitter')}
-                                                        />
-                                                    </a>
-                                                    <a>
-                                                        <Icon
-                                                            className="facebook"
-                                                            onClick={() => this.handleShareClick('facebook')}
-                                                        />
-                                                    </a>
-                                                </div>
+                                                        <div className="socailLinks">
+                                                            <a>
+                                                                <Icon
+                                                                    className="twitter"
+                                                                    onClick={() => this.handleShareClick('twitter')}
+                                                                />
+                                                            </a>
+                                                            <a>
+                                                                <Icon
+                                                                    className="facebook"
+                                                                    onClick={() => this.handleShareClick('facebook')}
+                                                                />
+                                                            </a>
+                                                        </div>
 
-                                            </Modal.Content>
-                                        </Modal>
-                                    </div>
-                                )}
+                                                    </Modal.Content>
+                                                </Modal>
+                                            </div>
+                                        )}
+                            </div>
                         </Tab.Pane>
                     ),
                 },
@@ -734,10 +775,10 @@ class UserFriendList extends React.Component {
                                     <Header className="usrName">{`${first_name} ${last_name}`}</Header>
                                     <div className="userCity_friends">
                                         {(!_isEmpty(getLocation(city, province)))
-                                        && (
-                                            <p>{getLocation(city, province)}</p>
-                                        )}
-                                        
+                                            && (
+                                                <p>{getLocation(city, province)}</p>
+                                            )}
+
                                         <div className="userfriends">
                                             <Header as='h5'><span>{number_of_friends} friends</span></Header>
                                         </div>
@@ -763,6 +804,7 @@ class UserFriendList extends React.Component {
                                                         pointing: true,
                                                     }}
                                                     panes={panes}
+                                                    onTabChange={this.onTabChange}
                                                 />
                                             )
                                             : (
@@ -842,6 +884,7 @@ UserFriendList.defaultProps = {
         count: null,
         data: [],
     },
+    userProfileFindFriendsLoader: false,
     isMyFriendsPage: false,
 };
 
@@ -876,6 +919,7 @@ UserFriendList.propTypes = {
         count: number,
         data: array,
     }),
+    userProfileFindFriendsLoader: bool,
     isMyFriendsPage: bool,
 };
 
@@ -888,6 +932,7 @@ function mapStateToProps(state) {
         userProfileSignUpDeeplink: state.userProfile.userProfileSignUpDeeplink,
         friendTypeAheadData: state.userProfile.friendTypeAheadData,
         userFindFriendsList: state.userProfile.userFindFriendsList,
+        userProfileFindFriendsLoader: state.userProfile.userProfileFindFriendsLoader,
     };
 }
 

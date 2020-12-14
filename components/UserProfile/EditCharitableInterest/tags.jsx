@@ -144,7 +144,7 @@ class MyTags extends React.Component {
         getTagsByText(dispatch, id, searchText, false, pageNumber, loadedData);
     }
 
-    renderTags(tagsList) {
+    renderTags(tagsList, showSeeMore = false) {
         const {
             userTags,
         } = this.state;
@@ -166,6 +166,7 @@ class MyTags extends React.Component {
         return (
             <div className="user-badge-group">
                 {tagsBlock}
+                {showSeeMore && this.renderSeeMore()}
             </div>
         );
     }
@@ -220,7 +221,7 @@ class MyTags extends React.Component {
                 <Header as='h4'>
                     Topics you care about
                 </Header>
-                {this.renderTags(userTagsFollowedList)}
+                {this.renderTags(userTagsFollowedList, false)}
                 <Header as='h4'>All topics</Header>
                 <p>Topics represent specific areas of charitable interests.</p>
                 <div className="searchBox">
@@ -237,7 +238,7 @@ class MyTags extends React.Component {
                     >
                     </a>
                 </div>
-                {this.renderTags(userFindTagsList)}
+                {this.renderTags(userFindTagsList, true)}
             </Grid.Column>
         );
     }

@@ -411,7 +411,7 @@ class UserBasicProfile extends React.Component {
                         && (
                             <p>{getLocation(city, province)}</p>      
                         )}
-                        {((number_of_friends > 0) && (showUserFriends))
+                        {showUserFriends
                             && (
                                 <div
                                     className="userfriends"

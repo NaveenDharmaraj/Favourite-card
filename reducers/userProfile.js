@@ -105,6 +105,12 @@ const userProfile = (state = {}, action) => {
                 userFindFriendsList: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_FIND_FRIENDS_LOADER':
+            newState = {
+                ...state,
+                userProfileFindFriendsLoader: action.payload.userProfileFindFriendsLoader,
+            };
+            break;
         case 'USER_PROFILE_FIND_TAGS':
             if (state.userFindTagsList && state.userFindTagsList.data && !action.payload.isSearch) {
                 newState = {
