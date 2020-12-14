@@ -131,6 +131,10 @@ class UserFriendList extends React.Component {
         }
     }
 
+    componentWillUnmount(){
+        this.clearSearch()
+    }
+
     showFriendsList(dataArray, type, isMyProfile) {
         const {
             hideFriendPage,
