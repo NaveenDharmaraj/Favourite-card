@@ -18,6 +18,7 @@ import {
 } from 'prop-types';
 
 import {
+    actionTypes,
     getUserFavourites,
 } from '../../../actions/userProfile';
 import {
@@ -54,6 +55,15 @@ class FavouritesList extends React.Component {
             currentPageNumber
         } = this.state;
         _isEmpty(favouritesData) && dispatch(getUserFavourites(friendUserId, currentPageNumber, false));
+    }
+    componentWillUnmount(){
+        const {
+            dispatch
+        } = this.props;
+        dispatch({
+            type: actionTypes.USER_PROFILE_FAVOURITES_CLEAR_DATA,
+            payload: {}
+        })
     }
     showMemberCard() {
         const {

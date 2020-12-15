@@ -31,6 +31,7 @@ import {
 import ProfileCard from '../../shared/ProfileCard';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import { actionTypes } from '../../../actions/userProfile';
 
 class UserMemberGroupList extends React.Component {
     constructor(props){
@@ -61,7 +62,15 @@ class UserMemberGroupList extends React.Component {
         } = this.state;
         _isEmpty(memberData) && dispatch(getUserMemberGroup(friendUserId, id, currentPageNumber, false));
     }
-
+    componentWillUnmount(){
+        const{
+            dispatch
+        } = this.props;
+        dispatch({
+            type: actionTypes.USER_PROFILE_MEMBER_GROUP_CLEAR_DATA,
+            payload: {},
+        })
+    }
     showMemberCard() {
         const {
             userFriendProfileData: {
