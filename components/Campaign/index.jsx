@@ -148,8 +148,25 @@ class CampaignProfileWrapper extends React.Component {
                     <Container>
                         <div
                             className={campaignBannerClassName}
-                            style={bannerStyle}
-                        />
+                        >
+                            <div class="">
+                                <div class="banner-wrapper">
+                                    <div class="banner-container">
+                                        <div class="banner-img-wrapper">
+                                            <div class="banner-padding">
+                                                <div class="banner-abs">
+                                                    <div class="banner-abs-main">
+                                                        <div class="banner-inner-wrapper">
+                                                            <img src={banner} class="CoverPhoto"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <Grid.Row>
                             <Grid>
                                 <Grid.Column mobile={16} tablet={10} computer={11}>
