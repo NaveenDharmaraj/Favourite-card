@@ -813,6 +813,7 @@ class UserFriendList extends React.Component {
                                             )
                                             : (
                                                 <Fragment>
+                                                    <Header as='h3'>{`${first_name}`}'s friends</Header>
                                                     <div className="friendsSearch">
                                                         <Header as="h4">Friends</Header>
                                                         <div className="searchBox">
