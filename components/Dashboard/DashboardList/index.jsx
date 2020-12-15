@@ -157,7 +157,10 @@ class DashboradList extends React.Component {
                 let informationSharedEntity = '';
                 let imageCls = 'ui image';
                 let transactionTypeDisplay = '';
-                const isGiftCancelled = (data.attributes.status === 'cancelled' || data.attributes.status === 'returned_to_donor');
+                const isGiftCancelled = (data.attributes.status === 'cancelled'
+                || data.attributes.status === 'returned_to_donor'
+                || data.attributes.status === 'unclaimed'
+                || data.attributes.status === 'bounced');
                 const giftReversed = <label className='giftNotSent'>GIFT CANCELLED</label>;
                 const giftReturned = <label className='giftNotSent'>GIFT RETURNED</label>;
                 const giftRefund = <label className='giftNotSent'>REFUND</label>;
