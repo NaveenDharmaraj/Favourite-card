@@ -1,10 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import {
-    Container,
     Header,
-    Grid,
-    Button,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -31,6 +28,8 @@ import {
 import ProfileCard from '../../shared/ProfileCard';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import NoDataJoinedGroup from '../../../static/images/givinggroupsyoujoined_nodata_illustration.png';
+import NoDataState from '../NoDataState';
 
 class UserMemberGroupList extends React.Component {
     constructor(props){
@@ -142,7 +141,17 @@ class UserMemberGroupList extends React.Component {
         const currentPrivacyType = getPrivacyType(giving_group_member_visibility);
         let noData = null;
         if (isMyProfile) {
-            noData = <p>NO DATA MY PROFILE</p>;
+            noData = (
+                <NoDataState
+                    className="ggJoin noData"
+                    image={NoDataJoinedGroup}
+                    content="Groups you've joined will appear here"
+                    route="/search?result_type=Group"
+                    ror={false}
+                    btnClass="white-btn-rounded-def"
+                    btnTitle="Find a Giving Group"
+                />
+            );
         } else {
             noData = (
                 <div className="nodata-friendsprfl">
@@ -174,7 +183,7 @@ class UserMemberGroupList extends React.Component {
                         )}
                 </div>
                 {userProfileMemberGroupsLoadStatus
-                    ? <PlaceholderGrid row={2} column={3} />
+                    ? <PlaceholderGrid row={1} column={6} placeholderType='CardNew' />
                     : dataElement
                 }
                 <div className="seeMoreBtnWrap">

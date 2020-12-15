@@ -1,11 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import _ from 'lodash';
 import {
-    Container,
     Header,
-    Card,
-    Button,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -31,7 +27,16 @@ import {
     displayRecordCount,
     displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
+import getConfig from 'next/config';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
+import NoDataManagedGroup_Image from '../../../static/images/givinggroupsyoumanage_nodata_illustration.png';
+import NoDataState from '../NoDataState';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 class UserAdminGroupList extends React.Component {
     constructor(props) {
@@ -42,7 +47,7 @@ class UserAdminGroupList extends React.Component {
             },
         } = props;
         this.state = {
-            currentPageNumber: _isEmpty(adminData) ? 1 : Math.floor(_size(adminData)/10),
+            currentPageNumber: _isEmpty(adminData) ? 1 : Math.floor(_size(adminData) / 10),
             show: false,
         };
         this.showAdminCard = this.showAdminCard.bind(this);
@@ -145,7 +150,17 @@ class UserAdminGroupList extends React.Component {
         const currentPrivacyType = getPrivacyType(giving_group_manage_visibility);
         let noData = null;
         if (isMyProfile) {
-            noData = <p>NO DATA MY PROFILE</p>;
+            noData = (
+                <NoDataState
+                    className="ggManage noData"
+                    image={NoDataManagedGroup_Image}
+                    content="Groups you manage will appear here"
+                    route={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}
+                    ror={true}
+                    btnClass="success-btn-rounded-def"
+                    btnTitle="Create a Giving Group"
+                />
+            );
         } else {
             noData = (
                 <div className="nodata-friendsprfl">
@@ -177,7 +192,7 @@ class UserAdminGroupList extends React.Component {
                         )}
                 </div>
                 {userProfileAdminGroupsLoadStatus
-                    ? <PlaceholderGrid row={2} column={3} />
+                    ? <PlaceholderGrid row={1} column={6} placeholderType='CardNew' />
                     : dataElement
                 }
                 <div className="seeMoreBtnWrap">

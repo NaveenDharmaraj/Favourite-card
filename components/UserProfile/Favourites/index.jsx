@@ -2,7 +2,6 @@
 import React from 'react';
 import {
     Header,
-    Button,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -29,6 +28,8 @@ import {
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import ProfileCard from '../../shared/ProfileCard';
+import NoDataFavoritesGroup from '../../../static/images/favourites-illo-desktop.png';
+import NoDataState from '../NoDataState';
 
 class FavouritesList extends React.Component {
     constructor(props) {
@@ -138,7 +139,17 @@ class FavouritesList extends React.Component {
         const currentPrivacyType = getPrivacyType(favourites_visibility);
         let noData = null;
         if (isMyProfile) {
-            noData = <p>NO DATA MY PROFILE</p>;
+            noData = (
+                <NoDataState
+                    className="ggJoin ggFavorite noData"
+                    image={NoDataFavoritesGroup}
+                    content="Your favourite charities and Giving Groups will appear here"
+                    route="/search?result_type=All"
+                    ror={false}
+                    btnClass="white-btn-rounded-def"
+                    btnTitle="Find a charity or Giving Group"
+                />
+            );
         } else {
             noData = (
                 <div className="nodata-friendsprfl">
@@ -172,7 +183,7 @@ class FavouritesList extends React.Component {
                 {
                     userProfileFavouritesLoadStatus
                         ? (
-                            <PlaceholderGrid row={2} column={3} />
+                            <PlaceholderGrid row={1} column={6} placeholderType='CardNew' />
                         )
                         : dataElement
                 }
