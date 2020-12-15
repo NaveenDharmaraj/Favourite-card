@@ -245,7 +245,7 @@ class DashboradList extends React.Component {
                     transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                     descriptionType = 'Given to ';
                     entity = data.attributes.recipientEmail;
-                    transactionSign = '-';
+                    transactionSign = isGiftCancelled ? '+' : '-';
                 } else if (data.attributes.source.id === Number(id)) {
                     // last catch block to handle all other senarios
                     transactionTypeDisplay = 'Gift given';
