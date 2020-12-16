@@ -37,6 +37,12 @@ const userProfile = (state = {}, action) => {
                 userProfileMemberGroupData: Object.assign({}, action.payload),
             };
             break;
+            case 'USER_PROFILE_MEMBER_GROUP_CLEAR_DATA':
+                newState = {
+                    ...state,
+                    userProfileMemberGroupData: Object.assign({}, action.payload),
+                };
+                break;
         case 'USER_PROFILE_ADMIN_GROUP':
             if (!_isEmpty(state.userProfileAdminGroupData)) {
                 action.payload.data = [...state.userProfileAdminGroupData.data, ...action.payload.data];
@@ -63,6 +69,12 @@ const userProfile = (state = {}, action) => {
                 userProfileFavouritesData: Object.assign({}, action.payload),
             };
             break;
+            case 'USER_PROFILE_FAVOURITES_CLEAR_DATA':
+                newState = {
+                    ...state,
+                    userProfileFavouritesData: Object.assign({}, action.payload),
+                };
+                break;
         case 'USER_PROFILE_CAUSES':
             newState = {
                 ...state,

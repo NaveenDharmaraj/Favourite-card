@@ -19,7 +19,7 @@ const DiscoveredForYouNoData = () => (
                     <Header as="h4" className="mb-2">
                         Select causes and topics to see charities and Giving Groups that might interest you.
                     </Header>
-                    <Link route="/user/profile/charitableinterest">
+                    <Link route="/users/profile/myprofile">
                         <Button className="blue-bordr-btn-round-def">
                             Select causes and topics
                         </Button>

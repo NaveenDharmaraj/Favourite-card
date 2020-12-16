@@ -57,6 +57,7 @@ export const actionTypes = {
     USER_PROFILE_DEFAULT_TAX_RECEIPT: 'USER_PROFILE_DEFAULT_TAX_RECEIPT',
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
     USER_PROFILE_FAVOURITES_LOAD_STATUS: 'USER_PROFILE_FAVOURITES_LOAD_STATUS',
+    USER_PROFILE_FAVOURITES_CLEAR_DATA: 'USER_PROFILE_FAVOURITES_CLEAR_DATA',
     USER_PROFILE_FIND_DROPDOWN_FRIENDS: 'USER_PROFILE_FIND_DROPDOWN_FRIENDS',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
     USER_PROFILE_FIND_FRIENDS_LOADER: 'USER_PROFILE_FIND_FRIENDS_LOADER',
@@ -74,6 +75,7 @@ export const actionTypes = {
     USER_PROFILE_LOCATION_SEARCH: 'USER_PROFILE_LOCATION_SEARCH',
     USER_PROFILE_LOCATION_SEARCH_LOADER: 'USER_PROFILE_LOCATION_SEARCH_LOADER',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
+    USER_PROFILE_MEMBER_GROUP_CLEAR_DATA: 'USER_PROFILE_MEMBER_GROUP_CLEAR_DATA',
     USER_PROFILE_MEMBER_GROUP_LOAD_STATUS: 'USER_PROFILE_MEMBER_GROUP_LOAD_STATUS',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
@@ -1604,7 +1606,7 @@ const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => di
         if (type === 'invitation') {
             dispatch(getFriendsInvitations(email, 1));
             dispatch(getMyFriendsList(email, 1));
-            dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
+            //dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
         } else if (type === 'friendSearch') {
             fsa.payload.userId = friendUserId;
             fsa.payload.status = '';
