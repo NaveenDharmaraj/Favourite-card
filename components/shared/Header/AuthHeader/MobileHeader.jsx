@@ -87,8 +87,10 @@ const NavBarMobile = ({
                         <List.Item>
                             <Image avatar src={avatar} />
                             <List.Content>
-                                <Link route={`/users/profile/myprofile`} className="name">
-                                    {name}
+                                <Link route={`/users/profile/myprofile`}>
+                                    <div className='name'>
+                                        {name}
+                                    </div>
                                 </Link>
                                 <div className="iconWraper smo-d-none">
                                     <Link route='/notifications/all'>

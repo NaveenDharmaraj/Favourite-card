@@ -60,6 +60,7 @@ class EditBasicProfile extends React.Component {
         } = props;
         const givingGoalAmount = (!_.isEmpty(giving_goal_amt) ? formatAmount(Number(giving_goal_amt)) : '');
         const location = getLocation(city, province);
+
         this.state = {
             showEditProfileModal: false,
             buttonClicked: true,
@@ -77,9 +78,9 @@ class EditBasicProfile extends React.Component {
                 displayName: display_name,
                 formatedGoalAmount: formatCurrency(giving_goal_amt, 'en', 'USD'),
             },
+            activeAmount : 0,
             validity: this.intializeValidations(),
         };
-
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
@@ -119,6 +120,7 @@ class EditBasicProfile extends React.Component {
                 ...userBasicDetails,
             },
             validity,
+            activeAmount: amount,
         });
     }
 
@@ -155,6 +157,7 @@ class EditBasicProfile extends React.Component {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
             },
+            activeAmount:0,
         });
     }
 
@@ -425,6 +428,7 @@ class EditBasicProfile extends React.Component {
             searchQuery,
             uploadImagePreview,
             validity,
+            activeAmount,
         } = this.state;
         const {
             currentUser: {
@@ -439,6 +443,7 @@ class EditBasicProfile extends React.Component {
         const userAvatar = (avatar === '') || (avatar === null) ? UserPlaceholder : avatar;
         const imageView = uploadImagePreview !== '' ? uploadImagePreview : userAvatar;
         const isPreview = uploadImagePreview !== '' ? true : false;
+        
         return (
             <Fragment>
             <Modal
@@ -617,9 +622,9 @@ class EditBasicProfile extends React.Component {
                                     />
                                 </Form.Field>
                                 <div className='price_btn'>
-                                    <Button basic size="tiny" onClick={() => this.handleAmount(100)}>$100</Button>
-                                    <Button basic size="tiny" onClick={() => this.handleAmount(500)}>$500</Button>
-                                    <Button basic size="tiny" onClick={() => this.handleAmount(1000)}>$1,000</Button>
+                                    <Button basic size="tiny" active={activeAmount === 100}  onClick={() => this.handleAmount(100)}>$100</Button>
+                                    <Button basic size="tiny" active={activeAmount === 500}  onClick={() => this.handleAmount(500)}>$500</Button>
+                                    <Button basic size="tiny" active={activeAmount === 1000}  onClick={() => this.handleAmount(1000)}>$1,000</Button>
                                 </div>
                             </div>
                             <div className='btnWrp'>

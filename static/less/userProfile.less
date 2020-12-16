@@ -105,6 +105,15 @@
         min-width: 282px;
         max-width: 282px;
         margin-left: 45px;
+        .ui.grid{
+          .row{
+            .column{
+              &:last-child{
+                padding-left: 0;
+              }
+            }
+          }
+        }
       }
       .ui.segment{
         border-radius: 10px;
@@ -486,7 +495,7 @@
           margin-right: 10px; 
           box-shadow: 0 0 0 1px rgba(34,36,38,.15) inset !important;
           border-radius: 5px;
-          &.selected{
+          &.active{
             box-shadow:none !important;
             background-color: #F1F6FD !important;
             border: 1px solid #DDDDDD;
@@ -1548,11 +1557,13 @@
             .icon{
               &:not(.down){
               filter: invert(100%) sepia(5%) saturate(1034%) hue-rotate(232deg) brightness(400%) contrast(100%);      
-                margin-right: 4px;
+                margin-right: 8px;
                 font-size: 18px;
                 &::before{
                   content: '' !important;
                   position: absolute;
+                  width: 21px;
+                  height: 18px;
                   top: 0;
                   bottom: 0;
                   left: 0;
