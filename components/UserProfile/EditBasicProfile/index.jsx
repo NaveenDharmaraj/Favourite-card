@@ -157,7 +157,6 @@ class EditBasicProfile extends React.Component {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
             },
-            activeAmount:0,
         });
     }
 

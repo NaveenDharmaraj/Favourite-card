@@ -144,6 +144,7 @@ class FriendListCard extends React.Component {
                 {buttonText}
             </Button>
         );
+        
         return (
             <List.Item>
                 <Image avatar src={!_isEmpty(avatar) ? avatar : friendAvatarPlaceholder} />
@@ -192,10 +193,9 @@ class FriendListCard extends React.Component {
                                     )}
                                 >
                                     <Dropdown.Menu>
-                                        <Dropdown.Item
-                                            text="Cancel friend request"
-                                            onClick={() => this.rejectInvite(user_id, email_hash, 'friendSearch')}
-                                        />
+                                        <Dropdown.Item onClick={() => this.rejectInvite(user_id, email_hash, 'friendSearch')}>
+                                            Cancel<span className='mob-hide'> friend</span> request
+                                        </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </Fragment>

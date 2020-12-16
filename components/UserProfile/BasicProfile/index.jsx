@@ -482,10 +482,9 @@ class UserBasicProfile extends React.Component {
                                     )}
                                 >
                                     <Dropdown.Menu >
-                                        <Dropdown.Item
-                                            text='Cancel friend request'
-                                            onClick={this.handleRejectRequest}
-                                        />
+                                        <Dropdown.Item onClick={this.handleRejectRequest}>
+                                            Cancel<span className='mob-hide'> friend</span> request
+                                        </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
                             )

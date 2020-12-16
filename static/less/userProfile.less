@@ -1290,11 +1290,22 @@
           display: flex;
           align-items: center;  
           justify-content: flex-end;
-          .userProfile_drpbtn.ui.dropdown .ui.button{
-            padding: 7.2px 51.39px 7.2px 22px !important;
-            +.icon{
-              right: 20px;
-              top: 7px;
+          .userProfile_drpbtn.ui.dropdown {
+            .ui.button{
+              padding: 7.2px 51.39px 7.2px 22px !important;
+              +.icon{
+                right: 20px;
+                top: 7.5px;
+                transition: 0.5s;
+              }
+            }
+            &.active{
+              .ui.button{
+                +.icon{
+                  top: 8.5px;
+                  transform: rotateZ(180deg);
+                }
+              }
             }
           }
           .icon.trash{
