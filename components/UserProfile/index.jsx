@@ -20,7 +20,7 @@ import {
 import {
     connect,
 } from 'react-redux';
-
+import { Router } from '../../routes';
 import { withTranslation } from '../../i18n';
 
 import UserBasicProfile from './BasicProfile';
@@ -58,6 +58,9 @@ class UserProfileWrapper extends React.Component {
 
     hidePreviewPage() {
         const {
+            currentUser: {
+                id: currentUserId,
+            },
             dispatch,
         } = this.props;
         dispatch({
@@ -69,6 +72,7 @@ class UserProfileWrapper extends React.Component {
             },
             type: 'USER_PROFILE_PREVIEW_MODE',
         });
+        Router.pushRoute(`/users/profile/${currentUserId}`);
     }
 
     showFriendPage() {

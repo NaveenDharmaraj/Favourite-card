@@ -68,7 +68,21 @@ class FriendProfile extends React.Component {
             dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
         }
     }
-
+    componentWillUnmount(){
+        const {
+            dispatch,
+        } = this.props;
+        dispatch({
+            payload: {
+                previewMode: {
+                    isPreviewMode: false,
+                    previewValue: 0,
+                },
+            },
+            type: 'USER_PROFILE_PREVIEW_MODE',
+        });
+    }
+    
     render() {
         const {
             userFriendProfileData,
