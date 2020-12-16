@@ -159,7 +159,7 @@ class DashboradList extends React.Component {
                 let transactionTypeDisplay = '';
                 const isGiftCancelled = (data.attributes.status === 'cancelled'
                 || data.attributes.status === 'returned_to_donor'
-                || data.attributes.status === 'unclaimed'
+                || data.attributes.status === 'expired'
                 || data.attributes.status === 'bounced');
                 const giftReversed = <label className='giftNotSent'>GIFT CANCELLED</label>;
                 const giftReturned = <label className='giftNotSent'>GIFT RETURNED</label>;
