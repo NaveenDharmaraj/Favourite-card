@@ -454,41 +454,12 @@ class UserBasicProfile extends React.Component {
                                     </Dropdown>
                                 </Fragment>
                             )}
-                        {isPreviewMode
-                            && (
-                                <Fragment>
-                                    <Button
-                                        className='blue-btn-rounded-def'
-                                        disabled={true}
-                                    >
-                                        Add Friend
-                            </Button>
-                                    <Button
-                                        className='blue-bordr-btn-round-def'
-                                        disabled={true}
-                                    >
-                                        Give
-                            </Button>
-                                    <Dropdown
-                                        className='userProfile_drpbtn threeDotBtn'
-                                        direction='left'
-                                        disabled={true}
-                                    >
-                                        <Dropdown.Menu >
-                                            <Dropdown.Item
-                                                text='Copy profile URL'
-                                                onClick={this.handleCopyLink}
-                                            />
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </Fragment>
-                            )}
                         {(!isMyProfile && !isFriendPending && !isFriend && !isBlocked)
                             && (
                                 <Button
                                     className="blue-btn-rounded"
                                     onClick={() => this.handleAddToFriends(user_id, email)}
-                                    disabled={addButtonClicked}
+                                    disabled={addButtonClicked || isPreviewMode }
                                     primary
                                 >
                                     Add Friend
@@ -501,6 +472,7 @@ class UserBasicProfile extends React.Component {
                                     className='userProfile_drpbtn'
                                     icon='chevron down'
                                     direction='left'
+                                    disabled={isPreviewMode}
                                     trigger={(
                                         <Button
                                             className="blue-bordr-btn-round-def"
@@ -524,6 +496,7 @@ class UserBasicProfile extends React.Component {
                                     className='userProfile_drpbtn m-w-100'
                                     icon='chevron down'
                                     direction='left'
+                                    disabled={isPreviewMode}
                                     trigger={(
                                         <Button
                                             className='blue-btn-rounded-def'
@@ -550,6 +523,7 @@ class UserBasicProfile extends React.Component {
                                     <Button
                                         className="blue-btn-rounded"
                                         primary
+                                        disabled={isPreviewMode}
                                     >
                                         Message
                                     </Button>
@@ -574,12 +548,13 @@ class UserBasicProfile extends React.Component {
                                                 <Button
                                                     className="blue-bordr-btn-round"
                                                     onClick={() => this.giveButtonClick(email, `${first_name} ${last_name}`, avatar)}
+                                                    disabled={isPreviewMode}
                                                 >
                                                     Give
                                         </Button>
                                             </Link>
                                         )}
-                                    <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left'>
+                                    <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left' disabled={isPreviewMode}>
                                         <Dropdown.Menu >
                                             <Dropdown.Item
                                                 text='Copy profile URL'
