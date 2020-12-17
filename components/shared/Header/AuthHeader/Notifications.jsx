@@ -231,14 +231,16 @@ class Notifications extends React.Component {
                                     if (cta.isWeb) {
                                         const friendId = cta.user_id;
                                         return (
-                                            <>
-                                                <Button key={ctaKey} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
-                                                {ctaKey === 'accept' &&
-                                                    <Icon
-                                                        className="trash alternate outline"
-                                                        onClick={() => this.rejectInvite(friendId, 'invitation', msg)}
-                                                    />
-                                                }
+                                            <>  
+                                                <div className='NotifybtnWrap'>
+                                                    <Button key={ctaKey} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                                    {ctaKey === 'accept' &&
+                                                        <Icon
+                                                            className="notifyTrash"
+                                                            onClick={() => this.rejectInvite(friendId, 'invitation', msg)}
+                                                        />
+                                                    }
+                                                </div>
                                             </>
                                         );
                                     }

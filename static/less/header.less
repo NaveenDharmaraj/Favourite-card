@@ -670,9 +670,11 @@ button,a{
         .ui{
           &.list{
             >.item{
-              padding: .833em 1em;
+              padding: .833em 1.5625em;
               border-bottom: 0.5px solid #E6E1E8;
               border-top: 0px solid transparent;
+              display: flex;
+              align-items: flex-start;
               &.new{
                 background-color: #F1F6FD;
               }
@@ -685,12 +687,13 @@ button,a{
               .content{
                 position: relative;
                 width: 270px;
-                padding-right: 22px;
+                padding-right: 30px;
                 font-size: 12px;
+                padding-left: 18px;
                 .more-btn{
                   position: absolute;
-                  top: 0;
-                  right: 0;
+                  top: 0px;
+                  right: 5px;
                   color: #263238;
                   .ui{
                     &.dropdown{
@@ -921,8 +924,12 @@ body{
             background-position: center !important;
             background-size: contain !important;
             background-repeat: no-repeat !important;
-            height: 3.67px;	width: 18px;
+            height: 4px;	width: 22px;
             position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
           }
         }
       }

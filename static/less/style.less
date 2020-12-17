@@ -6113,7 +6113,7 @@ body{
             }
             >.content{
               &:not(.right){
-                width: calc(100% - 85px);
+                width: calc(100% - 95px);
               }
               .time{
                 margin-bottom: 10px;
@@ -6136,7 +6136,7 @@ body{
   padding: 50px 0px;
   .notificationHeader{
     padding-bottom: 10px;
-    border-bottom: 1px solid @grey-lighten-2;
+    border-bottom: 1px solid @border-light;
     .settingsIcon{
       padding: 0px 0px;
       display: inline-block;
@@ -6162,6 +6162,13 @@ body{
       
     }
   }
+  .HeaderText{
+    font-size: 17px;
+    .primeFont-semi-bold();
+    border-bottom: 1px solid @border-light;
+    padding-bottom: 10px;
+    margin-top: 35px;
+  }
 }
 .allNotification{
   .blankImage{
@@ -6179,7 +6186,7 @@ body{
       >.item{
         padding: .21428571em 1em;
         border-color: #E6E1E8;
-        border-top: 0px solid transparent;
+        border: 0px solid transparent !important;
         &:first-child{
           padding-top: .21428571em;
           padding-bottom: .21428571em;
@@ -6202,6 +6209,7 @@ body{
           position: relative;
           //width: 100%;
           font-size: 12px;
+          padding-left: 19px;
           &.right{
             padding: 25px 0px;
           }
@@ -6209,11 +6217,12 @@ body{
             color: #263238;
             display: inline-block;
             padding: 0.5rem 0rem;
+            margin-left: 10px;
           }
           .time{
             color: @grey-darken-9;
             margin: 4px 0px 6px;
-          }
+          }         
         }
       }
     }
@@ -6549,6 +6558,34 @@ body{
     }
   }
 }
+}
+.NotifybtnWrap{
+  display: flex;
+  align-items: center;
+  .ui.button{
+    margin: 0;
+    padding: 7.2px 20px !important;
+    min-width: 110px;
+  }
+}
+.icon.notifyTrash{
+  font-size: 19px;
+  color: @greyNew;
+  margin-right: 0;
+  margin-left: 10px;
+  cursor: pointer;
+  position: relative;
+  &::before{
+    content: '';
+    background-image: url(../images/icons/icon_gray_delete.svg) !important;
+    background-size: contain !important;
+    width: 19px;
+    height: 19px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    background-repeat: no-repeat !important;
+  }
 }
 @media only screen and (max-width:767px) {
   .menu{

@@ -250,13 +250,15 @@ class NotificationWrapper extends React.Component {
                                         if (cta.isWeb) {
                                             return (
                                                 <>
-                                                    <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
-                                                    {ctaKey === 'accept' &&
-                                                        <Icon
-                                                            className="trash alternate outline"
-                                                            onClick={() => self.rejectInvite(friendId, 'invitation', msg)}
-                                                        />
-                                                    }
+                                                    <div className='NotifybtnWrap'>
+                                                        <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                                        {ctaKey === 'accept' &&
+                                                            <Icon
+                                                                className="notifyTrash"
+                                                                onClick={() => self.rejectInvite(friendId, 'invitation', msg)}
+                                                            />
+                                                        }
+                                                    </div>
                                                 </>
                                             )
                                         }
@@ -291,13 +293,15 @@ class NotificationWrapper extends React.Component {
                                         if (cta.isWeb) {
                                             return (
                                                 <>
-                                                    <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
-                                                    {ctaKey === 'accept' &&
-                                                        <Icon
-                                                            className="trash alternate outline"
-                                                            onClick={() => self.rejectInvite(friendId, 'invitation', msg)}
-                                                        />
-                                                    }
+                                                    <div className='NotifybtnWrap'>
+                                                        <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                                        {ctaKey === 'accept' &&
+                                                            <Icon
+                                                                className="notifyTrash"
+                                                                onClick={() => self.rejectInvite(friendId, 'invitation', msg)}
+                                                            />
+                                                        }
+                                                    </div>
                                                 </>
                                             )
                                         }
@@ -395,8 +399,8 @@ class NotificationWrapper extends React.Component {
                     {(() => {
                         if (recentItems && recentItems.length > 0) {
                             return <div>
-                                <div className="font-s-16 bold mt-2 mb-1">{self.t("recent")}</div>
-                                <div className="allNotification mb-3">
+                                <div className="HeaderText">{self.t("recent")}</div>
+                                <div className="allNotification">
                                     <List celled verticalAlign='middle'>
                                         {self.listItems(recentItems, 'new')}
                                     </List>
@@ -407,8 +411,8 @@ class NotificationWrapper extends React.Component {
                     {(() => {
                         if (earlierItems && earlierItems.length > 0) {
                             return <div>
-                                <div className="font-s-16 bold mt-2 mb-1">{self.t("earlier")}</div>
-                                <div className="allNotification mb-3">
+                                <div className="HeaderText">{self.t("earlier")}</div>
+                                <div className="allNotification">
                                     <List celled verticalAlign='middle'>
                                         {self.listItems(earlierItems)}
                                     </List>
