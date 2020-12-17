@@ -1003,6 +1003,7 @@
     }
   }
   .menu{
+
     min-width: 245px;
     .item{
       border-top: 1px solid @border-light;
@@ -1020,6 +1021,7 @@
       right: 30px;
       margin: 0;
       top: 11px;
+      transition: 0.5s;
     }
     &.blue-bordr-btn-round-def{
       +.icon{
@@ -1032,7 +1034,12 @@
       }
     }
   }
-  
+  &.active{
+    .ui.button + .icon{
+      transform: rotate(180deg);
+      top: 16px;
+    }
+  }
 }
 .userprfleTab{
   margin-top: 30px;
