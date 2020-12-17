@@ -17,6 +17,7 @@ import {
     List,
 } from 'semantic-ui-react'
 import {
+    rejectFriendInvite,
     updateUserPreferences,
 } from '../../actions/userProfile';
 import _ from 'lodash';
@@ -190,7 +191,26 @@ class NotificationWrapper extends React.Component {
         return ReactHtmlParser(htmlString, { transform });
     }
 
-    listItems(messages , newClass = "") {
+    rejectInvite(friendUserId, type, msg) {
+        const {
+            userInfo: {
+                attributes: {
+                    email,
+                },
+                id: currentUserId,
+            },
+            dispatch,
+        } = this.props;
+        dispatch(rejectFriendInvite(currentUserId, friendUserId, email, type))
+            .then(() => {
+                this.onNotificationMsgAction('delete', msg)
+            })
+            .catch(() => {
+
+            })
+    }
+
+    listItems(messages, newClass = "") {
         if (!messages) {
             messages = [];
         }
@@ -226,8 +246,19 @@ class NotificationWrapper extends React.Component {
                                 if (msg.cta) {
                                     return Object.keys(msg.cta).map(function (ctaKey) {
                                         let cta = msg.cta[ctaKey];
+                                        const friendId = cta.user_id;
                                         if (cta.isWeb) {
-                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                            return (
+                                                <>
+                                                    <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                                    {ctaKey === 'accept' &&
+                                                        <Icon
+                                                            className="trash alternate outline"
+                                                            onClick={() => self.rejectInvite(friendId, 'invitation', msg)}
+                                                        />
+                                                    }
+                                                </>
+                                            )
                                         }
                                     });
                                 }
@@ -256,8 +287,19 @@ class NotificationWrapper extends React.Component {
                                 if (msg.cta) {
                                     return Object.keys(msg.cta).map(function (ctaKey) {
                                         let cta = msg.cta[ctaKey];
+                                        const friendId = cta.user_id;
                                         if (cta.isWeb) {
-                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                            return (
+                                                <>
+                                                    <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                                    {ctaKey === 'accept' &&
+                                                        <Icon
+                                                            className="trash alternate outline"
+                                                            onClick={() => self.rejectInvite(friendId, 'invitation', msg)}
+                                                        />
+                                                    }
+                                                </>
+                                            )
                                         }
                                     });
                                 }
@@ -274,13 +316,13 @@ class NotificationWrapper extends React.Component {
             messages = [];
         }
         let recentItems = messages.filter(function (item) {
-            if(item)
-            return item.createdTs > lastSyncTime;
+            if (item)
+                return item.createdTs > lastSyncTime;
         });
 
         let earlierItems = messages.filter(function (item) {
-            if(item)
-            return item.createdTs <= lastSyncTime;
+            if (item)
+                return item.createdTs <= lastSyncTime;
         });
         return { "recent": recentItems, "earlier": earlierItems };
     }
@@ -297,11 +339,11 @@ class NotificationWrapper extends React.Component {
         const {
             userInfo,
         } = this.props;
-       if (flag) {
+        if (flag) {
             deletedItems.push(msg.id);
             deleteTimeouts[msg.id] = setTimeout(function () {
                 eventApi.post("/notification/delete", { "user_id": userInfo.id, "id": msg.id });
-            },10000);
+            }, 10000);
         } else {
             deletedItems.splice(deletedItems.indexOf(msg.id), 1);
             clearTimeout(deleteTimeouts[msg.id]);
