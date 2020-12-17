@@ -32,6 +32,7 @@ import Notifications from './Notifications';
 import Chat from './Chat';
 import Give from './Give';
 import SwitchAccountModal from './SwitchAccountModal';
+import IconIndividual from '../../../../static/images/no-data-avatar-user-profile.png';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -60,7 +61,7 @@ const NavBarMobile = ({
     } = currentAccount;
     const menuLinks = getMainNavItems(accountType, slug);
     let accountSettingsText = formatMessage('accountSettings');
-    let accountUrl = `/user/profile/basic`;
+    let accountUrl = `/users/profile/myprofile`;
     let logoUrl = `/dashboard`;
     let isExternal = false;
     if (accountType === 'company') {
@@ -85,7 +86,7 @@ const NavBarMobile = ({
                 <Menu.Item className="userPrifileHeader">
                     <List verticalAlign='middle'>
                         <List.Item>
-                            <Image avatar src={avatar} />
+                            <Image avatar src={avatar | IconIndividual} />
                             <List.Content>
                                 <Link route={`/users/profile/myprofile`}>
                                     <div className='name'>
