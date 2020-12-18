@@ -1003,6 +1003,7 @@
     }
   }
   .menu{
+
     min-width: 245px;
     .item{
       border-top: 1px solid @border-light;
@@ -1020,6 +1021,7 @@
       right: 30px;
       margin: 0;
       top: 11px;
+      transition: 0.5s;
     }
     &.blue-bordr-btn-round-def{
       +.icon{
@@ -1032,13 +1034,19 @@
       }
     }
   }
-  
+  &.active{
+    .ui.button + .icon{
+      transform: rotate(180deg);
+      top: 16px;
+    }
+  }
 }
 .userprfleTab{
   margin-top: 30px;
   .ui.secondary.pointing.menu{
     margin-bottom: 33px; 
     border-bottom: 1px solid @border-light;
+    padding: 0;
     .item{
       font-size: 16px;
       color: #262626;
@@ -1418,6 +1426,7 @@
       filter: invert(16%) sepia(80%) saturate(5747%) hue-rotate(213deg) brightness(101%) contrast(96%);
       margin-right: 4px;
       font-size: 18px;
+      position: relative;
       &::before{
         content: '' !important;
         position: absolute;
@@ -1570,6 +1579,7 @@
               filter: invert(100%) sepia(5%) saturate(1034%) hue-rotate(232deg) brightness(400%) contrast(100%);      
                 margin-right: 8px;
                 font-size: 18px;
+                position: relative;
                 &::before{
                   content: '' !important;
                   position: absolute;
