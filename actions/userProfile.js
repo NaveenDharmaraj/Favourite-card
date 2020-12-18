@@ -266,7 +266,7 @@ const getUserAdminGroup = (userId, sourceUserId, pageNumber = 1, seeMoreLoader =
         'page[number]': pageNumber,
         'page[size]': 10
     };
-    const userAdminGroupPromise =  coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups`, { params });
+    const userAdminGroupPromise = coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups`, { params });
     userAdminGroupPromise.then(
         (result) => {
             fsa.payload = {
@@ -503,7 +503,7 @@ const getFriendsByText = (userId, searchText, pageNumber) => dispatch => {
     };
     dispatch({
         type: actionTypes.USER_PROFILE_FIND_FRIENDS_LOADER,
-        payload:{
+        payload: {
             userProfileFindFriendsLoader: true,
         }
     });
@@ -521,7 +521,7 @@ const getFriendsByText = (userId, searchText, pageNumber) => dispatch => {
         dispatch(fsa);
         dispatch({
             type: actionTypes.USER_PROFILE_FIND_FRIENDS_LOADER,
-            payload:{
+            payload: {
                 userProfileFindFriendsLoader: false,
             }
         });
@@ -1212,12 +1212,22 @@ const inviteFriends = (dispatch, inviteEmailIds) => {
             type: 'users',
         },
     };
-    const inviteFriendsResponse = coreApi.post(`/users/friend_mail_notifications`, bodyData);
+    const inviteFriendsResponse = coreApi.post(`/users/friend_mail_notification`, bodyData, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    });
     inviteFriendsResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
             };
+            const statusMessage = {
+                message: 'Invitation sent',
+                type: 'success',
+            };
+            dispatch(updateUserProfileToastMsg(statusMessage));
         },
     ).catch((error) => {
         fsa.error = error;

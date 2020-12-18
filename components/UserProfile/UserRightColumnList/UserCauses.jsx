@@ -108,20 +108,20 @@ class UserCauses extends React.Component {
                             <div className="headerWrap">
                                 <Header>Causes and topics</Header>
                                 {(isMyProfile && !isPreviewMode)
-                                && (
-                                    <CharitableInterestsList />
-                                )}
+                                    && (
+                                        <CharitableInterestsList />
+                                    )}
                             </div>
                         </Grid.Column>
                         <Grid.Column computer={4} mobile={3} tablet={5}>
                             {(isMyProfile && !_isEmpty(currentPrivacyType) && !isPreviewMode)
-                            && (
-                                <ProfilePrivacySettings
-                                    columnName='causes_visibility'
-                                    columnValue={causes_visibility}
-                                    iconName={currentPrivacyType}
-                                />
-                            )}
+                                && (
+                                    <ProfilePrivacySettings
+                                        columnName='causes_visibility'
+                                        columnValue={causes_visibility}
+                                        iconName={currentPrivacyType}
+                                    />
+                                )}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -134,26 +134,28 @@ class UserCauses extends React.Component {
                         </div>
                     )
                     : (
-                        <p className='nodata'>Select causes and topics to see charities and Giving Groups that might interest you.</p>
+                        <p className='nodata'>
+                            {isMyProfile ? 'Select causes and topics to see charities and Giving Groups that might interest you.' : 'Nothing to show here yet.'}
+                        </p>
                     )}
                 {(!_isEmpty(dataArray) && dataArray.length > 10)
-                && (
-                    <div className="text-center">
-                        <Button
-                            className="blue-bordr-btn-round-def"
-                            onClick={this.handleViewAll}
-                        >
-                        {!viewButtonClicked ? 'View all' : 'Show less'}
-                        </Button>
-                    </div>
-                )}
+                    && (
+                        <div className="text-center">
+                            <Button
+                                className="blue-bordr-btn-round-def"
+                                onClick={this.handleViewAll}
+                            >
+                                {!viewButtonClicked ? 'View all' : 'Show less'}
+                            </Button>
+                        </div>
+                    )}
             </div>
         );
     }
 }
 
 UserCauses.defaultProps = {
-    dispatch: () => {},
+    dispatch: () => { },
     friendUserId: '',
     previewMode: {
         isPreviewMode: false,

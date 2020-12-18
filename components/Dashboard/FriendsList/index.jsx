@@ -95,7 +95,11 @@ class FriendsList extends React.Component {
         if (!src) {
             return;
         }
-        img.firstChild.src = src;
+        if(img.firstChild){
+            img.firstChild.src = src;
+            return;
+        };
+        img.src = src;
     };
     giveButtonClick(email, name, image) {
         const {
