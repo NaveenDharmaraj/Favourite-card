@@ -17,6 +17,7 @@ import {
     List,
 } from 'semantic-ui-react'
 import {
+    rejectFriendInvite,
     updateUserPreferences,
 } from '../../actions/userProfile';
 import _ from 'lodash';
@@ -190,7 +191,26 @@ class NotificationWrapper extends React.Component {
         return ReactHtmlParser(htmlString, { transform });
     }
 
-    listItems(messages , newClass = "") {
+    rejectInvite(friendUserId, type, msg) {
+        const {
+            userInfo: {
+                attributes: {
+                    email,
+                },
+                id: currentUserId,
+            },
+            dispatch,
+        } = this.props;
+        dispatch(rejectFriendInvite(currentUserId, friendUserId, email, type))
+            .then(() => {
+                this.onNotificationMsgAction('delete', msg)
+            })
+            .catch(() => {
+
+            })
+    }
+
+    listItems(messages, newClass = "") {
         if (!messages) {
             messages = [];
         }
@@ -226,8 +246,21 @@ class NotificationWrapper extends React.Component {
                                 if (msg.cta) {
                                     return Object.keys(msg.cta).map(function (ctaKey) {
                                         let cta = msg.cta[ctaKey];
+                                        const friendId = cta.user_id;
                                         if (cta.isWeb) {
-                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                            return (
+                                                <>
+                                                    <div className='NotifybtnWrap'>
+                                                        <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                                        {ctaKey === 'accept' &&
+                                                            <Icon
+                                                                className="notifyTrash"
+                                                                onClick={() => self.rejectInvite(friendId, 'invitation', msg)}
+                                                            />
+                                                        }
+                                                    </div>
+                                                </>
+                                            )
                                         }
                                     });
                                 }
@@ -256,8 +289,21 @@ class NotificationWrapper extends React.Component {
                                 if (msg.cta) {
                                     return Object.keys(msg.cta).map(function (ctaKey) {
                                         let cta = msg.cta[ctaKey];
+                                        const friendId = cta.user_id;
                                         if (cta.isWeb) {
-                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                            return (
+                                                <>
+                                                    <div className='NotifybtnWrap'>
+                                                        <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                                        {ctaKey === 'accept' &&
+                                                            <Icon
+                                                                className="notifyTrash"
+                                                                onClick={() => self.rejectInvite(friendId, 'invitation', msg)}
+                                                            />
+                                                        }
+                                                    </div>
+                                                </>
+                                            )
                                         }
                                     });
                                 }
@@ -274,13 +320,13 @@ class NotificationWrapper extends React.Component {
             messages = [];
         }
         let recentItems = messages.filter(function (item) {
-            if(item)
-            return item.createdTs > lastSyncTime;
+            if (item)
+                return item.createdTs > lastSyncTime;
         });
 
         let earlierItems = messages.filter(function (item) {
-            if(item)
-            return item.createdTs <= lastSyncTime;
+            if (item)
+                return item.createdTs <= lastSyncTime;
         });
         return { "recent": recentItems, "earlier": earlierItems };
     }
@@ -297,11 +343,11 @@ class NotificationWrapper extends React.Component {
         const {
             userInfo,
         } = this.props;
-       if (flag) {
+        if (flag) {
             deletedItems.push(msg.id);
             deleteTimeouts[msg.id] = setTimeout(function () {
                 eventApi.post("/notification/delete", { "user_id": userInfo.id, "id": msg.id });
-            },10000);
+            }, 10000);
         } else {
             deletedItems.splice(deletedItems.indexOf(msg.id), 1);
             clearTimeout(deleteTimeouts[msg.id]);
@@ -353,8 +399,8 @@ class NotificationWrapper extends React.Component {
                     {(() => {
                         if (recentItems && recentItems.length > 0) {
                             return <div>
-                                <div className="font-s-16 bold mt-2 mb-1">{self.t("recent")}</div>
-                                <div className="allNotification mb-3">
+                                <div className="HeaderText">{self.t("recent")}</div>
+                                <div className="allNotification">
                                     <List celled verticalAlign='middle'>
                                         {self.listItems(recentItems, 'new')}
                                     </List>
@@ -365,8 +411,8 @@ class NotificationWrapper extends React.Component {
                     {(() => {
                         if (earlierItems && earlierItems.length > 0) {
                             return <div>
-                                <div className="font-s-16 bold mt-2 mb-1">{self.t("earlier")}</div>
-                                <div className="allNotification mb-3">
+                                <div className="HeaderText">{self.t("earlier")}</div>
+                                <div className="allNotification">
                                     <List celled verticalAlign='middle'>
                                         {self.listItems(earlierItems)}
                                     </List>

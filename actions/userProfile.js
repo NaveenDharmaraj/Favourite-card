@@ -1597,12 +1597,13 @@ const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => di
             },
         },
     };
-    graphApi.post(`/users/deleterelationship`, payloadObj, {
+    const rejectFriendInvitePromise = graphApi.post(`/users/deleterelationship`, payloadObj, {
         params: {
             dispatch,
             ignore401: true,
         },
-    }).then((result) => {
+    });
+    rejectFriendInvitePromise.then((result) => {
         if (type === 'invitation') {
             dispatch(getFriendsInvitations(email, 1));
             dispatch(getMyFriendsList(email, 1));
@@ -1617,6 +1618,7 @@ const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => di
     }).catch(err => {
         // hanlde error message
     });
+    return rejectFriendInvitePromise;
 };
 
 const searchMyfriend = (userId, queryText) => dispatch => {
