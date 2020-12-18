@@ -204,7 +204,7 @@ class Layout extends React.Component {
                 </Head>
                 <div>
                     <ErrorBoundary>
-                        <Responsive {...widthProp} minWidth={320} maxWidth={991}>
+                        <Responsive {...widthProp} minWidth={320} maxWidth={1198}>
                             <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}>
                                 <div className={disableMinHeight ? "" : "chimpLayout"}>
                                     {children}
@@ -228,7 +228,7 @@ class Layout extends React.Component {
                                 </Container>
                             }
                         </Responsive>
-                        <Responsive {...widthProp} minWidth={992}>
+                        <Responsive {...widthProp} minWidth={1199}>
                             <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader} />
                             {!_.isEmpty(appErrors) &&
                                 <Container
