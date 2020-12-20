@@ -454,7 +454,7 @@ class UserBasicProfile extends React.Component {
                                     </Dropdown>
                                 </Fragment>
                             )}
-                        {(!isMyProfile && !isFriendPending && !isFriend && !isBlocked)
+                        {((!isMyProfile || (isPreviewMode && previewValue === 0)) && !isFriendPending && !isFriend && !isBlocked)
                             && (
                                 <Button
                                     className="blue-btn-rounded"
@@ -517,7 +517,7 @@ class UserBasicProfile extends React.Component {
                             )
                         }
                         {
-                            isFriend && (
+                            (isFriend || (isPreviewMode && previewValue > 0)) && (
                                 <Link className="lnkChange" route={`/chats/${user_id}`}>
                                     <Button
                                         className="blue-btn-rounded"
@@ -538,7 +538,7 @@ class UserBasicProfile extends React.Component {
                                     Block
                                 </Button>
                             )}
-                        {!isMyProfile
+                        {(!isMyProfile || isPreviewMode)
                             && (
                                 <Fragment>
                                     {!isBlocked

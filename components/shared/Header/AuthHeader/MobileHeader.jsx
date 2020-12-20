@@ -61,7 +61,7 @@ const NavBarMobile = ({
     } = currentAccount;
     const menuLinks = getMainNavItems(accountType, slug);
     let accountSettingsText = formatMessage('accountSettings');
-    let accountUrl = `/users/profile/myprofile`;
+    let accountUrl = `/user/profile/settings`;
     let logoUrl = `/dashboard`;
     let isExternal = false;
     if (accountType === 'company') {
