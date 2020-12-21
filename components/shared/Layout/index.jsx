@@ -145,6 +145,7 @@ class Layout extends React.Component {
         } = this.props;
         const isSSR = typeof window === 'undefined';
         const ssrWidth = isMobile ? 990 : 1000;
+        console.log('ismobile >>>>=====', isMobile);
         return isSSR ? ssrWidth : window.innerWidth;
     }
 
