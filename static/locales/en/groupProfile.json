@@ -37,6 +37,7 @@
     "addCommentPlaceholder": "Add a comment",
     "joinGroup": "Join group",
     "joinGroupText": "Join this group to give to them. You can also get updates and connect with other group members.",
+    "joinGroupTextLogout": "Join this group to get updates, show your support, and connect with other group members.",
     "leaveGroup": "Leave group",
     "joinGroupModalHeader": "When you join this Giving Group…",
     "joinGroupModalDescription": "You can add and like comments in the activity list, get updates from the group, and show your support.",

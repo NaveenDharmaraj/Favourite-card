@@ -171,13 +171,13 @@ class GroupJoin extends React.Component {
                 <Fragment>
                     <Link route={`/users/login?returnTo=/groups/${slug}`}>
                         <Button
-                            className="blue-btn-rounded-def"
+                            className="blue-bordr-btn-round-def"
                         >
                             {formatMessage('groupProfile:joinGroup')}
                         </Button>
                     </Link>
                     <p className="groupmembers">
-                        {formatMessage('groupProfile:joinGroupText')}
+                        {formatMessage('groupProfile:joinGroupTextLogout')}
                     </p>
                 </Fragment>
             );
