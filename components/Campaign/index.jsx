@@ -149,15 +149,17 @@ class CampaignProfileWrapper extends React.Component {
                         <div
                             className={campaignBannerClassName}
                         >
-                            <div class="">
-                                <div class="banner-wrapper">
-                                    <div class="banner-container">
-                                        <div class="banner-img-wrapper">
-                                            <div class="banner-padding">
-                                                <div class="banner-abs">
-                                                    <div class="banner-abs-main">
-                                                        <div class="banner-inner-wrapper">
-                                                            <img src={banner} class="CoverPhoto"/>
+                            {!_isEmpty(banner) && (
+                                <div class="">
+                                    <div class="banner-wrapper">
+                                        <div class="banner-container">
+                                            <div class="banner-img-wrapper">
+                                                <div class="banner-padding">
+                                                    <div class="banner-abs">
+                                                        <div class="banner-abs-main">
+                                                            <div class="banner-inner-wrapper">
+                                                                <img src={banner} class="CoverPhoto"/>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -165,7 +167,7 @@ class CampaignProfileWrapper extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                         <Grid.Row>
                             <Grid>
