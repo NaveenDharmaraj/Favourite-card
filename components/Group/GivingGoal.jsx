@@ -51,6 +51,7 @@ const GivingGoal = (props) => {
                 goal,
                 fundraisingPercentage,
                 isAdmin,
+                isMember,
                 slug,
                 totalMoneyRaised,
             },
@@ -112,20 +113,29 @@ const GivingGoal = (props) => {
     );
 
     if (isAuthenticated) {
-        giveButton = (
-            <div className="buttonWraper">
-                <Link route={`/give/to/group/${slug}/new`}>
-                    {giveButtonElement}
-                </Link>
-            </div>
-        );
+        if (isMember) {
+            giveButton = (
+                <Fragment>
+                    <Divider />
+                    <div className="buttonWraper">
+                        <Link route={`/give/to/group/${slug}/new`}>
+                            {giveButtonElement}
+                        </Link>
+                    </div>
+                </Fragment>
+
+            );
+        }
     } else {
         giveButton = (
-            <div className="buttonWraper">
-                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
-                    {giveButtonElement}
-                </a>
-            </div>
+            <Fragment>
+                <Divider />
+                <div className="buttonWraper">
+                    <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
+                        {giveButtonElement}
+                    </a>
+                </div>
+            </Fragment>
         );
     }
     return (
@@ -156,7 +166,6 @@ const GivingGoal = (props) => {
                                     </div>
                                 )}
                             <Responsive minWidth={768}>
-                                <Divider />
                                 {giveButton}
                             </Responsive>
                         </Fragment>
@@ -183,7 +192,6 @@ const GivingGoal = (props) => {
                                     </div>
                                 )}
                             <Responsive minWidth={768}>
-                                <Divider />
                                 {giveButton}
                             </Responsive>
                         </Fragment>
@@ -204,6 +212,7 @@ GivingGoal.defaultProps = {
             goal: '',
             goalAmountRaised: '',
             isAdmin: false,
+            isMember: false,
             lastDonationAt: '',
             slug: '',
             totalMoneyRaised: '',
@@ -224,6 +233,7 @@ GivingGoal.propTypes = {
             goal: string,
             goalAmountRaised: string,
             isAdmin: bool,
+            isMember: bool,
             lastDonationAt: string,
             slug: string,
             totalMoneyRaised: string,
