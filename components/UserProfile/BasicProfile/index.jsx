@@ -411,7 +411,7 @@ class UserBasicProfile extends React.Component {
                         && (
                             <p>{getLocation(city, province)}</p>      
                         )}
-                        {((number_of_friends > 0) && (showUserFriends))
+                        {((number_of_friends > 0) && (showUserFriends) && !isBlocked)
                             && (
                                 <div
                                     className="userfriends"
@@ -432,7 +432,7 @@ class UserBasicProfile extends React.Component {
                                 </div>
                             )}
                     </div>
-                    <p className='textAboutuser'>{description}</p>
+                    {!isBlocked && <p className='textAboutuser'>{description}</p>}
                     <div className="userButtonsWrap">
                         {(isMyProfile && !isPreviewMode)
                             && (

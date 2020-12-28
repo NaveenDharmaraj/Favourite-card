@@ -41,7 +41,7 @@ class Notifications extends React.Component {
         this.renderbackImage = this.renderbackImage.bind(this);
     }
 
-    updateDeleteFlag(msgKey, msg, flag) {
+    updateDeleteFlag(msgKey, msg, flag, showUndo) {
         const {
             deletedItems,
             deleteTimeouts,
@@ -51,13 +51,13 @@ class Notifications extends React.Component {
             userInfo,
         } = this.props;
         if (flag) {
-            deletedItems.push(msg.id);
+            showUndo && deletedItems.push(msg.id);
             deleteTimeouts[msg.id] = setTimeout(() => {
                 eventApi.post('/notification/delete', {
                     id: msg.id,
                     user_id: userInfo.id,
                 });
-            }, 10000);
+            }, showUndo ? 10000 : 0);
         } else {
             deletedItems.splice(deletedItems.indexOf(msg.id), 1);
             clearTimeout(deleteTimeouts[msg.id]);
@@ -122,7 +122,7 @@ class Notifications extends React.Component {
         } = this.props;
         dispatch(rejectFriendInvite(currentUserId, friendUserId, email, type))
             .then(() => {
-                this.onNotificationMsgAction('delete', msg)
+                this.onNotificationMsgAction('delete', msg, false)
             })
             .catch(() => {
 
@@ -307,10 +307,10 @@ class Notifications extends React.Component {
         }
     };
 
-    async onNotificationMsgAction(cta, msg) {
+    async onNotificationMsgAction(cta, msg, showUndo = true) {
         switch (cta) {
             case 'delete': {
-                this.updateDeleteFlag(msg._key, msg, true);
+                this.updateDeleteFlag(msg._key, msg, true, showUndo);
                 break;
             }
             case 'turnOff': {
