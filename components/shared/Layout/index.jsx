@@ -47,7 +47,7 @@ class Layout extends React.Component {
             isMobile,
             userInfo
         } = this.props;
-        if (window !== 'undefined' && ((isMobile && window.innerWidth > 991) || !isMobile && window.innerWidth < 992)) {
+        if (window !== 'undefined' && ((isMobile && window.innerWidth > 1198) || !isMobile && window.innerWidth < 1199)) {
             storage.set('windowSize', window.innerWidth, 'cookie');
             location.reload();
         }
@@ -144,8 +144,7 @@ class Layout extends React.Component {
             isMobile
         } = this.props;
         const isSSR = typeof window === 'undefined';
-        const ssrWidth = isMobile ? 990 : 1000;
-        console.log('ismobile >>>>=====', isMobile);
+        const ssrWidth = isMobile ? 1195 : 1199;
         return isSSR ? ssrWidth : window.innerWidth;
     }
 
