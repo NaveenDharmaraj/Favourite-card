@@ -589,7 +589,9 @@ class MyCreditCards extends React.Component {
             currentActivePage,
             isDropdownOpen,
         } = this.state;
-        let cardList = 'No credit card added yet';
+        let cardList = (
+            <div className='noCard'>No credit card added yet</div>
+        );
         if (!_.isEmpty(userCreditCardList) && _.size(userCreditCardList.data) > 0) {
             cardList = userCreditCardList.data.map((data) => {
                 const lastFour = data.attributes.description.slice(-4);
@@ -634,9 +636,23 @@ class MyCreditCards extends React.Component {
                         </List.Content>
                         <List.Icon name={cardClass} size="large" verticalAlign="middle" />
                         <List.Content>
-                            <List.Header>{cardName}<span className="primary">{primary}</span></List.Header>
-                            <div className="cardNo"><sup>**** **** **** </sup>{lastFour}</div>
+                            <div className='creditCardWrap'>
+                                <div className='creditcardDetails'>
+                                    <List.Header><span>{cardName}</span>
+                                    {
+                                        !_.isEmpty(primary) 
+                                        &&
+                                        (
+                                            <span className="primary">{primary}</span>
+                                        )
+                                    }
+                                    </List.Header>
+                                    <div className="cardNo"><sup>**** **** **** </sup>{lastFour}</div>
+                                </div>
+                                <p>This card is linked to an active monthly deposit. If you need to delete this card, please <a>update your monthly deposit</a> first. </p>
+                            </div>
                         </List.Content>
+
                     </List.Item>
                 );
             });
@@ -704,7 +720,7 @@ class MyCreditCards extends React.Component {
                                     <Header as="h4" className="mb-0">Payment methods </Header>
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={5} computer={5}>
-                                    <div className="right-align">
+                                    <div className="right-align-btn">
                                         <Modal
                                             size="tiny"
                                             dimmer="inverted"
@@ -720,7 +736,7 @@ class MyCreditCards extends React.Component {
                                                 </Button>}>
                                             <Modal.Header>Add new card</Modal.Header>
                                             <Modal.Content>
-                                                <Modal.Description className="font-s-16">
+                                                <Modal.Description className="font-s-16 pad-0">
                                                     <Form>
                                                         <StripeProvider apiKey={STRIPE_KEY}>
                                                             <Elements>
@@ -753,9 +769,9 @@ class MyCreditCards extends React.Component {
                                                         />
                                                     </Form>
                                                 </Modal.Description>
-                                                <div className="btn-wraper pt-3 text-right">
+                                                <div className="btn-wraper pt-2 text-right">
                                                     <Button
-                                                        className="blue-btn-rounded-def sizeBig w-180"
+                                                        className="blue-btn-rounded-def h-40"
                                                         onClick={this.handleAddButtonClick}
                                                         disabled={buttonClicked}
                                                     >
@@ -769,7 +785,6 @@ class MyCreditCards extends React.Component {
                             </Grid.Row>
                         </Grid>
                     </div>
-                    <div className="settingsDetailWraper">
                         {
                             statusMessage && (
                                 <ModalStatusMessage
@@ -778,7 +793,7 @@ class MyCreditCards extends React.Component {
                                 />
                             )
                         }
-                        <div className="userCardList border-top-0">
+                        <div className="userCardList paymentCards border-top-0">
                             {myCreditCardListLoader
                                 ? (
                                     <Table padded unstackable className="no-border-table">
@@ -789,68 +804,69 @@ class MyCreditCards extends React.Component {
                                     this.renderMyCreditCards()
                                 )}
                         </div>
-                    </div>
                 </div>
                 <div>
                     <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={this.state.isEditModalOpen} onClose={() => { this.setState({ isEditModalOpen: false }) }}>
                         <Modal.Header>Edit credit card</Modal.Header>
                         <Modal.Content>
-                            <Modal.Description className="font-s-16">
+                            <Modal.Description className="font-s-16 pad-0">
                                 <Form>
-                                    <Form.Field>
-                                        <label>Card number</label>
-                                        <input
-                                            placeholder="Card number"
-                                            disabled
-                                            value={editCardNumber}
-                                        />
-                                    </Form.Field>
-                                    <Form.Field>
-                                        <label>Name on card</label>
-                                        <input
-                                            placeholder="Name on card"
-                                            disabled
-                                            value={editNameOnCard}
-                                        />
-                                    </Form.Field>
-                                    <Form.Group widths="equal">
+                                    <Form.Field className='addNewCard'>
                                         <Form.Field>
-                                            <Form.Input
-                                                fluid
-                                                label="Expiry"
-                                                placeholder="MM/YY"
-                                                id="expiry"
-                                                name="expiry"
-                                                maxLength="5"
-                                                error={!isValidExpiry}
-                                                onBlur={this.handleEditExpiryBlur}
-                                                onChange={this.handleInputChange}
-                                                onKeyUp={(e) => {this.handleKeyUp(e)}}
-                                                value={expiry}
-                                            />
-                                            <FormValidationErrorMessage
-                                                condition={!isValidExpiry}
-                                                errorMessage="Please enter a valid expiry."
+                                            <label>Card number</label>
+                                            <input
+                                                placeholder="Card number"
+                                                disabled
+                                                value={editCardNumber}
                                             />
                                         </Form.Field>
                                         <Form.Field>
+                                            <label>Name on card</label>
+                                            <input
+                                                placeholder="Name on card"
+                                                disabled
+                                                value={editNameOnCard}
+                                            />
                                         </Form.Field>
-                                    </Form.Group>
-                                    <Form.Field
-                                        checked={isDefaultCard}
-                                        control={Checkbox}
-                                        className="ui checkbox chkMarginBtm checkboxToRadio"
-                                        id="isDefaultCard"
-                                        label="Set as primary card"
-                                        name="isDefaultCard"
-                                        onChange={this.handleSetPrimaryClick}
-                                        readOnly={isDefaultCardReadOnly}
-                                    />
+                                        <Form.Group widths="equal">
+                                            <Form.Field>
+                                                <Form.Input
+                                                    fluid
+                                                    label="Expiry"
+                                                    placeholder="MM/YY"
+                                                    id="expiry"
+                                                    name="expiry"
+                                                    maxLength="5"
+                                                    error={!isValidExpiry}
+                                                    onBlur={this.handleEditExpiryBlur}
+                                                    onChange={this.handleInputChange}
+                                                    onKeyUp={(e) => {this.handleKeyUp(e)}}
+                                                    value={expiry}
+                                                />
+                                                <FormValidationErrorMessage
+                                                    condition={!isValidExpiry}
+                                                    errorMessage="Please enter a valid expiry."
+                                                />
+                                            </Form.Field>
+                                            <Form.Field>
+                                            </Form.Field>
+                                        </Form.Group>
+                                        <Form.Field
+                                            checked={isDefaultCard}
+                                            control={Checkbox}
+                                            className="ui checkbox chkMarginBtm checkboxToRadio"
+                                            id="isDefaultCard"
+                                            label="Set as primary card"
+                                            name="isDefaultCard"
+                                            onChange={this.handleSetPrimaryClick}
+                                            readOnly={isDefaultCardReadOnly}
+                                        />
+                                    </Form.Field>
                                 </Form>
                             </Modal.Description>
-                            <div className="btn-wraper pt-3 text-right">
+                            <div className="btn-wraper text-right">
                                 <Button
-                                    className="blue-btn-rounded-def sizeBig w-180"
+                                    className="blue-btn-rounded-def h-40"
                                     onClick={this.handleEditSave}
                                     disabled={editButtonClicked}
                                 >
@@ -867,11 +883,11 @@ class MyCreditCards extends React.Component {
                             {this.props.deleteMsgPopUpLoader ?
                                 <Loader size='small' />
                                 :
-                                <Modal.Description className="font-s-16">
+                                <Modal.Description className="font-s-14 pad-0">
                                     {deleteCreditCardPopUpMsg}
                                 </Modal.Description>
                             }
-                            <div className="btn-wraper pt-3 text-right">
+                            <div className="btn-wraper pt-2 text-right">
                                 <Button
                                     className="danger-btn-rounded-def c-small"
                                     onClick={this.handleDeleteConfirmClick}

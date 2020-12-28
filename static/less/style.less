@@ -340,6 +340,27 @@ h4{
             }
           }
         }
+          .ui.form {
+            .addNewCard{
+              .field{
+                margin-bottom: 18px;
+                label{
+                  margin-bottom: 10px ;
+                }
+                .field{
+                  margin-bottom: 0;
+                  +.error-message{
+                    margin-top: 10px;
+                    font-size: 12px;
+                  }
+                }
+              }
+              .fields{
+                margin-bottom: 10px;
+              }
+            }
+          }
+        
       }
     }
   }
@@ -859,6 +880,9 @@ h4{
 .pr-3{
   padding-right: 3.5rem !important;
 }
+.pad-0{
+  padding: 0;
+}
 .no-border{
   border: 0px solid transparent !important;
 }
@@ -1161,6 +1185,9 @@ h4{
       // padding-top: 3px !important;
       .ui.grid{
         margin-top: 0;
+        .right-align-btn{
+          float: right;
+        }
       }
     }
     p{
@@ -1218,6 +1245,18 @@ h4{
     button.ui.button.success-btn-rounded-def{
       @media only screen and (max-width: 991px){
         margin-top: 5px;
+      }
+    }
+  }
+  @media only screen and (max-width: 767px){
+    .settingsDetailWraper{
+      &.pMethodHead{
+        .ui.grid{
+          .right-align-btn{
+            float: left;
+            margin-top: 20px;
+          }
+        }
       }
     }
   }
@@ -3022,6 +3061,15 @@ h4{
         color: #fff;
         min-width: 145px;
         min-height: 40px;
+      }
+      &.h-40{
+        padding: 12.2px 32px;
+      }
+      &.danger-btn-rounded-def.c-small,&.blue-bordr-btn-round-def.c-small{
+        padding: 0.872rem 1.6724rem;
+        @media only screen and (max-width:767px) {
+          padding: 0.515rem 1.6724rem;
+        }
       }
     }
   }
@@ -6652,13 +6700,19 @@ button.ui.button.blue-bordr-btn-round-def{
         margin-bottom: 0;
         .item{
           padding: 2rem 0rem; 
+          position: relative;
           .ellipsis{
             &.horizontal{
               &.icon{
-                width: 30px;
+                width: 32px;
+                margin: 0;
+                height: 32px;
                 &::before{
-                  content: url("@{img_url}/images/icons/ellipsis.svg");
-                  top: 10px;
+                  top: 0;
+                  bottom: 0;
+                  left: 0;
+                  right: 0;
+                  margin: auto;
                 }
               }
             }
@@ -6668,83 +6722,89 @@ button.ui.button.blue-bordr-btn-round-def{
               min-width: 40px;
               min-height: 35px;
               position: relative;
+              &::before{
+                content: '  ';
+                background-size: contain !important;
+                background-position: center !important;
+                background-repeat: no-repeat !important;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+              }
               &.visa{
                 &::before{
-                  content: '';
                   background-image: url("@{img_url}/images/icons/icon-cc-visa-colour.png") !important;
-                  background-size: contain !important;
-                  background-position: center !important;
-                  background-repeat: no-repeat !important;
-                  position: absolute;
-                  left: 0;
-                  right: 0;
-                  top: 0;
-                  bottom: 0;
                 }
               }
               &.master{
                 &::before{
-                  content: '';
                   background-image: url("@{img_url}/images/icons/icon-cc-mastercard-colour.png") !important;
-                  background-size: contain !important;
-                  background-position: center !important;
-                  background-repeat: no-repeat !important;
-                  position: absolute;
-                  left: 0;
-                  right: 0;
-                  top: 0;
-                  bottom: 0;
                 }
               }
               &.american{
                 &::before{
-                  content: '';
                   background-image: url("@{img_url}/images/icons/icon-cc-american-express-colour.png") !important;
-                  background-size: contain !important;
-                  background-position: center !important;
-                  background-repeat: no-repeat !important;
-                  position: absolute;
-                  left: 0;
-                  right: 0;
-                  top: 0;
-                  bottom: 0;
                 }
               }
               &.apple{
                 &::before{
-                  content: '';
                   background-image: url("@{img_url}/images/icons/icon-cc-apple-pay-colour.png") !important;
-                  background-size: contain !important;
-                  background-position: center !important;
-                  background-repeat: no-repeat !important;
-                  position: absolute;
-                  left: 0;
-                  right: 0;
-                  top: 0;
-                  bottom: 0;
                 }
               }
             }
           }
           .content{
-            padding-left: 30px;
+            padding-left: 22px;
             &.right{
               &.floated{
+                padding-left: 0px;
                 .ui{
                   &.dropdown{
-                    padding: 10px 0px;
+                    padding: 0px 0px;
+                    height: 32px;
+                    width: 32px;
+                    position: absolute;
+                    right: 0;
+                    left: auto;
+                    top: 0;
+                    bottom: 0;
+                    margin: auto;
                     .ellipsis{
                       letter-spacing: 2px;
+                    }
+                    &.active{
+                      .icon.ellipsis{
+                        background-color: #DDDDDD;
+                        border-radius: 100%;
+                      }
+                    }
+                    .menu{
+                      min-width: 250px;
+                      top: 55%;
+                      .item{
+                        border-bottom: 1px solid #DDDDDD;
+                        padding: 14px 15px !important;
+                        &:last-child{
+                          border: 0 !important;
+                        }
+                      }
                     }
                   }
                 }
               }
             }
             .header{
-              padding-bottom: 7px;
+              span{
+                margin: 0 23px 0px 0px;
+                display: inline-block;
+                padding-bottom: 7px;
+              }
+              .primeFont-semi-bold();
+              font-size: 17px;
               .primary{
                 display: inline-block;
-                margin-left: 15px;
                 letter-spacing: 1.2px;
                 color: #663387;
                 text-transform: uppercase;
@@ -6754,6 +6814,22 @@ button.ui.button.blue-bordr-btn-round-def{
             .cardNo{
               .date{
                 margin-left: 20px;
+              }
+              sup{
+                top: 0;
+                font-size: 100%;
+              }
+            }
+            .creditCardWrap{
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding-right: 50px;
+              .creditcardDetails{
+                flex: 70%;
+              }
+              p{
+                font-size: 12px;
               }
             }
           }
@@ -6773,6 +6849,46 @@ button.ui.button.blue-bordr-btn-round-def{
       min-height: auto;
     }
   }
+  &.paymentCards{
+    margin-top: 0;
+    .noCard{
+      margin-top: 20px;
+    }
+  }
+  @media only screen and (max-width:768px) {
+    .ui.list.celled .item {
+      .content{
+        .creditCardWrap{
+          display: block;
+          p{
+            margin-top: 20px;
+          }
+        }
+        .header .primary{
+          display: block;
+        }
+      }   
+      .icon{
+        &.card{
+          &.visa{
+            &::before{
+              top: 3px;
+            }
+          }
+          &::before{
+            background-position: top !important;
+          }
+        }
+      }
+    }
+    &.paymentCards{
+       .ui.list.celled .item .content.right.floated{
+         position: absolute;
+         right: 0;
+         top: 35px;
+       }
+    }
+  }  
 }
 .recipients{
   display: table; 
@@ -8598,3 +8714,5 @@ body{
 .isDisabled {
   pointer-events: none;
 }
+
+
