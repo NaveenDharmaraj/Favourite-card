@@ -812,56 +812,54 @@ class MyCreditCards extends React.Component {
                             <Modal.Description className="font-s-16 pad-0">
                                 <Form>
                                     <Form.Field className='addNewCard'>
-                                        <Form.Field>
-                                            <label>Card number</label>
-                                            <input
-                                                placeholder="Card number"
-                                                disabled
-                                                value={editCardNumber}
-                                            />
-                                        </Form.Field>
-                                        <Form.Field>
-                                            <label>Name on card</label>
-                                            <input
-                                                placeholder="Name on card"
-                                                disabled
-                                                value={editNameOnCard}
-                                            />
-                                        </Form.Field>
-                                        <Form.Group widths="equal">
-                                            <Form.Field>
-                                                <Form.Input
-                                                    fluid
-                                                    label="Expiry"
-                                                    placeholder="MM/YY"
-                                                    id="expiry"
-                                                    name="expiry"
-                                                    maxLength="5"
-                                                    error={!isValidExpiry}
-                                                    onBlur={this.handleEditExpiryBlur}
-                                                    onChange={this.handleInputChange}
-                                                    onKeyUp={(e) => {this.handleKeyUp(e)}}
-                                                    value={expiry}
-                                                />
-                                                <FormValidationErrorMessage
-                                                    condition={!isValidExpiry}
-                                                    errorMessage="Please enter a valid expiry."
-                                                />
-                                            </Form.Field>
-                                            <Form.Field>
-                                            </Form.Field>
-                                        </Form.Group>
-                                        <Form.Field
-                                            checked={isDefaultCard}
-                                            control={Checkbox}
-                                            className="ui checkbox chkMarginBtm checkboxToRadio"
-                                            id="isDefaultCard"
-                                            label="Set as primary card"
-                                            name="isDefaultCard"
-                                            onChange={this.handleSetPrimaryClick}
-                                            readOnly={isDefaultCardReadOnly}
+                                        <label>Card number</label>
+                                        <input
+                                            placeholder="Card number"
+                                            disabled
+                                            value={editCardNumber}
                                         />
                                     </Form.Field>
+                                    <Form.Field>
+                                        <label>Name on card</label>
+                                        <input
+                                            placeholder="Name on card"
+                                            disabled
+                                            value={editNameOnCard}
+                                        />
+                                    </Form.Field>
+                                    <Form.Group widths="equal">
+                                        <Form.Field>
+                                            <Form.Input
+                                                fluid
+                                                label="Expiry"
+                                                placeholder="MM/YY"
+                                                id="expiry"
+                                                name="expiry"
+                                                maxLength="5"
+                                                error={!isValidExpiry}
+                                                onBlur={this.handleEditExpiryBlur}
+                                                onChange={this.handleInputChange}
+                                                onKeyUp={(e) => {this.handleKeyUp(e)}}
+                                                value={expiry}
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition={!isValidExpiry}
+                                                errorMessage="Please enter a valid expiry."
+                                            />
+                                        </Form.Field>
+                                        <Form.Field>
+                                        </Form.Field>
+                                    </Form.Group>
+                                    <Form.Field
+                                        checked={isDefaultCard}
+                                        control={Checkbox}
+                                        className="ui checkbox chkMarginBtm checkboxToRadio"
+                                        id="isDefaultCard"
+                                        label="Set as primary card"
+                                        name="isDefaultCard"
+                                        onChange={this.handleSetPrimaryClick}
+                                        readOnly={isDefaultCardReadOnly}
+                                    />
                                 </Form>
                             </Modal.Description>
                             <div className="btn-wraper text-right">
