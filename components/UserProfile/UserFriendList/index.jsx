@@ -107,7 +107,7 @@ class UserFriendList extends React.Component {
         } = this.props;
         const isMyprofile = user_id === Number(userId);
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
-        dispatch(getMyFriendsList(email, 1));
+        dispatch(getMyFriendsList(email, 1, isMyprofile ? null : userId));
         dispatch(generateDeeplinkSignup('signup'));
         if (isMyprofile) {
             dispatch(getFriendsInvitations(email, 1));
@@ -168,17 +168,19 @@ class UserFriendList extends React.Component {
             userFriendProfileData: {
                 attributes: {
                     email_hash,
+                    user_id,
                 },
             },
         } = this.props;
         const {
             searchText,
         } = this.state;
+        const isMyprofile = user_id === Number(userId);
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         if (!_isEmpty(searchText)) {
             dispatch(searchMyfriend(userId, searchText));
         } else {
-            dispatch(getMyFriendsList(email, 1));
+            dispatch(getMyFriendsList(email, 1, isMyprofile ? null : userId));
         }
         this.setState({
             searchClicked: true,
@@ -458,14 +460,18 @@ class UserFriendList extends React.Component {
     onPageChanged(event, data) {
         const {
             dispatch,
+            currentUser: {
+                id: userId,
+            },
             userFriendProfileData: {
                 attributes: {
                     email_hash,
                 },
             },
         } = this.props;
+        const isMyprofile = user_id === Number(userId);
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
-        dispatch(getMyFriendsList(email, data.activePage));
+        dispatch(getMyFriendsList(email, data.activePage, isMyprofile ? null : userId));
         this.setState({
             currentActivePage: data.activePage,
         });

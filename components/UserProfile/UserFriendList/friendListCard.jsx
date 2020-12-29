@@ -144,7 +144,6 @@ class FriendListCard extends React.Component {
                 {buttonText}
             </Button>
         );
-        
         return (
             <List.Item>
                 <Image avatar src={!_isEmpty(avatar) ? avatar : friendAvatarPlaceholder} />
@@ -156,68 +155,65 @@ class FriendListCard extends React.Component {
                     </List.Header>
                     <List.Description>{getLocation(city, province)}</List.Description>
                 </List.Content>
-                {isMyProfile
-                && (
-                    <List.Content floated="right">
-                        {(!_isEmpty(updatedStatus) && updatedStatus === 'ACCEPTED')
-                            && (
-                                <Link route={`/chats/${user_id}`}>
-                                    { buttonElement }
-                                </Link>
-                            )}
-                        {(!_isEmpty(updatedStatus) && updatedStatus === 'PENDING_IN')
+                <List.Content floated="right">
+                    {(!_isEmpty(updatedStatus) && updatedStatus === 'ACCEPTED')
                         && (
-                            <Fragment>
-                                <Button
-                                    className={`${buttonClass} c-small`}
-                                    onClick={() => this.handleAcceptRequest(email_hash, user_id)}
-                                >
-                                    {buttonText}
-                                </Button>
-                            </Fragment>
+                            <Link route={`/chats/${user_id}`}>
+                                { buttonElement }
+                            </Link>
                         )}
-                        {(!_isEmpty(updatedStatus) && updatedStatus === 'PENDING_OUT')
-                        && (
-                            <Fragment>
-                                <Dropdown
-                                    className='userProfile_drpbtn'
-                                    icon='chevron down'
-                                    direction='left'
-                                    trigger={(
-                                        <Button
-                                            className="blue-bordr-btn-round-def"
-                                            onClick={() => this.handleAcceptRequest(email_hash, user_id)}
-                                        >
-                                            Pending
-                                        </Button>
-                                    )}
-                                >
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item onClick={() => this.rejectInvite(user_id, email_hash, 'friendSearch')}>
-                                            Cancel<span className='mob-hide'> friend</span> request
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Fragment>
-                        )}
-                        {_isEmpty(updatedStatus)
-                        && (
+                    {(!_isEmpty(updatedStatus) && updatedStatus === 'PENDING_IN')
+                    && (
+                        <Fragment>
                             <Button
                                 className={`${buttonClass} c-small`}
-                                onClick={() => this.handleAddFriendClick(email_hash, user_id)}
+                                onClick={() => this.handleAcceptRequest(email_hash, user_id)}
                             >
                                 {buttonText}
                             </Button>
-                        )}
-                        {(type === 'invitation')
-                        && (
-                            <Icon
-                                className="trash alternate outline"
-                                onClick={() => this.rejectInvite(user_id, email_hash, type)}
-                            />
-                        )}
-                    </List.Content>
-                )}
+                        </Fragment>
+                    )}
+                    {(!_isEmpty(updatedStatus) && updatedStatus === 'PENDING_OUT')
+                    && (
+                        <Fragment>
+                            <Dropdown
+                                className='userProfile_drpbtn'
+                                icon='chevron down'
+                                direction='left'
+                                trigger={(
+                                    <Button
+                                        className="blue-bordr-btn-round-def"
+                                        onClick={() => this.handleAcceptRequest(email_hash, user_id)}
+                                    >
+                                        Pending
+                                    </Button>
+                                )}
+                            >
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={() => this.rejectInvite(user_id, email_hash, 'friendSearch')}>
+                                        Cancel<span className='mob-hide'> friend</span> request
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Fragment>
+                    )}
+                    {_isEmpty(updatedStatus)
+                    && (
+                        <Button
+                            className={`${buttonClass} c-small`}
+                            onClick={() => this.handleAddFriendClick(email_hash, user_id)}
+                        >
+                            {buttonText}
+                        </Button>
+                    )}
+                    {(type === 'invitation')
+                    && (
+                        <Icon
+                            className="trash alternate outline"
+                            onClick={() => this.rejectInvite(user_id, email_hash, type)}
+                        />
+                    )}
+                </List.Content>
             </List.Item>
         );
     }

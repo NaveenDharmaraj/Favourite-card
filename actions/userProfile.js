@@ -412,19 +412,25 @@ const getUserTagsRecommended = (dispatch, userId, pageNumber) => {
     });
 };
 
-const getMyFriendsList = (email, pageNumber) => dispatch => {
+const getMyFriendsList = (email, pageNumber, userId = null) => (dispatch) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_MY_FRIENDS,
     };
-    return graphApi.get(`/user/myfriends`, {
+    const paramsList = {
         params: {
             'page[number]': pageNumber,
             'page[size]': 10,
             status: 'accepted',
             userid: email,
         },
+    };
+    if (userId) {
+        paramsList.params.parentId = userId;
+    }
+    return graphApi.get(`/user/myfriends`, {
+        ...paramsList,
     }).then(
         (result) => {
             fsa.payload = {
@@ -440,7 +446,7 @@ const getMyFriendsList = (email, pageNumber) => dispatch => {
     });
 };
 
-const getFriendsInvitations = (email, pageNumber) => dispatch => {
+const getFriendsInvitations = (email, pageNumber) => (dispatch) => {
     const fsa = {
         payload: {
         },
@@ -469,7 +475,7 @@ const getFriendsInvitations = (email, pageNumber) => dispatch => {
     });
 };
 
-const getBlockedFriends = (userId) => dispatch => {
+const getBlockedFriends = (userId) => (dispatch) => {
     const fsa = {
         payload: {
         },
@@ -488,7 +494,7 @@ const getBlockedFriends = (userId) => dispatch => {
     });
 };
 
-const getFriendsByText = (userId, searchText, pageNumber) => dispatch => {
+const getFriendsByText = (userId, searchText, pageNumber) => (dispatch) => {
     const fsa = {
         payload: {
         },
@@ -633,7 +639,7 @@ function searchFriendsObj(friendList, toSearch) {
     return friendList;
 }
 
-const sendFriendRequest = (requestObj) => dispatch => {
+const sendFriendRequest = (requestObj) => (dispatch) => {
     const fsa = {
         payload: {
         },
@@ -698,7 +704,7 @@ const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar
             };
             if (pageName === 'MYFRIENDS') {
                 dispatch(getFriendsInvitations(sourceEmailId, pageNumber));
-                dispatch(getMyFriendsList(sourceEmailId, 1));
+                dispatch(getMyFriendsList(sourceEmailId, 1, sourceUserId));
             } else {
                 dispatch(getFriendsByText(sourceUserId, searchWord, pageNumber));
             }
@@ -1587,7 +1593,7 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
     }).catch().finally();
 };
 
-const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => dispatch => {
+const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => (dispatch) => {
     const fsa = {
         payload: {},
         type: actionTypes.USER_PROFILE_FIND_DROPDOWN_FRIENDS,
@@ -1616,7 +1622,7 @@ const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => di
     rejectFriendInvitePromise.then((result) => {
         if (type === 'invitation') {
             dispatch(getFriendsInvitations(email, 1));
-            dispatch(getMyFriendsList(email, 1));
+            dispatch(getMyFriendsList(email, 1, currentUserId));
             //dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
         } else if (type === 'friendSearch') {
             fsa.payload.userId = friendUserId;
@@ -1631,7 +1637,7 @@ const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => di
     return rejectFriendInvitePromise;
 };
 
-const searchMyfriend = (userId, queryText) => dispatch => {
+const searchMyfriend = (userId, queryText) => (dispatch) => {
     const fsa = {
         payload: {
         },
