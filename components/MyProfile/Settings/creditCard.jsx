@@ -21,6 +21,9 @@ import {
     StripeProvider
 } from 'react-stripe-elements';
 
+import {
+    Link,
+} from '../../../routes';
 import { withTranslation } from '../../../i18n';
 import {
     getMyCreditCards,
@@ -36,7 +39,6 @@ import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage'
 import { populateCardData } from '../../../helpers/give/utils';
 import { validateDate } from '../../../helpers/utils';
 
-const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 
 const { publicRuntimeConfig } = getConfig();
@@ -77,9 +79,7 @@ class MyCreditCards extends React.Component {
             creditCard: {
                 value: 0,
             },
-            statusMessage: false,
             stripeCreditCard: '',
-            successMessage: '',
             cardHolderName: '',
             myCreditCardListLoader: !props.userCreditCardList,
         };
@@ -238,7 +238,6 @@ class MyCreditCards extends React.Component {
         if(validateCC) {
             this.setState({
                 buttonClicked: true,
-                statusMessage: false,
             });
             const {
                 currentUser: {
@@ -249,16 +248,11 @@ class MyCreditCards extends React.Component {
             saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage).then(() => {
                 this.setState({
                     buttonClicked: false,
-                    errorMessage: null,
-                    successMessage: 'Credit card saved.',
-                    statusMessage: true,
                     isAddModalOpen: false,
                 });
             }).catch((err) => {
                 this.setState({
                     buttonClicked: false,
-                    errorMessage: 'Error in saving the Credit Card.',
-                    statusMessage: true,
                     isAddModalOpen: false,
                 });
             });
@@ -391,7 +385,6 @@ class MyCreditCards extends React.Component {
     handleEditSave() {
         this.setState({
             editButtonClicked: true,
-            statusMessage: false,
         });
         const isEditDataValid = this.validateEditForm();
         if (isEditDataValid) {
@@ -409,9 +402,6 @@ class MyCreditCards extends React.Component {
             editUserCreditCard(dispatch, editDetails).then(() => {
                 this.setState({
                     editButtonClicked: false,
-                    errorMessage: null,
-                    successMessage: 'Your Credit Card updated Successfully.',
-                    statusMessage: true,
                 });
                 this.setState({
                     editDetails: {
@@ -427,8 +417,6 @@ class MyCreditCards extends React.Component {
             }).catch((err) => {
                 this.setState({
                     editButtonClicked: false,
-                    errorMessage: 'Error in updating Credit Card.',
-                    statusMessage: true,
                 });
             });;
             if (isDefaultCard) {
@@ -477,22 +465,16 @@ class MyCreditCards extends React.Component {
         } = this.props;
         this.setState({
             deleteButtonClicked: true,
-            statusMessage: false,
         });
         if(deletePaymentInstrumentId != null) {
             deleteUserCreditCard(dispatch, deletePaymentInstrumentId, id, currentActivePage).then(() => {
                 this.setState({
                     deleteButtonClicked: false,
-                    errorMessage: null,
-                    successMessage: 'Credit card deleted.',
-                    statusMessage: true,
                     isDeleteMessageOpen: false,
                 });
             }).catch((err) => {
                 this.setState({
                     deleteButtonClicked: false,
-                    errorMessage: 'Error in deleting your Credit Card.',
-                    statusMessage: true,
                     isDeleteMessageOpen: false,
                 });
             });
@@ -612,6 +594,7 @@ class MyCreditCards extends React.Component {
                     cardClass = 'card american';
                 }
                 const primary = data.attributes.default ? 'Primary' : '';
+                const showActiveDetails = (data.attributes.activeMonthlyDonations > 0) ? true : false;
                 return (
                     <List.Item>
                         <List.Content floated="right">
@@ -625,6 +608,7 @@ class MyCreditCards extends React.Component {
                                         onClick={() => { this.handleEditClick(data) }}
                                     />
                                     <Dropdown.Item
+                                        disabled={showActiveDetails}
                                         text="Delete"
                                         open={isDropdownOpen}
                                         onOpen={this.onOpen}
@@ -649,7 +633,11 @@ class MyCreditCards extends React.Component {
                                     </List.Header>
                                     <div className="cardNo"><sup>**** **** **** </sup>{lastFour}</div>
                                 </div>
-                                <p>This card is linked to an active monthly deposit. If you need to delete this card, please <a>update your monthly deposit</a> first. </p>
+                                {
+                                    (showActiveDetails) && (
+                                        <p>This card is linked to an active monthly deposit. If you need to delete this card, please <Link route={"/user/recurring-donations"}><a>update your monthly deposit</a></Link> first. </p>
+                                    )
+                                }
                             </div>
                         </List.Content>
 
@@ -682,7 +670,6 @@ class MyCreditCards extends React.Component {
             buttonClicked,
             deleteButtonClicked,
             editButtonClicked,
-            errorMessage,
             isAddModalOpen,
             inValidCardNumber,
             inValidExpirationDate,
@@ -699,8 +686,6 @@ class MyCreditCards extends React.Component {
                 isValidExpiry,
             },
             myCreditCardListLoader,
-            statusMessage,
-            successMessage,
         } = this.state;
         const formatMessage = this.props.t;
         const {
@@ -785,14 +770,6 @@ class MyCreditCards extends React.Component {
                             </Grid.Row>
                         </Grid>
                     </div>
-                        {
-                            statusMessage && (
-                                <ModalStatusMessage
-                                    message={!_.isEmpty(successMessage) ? successMessage : null}
-                                    error={!_.isEmpty(errorMessage) ? errorMessage : null}
-                                />
-                            )
-                        }
                         <div className="userCardList paymentCards border-top-0">
                             {myCreditCardListLoader
                                 ? (
