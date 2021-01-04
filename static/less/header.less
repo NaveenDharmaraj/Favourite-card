@@ -687,7 +687,7 @@ button,a{
               .content{
                 position: relative;
                 width: 270px;
-                padding-right: 30px;
+                padding-right: 40px;
                 font-size: 12px;
                 padding-left: 18px;
                 .more-btn{
@@ -710,14 +710,14 @@ button,a{
                     position: relative;
                     &::after{
                       content: '';
-                      height: 27px;
-                      width: 27px;
+                      height: 32px;
+                      width: 32px;
                       background-color: #eee;
                       position: absolute;
                       z-index: -1;
                       border-radius: 100%;
-                      top: -11px;
-                      left: 2px;
+                      top: -10px;
+                      left: 1.5px;
                       opacity: 0;
                     }
                   }
@@ -928,7 +928,6 @@ body{
             position: absolute;
             top: 0;
             bottom: 0;
-            left: 0;
             margin: auto;
           }
         }
@@ -1255,7 +1254,7 @@ body{
     }
   }
 }
-@media only screen and (max-width:991px) and (min-width:767px){
+@media only screen and (max-width:1199px) and (min-width:767px){
   body{
     .c-m-login-header .ui.secondary.menu{
       .item{
@@ -1370,9 +1369,6 @@ body{
         margin-top: 2rem;
       }
     }
-    .left-img-card.ui.card{
-      margin-bottom: 0rem !important;
-    }
     .c-m-login-header .ui.sidebar.menu .item.userPrifileHeader .list.ui .item{
       .avatar.ui.image{
         display: block;
@@ -1407,6 +1403,15 @@ body{
           }
         }
       }
+    }
+  }
+}
+@media only screen and (max-width:1200px) and (min-width:1190px){
+  body{
+    .ui.container{
+      width: 1127px;
+      margin-left: auto!important;
+      margin-right: auto!important;
     }
   }
 }
@@ -2131,7 +2136,7 @@ body{
     }
   }
 }
-@media only screen and (max-width:991px){
+@media only screen and (max-width:1199px){
   .c-m-login-header .ui.right.overlay.sidebar {
   -webkit-transform: none !important;
   transform: none !important;
