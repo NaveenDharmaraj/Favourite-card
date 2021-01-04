@@ -432,7 +432,7 @@ class UserBasicProfile extends React.Component {
                                 </div>
                             )}
                     </div>
-                    {!isBlocked && <p className='textAboutuser'>{description}</p>}
+                    <p className='textAboutuser'>{description}</p>
                     <div className="userButtonsWrap">
                         {(isMyProfile && !isPreviewMode)
                             && (

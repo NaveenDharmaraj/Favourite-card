@@ -86,7 +86,7 @@ const NavBarMobile = ({
                 <Menu.Item className="userPrifileHeader">
                     <List verticalAlign='middle'>
                         <List.Item>
-                            <Image avatar src={avatar | IconIndividual} />
+                            <Image avatar src={avatar || IconIndividual} />
                             <List.Content>
                                 <Link route={`/users/profile/myprofile`}>
                                     <div className='name'>

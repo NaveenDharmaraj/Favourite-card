@@ -14,6 +14,7 @@ import {
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import Link from 'next/link';
+import { withTranslation } from '../../../i18n';
 
 import {
     getBlockedFriends,
@@ -23,6 +24,7 @@ import {
     updateUserProfileToastMsg,
 } from '../../../actions/userProfile';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
+import { fullMonthNames } from '../../../helpers/give/utils';
 
 class Privacy extends React.Component {
     constructor(props) {
@@ -42,6 +44,7 @@ class Privacy extends React.Component {
         };
         this.handleUserPreferenceChange = this.handleUserPreferenceChange.bind(this);
         this.handlePrivacyChange = this.handlePrivacyChange.bind(this);
+        this.renderBlockedDate = this.renderBlockedDate.bind(this);
     }
 
     componentDidMount() {
@@ -156,6 +159,22 @@ class Privacy extends React.Component {
         updateUserPreferences(dispatch, currentUser.id, columnName, checked, null);
     }
 
+    renderBlockedDate(milliSeconds) {
+        const {
+            i18n: {
+                language,
+            },
+            t: formatMessage,
+        } = this.props;
+        const date = new Date(milliSeconds);
+        const year = date.getFullYear();
+        const day = date.getDate();
+        const month = date.getMonth();
+        const months = fullMonthNames(formatMessage);
+        return (language === 'fr')
+            ? `Blocked on ${day}er ${months[month]} ${year}`
+            : `Blocked on ${months[month]} ${day}, ${year}`;
+    }
     renderBlockedFriendsList() {
         const {
             userBlockedFriendsList,
@@ -181,8 +200,7 @@ class Privacy extends React.Component {
                 return (
                     <List.Item>
                         <List.Content floated="right" className='blockDateSec'>
-                            {/* TODO when api sends blocked date */}
-                            {/* <span>Blocked on January 9, 2019</span> */}
+                            <span>{!_isEmpty(data.attributes.relationship_created_on) && this.renderBlockedDate(data.attributes.relationship_created_on)}</span>
                             <Button
                                 className="blue-bordr-btn-round-def c-small"
                                 onClick={() => this.handleFriendUnblockClick(data.attributes.user_id)}
@@ -245,30 +263,29 @@ class Privacy extends React.Component {
             { key: 'Public', text: 'Public', value: 0 },
             { key: 'Friends', text: 'Friends', value: 1 },
             { key: 'Only me', text: 'Only me', value: 2 },
-          ]
-          
+        ]
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
-                <div class="settingsDetailWraper heading"><h4 class="ui header mb-0">Privacy & security </h4></div>
+                    <div class="settingsDetailWraper heading"><h4 class="ui header mb-0">Privacy & security </h4></div>
                     <div className="settingsDetailWraper">
                         <Header as="h4">Discoverability </Header>
-                            <p>Choose whether people can search for your personal profile on Charitable Impact.</p>
-                            <List divided verticalAlign="middle" className="userList shownamecheck">
+                        <p>Choose whether people can search for your personal profile on Charitable Impact.</p>
+                        <List divided verticalAlign="middle" className="userList shownamecheck">
                             <List.Item>
                                 <List.Content floated="right">
-                                <Checkbox
-                                    toggle
-                                    className="c-chkBox right"
-                                    id="discoverability"
-                                    name="discoverability"
-                                    checked={discoverability}
-                                    onChange={this.handleUserPreferenceChange}
-                                />
+                                    <Checkbox
+                                        toggle
+                                        className="c-chkBox right"
+                                        id="discoverability"
+                                        name="discoverability"
+                                        checked={discoverability}
+                                        onChange={this.handleUserPreferenceChange}
+                                    />
                                 </List.Content>
                                 <List.Content>
-                                <List.Description>
-                                    Show name and appear in search results
+                                    <List.Description>
+                                        Show name and appear in search results
                                 </List.Description>
                                 </List.Content>
                             </List.Item>
@@ -340,7 +357,7 @@ class Privacy extends React.Component {
                     </div>
                     <div className="settingsDetailWraper privacyWraper">
                         <Header as="h4">Blocked users</Header>
-                        { blockedUserListLoader
+                        {blockedUserListLoader
                             ? (
                                 <Table padded unstackable className="no-border-table">
                                     <PlaceHolderGrid row={2} column={2} placeholderType="table" />
@@ -365,4 +382,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default (connect(mapStateToProps)(Privacy));
+export default withTranslation([''])(connect(mapStateToProps)(Privacy));
