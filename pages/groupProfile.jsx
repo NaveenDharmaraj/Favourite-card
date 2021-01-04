@@ -123,6 +123,7 @@ class GroupProfile extends React.Component {
                     location,
                     name,
                     isCampaign,
+                    isMember,
                     slug,
                 },
             },
@@ -141,13 +142,15 @@ class GroupProfile extends React.Component {
         const giveButtonElement = <Button onClick={() => { resetFlowObject('group', dispatch); }} className="blue-btn-rounded-def">{formatMessage('common:giveButtonText')}</Button>;
         let giveButton = null;
         if (isAuthenticated) {
-            giveButton = (
-                <div className="buttonWraper">
-                    <Link route={`/give/to/group/${slug}/new`}>
-                        {giveButtonElement}
-                    </Link>
-                </div>
-            );
+            if (isMember) {
+                giveButton = (
+                    <div className="buttonWraper">
+                        <Link route={`/give/to/group/${slug}/new`}>
+                            {giveButtonElement}
+                        </Link>
+                    </div>
+                );
+            }
         } else {
             giveButton = (
                 <div className="buttonWraper">
@@ -190,6 +193,7 @@ GroupProfile.defaultProps = {
             causes: [],
             description: '',
             isCampaign: false,
+            isMember: false,
             location: '',
             name: '',
             slug: '',
@@ -218,6 +222,7 @@ GroupProfile.propTypes = {
             causes: array,
             description: string,
             isCampaign: bool,
+            isMember: bool,
             location: string,
             name: string,
             slug: string,
