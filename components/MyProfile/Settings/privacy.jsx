@@ -159,6 +159,7 @@ class Privacy extends React.Component {
         updateUserPreferences(dispatch, currentUser.id, columnName, checked, null);
     }
 
+    // eslint-disable-next-line react/sort-comp
     renderBlockedDate(milliSeconds) {
         const {
             i18n: {
@@ -175,6 +176,7 @@ class Privacy extends React.Component {
             ? `Blocked on ${day}er ${months[month]} ${year}`
             : `Blocked on ${months[month]} ${day}, ${year}`;
     }
+
     renderBlockedFriendsList() {
         const {
             userBlockedFriendsList,
@@ -200,7 +202,7 @@ class Privacy extends React.Component {
                 return (
                     <List.Item>
                         <List.Content floated="right" className='blockDateSec'>
-                            <span>{!_isEmpty(data.attributes.relationship_created_on) && this.renderBlockedDate(data.attributes.relationship_created_on)}</span>
+                            <span>{data.attributes.relationship_created_on && this.renderBlockedDate(data.attributes.relationship_created_on)}</span>
                             <Button
                                 className="blue-bordr-btn-round-def c-small"
                                 onClick={() => this.handleFriendUnblockClick(data.attributes.user_id)}
@@ -286,7 +288,7 @@ class Privacy extends React.Component {
                                 <List.Content>
                                     <List.Description>
                                         Show name and appear in search results
-                                </List.Description>
+                                    </List.Description>
                                 </List.Content>
                             </List.Item>
                         </List>
