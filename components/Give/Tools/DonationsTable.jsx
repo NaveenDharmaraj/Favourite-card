@@ -1,9 +1,11 @@
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-bracket-location */
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
     Table,
     Placeholder,
+    Accordion,
+    Responsive
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
@@ -28,7 +30,7 @@ function DonationsTable(props) {
     const renderTableData = () => {
         const tableBody = [];
         if (!_.isEmpty(upcomingTransactions)) {
-            upcomingTransactions.forEach((transaction) => {
+            upcomingTransactions.forEach((transaction,index) => {
                 const {
                     attributes,
                     id,
@@ -52,6 +54,7 @@ function DonationsTable(props) {
                     transactionId={id}
                     transactionType={attributes.transactionType}
                     deleteTransaction={deleteTransaction}
+                    index={index}
                 />);
             });
         }
@@ -59,26 +62,41 @@ function DonationsTable(props) {
     };
     return ((_.isEmpty(upcomingTransactions)) ? null
         : (
-            <div className="responsiveTable mt-2">
-                <Table padded unstackable className="no-border-table">
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>Credit card </Table.HeaderCell>
-                            <Table.HeaderCell className="text-right">Amount</Table.HeaderCell>
-                            <Table.HeaderCell>Day of month</Table.HeaderCell>
-                            <Table.HeaderCell>Matched by</Table.HeaderCell>
-                            <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
-                            <Table.HeaderCell>Action</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Table.Body>
-                        {
-                            renderTableData()
+            <Fragment>
+                <Responsive minWidth={992}>
+                    <div className="responsiveTable mt-2">
+                        <Table padded unstackable className="no-border-table">
+                            <Table.Header>
+                                <Table.Row>
+                                    <Table.HeaderCell>Credit card </Table.HeaderCell>
+                                    <Table.HeaderCell className="text-right">Amount</Table.HeaderCell>
+                                    <Table.HeaderCell>Day of month</Table.HeaderCell>
+                                    <Table.HeaderCell>Matched by</Table.HeaderCell>
+                                    <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
+                                    <Table.HeaderCell>Action</Table.HeaderCell>
+                                </Table.Row>
+                            </Table.Header>
+                            {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Table.Body>
+                                {
+                                    renderTableData()
+                                }
+                            </Table.Body>) 
+                            }
+                        </Table>
+                    
+                    </div>
+                </Responsive>
+                <Responsive maxWidth={991}>
+                    <div className="mbleAccordionTable">
+                        {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Accordion fluid exclusive={false}>
+                            {
+                                renderTableData()
+                            }
+                        </Accordion>) 
                         }
-                    </Table.Body>) 
-                    }
-                </Table>
-            </div>
+                    </div>
+                </Responsive>
+            </Fragment>
         )
     );
 }

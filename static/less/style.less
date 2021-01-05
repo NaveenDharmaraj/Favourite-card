@@ -1020,6 +1020,7 @@ h4{
     &.pointing{
       &.secondary{
         &.menu{
+          border-bottom: 1px solid #E7E7F0;
           .item{
             &.active{
               color: @purple;
@@ -1145,6 +1146,17 @@ h4{
 
         }
       }
+    }
+  }
+  &.toolstab{
+    .ui.secondary.pointing.menu{
+      margin-bottom: 37px;
+      @media only screen and (max-width: 767px){
+        margin-bottom: 25px;
+      }
+    }
+    .ui.segment.tab{
+      padding: 0;
     }
   }
 }
@@ -1579,23 +1591,295 @@ h4{
     &.segment{
       border-radius: 0rem;
       box-shadow: none;
-      padding: 2rem;
+      padding: 2.5rem 2.5625rem;
+      border: 1px solid #E6E5E5;
       h3{
         &.ui{
           &.header{
             font-size: 17px !important;
+            margin-bottom: 7px;
           }
         }
-      }
-      
+      }    
     }
   }
   .ui{
     &.table{
       th{
         font-size: 12px !important;
+        color: #263238;
+      }
+      .deleteLink{
+        .primeFont-semi-bold();
+        margin-left: 15px;
       }
     }
+  }
+  .mbleAccordionTable{
+    margin: 30px -15px 0;
+    .ui{
+      &.fluid{
+        &.accordion {
+          box-shadow: none;
+          >.accordionWrap{
+            padding: 0;
+            .title{
+              padding: 11.4px 35px 11.4px 20px;
+              .primeFont-semi-bold();
+              color:#263238;
+              position: relative;
+              border-top: 1px solid #E7E7F0;
+              &:after{
+                content: '';
+                background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
+                height: 10px;
+                width: 15px;
+                position: absolute;
+                right: 10px;
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+                transition: all 0.3s ease-out;
+                top:40%;
+                filter: invert(79%) sepia(0%) saturate(1%) hue-rotate(277deg) brightness(97%) contrast(87%);
+              }
+              &.active{
+                ~.content{
+                  padding: 0;
+                  .ui.table{
+                    border: 0;
+                    border-top: 1px solid #E7E7F0;
+                    padding: 10px 10px;
+                    tbody{
+                      tr{
+                        border: 0;
+                        td{
+                          padding: 12px 14px;
+                          border: 0;
+                          &:last-child{
+                            text-align: right;
+                            .primeFont-semi-bold();
+                          }
+                        }
+                      }
+                    }
+                    tfoot{
+                      td{
+                          text-align: center;
+                      }
+                    }
+                  }
+                }
+                &:after{
+                  transform: rotateZ(180deg);
+                }
+              }
+            }
+            &:last-child{
+              .title:not(.active){
+                border-bottom: 1px solid #E7E7F0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.price_btn{
+  margin-bottom: 10px;
+  .btn-basic-outline{
+      &.ui{
+          &.button{
+              background-color: transparent;
+              border: 1px solid #ddd;
+              border-radius: 5px;
+              .primeFont();
+              color: #263238;
+              &.small{
+                  height: 30px !important;
+                  width: 65px !important;
+                  padding: 7px 10px 6px !important;
+              }
+              +.button{
+                  margin-left: 10px;
+                  @media only screen and (max-width:360px) {
+                      margin-left: 5px;
+                  } 
+              }
+              &:hover,&:focus{
+                  background-color: #F1F6FD;
+              }
+          }
+      }
+  }
+}
+.paymentMethodDropdown{
+  .ui.active.visible.fluid.search.selection.dropdown.dropdownsearchField.grouped.medium {
+      &::before{
+          top: 9px;
+      }
+  }
+  .dropdownSearch .dropdownsearchField.ui.dropdown.search.medium{
+      height: 41px;
+      display: flex;
+      align-items: center;
+      &::after{
+          top: 44%;
+      }
+      input{
+          top: 0;
+          bottom: 0;
+      }
+  }
+  .ui{
+      &.button{
+          &.dropdown{
+              padding-top: 12px;
+              padding-bottom: 12px;
+              padding-right: 32px !important;
+              &.taxReceiptDropDown{
+                  height: auto;
+              }
+              &.active{
+                  &:hover{
+                      background-color: transparent;
+                      &::before{
+                          filter: brightness(1) invert(0);
+                          z-index: 99;
+                          transform: rotate(180deg);
+                      }
+                  }
+                  &::before{
+                      z-index: 99;
+                      transform: rotate(180deg);
+                  }
+                  .menu{
+                      .item{
+                          &.selected{
+                              background-color: #055CE5;
+                              color: #fff;
+                              border-color: #055CE5;
+                              span{
+                                  color: #fff;
+                                  .hyperLinks-style{
+                                      margin: 0px;
+                                  }
+                              }
+                              .image{
+                                  &.ui{
+                                      //filter: brightness(0) invert(1);
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+              &::before{
+                  content: '';
+                  background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
+                  height: 7px;
+                  width: 13.5px;
+                  position: absolute;
+                  right: 10px;
+                  background-size: contain;
+                  background-position: center;
+                  background-repeat: no-repeat;
+                  transition: all 0.3s ease-out;
+                  top:40%;
+                  filter: invert(79%) sepia(0%) saturate(1%) hue-rotate(277deg) brightness(97%) contrast(87%);
+              }
+              .default{
+                  &.text{
+                      color: #ddd;
+                  }
+              }
+              i{
+                  &.dropdown{
+                      &.icon{
+                          &::before{
+                              display: none;
+                          }
+                      }
+                  }
+              }
+              &.upward{
+                  .menu{
+                     
+                  }
+              }
+              .menu{
+                  margin-top: 0px !important;
+                  border-color: none;
+                  border-radius: 0px 0px .28571429rem!important;
+                  a{
+                      &.item{
+                          color: #055CE5;
+                      }
+                  }
+                  .item{
+                      .text{
+                          span{
+                              line-height: 14px;
+                              &:first-child{
+                                  display: block;
+                                  font-family: 'ProximaNova-Semibold';
+                                  margin-bottom: 5px;
+                              }
+                              &:last-child{
+                                  display: inline-block;
+                                  max-width: 200px;
+                                  font-family: 'ProximaNova-Regular';
+                              }
+                          }
+                      }
+                      .image{
+                          &.ui{
+                              width: 32px;
+                              height: 18px;
+                              vertical-align: middle;
+                              object-fit: contain;
+                          }
+                      }
+                  }
+              }
+              .icon{
+                  background-color: transparent !important;
+                  &::before{
+                      background-position: center !important;
+                      background-repeat: no-repeat !important;
+                      background-size: contain !important;
+                  }
+                  &.cardVisa{
+                      &::before{
+                          content: '';
+                          background-image: url("@{img_url}/images/icons/icon-cc-visa-colour.png") !important;
+                          left: 10px;
+                          width: 31px;
+                          height: 11px;
+                      }
+                  }
+                  &.cardMaster{
+                      &::before{
+                          content: '';
+                          background-image: url("@{img_url}/images/icons/icon-cc-mastercard-colour.png") !important;
+                          left: 10px;
+                          width: 31px;
+                          height: 11px;
+                      }
+                  }
+                  &.cardExpress{
+                      &::before{
+                          content: '';
+                          background-image: url("@{img_url}/images/icons/icon-cc-american-express-colour.png") !important;
+                          left: 10px;
+                          width: 31px;
+                          height: 11px;
+                      }
+                  }
+              }
+          }
+      }
   }
 }
 .pageWraper{
@@ -1830,6 +2114,7 @@ h4{
     .tools-tabpane{
       .ui{
         &.segment{
+          padding: 30px;
           >.grid{
             >.row{
               >.column{
@@ -1839,6 +2124,11 @@ h4{
                   }
                 }
               }
+            }
+          }
+          h3.ui.header{
+            +p{
+              margin-bottom: 20px;
             }
           }
         }
@@ -4249,9 +4539,13 @@ label.giftNotSent{
   }
 }
 .chimp-modal{
-  .ui.form .field :disabled {
+  .ui.form .field {
+    label{
+      margin-bottom: 7px;
+    }
+    :disabled {
       background-color: #F8F8F8 !important;
-
+    }
   }
 }
 @media only screen and (min-width:1199px){
