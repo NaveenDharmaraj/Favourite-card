@@ -1519,6 +1519,7 @@ body{
         }
         .item{
           padding: 15px 20px 15px 20px;
+          border-bottom: 1px solid #dddddd;
           &:not(:first-child){
             &:hover{
               background-color: @purple;
@@ -1554,6 +1555,7 @@ body{
             .list{
               &.ui{
                 .item{
+                  border: 0;
                   .avatar{
                     &.ui{
                       &.image{
@@ -1603,6 +1605,10 @@ body{
                 }
               }
             }
+
+          }
+          &::before{
+            content: none;
           }
         }
       }
@@ -2079,6 +2085,11 @@ body{
 }
 @media only screen and (min-width:767px) and (max-width:991px){
   .smo-d-none{
+    display: none !important;
+  }
+}
+@media only screen and (min-width:992px) and (max-width:1199px){
+  .md-d-none{
     display: none !important;
   }
 }
