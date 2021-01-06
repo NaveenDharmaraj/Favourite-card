@@ -11,6 +11,7 @@ import {
     Checkbox,
     Table,
     Form,
+    Responsive,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import Link from 'next/link';
@@ -199,27 +200,40 @@ class Privacy extends React.Component {
                 } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
                     locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
+                const blockedDate = (
+                    <span>{data.attributes.relationship_created_on && this.renderBlockedDate(data.attributes.relationship_created_on)}</span>
+                )
                 return (
                     <List.Item>
-                        <List.Content floated="right" className='blockDateSec'>
-                            <span>{data.attributes.relationship_created_on && this.renderBlockedDate(data.attributes.relationship_created_on)}</span>
-                            <Button
-                                className="blue-bordr-btn-round-def c-small"
-                                onClick={() => this.handleFriendUnblockClick(data.attributes.user_id)}
-                                disabled={currentButtonClicked === data.attributes.user_id}
-                            >
-                                Unblock
-                            </Button>
-                        </List.Content>
-                        <Image avatar src={avatar} />
-                        <List.Content>
-                            <List.Header>
-                                <Link className="lnkChange" href={`/users/profile/${data.attributes.user_id}`}>
-                                    {name}
-                                </Link>
-                            </List.Header>
-                            <List.Description>{locationDetails}</List.Description>
-                        </List.Content>
+                        <div className='blockUsersList'>
+                            <div className='userImgcontent'>
+                                <Image avatar src={avatar} />
+                                <List.Content>
+                                    <List.Header>
+                                        <Link className="lnkChange" href={`/users/profile/${data.attributes.user_id}`}>
+                                            {name}
+                                        </Link>
+                                    </List.Header>
+                                    <List.Description>{locationDetails}</List.Description>
+                                </List.Content>
+                            </div>
+                            
+                            <List.Content floated="right" className='blockDateSec'>
+                                <Responsive minWidth={768}>
+                                    {blockedDate}
+                                </Responsive>
+                                <Button
+                                    className="blue-bordr-btn-round-def c-small"
+                                    onClick={() => this.handleFriendUnblockClick(data.attributes.user_id)}
+                                    disabled={currentButtonClicked === data.attributes.user_id}
+                                >
+                                    Unblock
+                                </Button>
+                            </List.Content>
+                        </div>  
+                        <Responsive maxWidth={768} className='moblockdate'>
+                            {blockedDate}
+                        </Responsive>
                     </List.Item>
                 );
             });

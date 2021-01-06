@@ -62,6 +62,7 @@ const NavBarMobile = ({
     const menuLinks = getMainNavItems(accountType, slug);
     let accountSettingsText = formatMessage('accountSettings');
     let accountUrl = `/user/profile/settings`;
+    let favouritesUrl = `/user/favourites`;
     let logoUrl = `/dashboard`;
     let isExternal = false;
     if (accountType === 'company') {
@@ -93,7 +94,7 @@ const NavBarMobile = ({
                                         {name}
                                     </div>
                                 </Link>
-                                <div className="iconWraper smo-d-none">
+                                <div className="iconWraper smo-d-none md-d-none">
                                     <Link route='/notifications/all'>
                                         <a className={`${notificationUpdate ? ' new' : ''}`}>
                                             <Image src={notificationIcon} />
@@ -118,7 +119,7 @@ const NavBarMobile = ({
                     </Menu.Item>
                 </Link>
                 {menuLinks.map((item) => <MainNavItem {...item} onPusherClick={onPusherClick} />)}
-                <Link route={accountUrl}>
+                <Link route={favouritesUrl}>
                     <List.Item as="a">
                         <List.Icon name='heart' />
                         <List.Content>
