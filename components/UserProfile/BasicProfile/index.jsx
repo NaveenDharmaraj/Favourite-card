@@ -12,6 +12,7 @@ import {
     Dropdown,
     Modal,
 } from 'semantic-ui-react';
+import { Router } from '../../../routes';
 import {
     connect,
 } from 'react-redux';
@@ -70,6 +71,7 @@ class UserBasicProfile extends React.Component {
         this.handleUnfriendCancelClick = this.handleUnfriendCancelClick.bind(this);
         this.handleCopyLink = this.handleCopyLink.bind(this);
         this.handleRejectRequest = this.handleRejectRequest.bind(this);
+        this.renderFriendsPage = this.renderFriendsPage.bind(this);
     }
 
     componentDidMount() {
@@ -78,9 +80,13 @@ class UserBasicProfile extends React.Component {
                 id,
             },
             dispatch,
-            friendUserId,
+            userFriendProfileData: {
+                attributes: {
+                    user_id,
+                },
+            },
         } = this.props;
-        generateDeeplinkUserProfile(dispatch, id, friendUserId);
+        generateDeeplinkUserProfile(dispatch, id, user_id);
     }
 
     handleAddToFriends(destinationUserId, destinationEmailId) {
@@ -260,7 +266,20 @@ class UserBasicProfile extends React.Component {
         } = this.props;
         dispatch(rejectFriendInvite(currentUserId, friendUserId, email, 'myProfile'));
     }
-
+    renderFriendsPage() {
+        const {
+            currentUser: {
+                id,
+            },
+            userFriendProfileData: {
+                attributes: {
+                    user_id,
+                },
+            },
+        } = this.props;
+        id == user_id ? Router.pushRoute('/user/profile/friends') :
+            Router.pushRoute(`/users/profile/${user_id}/friends`);
+    }
     render() {
         const {
             previewMode: {
@@ -283,7 +302,6 @@ class UserBasicProfile extends React.Component {
                 },
             },
             handlePreviewPage,
-            hanldeFriendPage,
             userProfileProfilelink,
         } = this.props;
         const {
@@ -408,9 +426,9 @@ class UserBasicProfile extends React.Component {
                     </div>
                     <div className="userCity_friends">
                         {(!_isEmpty(getLocation(city, province)))
-                        && (
-                            <p>{getLocation(city, province)}</p>      
-                        )}
+                            && (
+                                <p>{getLocation(city, province)}</p>
+                            )}
                         {((number_of_friends > 0) && (showUserFriends) && !isBlocked)
                             && (
                                 <div
@@ -418,7 +436,7 @@ class UserBasicProfile extends React.Component {
                                 >
                                     <Header
                                         as='h5'
-                                        onClick={hanldeFriendPage}
+                                        onClick={this.renderFriendsPage}
                                     >
                                         {`${(number_of_friends) && number_of_friends} ${friendText}`}
                                     </Header>
@@ -459,7 +477,7 @@ class UserBasicProfile extends React.Component {
                                 <Button
                                     className="blue-btn-rounded"
                                     onClick={() => this.handleAddToFriends(user_id, email)}
-                                    disabled={addButtonClicked || isPreviewMode }
+                                    disabled={addButtonClicked || isPreviewMode}
                                     primary
                                 >
                                     Add Friend

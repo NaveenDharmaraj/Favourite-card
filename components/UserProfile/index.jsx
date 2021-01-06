@@ -21,6 +21,7 @@ import {
     connect,
 } from 'react-redux';
 import { Router } from '../../routes';
+import { withRouter } from 'next/router';
 import { withTranslation } from '../../i18n';
 
 import UserBasicProfile from './BasicProfile';
@@ -32,7 +33,7 @@ class UserProfileWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showFriendsPage: false,
+            showFriendsPage: props.showFriendsPage || false,
         };
         this.showPreviewPage = this.showPreviewPage.bind(this);
         this.hidePreviewPage = this.hidePreviewPage.bind(this);
@@ -40,7 +41,24 @@ class UserProfileWrapper extends React.Component {
         this.hideFriendPage = this.hideFriendPage.bind(this);
         this.togglePreviewPage = this.togglePreviewPage.bind(this);
     }
-
+    componentWillUnmount() {
+        const {
+            dispatch,
+        } = this.props;
+        if (!(this.props.router.asPath && (this.props.router.asPath.includes('/user') ||
+            this.props.router.asPath.includes('/users')
+        ))) {
+            dispatch({
+                payload: {
+                    previewMode: {
+                        isPreviewMode: false,
+                        previewValue: 0,
+                    },
+                },
+                type: 'USER_PROFILE_PREVIEW_MODE',
+            });
+        }
+    }
     showPreviewPage() {
         const {
             dispatch,
@@ -125,7 +143,7 @@ class UserProfileWrapper extends React.Component {
             showFriendsPage,
         } = this.state;
         const isMyFriendsPage = (friendPageStep === 'myfriends');
-        const updatedFriendId = (friendUserId === 'myprofile') ? currentUserId : friendUserId;
+        const updatedFriendId =  Number(friendUserId) ? friendUserId : currentUserId;
         const isSingleColumnLayout = (profile_type !== 'my_profile' && causes_visibility === 2 && giving_goal_visibility === 2);
         const options = [
             {
@@ -223,6 +241,7 @@ class UserProfileWrapper extends React.Component {
                         <UserFriendList
                             hideFriendPage={this.hideFriendPage}
                             isMyFriendsPage={isMyFriendsPage}
+                            friendPageStep={this.props.friendPageStep}
                         />
                     )}
             </Fragment>
@@ -276,9 +295,9 @@ function mapStateToProps(state) {
     };
 }
 
-const connectedComponent = withTranslation([
+const connectedComponent = withRouter(withTranslation([
     'common',
-])(connect(mapStateToProps)(UserProfileWrapper));
+])(connect(mapStateToProps)(UserProfileWrapper)));
 export {
     connectedComponent as default,
     UserProfileWrapper,

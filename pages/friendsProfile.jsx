@@ -2,6 +2,7 @@ import React from 'react';
 import {
     connect,
 } from 'react-redux';
+import { withRouter } from 'next/router';
 import {
     string,
     func,
@@ -21,6 +22,7 @@ import {
 } from '../actions/userProfile';
 import UserProfileWrapper from '../components/UserProfile';
 
+const friendsPath  = '/friends';
 class FriendProfile extends React.Component {
     static async getInitialProps({ query }) {
         return {
@@ -43,7 +45,7 @@ class FriendProfile extends React.Component {
             dispatch,
             friendUserId,
         } = this.props;
-        const updatedFriendId = (friendUserId === 'myprofile') ? currentUserId : friendUserId;
+        const updatedFriendId = Number(friendUserId) ? friendUserId : currentUserId;
         dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
     }
 
@@ -58,7 +60,7 @@ class FriendProfile extends React.Component {
             friendUserId,
             dispatch,
         } = this.props;
-        const updatedFriendId = (friendUserId === 'myprofile') ? currentUserId : friendUserId;
+        const updatedFriendId = Number(friendUserId) ? friendUserId : currentUserId;
         if (!_isEqual(friendUserId, prevProps.friendUserId)) {
             dispatch({
                 payload: {
@@ -68,30 +70,17 @@ class FriendProfile extends React.Component {
             dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
         }
     }
-    componentWillUnmount(){
-        const {
-            dispatch,
-        } = this.props;
-        dispatch({
-            payload: {
-                previewMode: {
-                    isPreviewMode: false,
-                    previewValue: 0,
-                },
-            },
-            type: 'USER_PROFILE_PREVIEW_MODE',
-        });
-    }
-    
+
     render() {
         const {
             userFriendProfileData,
         } = this.props;
+        const showFriendsPage = this.props.router.asPath && this.props.router.asPath.includes(friendsPath);
         return (
             <Layout authRequired>
                 {!_isEmpty(userFriendProfileData)
                     ? (
-                        <UserProfileWrapper {...this.props} />
+                        <UserProfileWrapper {...this.props} showFriendsPage={showFriendsPage}/>
                     )
                     : (
                         <Dimmer active inverted>
@@ -136,4 +125,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default (connect(mapStateToProps)(FriendProfile));
+export default withRouter(connect(mapStateToProps)(FriendProfile));

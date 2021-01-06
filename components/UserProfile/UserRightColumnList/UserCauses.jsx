@@ -2,14 +2,10 @@ import React, {
     Fragment,
 } from 'react';
 import {
-    Container,
     Header,
-    Image,
-    Icon,
     Grid,
     Button,
-    Dropdown,
-    Modal,
+    Table,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -33,6 +29,7 @@ import {
 } from '../../../helpers/profiles/utils';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import CharitableInterestsList from '../EditCharitableInterest';
+import PlaceholderGrid from '../../shared/PlaceHolder';
 
 class UserCauses extends React.Component {
     constructor(props) {
@@ -89,6 +86,7 @@ class UserCauses extends React.Component {
                     profile_type,
                 },
             },
+            userProfileCharitableInterestsLoadStatus,
         } = this.props;
         const {
             viewButtonClicked,
@@ -125,19 +123,25 @@ class UserCauses extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                {!_isEmpty(dataArray)
-                    ? (
-                        <div className="user-badge-group">
-                            {!viewButtonClicked
-                                ? initialList
-                                : dataArray}
-                        </div>
+                {userProfileCharitableInterestsLoadStatus ?
+                    (
+                        <Table padded unstackable className="no-border-table">
+                            <PlaceholderGrid row={2} column={2} placeholderType="table" />
+                        </Table>
                     )
-                    : (
-                        <p className='nodata'>
-                            {isMyProfile ? 'Select causes and topics to see charities and Giving Groups that might interest you.' : 'Nothing to show here yet.'}
-                        </p>
-                    )}
+                    : !_isEmpty(dataArray)
+                        ? (
+                            <div className="user-badge-group">
+                                {!viewButtonClicked
+                                    ? initialList
+                                    : dataArray}
+                            </div>
+                        )
+                        : (
+                            <p className='nodata'>
+                                {isMyProfile ? 'Select causes and topics to see charities and Giving Groups that might interest you.' : 'Nothing to show here yet.'}
+                            </p>
+                        )}
                 {(!_isEmpty(dataArray) && dataArray.length > 10)
                     && (
                         <div className="text-center">
@@ -194,6 +198,7 @@ function mapStateToProps(state) {
         previewMode: state.userProfile.previewMode,
         userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileCausesData: state.userProfile.userProfileCausesData,
+        userProfileCharitableInterestsLoadStatus: state.userProfile.userProfileCharitableInterestsLoadStatus
     };
 }
 

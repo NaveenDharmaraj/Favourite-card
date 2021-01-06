@@ -115,7 +115,7 @@ class Profile extends React.Component {
                 >
                     <Popup.Header>
                         <Table>
-                            <Link route={`/users/profile/myprofile`}>
+                            <Link route={`/user/profile/basic`}>
                                 <Table.Row>
                                     <Table.Cell><Image src={avatar || IconIndividual} style={{ width: '80px' }} circular /></Table.Cell>
                                     <Table.Cell>
