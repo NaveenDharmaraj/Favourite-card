@@ -197,7 +197,7 @@ class FriendListCard extends React.Component {
                             </Dropdown>
                         </Fragment>
                     )}
-                    {_isEmpty(updatedStatus)
+                    {(_isEmpty(updatedStatus) || (updatedStatus === 'LIMITED'))
                     && (
                         <Button
                             className={`${buttonClass} c-small`}
