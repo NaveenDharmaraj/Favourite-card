@@ -17,7 +17,7 @@ const Settings = dynamic(() => import('../components/MyProfile/Settings'), {
     ssr: false
 });
 
-class MyProfile extends React.Component {
+class AccountSettings extends React.Component {
     static async getInitialProps({ query }) {
         return {
             pageName: query.slug,
@@ -66,4 +66,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default (connect(mapStateToProps)(MyProfile));
+export default (connect(mapStateToProps)(AccountSettings));
