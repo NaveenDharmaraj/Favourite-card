@@ -89,7 +89,7 @@ const NavBarMobile = ({
                         <List.Item>
                             <Image avatar src={avatar || IconIndividual} />
                             <List.Content>
-                                <Link route={`/users/profile/myprofile`}>
+                                <Link route={`/user/profile/basic`}>
                                     <div className='name'>
                                         {name}
                                     </div>

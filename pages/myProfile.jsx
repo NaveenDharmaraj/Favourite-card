@@ -1,27 +1,30 @@
 import React from 'react';
-import _isEmpty from 'lodash/isEmpty';
-import {
-    Container,
-    Header,
-} from 'semantic-ui-react';
 import {
     connect,
 } from 'react-redux';
-import dynamic from 'next/dynamic';
-
 import {
-    getUserProfileBasic,
-} from '../actions/userProfile';
-import Layout from '../components/shared/Layout';
-const Settings = dynamic(() => import('../components/MyProfile/Settings'), {
-    ssr: false
-});
+    string,
+    func,
+    PropTypes,
+} from 'prop-types';
+import {
+    Dimmer,
+    Loader,
+} from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 
-class MyProfile extends React.Component {
+import '../static/less/userProfile.less';
+import Layout from '../components/shared/Layout';
+import {
+    getUserFriendProfile,
+} from '../actions/userProfile';
+import UserProfileWrapper from '../components/UserProfile';
+
+class Myprofile extends React.Component {
     static async getInitialProps({ query }) {
         return {
-            pageName: query.slug,
-            settingName: query.step,
+            friendUserId: query.slug,
             namespacesRequired: [
                 'giveCommon',
             ],
@@ -30,40 +33,91 @@ class MyProfile extends React.Component {
 
     componentDidMount() {
         const {
-            currentUser,
-            dispatch,
-        } = this.props;
-        if (!_isEmpty(currentUser)) {
-            const {
-                id,
+            currentUser: {
                 attributes: {
                     email,
                 },
-            } = currentUser;
-            getUserProfileBasic(dispatch, email, id, id);
-        }
+                id: currentUserId,
+            },
+            dispatch,
+            friendUserId,
+        } = this.props;
+        const updatedFriendId = Number(friendUserId) ? friendUserId : currentUserId;
+        dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
     }
 
+    componentDidUpdate(prevProps) {
+        const {
+            currentUser: {
+                attributes: {
+                    email,
+                },
+                id: currentUserId,
+            },
+            friendUserId,
+            dispatch,
+        } = this.props;
+        const updatedFriendId = Number(friendUserId) ? friendUserId : currentUserId;
+        if (!_isEqual(friendUserId, prevProps.friendUserId)) {
+            dispatch({
+                payload: {
+                },
+                type: 'USER_PROFILE_RESET_DATA',
+            });
+            dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
+        }
+    }
     render() {
+        const {
+            userFriendProfileData,
+        } = this.props;
         return (
-            <Layout authRequired stripe>
-                <Container>
-                    <div className='account-settings-wrap charityTab n-border user-profile-settings'>
-                        <Header>Account settings</Header>
-                        <div className='user-messaging'>
-                            <Settings settingName={this.props.settingName} />
-                        </div>
-                    </div>
-                </Container>
+            <Layout authRequired>
+                {!_isEmpty(userFriendProfileData)
+                    ? (
+                        <UserProfileWrapper {...this.props} showFriendsPage={false} />
+                    )
+                    : (
+                        <Dimmer active inverted>
+                            <Loader />
+                        </Dimmer>
+                    )}
             </Layout>
         );
     }
 }
 
+Myprofile.defaultProps = {
+    currentUser: {
+        attributes: {
+            email: '',
+        },
+        id: '',
+
+    },
+    dispatch: () => { },
+    friendUserId: '',
+    userFriendProfileData: {},
+};
+
+Myprofile.propTypes = {
+    currentUser: PropTypes.shape({
+        attributes: PropTypes.shape({
+            email: string,
+        }),
+        id: string,
+
+    }),
+    dispatch: func,
+    friendUserId: string,
+    userFriendProfileData: PropTypes.shape({}),
+};
+
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
     };
 }
 
-export default (connect(mapStateToProps)(MyProfile));
+export default (connect(mapStateToProps)(Myprofile));

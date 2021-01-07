@@ -16,6 +16,7 @@ import {
     Search,
     Loader,
 } from 'semantic-ui-react';
+import { Router } from '../../../routes';
 import {
     connect,
 } from 'react-redux';
@@ -41,6 +42,7 @@ import {
     searchFriendByUserInput,
     getFriendsByText,
     clearFindFriendsList,
+    actionTypes,
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 import {
@@ -90,6 +92,7 @@ class UserFriendList extends React.Component {
         this.handleFriendSearch = this.handleFriendSearch.bind(this);
         this.handleResultSelect = this.handleResultSelect.bind(this);
         this.onPageChanged = this.onPageChanged.bind(this);
+        this.onTabChange = this.onTabChange.bind(this);
     }
 
     componentDidMount() {
@@ -131,8 +134,20 @@ class UserFriendList extends React.Component {
         }
     }
 
-    componentWillUnmount(){
-        this.clearSearch()
+    componentWillUnmount() {
+        const {
+            dispatch
+        } = this.props;
+        this.clearSearch();
+        dispatch({
+            type: actionTypes.USER_PROFILE_BASIC_FRIEND,
+            payload: {}
+        })
+        dispatch({
+            payload: {
+            },
+            type: 'USER_PROFILE_RESET_DATA',
+        });
     }
 
     showFriendsList(dataArray, type, isMyProfile) {
@@ -493,6 +508,22 @@ class UserFriendList extends React.Component {
     }
     onTabChange = (e, data) => {
         (data && data.activeIndex != 1) && this.clearSearch();
+        data.activeIndex === 0 ? Router.pushRoute('/user/profile/friends/myFriends') :
+            Router.pushRoute('/user/profile/friends/findFriends');
+
+    }
+    renderProfilePage = () => {
+        const {
+            currentUser: {
+                id,
+            },
+            userFriendProfileData: {
+                attributes: {
+                    user_id,
+                },
+            },
+        } = this.props;
+        id == user_id ? Router.pushRoute('/user/profile/basic') : Router.pushRoute(`/users/profile/${user_id}`);
     }
     render() {
         const {
@@ -541,6 +572,7 @@ class UserFriendList extends React.Component {
             showDropdownLoader,
             friendDropdownList,
         } = this.state;
+        const activeIndex = this.props.friendPageStep === 'findFriends' ? 1 : 0;
         // const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         const isMyProfile = (profile_type === 'my_profile');
         // const headerText = isMyProfile ? 'Your friends' : (`${display_name}'s friends`);
@@ -798,7 +830,7 @@ class UserFriendList extends React.Component {
                                             <div className="userButtonsWrap">
                                                 <Button
                                                     className='blue-bordr-btn-round-def'
-                                                    onClick={hideFriendPage}
+                                                    onClick={this.renderProfilePage}
                                                 >
                                                     Return to profile
                                             </Button>
@@ -815,6 +847,7 @@ class UserFriendList extends React.Component {
                                                     }}
                                                     panes={panes}
                                                     onTabChange={this.onTabChange}
+                                                    activeIndex={activeIndex}
                                                 />
                                             )
                                             : (
