@@ -42,6 +42,9 @@ class FriendListCard extends React.Component {
         this.handleAcceptRequest = this.handleAcceptRequest.bind(this);
         this.rejectInvite = this.rejectInvite.bind(this);
         this.handleAddFriendClick = this.handleAddFriendClick.bind(this);
+        this.state = {
+            updatedStatus: (_isEmpty(props.data.status) && !_isEmpty(props.data.friend_status)) ? props.data.friend_status : props.data.status,
+        };
     }
 
     handleAcceptRequest(destinationEmail, destinationUserId) {
@@ -72,7 +75,11 @@ class FriendListCard extends React.Component {
             },
             dispatch,
         } = this.props;
-        dispatch(rejectFriendInvite(currentUserId, friendUserId, email, type));
+        dispatch(rejectFriendInvite(currentUserId, friendUserId, email, type)).then(() => {
+            this.setState({
+                updatedStatus: '',
+            });
+        });
     }
 
     handleAddFriendClick(userEmail, userId) {
@@ -97,7 +104,11 @@ class FriendListCard extends React.Component {
             requesterFirstName: firstName,
             requesterUserId: currentUserId,
         };
-        dispatch(sendFriendRequest(requestObj));
+        dispatch(sendFriendRequest(requestObj)).then(() => {
+            this.setState({
+                updatedStatus: 'PENDING_OUT',
+            });
+        });
     }
 
     render() {
@@ -117,9 +128,11 @@ class FriendListCard extends React.Component {
             hideFriendPage,
             isMyProfile,
         } = this.props;
+        const {
+            updatedStatus,
+        } = this.state;
         let buttonText = '';
         let buttonClass = 'blue-btn-rounded-def';
-        let updatedStatus = ((_isEmpty(status) && !_isEmpty(friend_status)) ? friend_status : status);
         switch (updatedStatus) {
             case 'ACCEPTED':
                 buttonText = 'Message';
@@ -183,7 +196,6 @@ class FriendListCard extends React.Component {
                                 trigger={(
                                     <Button
                                         className="blue-bordr-btn-round-def"
-                                        onClick={() => this.handleAcceptRequest(email_hash, user_id)}
                                     >
                                         Pending
                                     </Button>
