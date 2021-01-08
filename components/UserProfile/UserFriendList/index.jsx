@@ -656,10 +656,11 @@ class UserFriendList extends React.Component {
                                     showNoResults={showDropdownLoader ? false : true}
                                     icon={
                                         <Fragment>
-                                            <Icon
+                                            {friendSearchText && <Icon
                                                 className='delete'
                                                 onClick={this.clearSearch}
                                             />
+                                            }
                                             <Icon
                                                 className='search'
                                                 onClick={this.handleFriendSearch}

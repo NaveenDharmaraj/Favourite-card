@@ -120,7 +120,7 @@ const NavBarMobile = ({
                 </Link>
                 {menuLinks.map((item) => <MainNavItem {...item} onPusherClick={onPusherClick} />)}
                 <Link route={favouritesUrl}>
-                    <List.Item as="a">
+                    <List.Item as="a" onClick={onPusherClick}>
                         <List.Icon name='heart' />
                         <List.Content>
                             Favourites
