@@ -43,7 +43,6 @@ class TransactionTableRow extends React.Component {
     }
 
     handleClick = (e, titleProps) => {
-        debugger;
         const { index } = titleProps;
         const { activeIndexs } = this.state;
         const newIndex = activeIndexs;
@@ -68,6 +67,7 @@ class TransactionTableRow extends React.Component {
             modalHeader,
             index,
         } = this.props;
+        
         const {
             showDeleteModal,
             showEditModal,
@@ -116,6 +116,7 @@ class TransactionTableRow extends React.Component {
                 </Modal.Content>
             </Modal>
         );
+
         const editModal = (
             <Modal 
                 size="tiny"
@@ -185,7 +186,7 @@ class TransactionTableRow extends React.Component {
             <Fragment>
 
                 {/* Desktop transaction details row start */}
-                <Responsive minWidth={992} as={'tr'}>
+                <Responsive minWidth={768} as={'tr'}>
                     {(firstColoumn) && (<Table.Cell>{firstColoumn}</Table.Cell>)}
                     {(secondColoumn) && (<Table.Cell className="text-right">{secondColoumn}</Table.Cell>)}
                     {(thirdColoumn) && (<Table.Cell>{thirdColoumn}</Table.Cell>)}
@@ -199,7 +200,7 @@ class TransactionTableRow extends React.Component {
                 {/* Desktop transaction details row end */}
 
                 {/* Mobile transaction details row start (Accordion) */}
-                <Responsive maxWidth={991} className='accordionWrap'>
+                <Responsive maxWidth={767} className='accordionWrap'>
                     <Accordion.Title 
                         active={activeIndexs.includes(index)}
                         index={index}

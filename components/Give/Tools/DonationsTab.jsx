@@ -48,7 +48,7 @@ function DonationsTab(props) {
                 monthlyTransactionApiCall={monthlyTransactionApiCall}
             />
             <div className="mb-2">
-                <div className="db-pagination right-align pt-2">
+                <div className="db-pagination  pt-2">
                     {!monthlyTransactionApiCall && (totalPages > 1) && 
                         <PaginationComponent
                             activePage={activePage}

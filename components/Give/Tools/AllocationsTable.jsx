@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-bracket-location */
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
     Table,
+    Accordion,
+    Responsive,
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
@@ -56,26 +58,40 @@ function AllocationsTable(props) {
     };
     return ((_.isEmpty(upcomingTransactions)) ? null
         : (
-            <div className="responsiveTable mt-2">
-                <Table padded unstackable className="no-border-table">
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>Recipient </Table.HeaderCell>
-                            <Table.HeaderCell textAlign="right">Amount</Table.HeaderCell>
-                            <Table.HeaderCell>Day of month</Table.HeaderCell>
-                            <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
-                            <Table.HeaderCell>Action</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (
-                        <Table.Body>
+            <Fragment>
+                <Responsive minWidth={768}>
+                <div className="responsiveTable mt-2">
+                    <Table padded unstackable className="no-border-table">
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>Recipient </Table.HeaderCell>
+                                <Table.HeaderCell textAlign="right">Amount</Table.HeaderCell>
+                                <Table.HeaderCell>Day of month</Table.HeaderCell>
+                                <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
+                                <Table.HeaderCell>Action</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (
+                            <Table.Body>
+                                {
+                                    renderTableData()
+                                }
+                            </Table.Body>)
+                        }
+                    </Table>
+                </div>
+                </Responsive>
+                <Responsive maxWidth={767}>
+                    <div className="mbleAccordionTable">
+                        {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Accordion fluid exclusive={false}>
                             {
                                 renderTableData()
                             }
-                        </Table.Body>)
-                    }
-                </Table>
-            </div>
+                        </Accordion>) 
+                        }
+                    </div>
+                </Responsive>
+            </Fragment>
         )
 
     );

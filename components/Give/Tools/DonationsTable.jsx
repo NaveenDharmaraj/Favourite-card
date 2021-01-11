@@ -63,7 +63,7 @@ function DonationsTable(props) {
     return ((_.isEmpty(upcomingTransactions)) ? null
         : (
             <Fragment>
-                <Responsive minWidth={992}>
+                <Responsive minWidth={768}>
                     <div className="responsiveTable mt-2">
                         <Table padded unstackable className="no-border-table">
                             <Table.Header>
@@ -86,7 +86,7 @@ function DonationsTable(props) {
                     
                     </div>
                 </Responsive>
-                <Responsive maxWidth={991}>
+                <Responsive maxWidth={767}>
                     <div className="mbleAccordionTable">
                         {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Accordion fluid exclusive={false}>
                             {
