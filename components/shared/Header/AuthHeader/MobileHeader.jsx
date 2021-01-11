@@ -90,18 +90,18 @@ const NavBarMobile = ({
                             <Image avatar src={avatar || IconIndividual} />
                             <List.Content>
                                 <Link route={`/user/profile/basic`}>
-                                    <div className='name'>
+                                    <div className='name' onClick={onPusherClick}>
                                         {name}
                                     </div>
                                 </Link>
                                 <div className="iconWraper smo-d-none md-d-none">
                                     <Link route='/notifications/all'>
-                                        <a className={`${notificationUpdate ? ' new' : ''}`}>
+                                        <a className={`${notificationUpdate ? ' new' : ''}`} onClick={onPusherClick}>
                                             <Image src={notificationIcon} />
                                         </a>
                                     </Link>
                                     <Link route='/chats/all'>
-                                        <a>
+                                        <a onClick={onPusherClick}>
                                             <Image src={messageIcon} />
                                         </a>
                                     </Link>
@@ -130,11 +130,11 @@ const NavBarMobile = ({
                 {
                     (!isExternal) ? (
                         <Link route={accountUrl}>
-                            <Menu.Item as='a'><span className="mobMenuLeftIcon settingsIcon"><Image src={settingsIcon} /></span>{accountSettingsText}</Menu.Item>
+                            <Menu.Item as='a' onClick={onPusherClick}><span className="mobMenuLeftIcon settingsIcon"><Image src={settingsIcon} /></span>{accountSettingsText}</Menu.Item>
                         </Link>
                     ) : (
                             <a href={accountUrl}>
-                                <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={settingsIcon} /></span>{accountSettingsText}</Menu.Item>
+                                <Menu.Item as='a' onClick={onPusherClick}><span className="mobMenuLeftIcon"><Image src={settingsIcon} /></span>{accountSettingsText}</Menu.Item>
                             </a>
                         )
                 }
