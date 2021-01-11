@@ -43,7 +43,7 @@ class Myprofile extends React.Component {
             friendUserId,
         } = this.props;
         const updatedFriendId = Number(friendUserId) ? friendUserId : currentUserId;
-        dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
+        !_isEmpty(this.props.currentUser) && dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
     }
 
     componentDidUpdate(prevProps) {
