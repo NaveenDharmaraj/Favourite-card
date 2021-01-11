@@ -646,7 +646,7 @@ class UserFriendList extends React.Component {
                             <div className='findFriendsSearch'>
                                 <Search
                                     fluid
-                                    placeholder="Find friends already on Charitable Impact"
+                                    placeholder="Find friends on Charitable Impact"
                                     {...(showDropdownLoader ? ({ loading: true }) : undefined)}
                                     onResultSelect={this.handleResultSelect}
                                     onSearchChange={this.handleTypeAheadSearch}
