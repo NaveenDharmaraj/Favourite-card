@@ -67,7 +67,6 @@ class FriendProfile extends React.Component {
                 },
                 type: 'USER_PROFILE_RESET_DATA',
             });
-            debugger
             dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
         }
     }
