@@ -43,6 +43,7 @@ class Myprofile extends React.Component {
             friendUserId,
         } = this.props;
         const updatedFriendId = Number(friendUserId) ? friendUserId : currentUserId;
+        console.log("myProfile currentUser did mount",this.props.currentUser)
         !_isEmpty(this.props.currentUser) && dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
     }
 
@@ -64,6 +65,7 @@ class Myprofile extends React.Component {
                 },
                 type: 'USER_PROFILE_RESET_DATA',
             });
+            console.log("myProfile currentUser did update",this.props.currentUser)
             dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
         }
     }
