@@ -8,7 +8,7 @@ import {
     isAmountMoreOrEqualToOneDollor,
     isInputBlank,
 } from '../give/giving-form-validation';
-
+import { isFalsy } from '../utils';
 import { addToDataLayer } from './googleTagManager';
 
 const hasLowerCase = (str) => {
@@ -170,7 +170,7 @@ const populateDropdownInfoToShare = (infoShareOptions = [], preferences = {}, na
                     privacySetting: `${info.privacySetting}`,
                     text: ReactHtmlParser(`<div class="attributes">${info.name}</div>
                     <div class="attributes">${info.email}</div>
-                    <div class="attributes"> ${info.address_one} ${info.address_two} </div>
+                    <div class="attributes"> ${info.address_one} ${!isFalsy(info.address_two) ? info.address_two : ''} </div>
                     <div class="attributes">${info.city}, ${info.province} ${info.country} ${info.postal_code}</div>`),
                     value: `${info.privacySetting}-${info.privacyData}`,
                 });
