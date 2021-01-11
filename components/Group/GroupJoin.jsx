@@ -125,7 +125,7 @@ class GroupJoin extends React.Component {
                     <Fragment>
                         <Button
                             onClick={this.handleUserJoin}
-                            className="blue-bordr-btn-round-def CampaignBtn"
+                            className="blue-btn-rounded-def CampaignBtn"
                             disabled={joinClicked}
                         >
                             {formatMessage('groupProfile:joinGroup')}
@@ -177,7 +177,7 @@ class GroupJoin extends React.Component {
                         </Button>
                     </Link>
                     <p className="groupmembers">
-                        {formatMessage('groupProfile:joinGroupText')}
+                        {formatMessage('groupProfile:joinGroupTextLogout')}
                     </p>
                 </Fragment>
             );
