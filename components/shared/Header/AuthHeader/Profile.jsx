@@ -96,6 +96,7 @@ class Profile extends React.Component {
         } else if (accountType === 'charity') {
             accountUrl = `${RAILS_APP_URL_ORIGIN}/admin/beneficiaries/${slug}/info`;
         }
+        console.log(accountType);
         return (
             <Fragment>
                 <Popup
@@ -116,27 +117,39 @@ class Profile extends React.Component {
                 >
                     <Popup.Header>
                         <Table>
-                            <Link route={`/user/profile/basic`}>
+                            { (accountType === 'personal') ? (
+                                <Link route={`/user/profile/basic`}>
+                                    <Table.Row>
+                                        <Table.Cell><Image src={avatar || IconIndividual} style={{ width: '80px' }} circular /></Table.Cell>
+                                        <Table.Cell>
+                                            {name}
+                                        </Table.Cell>
+                                    </Table.Row>
+                                </Link>
+                            ) : (
                                 <Table.Row>
                                     <Table.Cell><Image src={avatar || IconIndividual} style={{ width: '80px' }} circular /></Table.Cell>
                                     <Table.Cell>
                                         {name}
                                     </Table.Cell>
                                 </Table.Row>
-                            </Link>
+                            )}
+
                         </Table>
 
                     </Popup.Header>
                     <Popup.Content>
                         <List divided link>
-                            <Link route={'/user/favourites'}>
-                                <List.Item as="a">
-                                    <List.Icon name='heart' />
-                                    <List.Content>
-                                        Favourites
-                                    </List.Content>
-                                </List.Item>
-                            </Link>
+                            { (accountType === 'personal') && (
+                                <Link route={'/user/favourites'}>
+                                    <List.Item as="a">
+                                        <List.Icon name='heart' />
+                                        <List.Content>
+                                            Favourites
+                                        </List.Content>
+                                    </List.Item>
+                                </Link>
+                            )}
                             <Link route={accountUrl}>
                                 <List.Item as="a">
                                     <List.Icon name='settings' />
