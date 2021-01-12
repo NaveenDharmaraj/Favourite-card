@@ -30,10 +30,10 @@ function DonationsTab(props) {
                         <Grid.Column mobile={16} tablet={10} computer={11}>
                             <Header as="h3" className="mb-1">
                                 Monthly deposits
-                                <Header.Subheader className="mt-1">
-                                Always have charitable dollars on hand when you decide to give or for any scheduled monthly gifts you've set up.
-                                </Header.Subheader>
                             </Header>
+                            <p>
+                                Always have charitable dollars on hand when you decide to give or for any scheduled monthly gifts you've set up.
+                            </p>
                         </Grid.Column>
                         <Grid.Column mobile={16} tablet={6} computer={5} textAlign="right">
                             <Link route="/donations/new?donation_details[recurring]=1"><a href="" className="ui button blue-btn-rounded-def" fluid>Schedule monthly deposit</a></Link>
@@ -48,7 +48,7 @@ function DonationsTab(props) {
                 monthlyTransactionApiCall={monthlyTransactionApiCall}
             />
             <div className="mb-2">
-                <div className="db-pagination right-align pt-2">
+                <div className="db-pagination  pt-2">
                     {!monthlyTransactionApiCall && (totalPages > 1) && 
                         <PaginationComponent
                             activePage={activePage}
