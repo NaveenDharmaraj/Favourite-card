@@ -119,7 +119,7 @@ class Profile extends React.Component {
                         <Table>
                             { (accountType === 'personal') ? (
                                 <Link route={`/user/profile/basic`}>
-                                    <Table.Row>
+                                    <Table.Row className='userLink'>
                                         <Table.Cell><Image src={avatar || IconIndividual} style={{ width: '80px' }} circular /></Table.Cell>
                                         <Table.Cell>
                                             {name}
