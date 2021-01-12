@@ -89,6 +89,11 @@ const getMainNavItems = (accountType, slug) => {
             name: 'Manage Employees',
             isExternal: true,
         });
+        menuLinks.push({
+            location: `/companies/${slug}/tax-receipts`,
+            name: 'Tax Receipts',
+            isExternal: true,
+        });
     } else if (accountType === 'charity') {
         menuLinks.push({
             location: `/admin/beneficiaries/${slug}/eft`,

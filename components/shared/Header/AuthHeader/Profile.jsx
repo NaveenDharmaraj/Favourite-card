@@ -96,7 +96,6 @@ class Profile extends React.Component {
         } else if (accountType === 'charity') {
             accountUrl = `${RAILS_APP_URL_ORIGIN}/admin/beneficiaries/${slug}/info`;
         }
-        console.log(accountType);
         return (
             <Fragment>
                 <Popup
