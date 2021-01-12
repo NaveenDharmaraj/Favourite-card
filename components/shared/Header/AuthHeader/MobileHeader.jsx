@@ -119,14 +119,17 @@ const NavBarMobile = ({
                     </Menu.Item>
                 </Link>
                 {menuLinks.map((item) => <MainNavItem {...item} onPusherClick={onPusherClick} />)}
-                <Link route={favouritesUrl}>
-                    <List.Item as="a" onClick={onPusherClick}>
-                        <List.Icon name='heart' />
-                        <List.Content>
-                            Favourites
-                        </List.Content>
-                    </List.Item>
-                </Link>
+                { (accountType === 'personal') && (
+                    <Link route={favouritesUrl}>
+                        <List.Item as="a" onClick={onPusherClick}>
+                            <List.Icon name='heart' />
+                            <List.Content>
+                                Favourites
+                            </List.Content>
+                        </List.Item>
+                    </Link>
+                    )
+                }
                 {
                     (!isExternal) ? (
                         <Link route={accountUrl}>
