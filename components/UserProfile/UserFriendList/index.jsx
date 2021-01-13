@@ -447,7 +447,26 @@ class UserFriendList extends React.Component {
             payload: {},
         })
     }
-
+    clearMyfriends = () => {
+        this.setState({
+            searchText: '',
+        });
+        const {
+            currentUser: {
+                id: userId,
+            },
+            dispatch,
+            userFriendProfileData: {
+                attributes: {
+                    email_hash,
+                    user_id,
+                },
+            },
+        } = this.props;
+        const isMyprofile = user_id === Number(userId);
+        const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
+        dispatch(getMyFriendsList(email, 1, isMyprofile ? null : userId));
+    }
     handleFriendSearch = () => {
         const {
             currentUser: {
@@ -632,6 +651,7 @@ class UserFriendList extends React.Component {
                                     value={searchText}
                                     onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleSearchFriendList() : null; }}
                                 />
+                                {searchText.length >= 1 && <Icon name='close' onClick={() => this.clearMyfriends()} />}
                                 <a
                                     className="search-btn"
                                     onClick={this.handleSearchFriendList}
@@ -642,14 +662,16 @@ class UserFriendList extends React.Component {
                         <List divided verticalAlign="middle" className="users_List">
                             {userMyFriendsListLoader ?
                                 (
-                                    <Loader />
+                                    <div className="myfriends-loader-wrapper">
+                                        <Loader active />
+                                    </div>
                                 )
                                 : !_isEmpty(friendData) ?
                                     this.showFriendsList(friendData, 'friends', isMyProfile)
                                     :
                                     (_isEmpty(friendData) && searchClicked)
                                     && (
-                                        <p>
+                                        <p className='noData'>
                                             Sorry, there are no friends by that name.
                                         </p>
                                     )
@@ -902,6 +924,7 @@ class UserFriendList extends React.Component {
                                                                 value={searchText}
                                                                 onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleSearchFriendList() : null; }}
                                                             />
+                                                            {searchText.length >= 1 && <Icon name='close' onClick={() => this.clearMyfriends()} />}
                                                             <a
                                                                 className="search-btn"
                                                                 onClick={this.handleSearchFriendList}
@@ -912,14 +935,16 @@ class UserFriendList extends React.Component {
                                                     <List divided verticalAlign="middle" className="users_List">
                                                         {userMyFriendsListLoader ?
                                                             (
-                                                                <Loader />
+                                                                <div className="myfriends-loader-wrapper">
+                                                                    <Loader active />
+                                                                </div>
                                                             )
                                                             : !_isEmpty(friendData) ?
                                                                 this.showFriendsList(friendData, 'friends', isMyProfile)
                                                                 :
                                                                 (_isEmpty(friendData) && searchClicked)
                                                                 && (
-                                                                    <p>
+                                                                    <p className='noData'>
                                                                         Sorry, there are no friends by that name.
                                                                     </p>
                                                                 )

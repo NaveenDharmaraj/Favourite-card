@@ -92,7 +92,7 @@ class ProfilePrivacySettings extends React.Component {
                 onClose={this.closePopup}
                 trigger={(
                     <a
-                        className="privacySettingIcon"
+                        className={(isPopUpOpen) ? 'privacySettingIcon active' : 'privacySettingIcon'}
                         onClick={this.openPopup}
                     >
                         <Icon className={privacyType} />

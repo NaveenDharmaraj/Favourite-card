@@ -162,7 +162,7 @@
         align-items: center;
         padding: 0 3px;
         .bar{
-          height: 7.9px;
+          height: 7px;
           border-radius: 5px;
           background-image: linear-gradient(to right, #00CDCD, #009E9F);
           min-width: 8px;
@@ -790,6 +790,31 @@
         right: 0;   
       }
   }
+  .icon.close{
+    position: absolute;
+    right: 40px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    &::before{
+      content: '';
+      background-image: url(../images/icons/close.svg) !important;
+      background-size: contain !important;
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      background-repeat: no-repeat !important;
+      margin: auto;
+      bottom: 0;
+      left: 0;
+    }
+  }
 }
 .findFriendswrapper{
   min-height: 200px;
@@ -1047,6 +1072,7 @@
     margin-bottom: 33px; 
     border-bottom: 1px solid @border-light;
     padding: 0;
+    box-shadow: none;
     .item{
       font-size: 16px;
       color: #262626;
@@ -1350,6 +1376,11 @@
         width: 100%;
         margin-bottom: 0;      }
     }
+    .noData{
+      border-top: 1px solid #DDDDDD;
+      padding-top: 30px;
+      margin-top: 17px;
+    }
   }
   .friendsSearch{
     display: flex;
@@ -1456,7 +1487,18 @@
     }
     &.down{
       font-size: 10px;
-      margin-bottom: 4px;
+      margin-top: 2px;
+      transition: 0.5s;
+      transform-origin: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  &.active{
+    .icon.down{
+      transform: rotateZ(180deg);
+      margin-top: 0px;
     }
   }
 }
@@ -1766,6 +1808,7 @@
             input{
               border: 0;
               padding: 0;
+              width: 100%;
             }
           }
           .ui.button{
@@ -1789,7 +1832,7 @@
 
       }
       .socailLinks{
-        margin-bottom: 32px;
+        margin-bottom: 15px;
         .icon{
           margin-right: 21px;
           font-size: 18px;
@@ -1808,4 +1851,7 @@
   width: 126px;
 }
 
-
+.myfriends-loader-wrapper{
+  position: relative;
+  min-height: 100px;
+}
