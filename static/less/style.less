@@ -255,6 +255,9 @@ h4{
         }
       }
       .chimp-modal{
+        box-shadow: none !important;
+        padding-bottom: 30px;
+        background: none;
         &.small-close{
           &.ui{
             &.modal{
@@ -325,9 +328,13 @@ h4{
               background-position: center right;
               font-size: 16px;
               padding: 2.7rem 45/@rem;
+              -webkit-box-shadow: 1px 0px 10px 2px rgba(0,0,0,.2);
+              box-shadow: 1px 0px 10px 2px rgba(0,0,0,.2);
             }
             >.content{
               padding: 30px 35px 15px;
+              -webkit-box-shadow: 1px 6px 10px 2px rgba(0,0,0,.2);
+              box-shadow: 1px 6px 10px 2px rgba(0,0,0,.2);
               &.scrollContent{
                 max-height: 71vh;
                 overflow-y: auto;
@@ -6550,13 +6557,14 @@ body{
     &.active {
       .menu{
         border: 1px solid #DDDDDD !important;
-        border-radius: 5px;
-        margin: 5px 0px;
+        width: calc(100% + 2px);
+        margin-left: -1px;
         .item{
           &.active.selected{
             background-color: #055CE5;
             color: #ffffff;
             font-weight: 400;
+            border: 0;
           }
         }
       }

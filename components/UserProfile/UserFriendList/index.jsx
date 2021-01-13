@@ -600,6 +600,7 @@ class UserFriendList extends React.Component {
                                     onChange={this.handleOnChangeSearch}
                                     value={searchText}
                                 />
+                                <Icon name='close'/>
                                 <a
                                     className="search-btn"
                                     onClick={this.handleSearchFriendList}
@@ -615,7 +616,7 @@ class UserFriendList extends React.Component {
                             }
                             {(_isEmpty(friendData) && searchClicked)
                                 && (
-                                    <p>
+                                    <p className='noData'>
                                         Sorry, there are no friends by that name.
                                     </p>
                                 )}
@@ -864,6 +865,7 @@ class UserFriendList extends React.Component {
                                                                 onChange={this.handleOnChangeSearch}
                                                                 value={searchText}
                                                             />
+                                                            <Icon name='close'/>
                                                             <a
                                                                 className="search-btn"
                                                                 onClick={this.handleSearchFriendList}
@@ -879,7 +881,7 @@ class UserFriendList extends React.Component {
                                                         }
                                                         {(_isEmpty(friendData) && searchClicked)
                                                             && (
-                                                                <p>
+                                                                <p className='noData'>
                                                                     Sorry, there are no friends by that name.
                                                                 </p>
                                                             )}
