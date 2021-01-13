@@ -2,7 +2,10 @@
 import React, {
     Fragment,
 } from 'react';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
+import _includes from 'lodash/includes';
+import _pull from 'lodash/pull';
 import {
     Input,
     Grid,
@@ -25,7 +28,7 @@ class MyTags extends React.Component {
     constructor(props) {
         super(props);
         const userTags = [];
-        if (!_.isEmpty(props.userTagsFollowedList)) {
+        if (!_isEmpty(props.userTagsFollowedList)) {
             props.userTagsFollowedList.data.forEach((tag, i) => {
                 userTags.push(tag.attributes.name);
             });
@@ -64,13 +67,13 @@ class MyTags extends React.Component {
         const {
             userTags,
         } = this.state;
-        if (!_.isEqual(userTagsFollowedList, prevProps.userTagsFollowedList) && !_.isEmpty(userTagsFollowedList)) {
+        if (!_isEqual(userTagsFollowedList, prevProps.userTagsFollowedList) && !_isEmpty(userTagsFollowedList)) {
             userTagsFollowedList.data.forEach((tag, i) => {
                 userTags.push(tag.attributes.name);
             });
             this.setState({ userTags });
         }
-        if (!_.isEmpty(userFindTagsList) && !_.isEqual(userFindTagsList, prevProps.userFindTagsList)) {
+        if (!_isEmpty(userFindTagsList) && !_isEqual(userFindTagsList, prevProps.userFindTagsList)) {
             this.setState({ loader: false });
         }
     }
@@ -93,8 +96,8 @@ class MyTags extends React.Component {
         const {
             userTags,
         } = this.state;
-        if (_.includes(userTags, name)) {
-            _.pull(userTags, name);
+        if (_includes(userTags, name)) {
+            _pull(userTags, name);
         } else {
             userTags.push(name);
         }
@@ -149,11 +152,11 @@ class MyTags extends React.Component {
             userTags,
         } = this.state;
         let tagsBlock = [];
-        if (!_.isEmpty(tagsList)) {
+        if (!_isEmpty(tagsList)) {
             tagsBlock = tagsList.data.map((tag) => {
                 return (
                     <Button
-                        className={`user_badgeButton ${_.includes(userTags, tag.attributes.name) ? 'active' : ''}`}
+                        className={`user_badgeButton ${_includes(userTags, tag.attributes.name) ? 'active' : ''}`}
                         id={tag.attributes.name}
                         name={tag.attributes.name}
                         onClick={this.handleTags}
@@ -165,7 +168,7 @@ class MyTags extends React.Component {
         }
         return (
             <div className="user-badge-group">
-                {tagsBlock}
+                {!_isEmpty(tagsBlock) ? tagsBlock : 'No tags found'}
                 {showSeeMore && this.renderSeeMore()}
             </div>
         );
@@ -180,7 +183,7 @@ class MyTags extends React.Component {
             recordCount,
             loadedData,
         } = this.props;
-        if (userFindTagsList && !_.isEmpty(userFindTagsList)) {
+        if (!_isEmpty(userFindTagsList) && userFindTagsList.data && userFindTagsList.data.length > 0) {
             const content = (
                 <Fragment>
                     {(recordCount > loadedData)

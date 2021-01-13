@@ -78,6 +78,7 @@ export const actionTypes = {
     USER_PROFILE_MEMBER_GROUP_CLEAR_DATA: 'USER_PROFILE_MEMBER_GROUP_CLEAR_DATA',
     USER_PROFILE_MEMBER_GROUP_LOAD_STATUS: 'USER_PROFILE_MEMBER_GROUP_LOAD_STATUS',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
+    USER_PROFILE_MY_FRIENDS_Loader: 'USER_PROFILE_MY_FRIENDS_LOADER',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
     USER_PROFILE_REMOVE_FRIEND: 'USER_PROFILE_REMOVE_FRIEND',
     USER_PROFILE_REMOVE_PHOTO: 'USER_PROFILE_REMOVE_PHOTO',
@@ -429,6 +430,10 @@ const getMyFriendsList = (email, pageNumber, userId = null) => (dispatch) => {
     if (userId) {
         paramsList.params.parentId = userId;
     }
+    dispatch({
+        type: 'USER_PROFILE_MY_FRIENDS_LOADER',
+        payload: true
+    })
     return graphApi.get(`/user/myfriends`, {
         ...paramsList,
     }).then(
@@ -443,6 +448,10 @@ const getMyFriendsList = (email, pageNumber, userId = null) => (dispatch) => {
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
+        dispatch({
+            type: 'USER_PROFILE_MY_FRIENDS_LOADER',
+            payload: false
+        })
     });
 };
 

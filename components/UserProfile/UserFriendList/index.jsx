@@ -61,6 +61,7 @@ class UserFriendList extends React.Component {
             currentFindFriendsActivePage: 1,
             searchText: '',
             searchClicked: false,
+            showSearchResultDropdown: false,
             inviteModalStatus: false,
             userEmailId: '',
             inviteButtonClicked: false,
@@ -375,6 +376,7 @@ class UserFriendList extends React.Component {
         dispatch(clearFindFriendsList());
         this.setState({
             friendDropdownList: [],
+            showSearchResultDropdown: false,
         });
         const queryString = !_isEmpty(event.target.value) ? event.target.value : '';
         this.setState({
@@ -392,6 +394,7 @@ class UserFriendList extends React.Component {
                 dispatch(searchFriendByUserInput(queryString, userId)).then(() => {
                     self.setState({
                         showDropdownLoader: false,
+                        showSearchResultDropdown: true,
                     });
                 })
             }, 300);
@@ -427,7 +430,9 @@ class UserFriendList extends React.Component {
             dispatch,
         } = this.props;
         this.setState({
+            searchText: '',
             friendSearchText: '',
+            showSearchResultDropdown: false,
         });
         const fsa = {
             payload: {
@@ -437,9 +442,13 @@ class UserFriendList extends React.Component {
         };
         dispatch(clearFindFriendsList());
         dispatch(fsa);
+        dispatch({
+            type: actionTypes.USER_PROFILE_MY_FRIENDS,
+            payload: {},
+        })
     }
 
-    handleFriendSearch() {
+    handleFriendSearch = () => {
         const {
             currentUser: {
                 id,
@@ -450,6 +459,9 @@ class UserFriendList extends React.Component {
             friendSearchText,
         } = this.state;
         (friendSearchText && friendSearchText.length > 3) && dispatch(getFriendsByText(id, friendSearchText, 1));
+        this.setState({
+            showSearchResultDropdown: false,
+        })
     }
 
     handleResultSelect(event, data) {
@@ -508,6 +520,23 @@ class UserFriendList extends React.Component {
     }
     onTabChange = (e, data) => {
         (data && data.activeIndex != 1) && this.clearSearch();
+        if (data.activeIndex === 0) {
+            const {
+                currentUser: {
+                    id: userId,
+                },
+                dispatch,
+                userFriendProfileData: {
+                    attributes: {
+                        email_hash,
+                        user_id,
+                    },
+                },
+            } = this.props;
+            const isMyprofile = user_id === Number(userId);
+            const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
+            dispatch(getMyFriendsList(email, 1, isMyprofile ? null : userId));
+        }
         data.activeIndex === 0 ? Router.pushRoute('/user/profile/friends/myFriends') :
             Router.pushRoute('/user/profile/friends/findFriends');
 
@@ -555,6 +584,7 @@ class UserFriendList extends React.Component {
                 pageCount: findFriendDataPageCount,
             },
             userProfileFindFriendsLoader,
+            userMyFriendsListLoader,
             isMyFriendsPage,
         } = this.props;
         const {
@@ -570,6 +600,7 @@ class UserFriendList extends React.Component {
             userEmailIdsArray,
             friendSearchText,
             showDropdownLoader,
+            showSearchResultDropdown,
             friendDropdownList,
         } = this.state;
         const activeIndex = this.props.friendPageStep === 'findFriends' ? 1 : 0;
@@ -599,6 +630,7 @@ class UserFriendList extends React.Component {
                                     fluid
                                     onChange={this.handleOnChangeSearch}
                                     value={searchText}
+                                    onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleSearchFriendList() : null; }}
                                 />
                                 <a
                                     className="search-btn"
@@ -608,17 +640,20 @@ class UserFriendList extends React.Component {
                             </div>
                         </div>
                         <List divided verticalAlign="middle" className="users_List">
-                            {(!_isEmpty(friendData))
-                                && (
-                                    this.showFriendsList(friendData, 'friends', isMyProfile)
+                            {userMyFriendsListLoader ?
+                                (
+                                    <Loader />
                                 )
+                                : !_isEmpty(friendData) ?
+                                    this.showFriendsList(friendData, 'friends', isMyProfile)
+                                    :
+                                    (_isEmpty(friendData) && searchClicked)
+                                    && (
+                                        <p>
+                                            Sorry, there are no friends by that name.
+                                        </p>
+                                    )
                             }
-                            {(_isEmpty(friendData) && searchClicked)
-                                && (
-                                    <p>
-                                        Sorry, there are no friends by that name.
-                                    </p>
-                                )}
                         </List>
                         {(!_isEmpty(friendData) && friendDataPageCount > 1) &&
                             <div className="paginationWraper">
@@ -645,11 +680,13 @@ class UserFriendList extends React.Component {
 
                             <div className='findFriendsSearch'>
                                 <Search
+                                    open={showSearchResultDropdown}
                                     fluid
                                     placeholder="Find friends on Charitable Impact"
                                     {...(showDropdownLoader ? ({ loading: true }) : undefined)}
                                     onResultSelect={this.handleResultSelect}
                                     onSearchChange={this.handleTypeAheadSearch}
+                                    onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch() : null; }}
                                     results={friendDropdownList}
                                     value={friendSearchText}
                                     minCharacters={4}
@@ -815,7 +852,7 @@ class UserFriendList extends React.Component {
                                     <Image src={avatar} />
                                 </div>
                                 <div className="user_profileDetails">
-                                    <Header className="usrName">{`${first_name} ${last_name}`}</Header>
+                                    <Header className="usrName">{`${display_name}`}</Header>
                                     <div className="userCity_friends">
                                         {(!_isEmpty(getLocation(city, province)))
                                             && (
@@ -863,6 +900,7 @@ class UserFriendList extends React.Component {
                                                                 fluid
                                                                 onChange={this.handleOnChangeSearch}
                                                                 value={searchText}
+                                                                onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleSearchFriendList() : null; }}
                                                             />
                                                             <a
                                                                 className="search-btn"
@@ -872,17 +910,20 @@ class UserFriendList extends React.Component {
                                                         </div>
                                                     </div>
                                                     <List divided verticalAlign="middle" className="users_List">
-                                                        {(!_isEmpty(friendData))
-                                                            && (
-                                                                this.showFriendsList(friendData, 'friends', isMyProfile)
+                                                        {userMyFriendsListLoader ?
+                                                            (
+                                                                <Loader />
                                                             )
+                                                            : !_isEmpty(friendData) ?
+                                                                this.showFriendsList(friendData, 'friends', isMyProfile)
+                                                                :
+                                                                (_isEmpty(friendData) && searchClicked)
+                                                                && (
+                                                                    <p>
+                                                                        Sorry, there are no friends by that name.
+                                                                    </p>
+                                                                )
                                                         }
-                                                        {(_isEmpty(friendData) && searchClicked)
-                                                            && (
-                                                                <p>
-                                                                    Sorry, there are no friends by that name.
-                                                                </p>
-                                                            )}
                                                     </List>
                                                 </Fragment>
                                             )}
@@ -977,6 +1018,7 @@ function mapStateToProps(state) {
         userProfileSignUpDeeplink: state.userProfile.userProfileSignUpDeeplink,
         friendTypeAheadData: state.userProfile.friendTypeAheadData,
         userFindFriendsList: state.userProfile.userFindFriendsList,
+        userMyFriendsListLoader: state.userProfile.userMyFriendsListLoader,
         userProfileFindFriendsLoader: state.userProfile.userProfileFindFriendsLoader,
     };
 }

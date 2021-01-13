@@ -37,12 +37,12 @@ const userProfile = (state = {}, action) => {
                 userProfileMemberGroupData: Object.assign({}, action.payload),
             };
             break;
-            case 'USER_PROFILE_MEMBER_GROUP_CLEAR_DATA':
-                newState = {
-                    ...state,
-                    userProfileMemberGroupData: Object.assign({}, action.payload),
-                };
-                break;
+        case 'USER_PROFILE_MEMBER_GROUP_CLEAR_DATA':
+            newState = {
+                ...state,
+                userProfileMemberGroupData: Object.assign({}, action.payload),
+            };
+            break;
         case 'USER_PROFILE_ADMIN_GROUP':
             if (!_isEmpty(state.userProfileAdminGroupData)) {
                 action.payload.data = [...state.userProfileAdminGroupData.data, ...action.payload.data];
@@ -69,12 +69,12 @@ const userProfile = (state = {}, action) => {
                 userProfileFavouritesData: Object.assign({}, action.payload),
             };
             break;
-            case 'USER_PROFILE_FAVOURITES_CLEAR_DATA':
-                newState = {
-                    ...state,
-                    userProfileFavouritesData: Object.assign({}, action.payload),
-                };
-                break;
+        case 'USER_PROFILE_FAVOURITES_CLEAR_DATA':
+            newState = {
+                ...state,
+                userProfileFavouritesData: Object.assign({}, action.payload),
+            };
+            break;
         case 'USER_PROFILE_CAUSES':
             newState = {
                 ...state,
@@ -109,6 +109,12 @@ const userProfile = (state = {}, action) => {
             newState = {
                 ...state,
                 userMyFriendsList: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_MY_FRIENDS_LOADER':
+            newState = {
+                ...state,
+                userMyFriendsListLoader: action.payload,
             };
             break;
         case 'USER_PROFILE_FIND_FRIENDS':
