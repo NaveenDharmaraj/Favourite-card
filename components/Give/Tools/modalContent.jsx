@@ -16,11 +16,13 @@ function ModalContent(props) {
         givingGoal,
         validity,
         currentYear,
+        showDollarIcon,
+        showLabel,
     } = props;
     return (
         <Form>
             <Form.Field inline>
-                <label>My {currentYear} Goal is</label>
+                {showLabel && <label>My {currentYear} Goal is</label>}
                 <Form.Field
                     control={Input}
                     id="givingGoal"
@@ -31,12 +33,12 @@ function ModalContent(props) {
                     onBlur={handleInputOnBlurGivingGoal}
                     placeholder="Enter goal amount"
                     fluid
-                    icon={(
+                    icon={showDollarIcon && (
                         <Icon
                             name='dollar sign'
                         />
                     )}
-                    iconPosition="left"
+                    iconPosition={showDollarIcon && "left"}
                 />
             </Form.Field>
             <FormValidationErrorMessage
@@ -57,5 +59,10 @@ function ModalContent(props) {
             /> */}
         </Form>
     );
+};
+
+ModalContent.defaultProps = {
+    showLabel: true,
+    showDollarIcon: true
 }
 export default ModalContent;
