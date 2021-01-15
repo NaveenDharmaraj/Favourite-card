@@ -291,6 +291,7 @@ class UserBasicProfile extends React.Component {
                     avatar,
                     city,
                     description,
+                    display_name,
                     first_name,
                     last_name,
                     number_of_friends,
@@ -335,7 +336,7 @@ class UserBasicProfile extends React.Component {
                     <Image src={avatar} />
                 </div>
                 <div className='user_profileDetails'>
-                    <Header className="usrName">{`${first_name} ${last_name}`}</Header>
+                    <Header className="usrName">{`${display_name}`}</Header>
                     <input
                         ref={(textarea) => this.textArea = textarea}
                         value={userProfileDeeplink}
@@ -429,7 +430,7 @@ class UserBasicProfile extends React.Component {
                             && (
                                 <p>{getLocation(city, province)}</p>
                             )}
-                        {((number_of_friends > 0) && (showUserFriends) && !isBlocked)
+                        {((showUserFriends) && !isBlocked)
                             && (
                                 <div
                                     className="userfriends"
