@@ -1227,7 +1227,7 @@ const inviteFriends = (dispatch, inviteEmailIds) => {
             type: 'users',
         },
     };
-    const inviteFriendsResponse = coreApi.post(`/users/friend_mail_notification`, bodyData, {
+    const inviteFriendsResponse = coreApi.post(`/users/friend_mail_notifications`, bodyData, {
         params: {
             dispatch,
             uxCritical: true,

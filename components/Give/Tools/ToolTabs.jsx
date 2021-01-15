@@ -19,8 +19,8 @@ import DonationsTab from './DonationsTab'
 import ModalContent from './modalContent';
 import { Router } from '../../../routes';
 import { connect } from 'react-redux';
-import {validateGivingGoal} from '../../../helpers/users/utils';
-import { getUpcomingTransactions,deleteUpcomingTransaction } from '../../../actions/user';
+import { validateGivingGoal } from '../../../helpers/users/utils';
+import { getUpcomingTransactions, deleteUpcomingTransaction } from '../../../actions/user';
 import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
 import {
     formatCurrency,
@@ -35,7 +35,7 @@ class ToolTabs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            activePage:1,
+            activePage: 1,
             showModal: false,
             givingGoal: '',
             validity: this.intializeValidations()
@@ -47,42 +47,42 @@ class ToolTabs extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlurGivingGoal = this.handleInputOnBlurGivingGoal.bind(this);
         this.setGivingGoal = this.setGivingGoal.bind(this);
-        if(!_.isEmpty(props.userGivingGoalDetails)){
+        if (!_.isEmpty(props.userGivingGoalDetails)) {
             this.state.givingGoal = this.setGivingGoal(props.userGivingGoalDetails);
         }
-        
+
     }
 
     setGivingGoal(userGivingGoalDetails) {
         const date = new Date();
         const currentYear = date.getFullYear();
-        const currentYearData = _.find(userGivingGoalDetails, function(o) {return o.attributes.year === currentYear});
+        const currentYearData = _.find(userGivingGoalDetails, function (o) { return o.attributes.year === currentYear });
         let formattedCurrentGoalAmount = '';
-        if(!_.isEmpty(currentYearData)){
-            formattedCurrentGoalAmount =  _.replace(formatCurrency(currentYearData.attributes.amount, 'en', 'USD'), '$', '');
+        if (!_.isEmpty(currentYearData)) {
+            formattedCurrentGoalAmount = _.replace(formatCurrency(currentYearData.attributes.amount, 'en', 'USD'), '$', '');
         }
         return formattedCurrentGoalAmount;
     }
 
     closeModal = () => {
-        this.setState({ 
+        this.setState({
             showModal: false,
             validity: this.intializeValidations(),
         });
     }
 
-    closeModalAndSave = () =>{
+    closeModalAndSave = () => {
         const {
             givingGoal,
         } = this.state;
-        const{
+        const {
             dispatch,
-            currentUser:{
+            currentUser: {
                 id,
             }
         } = this.props;
         const inputValue = formatAmount(parseFloat(givingGoal.replace(/,/g, '')));
-        if(this.validateForm(inputValue)) {
+        if (this.validateForm(inputValue)) {
             this.setState({ showModal: false });
             setUserGivingGoal(dispatch, inputValue, id);
         }
@@ -94,7 +94,7 @@ class ToolTabs extends React.Component {
             },
         } = event;
         this.setState({
-            givingGoal:value
+            givingGoal: value
         });
     }
 
@@ -109,10 +109,10 @@ class ToolTabs extends React.Component {
         if (!_.isEmpty(value) && value.match(isValidNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         }
-        if(this.validateForm(inputValue)){
+        if (this.validateForm(inputValue)) {
             let formattedValue = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
             this.setState({
-                givingGoal:formattedValue
+                givingGoal: formattedValue
             });
         }
     }
@@ -122,7 +122,7 @@ class ToolTabs extends React.Component {
             isAmountLessThanOneBillion: true,
             isAmountMoreThanOneDollor: true,
             isValidPositiveNumber: true,
-            isValidGiveAmount:true,
+            isValidGiveAmount: true,
         };
         return this.validity;
     }
@@ -150,23 +150,23 @@ class ToolTabs extends React.Component {
                 } = this.props
                 const {
                     activePage
-                } =this.state;
-                let totalPages = (upcomingTransactionsMeta)? upcomingTransactionsMeta.pageCount: 1;
+                } = this.state;
+                let totalPages = (upcomingTransactionsMeta) ? upcomingTransactionsMeta.pageCount : 1;
                 return (
-                <Tab.Pane attached={false}>
-                    <div className="tools-tabpane">
-                       <DonationsTab
-                            activePage={activePage}
-                            onPageChange={this.onPageChange}
-                            upcomingTransactions={upcomingTransactions}
-                            deleteTransaction={this.deleteTransaction}
-                            monthlyTransactionApiCall={monthlyTransactionApiCall}
-                            totalPages={totalPages}
-                       />
-                    </div>
-                </Tab.Pane>
-            );
-        }
+                    <Tab.Pane attached={false}>
+                        <div className="tools-tabpane">
+                            <DonationsTab
+                                activePage={activePage}
+                                onPageChange={this.onPageChange}
+                                upcomingTransactions={upcomingTransactions}
+                                deleteTransaction={this.deleteTransaction}
+                                monthlyTransactionApiCall={monthlyTransactionApiCall}
+                                totalPages={totalPages}
+                            />
+                        </div>
+                    </Tab.Pane>
+                );
+            }
         },
         {
             menuItem: 'Your monthly giving',
@@ -176,25 +176,25 @@ class ToolTabs extends React.Component {
                     upcomingTransactions,
                     upcomingTransactionsMeta
                 } = this.props;
-                const totalPages = (upcomingTransactionsMeta) ? upcomingTransactionsMeta.pageCount: 1;
+                const totalPages = (upcomingTransactionsMeta) ? upcomingTransactionsMeta.pageCount : 1;
                 const {
                     activePage
-                } =this.state;
+                } = this.state;
                 return (
-                <Tab.Pane attached={false}>
-                    <div className="tools-tabpane">
-                        <AllocationsTab
-                            activePage={activePage}
-                            onPageChange={this.onPageChange}
-                            upcomingTransactions={upcomingTransactions}
-                            deleteTransaction={this.deleteTransaction}
-                            monthlyTransactionApiCall={monthlyTransactionApiCall}
-                            totalPages={totalPages}
-                        />
-                    </div>
-                </Tab.Pane>
-            )
-        }
+                    <Tab.Pane attached={false}>
+                        <div className="tools-tabpane">
+                            <AllocationsTab
+                                activePage={activePage}
+                                onPageChange={this.onPageChange}
+                                upcomingTransactions={upcomingTransactions}
+                                deleteTransaction={this.deleteTransaction}
+                                monthlyTransactionApiCall={monthlyTransactionApiCall}
+                                totalPages={totalPages}
+                            />
+                        </div>
+                    </Tab.Pane>
+                )
+            }
         },
         {
             menuItem: 'Your giving goal',
@@ -218,7 +218,7 @@ class ToolTabs extends React.Component {
                                             <Header as="h3" className="mb-1">
                                                 Giving goal
                                                 <Header.Subheader className="mt-1">
-                                                Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account.
+                                                    Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account.
                                                 </Header.Subheader>
                                             </Header>
                                         </Grid.Column>
@@ -233,24 +233,26 @@ class ToolTabs extends React.Component {
                                                 trigger={
                                                     <Button
                                                         onClick={() => this.setState({ showModal: true })}
-                                                        primary 
-                                                        className="ui button primary blue-btn-rounded" 
+                                                        primary
+                                                        className="ui button primary blue-btn-rounded"
                                                     >
                                                         Set a giving goal
                                                     </Button>
                                                 }
                                             >
-                                            <Modal.Header>Set Your Giving Goal for {currentYear}</Modal.Header>
-                                            <Modal.Content>
-                                                <ModalContent 
+                                                <Modal.Header>Set Your Giving Goal for {currentYear}</Modal.Header>
+                                                <Modal.Content>
+                                                    <ModalContent
+                                                        showDollarIcon={true}
+                                                        showLabel={true}
                                                         handleInputChange={this.handleInputChange}
                                                         handleInputOnBlurGivingGoal={this.handleInputOnBlurGivingGoal}
                                                         givingGoal={givingGoal}
                                                         validity={validity}
                                                         currentYear={currentYear}
-                                                />
-                                            </Modal.Content>
-                                            <Modal.Actions>
+                                                    />
+                                                </Modal.Content>
+                                                <Modal.Actions>
                                                     <Button
                                                         className="ui button primary blue-btn-rounded"
                                                         onClick={this.closeModalAndSave}
@@ -262,35 +264,35 @@ class ToolTabs extends React.Component {
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
-                                </Segment>
-                                <div className="goalsTable">
-                                    <GivingGoalsTable
-                                        userGivingGoalDetails={userGivingGoalDetails}
-                                    />
-                               </div>
+                            </Segment>
+                            <div className="goalsTable">
+                                <GivingGoalsTable
+                                    userGivingGoalDetails={userGivingGoalDetails}
+                                />
+                            </div>
                         </div>
                     </Tab.Pane>
                 )
             }
         },
     ];
-    
-    componentDidMount(){
+
+    componentDidMount() {
         const {
-            currentUser:{
+            currentUser: {
                 id,
             },
             dispatch,
             defaultActiveIndex
         } = this.props;
         let url = `users/${id}/upcomingTransactions`;
-        if(defaultActiveIndex === "0") {
-            url+= `?filter[type]=RecurringDonation&page[size]=10`
-        } else if(defaultActiveIndex === "1") {
-            url+= `?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`
+        if (defaultActiveIndex === "0") {
+            url += `?filter[type]=RecurringDonation&page[size]=10`
+        } else if (defaultActiveIndex === "1") {
+            url += `?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`
         }
         getUpcomingTransactions(dispatch, url);
-        if(id){
+        if (id) {
             getUserGivingGoal(dispatch, id);
 
         }
@@ -311,35 +313,35 @@ class ToolTabs extends React.Component {
 
     }
 
-    deleteTransaction(id, transactionType){
+    deleteTransaction(id, transactionType) {
         const {
             dispatch,
         } = this.props;
         const {
             activePage
         } = this.state;
-        if(id && transactionType){
-            deleteUpcomingTransaction(dispatch,id, transactionType, activePage, this.props.currentUser.id)
+        if (id && transactionType) {
+            deleteUpcomingTransaction(dispatch, id, transactionType, activePage, this.props.currentUser.id)
         }
     }
 
-    onPageChange(event,data) {
+    onPageChange(event, data) {
         const {
-            currentUser:{
+            currentUser: {
                 id,
             },
             dispatch,
             defaultActiveIndex
         } = this.props;
         let url = `users/${id}/upcomingTransactions?page[number]=${data.activePage}&page[size]=10`;
-        if(defaultActiveIndex === "0") {
-            url+= `&filter[type]=RecurringDonation`
-        } else if(defaultActiveIndex === "1") {
-            url+= `&filter[type]=RecurringAllocation,RecurringFundAllocation`
+        if (defaultActiveIndex === "0") {
+            url += `&filter[type]=RecurringDonation`
+        } else if (defaultActiveIndex === "1") {
+            url += `&filter[type]=RecurringAllocation,RecurringFundAllocation`
         }
         getUpcomingTransactions(dispatch, url);
         this.setState({
-            activePage:data.activePage,
+            activePage: data.activePage,
         });
     }
     onTabChangeFunc(event, data) {
@@ -347,11 +349,11 @@ class ToolTabs extends React.Component {
             dispatch,
             defaultActiveIndex
         } = this.props;
-        if(defaultActiveIndex != data.activeIndex){
+        if (defaultActiveIndex != data.activeIndex) {
             dispatch({
-                    payload:{
-                        upcomingTransactions: {},
-                        upcomingTransactionsMeta: {},
+                payload: {
+                    upcomingTransactions: {},
+                    upcomingTransactionsMeta: {},
                 },
                 type: 'GET_UPCOMING_TRANSACTIONS',
             });
@@ -359,21 +361,21 @@ class ToolTabs extends React.Component {
             Router.pushRoute(tabMenus[data.activeIndex]);
         }
     }
-    
-    render(){
+
+    render() {
         const {
             defaultActiveIndex,
         } = this.props;
         return (
             <Tab
-            menu={{
-                pointing: true,
-                secondary: true,
-            }}
-            panes={this.panes}
-            defaultActiveIndex={defaultActiveIndex}
-            onTabChange={(event, data) => this.onTabChangeFunc(event, data)}
-        />
+                menu={{
+                    pointing: true,
+                    secondary: true,
+                }}
+                panes={this.panes}
+                defaultActiveIndex={defaultActiveIndex}
+                onTabChange={(event, data) => this.onTabChangeFunc(event, data)}
+            />
         );
     }
 }

@@ -1,5 +1,8 @@
 import React, { Fragment } from 'react';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
+import _find from 'lodash/find';
+import _every from 'lodash/every';
 import {
     Button,
     Form,
@@ -13,7 +16,6 @@ import {
 import {
     connect,
 } from 'react-redux';
-import dynamic from 'next/dynamic';
 
 import {
     saveUserBasicProfile,
@@ -22,6 +24,7 @@ import {
     searchLocationByUserInput,
 } from '../../../actions/userProfile';
 import { actionTypes } from '../../../actions/userProfile';
+import { validateGivingGoal } from '../../../helpers/users/utils';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import {
     formatAmount,
@@ -35,6 +38,7 @@ import {
     isAmountLessThanOneBillionDollars,
 } from '../../../helpers/give/giving-form-validation';
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
+import ModalContent from '../../Give/Tools/modalContent';
 
 let timeout = '';
 class EditBasicProfile extends React.Component {
@@ -58,7 +62,7 @@ class EditBasicProfile extends React.Component {
                 },
             },
         } = props;
-        const givingGoalAmount = (!_.isEmpty(giving_goal_amt) ? formatAmount(Number(giving_goal_amt)) : '');
+        const givingGoalAmount = (!_isEmpty(giving_goal_amt) ? formatAmount(Number(giving_goal_amt)) : '');
         const location = getLocation(city, province);
 
         this.state = {
@@ -68,7 +72,7 @@ class EditBasicProfile extends React.Component {
             isDefaultImage: logoFileName === null ? true : false,
             uploadImage: '',
             uploadImagePreview: '',
-            searchQuery: (!_.isEmpty(location)) ? location : null,
+            searchQuery: (!_isEmpty(location)) ? location : null,
             locationDropdownValue: '',
             userBasicDetails: {
                 about: description,
@@ -78,7 +82,7 @@ class EditBasicProfile extends React.Component {
                 displayName: display_name,
                 formatedGoalAmount: formatCurrency(giving_goal_amt, 'en', 'USD'),
             },
-            activeAmount : 0,
+            activeAmount: 0,
             validity: this.intializeValidations(),
         };
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -95,10 +99,23 @@ class EditBasicProfile extends React.Component {
     componentDidUpdate(prevProps) {
         const {
             currentUser,
+            userFriendProfileData,
         } = this.props;
-        if (!_.isEqual(currentUser, prevProps.currentUser)) {
+        const {
+            userBasicDetails
+        } = this.state;
+        if (!_isEqual(currentUser, prevProps.currentUser)) {
             this.setState({
                 isDefaultImage: currentUser.attributes.logoFileName === null ? true : false,
+            });
+        }
+        if (!_isEmpty(userFriendProfileData) && !_isEqual(userFriendProfileData.attributes.giving_goal_amt, prevProps.userFriendProfileData.attributes.giving_goal_amt)) {
+            this.setState({
+                userBasicDetails: {
+                    ...userBasicDetails,
+                    formatedGoalAmount: formatCurrency(userFriendProfileData.attributes.giving_goal_amt, 'en', 'USD'),
+
+                },
             });
         }
     }
@@ -127,6 +144,10 @@ class EditBasicProfile extends React.Component {
     intializeValidations() {
         this.validity = {
             isAmountLessThanOneBillion: true,
+            doesAmountExist: true,
+            isAmountMoreThanOneDollor: true,
+            isValidPositiveNumber: true,
+            isValidGiveAmount: true,
             isDisplayNameNotNull: true,
             isFirstNameNotNull: true,
             isLastNameNotNull: true,
@@ -143,7 +164,7 @@ class EditBasicProfile extends React.Component {
         const {
             userBasicDetails,
         } = this.state;
-        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
+        const newValue = (!_isEmpty(options)) ? _find(options, { value }) : value;
         if (userBasicDetails[name] !== newValue) {
             if (name === 'givingGoal') {
                 userBasicDetails.formatedGoalAmount = newValue;
@@ -164,14 +185,14 @@ class EditBasicProfile extends React.Component {
         const {
             name,
             value,
-        } = !_.isEmpty(data) ? data : event.target;
+        } = !_isEmpty(data) ? data : event.target;
         let {
             userBasicDetails,
             validity,
         } = this.state;
         let inputValue = value;
         const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
-        if ((name === 'givingGoal') && !_.isEmpty(value) && value.match(isNumber)) {
+        if ((name === 'givingGoal') && !_isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             userBasicDetails[name] = inputValue;
             userBasicDetails.formatedGoalAmount = formatCurrency(inputValue, 'en', 'USD');
@@ -198,7 +219,7 @@ class EditBasicProfile extends React.Component {
                 validity.isDisplayNameNotNull = !(!value || value.length === 0);
                 break;
             case 'givingGoal':
-                validity.isAmountLessThanOneBillion = isAmountLessThanOneBillionDollars(value);
+                validity = validateGivingGoal(value, validity);
                 break;
             default:
                 break;
@@ -226,7 +247,7 @@ class EditBasicProfile extends React.Component {
             validity,
         });
 
-        return _.every(validity);
+        return _every(validity);
     }
 
     handleSubmit() {
@@ -348,7 +369,7 @@ class EditBasicProfile extends React.Component {
         const {
             userBasicDetails,
         } = this.state;
-        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : locationValue;
+        const newValue = (!_isEmpty(options)) ? _find(options, { value }) : locationValue;
         userBasicDetails['city'] = newValue.city ? newValue.city : '';
         userBasicDetails['province'] = newValue.province ? newValue.province : '';
         this.setState({
@@ -362,13 +383,13 @@ class EditBasicProfile extends React.Component {
         });
     }
 
-    debounceFunction = ({dispatch, searchValue}, delay) => {
-        if(timeout){
+    debounceFunction = ({ dispatch, searchValue }, delay) => {
+        if (timeout) {
             clearTimeout(timeout);
         }
-        timeout = setTimeout(function(){
+        timeout = setTimeout(function () {
             dispatch(searchLocationByUserInput(searchValue));
-        },delay);
+        }, delay);
     }
 
     handleLocationSearchChange(event, { searchQuery }) {
@@ -379,8 +400,8 @@ class EditBasicProfile extends React.Component {
             const {
                 dispatch,
             } = this.props;
-        const params = { dispatch, searchValue: event.target.value};
-        this.debounceFunction(params, 300);
+            const params = { dispatch, searchValue: event.target.value };
+            this.debounceFunction(params, 300);
         }
         if (event.target.value.length === 0) {
             const {
@@ -389,7 +410,7 @@ class EditBasicProfile extends React.Component {
             dispatch({
                 type: actionTypes.USER_PROFILE_LOCATION_SEARCH,
                 payload: {
-                    data : []
+                    data: []
                 },
             });
             userBasicDetails['city'] = null;
@@ -438,207 +459,200 @@ class EditBasicProfile extends React.Component {
             locationLoader,
             locationOptions,
         } = this.props;
-        const aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
+        const aboutCharCount = (!_isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
         const userAvatar = (avatar === '') || (avatar === null) ? UserPlaceholder : avatar;
         const imageView = uploadImagePreview !== '' ? uploadImagePreview : userAvatar;
         const isPreview = uploadImagePreview !== '' ? true : false;
-        
+
         return (
             <Fragment>
-            <Modal
-                size="tiny"
-                dimmer="inverted"
-                closeIcon
-                className="chimp-modal"
-                open={showEditProfileModal}
-                onClose={()=>{this.setState({showEditProfileModal: false})}}
-                trigger={
-                    <Button className='blue-bordr-btn-round-def' onClick={() => this.setState({ showEditProfileModal: true })}>
-                        Edit profile
+                <Modal
+                    size="tiny"
+                    dimmer="inverted"
+                    closeIcon
+                    className="chimp-modal"
+                    open={showEditProfileModal}
+                    onClose={() => { this.setState({ showEditProfileModal: false }) }}
+                    trigger={
+                        <Button className='blue-bordr-btn-round-def' onClick={() => this.setState({ showEditProfileModal: true })}>
+                            Edit profile
                     </Button>
-                }
-            >
-                <Modal.Header>Edit profile</Modal.Header>
-                <Modal.Content>
-                    <Responsive minWidth={767}>
-                        <Header as='h5'>Profile photo</Header>
-                    </Responsive>
-                    <input
-                        id="myInput"
-                        accept="image/png, image/jpeg, image/jpg"
-                        type="file"
-                        ref={(ref) => this.upload = ref}
-                        style={{ display: 'none' }}
-                        onChange={(e) => this.handleUpload(event)}
-                    />
-                    <div className='editProfileModal'>
-                        <div className='editProfilePhotoWrap'>
-                            <div className="userProfileImg">
-                                <Image src={imageView} height="125px" width="125px"/>
-                            </div>
-                            <div className='editprflButtonWrap'>
-                                <Button
-                                    as="a"
-                                    className='success-btn-rounded-def'
-                                    onClick={(e) => this.upload.click()}
-                                >
-                                    Change profile photo
-                                </Button>
-                                {!isDefaultImage
-                                && (
-                                    <a 
-                                        className='remvephoto'
-                                        onClick={this.handleRemoveProfilePhoto}
-                                        >Remove photo
-                                    </a>
-                                )}
-                            </div>
-                        </div>
-                        <Form>
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column computer={8} mobile={16}>
-                                        <Form.Field>
-                                            <Form.Input
-                                                fluid
-                                                label="First name"
-                                                placeholder="First name"
-                                                id="firstName"
-                                                name="firstName"
-                                                maxLength="30"
-                                                onChange={this.handleInputChange}
-                                                onBlur={this.handleInputOnBlur}
-                                                error={!validity.isFirstNameNotNull}
-                                                value={firstName}
-                                            />
-                                            <FormValidationErrorMessage
-                                                condition= {!validity.isFirstNameNotNull}
-                                                errorMessage="Please input your first name"
-                                            />
-                                        </Form.Field>
-                                    </Grid.Column>
-                                    <Grid.Column computer={8} mobile={16}>
-                                        <Form.Field>
-                                            <Form.Input
-                                                fluid
-                                                label="Last name"
-                                                id="lastName"
-                                                name="lastName"
-                                                placeholder="Last name"
-                                                maxLength="30"
-                                                onChange={this.handleInputChange}
-                                                onBlur={this.handleInputOnBlur}
-                                                error={!validity.isLastNameNotNull}
-                                                value={lastName}
-                                            />
-                                            <FormValidationErrorMessage
-                                                condition= {!validity.isLastNameNotNull}
-                                                errorMessage= "Please input your last name"
-                                            />
-                                        </Form.Field>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                            <Form.Field>
-                                <Form.Input
-                                    fluid
-                                    label="Display Name"
-                                    id="displayName"
-                                    name="displayName"
-                                    placeholder="Display name"
-                                    maxLength="30"
-                                    onChange={this.handleInputChange}
-                                    onBlur={this.handleInputOnBlur}
-                                    error={!validity.isDisplayNameNotNull}
-                                    value={displayName}
-                                />
-                                <FormValidationErrorMessage
-                                    condition={!validity.isDisplayNameNotNull}
-                                    errorMessage="Please input your display name"
-                                />
-                            </Form.Field>
-                            <Form.Field>
-                                <Form.TextArea
-                                    label="Bio"
-                                    placeholder="Bio..."
-                                    id="about"
-                                    name="about"
-                                    maxLength="1000"
-                                    onChange={this.handleInputChange}
-                                    onBlur={this.handleInputOnBlur}
-                                    value={about}
-                                />
-                                <div className="field-info">{aboutCharCount} of 1000 characters left</div>
-                            </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="location">
-                                    Location
-                                </label>
-                                <Form.Field
-                                    single
-                                    control={Select}
-                                    className="locationSearchDropdown"
-                                    style={{minHeight : 'auto'}}
-                                    id="location"
-                                    name="location"
-                                    onClick = {()=>{
-                                        document.querySelector('#location input').focus()
-                                    }}
-                                    onChange={this.handleLocationChange}
-                                    onSearchChange={this.handleLocationSearchChange}
-                                    options={locationOptions}
-                                    search={this.handleCustomSearch}
-                                    selection
-                                    searchQuery={searchQuery}
-                                    placeholder="Search location"
-                                    loading={locationLoader}
-                                    value={locationDropdownValue}
-                                    selectOnBlur ={false}
-                                    selectOnNavigation={false}
-                                />
-                            </Form.Field>
-                            <div className="field">
-                                <label for='form-input-control-givingGoal'>
-                                    Giving goal
-                                </label>
-                                <div className='label-info'>
-                                    Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account throughout the calendar year. Goals are reset to $0 at the start of each year, and you can update your goal anytime.
+                    }
+                >
+                    <Modal.Header>Edit profile</Modal.Header>
+                    <Modal.Content>
+                        <Responsive minWidth={767}>
+                            <Header as='h5'>Profile photo</Header>
+                        </Responsive>
+                        <input
+                            id="myInput"
+                            accept="image/png, image/jpeg, image/jpg"
+                            type="file"
+                            ref={(ref) => this.upload = ref}
+                            style={{ display: 'none' }}
+                            onChange={(e) => this.handleUpload(event)}
+                        />
+                        <div className='editProfileModal'>
+                            <div className='editProfilePhotoWrap'>
+                                <div className="userProfileImg">
+                                    <Image src={imageView} height="125px" width="125px" />
                                 </div>
+                                <div className='editprflButtonWrap'>
+                                    <Button
+                                        as="a"
+                                        className='success-btn-rounded-def'
+                                        onClick={(e) => this.upload.click()}
+                                    >
+                                        Change profile photo
+                                </Button>
+                                    {!isDefaultImage
+                                        && (
+                                            <a
+                                                className='remvephoto'
+                                                onClick={this.handleRemoveProfilePhoto}
+                                            >Remove photo
+                                            </a>
+                                        )}
+                                </div>
+                            </div>
+                            <Form>
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column computer={8} mobile={16}>
+                                            <Form.Field>
+                                                <Form.Input
+                                                    fluid
+                                                    label="First name"
+                                                    placeholder="First name"
+                                                    id="firstName"
+                                                    name="firstName"
+                                                    maxLength="30"
+                                                    onChange={this.handleInputChange}
+                                                    onBlur={this.handleInputOnBlur}
+                                                    error={!validity.isFirstNameNotNull}
+                                                    value={firstName}
+                                                />
+                                                <FormValidationErrorMessage
+                                                    condition={!validity.isFirstNameNotNull}
+                                                    errorMessage="Please input your first name"
+                                                />
+                                            </Form.Field>
+                                        </Grid.Column>
+                                        <Grid.Column computer={8} mobile={16}>
+                                            <Form.Field>
+                                                <Form.Input
+                                                    fluid
+                                                    label="Last name"
+                                                    id="lastName"
+                                                    name="lastName"
+                                                    placeholder="Last name"
+                                                    maxLength="30"
+                                                    onChange={this.handleInputChange}
+                                                    onBlur={this.handleInputOnBlur}
+                                                    error={!validity.isLastNameNotNull}
+                                                    value={lastName}
+                                                />
+                                                <FormValidationErrorMessage
+                                                    condition={!validity.isLastNameNotNull}
+                                                    errorMessage="Please input your last name"
+                                                />
+                                            </Form.Field>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
                                 <Form.Field>
                                     <Form.Input
-                                        placeholder="Giving Goal"
-                                        id="givingGoal"
-                                        name="givingGoal"
-                                        maxLength="11"
+                                        fluid
+                                        label="Display Name"
+                                        id="displayName"
+                                        name="displayName"
+                                        placeholder="Display name"
+                                        maxLength="30"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
-                                        value={formatedGoalAmount}
-                                        error={!isValidGivingGoalAmount(validity)}
+                                        error={!validity.isDisplayNameNotNull}
+                                        value={displayName}
                                     />
                                     <FormValidationErrorMessage
-                                        condition={!validity.isAmountLessThanOneBillion}
-                                        errorMessage="Please choose an amount less than one billion dollars"
+                                        condition={!validity.isDisplayNameNotNull}
+                                        errorMessage="Please input your display name"
                                     />
                                 </Form.Field>
-                                <div className='price_btn'>
-                                    <Button basic size="tiny" active={activeAmount === 100}  onClick={() => this.handleAmount(100)}>$100</Button>
-                                    <Button basic size="tiny" active={activeAmount === 500}  onClick={() => this.handleAmount(500)}>$500</Button>
-                                    <Button basic size="tiny" active={activeAmount === 1000}  onClick={() => this.handleAmount(1000)}>$1,000</Button>
+                                <Form.Field>
+                                    <Form.TextArea
+                                        label="Bio"
+                                        placeholder="Bio..."
+                                        id="about"
+                                        name="about"
+                                        maxLength="1000"
+                                        onChange={this.handleInputChange}
+                                        onBlur={this.handleInputOnBlur}
+                                        value={about}
+                                    />
+                                    <div className="field-info">{aboutCharCount} of 1000 characters left</div>
+                                </Form.Field>
+                                <Form.Field>
+                                    <label htmlFor="location">
+                                        Location
+                                </label>
+                                    <Form.Field
+                                        single
+                                        control={Select}
+                                        className="locationSearchDropdown"
+                                        style={{ minHeight: 'auto' }}
+                                        id="location"
+                                        name="location"
+                                        onClick={() => {
+                                            document.querySelector('#location input').focus()
+                                        }}
+                                        onChange={this.handleLocationChange}
+                                        onSearchChange={this.handleLocationSearchChange}
+                                        options={locationOptions}
+                                        search={this.handleCustomSearch}
+                                        selection
+                                        searchQuery={searchQuery}
+                                        placeholder="Search location"
+                                        loading={locationLoader}
+                                        value={locationDropdownValue}
+                                        selectOnBlur={false}
+                                        selectOnNavigation={false}
+                                    />
+                                </Form.Field>
+                                <div className="field">
+                                    <label for='form-input-control-givingGoal'>
+                                        Giving goal
+                                </label>
+                                    <div className='label-info'>
+                                        Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account throughout the calendar year. Goals are reset to $0 at the start of each year, and you can update your goal anytime.
                                 </div>
-                            </div>
-                            <div className='btnWrp'>
-                                <Button
-                                    className="blue-btn-rounded-def save"
-                                    onClick={this.handleSubmit}
-                                    disabled={buttonClicked}
-                                >
-                                    Save
+                                    <ModalContent
+                                        showDollarIcon={false}
+                                        showLabel={false}
+                                        handleInputChange={this.handleInputChange}
+                                        handleInputOnBlurGivingGoal={this.handleInputOnBlur}
+                                        givingGoal={formatedGoalAmount}
+                                        validity={validity}
+                                        currentYear={""}
+                                    />
+                                    <div className='price_btn'>
+                                        <Button basic size="tiny" active={activeAmount === 100} onClick={() => this.handleAmount(100)}>$100</Button>
+                                        <Button basic size="tiny" active={activeAmount === 500} onClick={() => this.handleAmount(500)}>$500</Button>
+                                        <Button basic size="tiny" active={activeAmount === 1000} onClick={() => this.handleAmount(1000)}>$1,000</Button>
+                                    </div>
+                                </div>
+                                <div className='btnWrp'>
+                                    <Button
+                                        className="blue-btn-rounded-def save"
+                                        onClick={this.handleSubmit}
+                                        disabled={buttonClicked}
+                                    >
+                                        Save
                                 </Button>
-                            </div>
-                        </Form>
-                    </div>
-                </Modal.Content>
-            </Modal>
+                                </div>
+                            </Form>
+                        </div>
+                    </Modal.Content>
+                </Modal>
             </Fragment>
         );
     }
