@@ -118,7 +118,7 @@ const getMainNavItems = (accountType, slug) => {
         });
         menuLinks.push({
             location: '/user/recurring-donations',
-            name: 'Manage deposits and giving',
+            name: 'Manage deposits and gifts',
             isExternal: false,
         });
         menuLinks.push({
