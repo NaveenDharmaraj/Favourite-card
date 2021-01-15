@@ -147,6 +147,19 @@ class MyTags extends React.Component {
         getTagsByText(dispatch, id, searchText, false, pageNumber, loadedData);
     }
 
+    handleOnClear = () => {
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        const searchWord = '';
+        dispatch({
+            type: actionType.USER_PROFILE_RESET_TAG_LIST,
+        });
+        getTagsByText(dispatch, id, searchWord, false);
+    }
     renderTags(tagsList, showSeeMore = false) {
         const {
             userTags,
@@ -219,6 +232,9 @@ class MyTags extends React.Component {
             userFindTagsList,
             userTagsFollowedList,
         } = this.props;
+        const {
+            searchWord
+        } = this.state;
         return (
             <Grid.Column computer={6} mobile={16}>
                 <Header as='h4'>
@@ -235,6 +251,7 @@ class MyTags extends React.Component {
                         fluid
                         onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleTagsSearch() : null; }}
                     />
+                    {searchWord.length >= 1 && <Icon name='close' onClick={()=>this.handleOnClear()}/>}
                     <a
                         className="search-btn"
                         onClick={this.handleTagsSearch}
