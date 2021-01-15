@@ -123,7 +123,7 @@ class ProfilePrivacySettings extends React.Component {
                             <List.Content>
                                 <List.Header as="a" onClick={() => this.handlePrivacyChange(2)}>
                                     <Icon className="lock" />
-                                    Only me
+                                    Only Me
                                 </List.Header>
                             </List.Content>
                         </List.Item>

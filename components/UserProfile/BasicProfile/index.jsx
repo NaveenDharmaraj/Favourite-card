@@ -403,7 +403,7 @@ class UserBasicProfile extends React.Component {
                             </Modal.Header>
                             <Modal.Content>
                                 <p>
-                                    Are you sure you want to unfriend this person?
+                                You and {first_name} {last_name} will no longer be friends on Charitable Impact.
                                 </p>
                                 <div className="block-unfriend-Modal-buttons">
                                     <Button
