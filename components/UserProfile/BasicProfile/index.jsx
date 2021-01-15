@@ -228,6 +228,7 @@ class UserBasicProfile extends React.Component {
         const {
             dispatch
         } = this.props;
+        e.preventDefault()
         try {
             const data = document.getElementById('txtDeeplinkUser');
             data.type = 'text';
@@ -236,7 +237,7 @@ class UserBasicProfile extends React.Component {
             data.type = 'hidden';
             e.target.focus();
             const statusMessageProps = {
-                message: 'Copied to clipboard',
+                message: 'Link copied to clipboard',
                 type: 'success',
             };
             dispatch(updateUserProfileToastMsg(statusMessageProps));
@@ -404,7 +405,7 @@ class UserBasicProfile extends React.Component {
                             </Modal.Header>
                             <Modal.Content>
                                 <p>
-                                    Are you sure you want to unfriend this person?
+                                You and {first_name} {last_name} will no longer be friends on Charitable Impact.
                                 </p>
                                 <div className="block-unfriend-Modal-buttons">
                                     <Button

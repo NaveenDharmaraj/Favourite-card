@@ -43,6 +43,7 @@ import {
     getFriendsByText,
     clearFindFriendsList,
     actionTypes,
+    updateUserProfileToastMsg,
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 import {
@@ -330,14 +331,25 @@ class UserFriendList extends React.Component {
     }
 
     handleCopyLink = (e) => {
+        const {
+            dispatch
+        } = this.props;
         this.textArea.select();
         document.execCommand('copy');
         e.target.focus();
-        this.setState({
-            errorMessage: null,
-            successMessage: 'Copied to clipboard',
-            statusMessage: true,
-        });
+        try {
+            const statusMessageProps = {
+                message: 'Link copied to clipboard',
+                type: 'success',
+            };
+            dispatch(updateUserProfileToastMsg(statusMessageProps));
+        } catch (err) {
+            const statusMessageProps = {
+                message: 'Failed to copy to clipboard',
+                type: 'error',
+            };
+            dispatch(updateUserProfileToastMsg(statusMessageProps));
+        }
     };
 
     handleShareClick(type) {

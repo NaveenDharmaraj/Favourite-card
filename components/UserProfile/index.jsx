@@ -72,6 +72,7 @@ class UserProfileWrapper extends React.Component {
             },
             type: 'USER_PROFILE_PREVIEW_MODE',
         });
+        window.scrollTo(0,0);
     }
 
     hidePreviewPage() {

@@ -13,7 +13,7 @@ const ActiveLink = ({
 
     let className = child.props.className || '';
     const toolsArr = ['/user/recurring-gifts', '/user/giving-goals'];
-    if ((child.props.children === 'Manage deposits and giving' && toolsArr.includes(router.asPath))
+    if ((child.props.children === 'Manage deposits and gifts' && toolsArr.includes(router.asPath))
         || (child.props.children === 'Tax receipts' && router.asPath.includes('/user/tax-receipts'))) {
         className = 'active';
     }

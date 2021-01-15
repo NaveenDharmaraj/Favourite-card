@@ -339,7 +339,7 @@
         }
       }
       .noData.ggManage{
-        padding: 40px 0;
+        padding: 40px 30px;
         position: relative;
         &::after{
           content: '';
@@ -371,7 +371,7 @@
         }
       }
       .ggJoin.noData{
-        padding: 40px 0;
+        padding: 40px 30px;
         position: relative;
         &::after{
           content: '';
@@ -392,7 +392,7 @@
         }
       }
       .ggFavorite.noData{
-        padding: 30px 0;
+        padding: 30px 30px;
         position: relative;
         &::after{
           content: '';
@@ -708,6 +708,7 @@
     }
 
     @media only screen and (max-width:767px) {
+      width: 95%;
       .header-note{
         margin:6px 0 20px;
       }
@@ -1255,6 +1256,13 @@
       }
     }
   }
+  @media only screen and (max-width:788px) and (min-width:768px) {
+    .cardwrap{
+      .ui.card{
+        height: 160px;
+      }
+    }
+  }
   @media only screen and (max-width:767px) {
     margin-top: 30px;
     .tabHeader{
@@ -1593,6 +1601,11 @@
 .previewHeader{
   width: 100%;
   background-color: @purple;
+  position: fixed;
+  top: 77px;
+  left: 0;
+  right: 0;
+  z-index: 4;
   .ui.container{
     height: 100%;
     .ui.grid{
@@ -1702,6 +1715,9 @@
       }
     }
   }
+  +.ui.container{
+    padding-top: 28px;
+  }
   @media only screen and (max-width:767px) {
     .ui.container .ui.grid {
       .row{
@@ -1719,12 +1735,13 @@
       }
     }   
     +.ui.container{
+      padding-top: 47px;
       .userProfileScreen .userHeaderBanner{
         margin-top: 0px;
       }
     }
   }
-  
+ 
 }
 .ui.dimmer{
   .chimp-modal.inviteModal{
