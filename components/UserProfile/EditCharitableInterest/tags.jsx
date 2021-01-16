@@ -159,6 +159,9 @@ class MyTags extends React.Component {
             type: actionType.USER_PROFILE_RESET_TAG_LIST,
         });
         getTagsByText(dispatch, id, searchWord, false);
+        this.setState({
+            searchWord: "",
+        });
     }
     renderTags(tagsList, showSeeMore = false) {
         const {
@@ -249,9 +252,10 @@ class MyTags extends React.Component {
                         placeholder="Search topics"
                         onChange={this.handleInputChange}
                         fluid
+                        value={searchWord}
                         onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleTagsSearch() : null; }}
                     />
-                    {searchWord.length >= 1 && <Icon name='close' onClick={()=>this.handleOnClear()}/>}
+                    {searchWord.length >= 1 && <Icon name='close' onClick={() => this.handleOnClear()} />}
                     <a
                         className="search-btn"
                         onClick={this.handleTagsSearch}
