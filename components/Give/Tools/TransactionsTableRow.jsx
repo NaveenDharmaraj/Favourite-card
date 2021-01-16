@@ -17,8 +17,8 @@ import {
 import dynamic from 'next/dynamic'
 
 const EditMonthlyDepositModal = dynamic(
-  () => import('./EditMonthlyDepositModal'),
-  { ssr: false }
+    () => import('./EditMonthlyDepositModal'),
+    { ssr: false }
 )
 
 class TransactionTableRow extends React.Component {
@@ -132,9 +132,9 @@ class TransactionTableRow extends React.Component {
                     {(fourthColoumn) && (<Table.Cell>{fourthColoumn}</Table.Cell>)}
                     {(fifthColoumn) && (<Table.Cell>{fifthColoumn}</Table.Cell>)}
                     <Table.Cell>
-                        <EditMonthlyDepositModal 
-                            currentMonthlyDepositAmount = {secondColoumn}
-                            paymentInstrumentId = {paymentInstrumentId}
+                        <EditMonthlyDepositModal
+                            currentMonthlyDepositAmount={secondColoumn}
+                            paymentInstrumentId={paymentInstrumentId}
                         />
                         {deleteModal}
                     </Table.Cell>
@@ -173,7 +173,10 @@ class TransactionTableRow extends React.Component {
                             <Table.Footer>
                                 <Table.Row>
                                     <Table.Cell colSpan='2'>
-                                        <EditMonthlyDepositModal />
+                                        <Edit
+                                            currentMonthlyDepositAmount={secondColoumn}
+                                            paymentInstrumentId={paymentInstrumentId}
+                                        />
                                         {deleteModal}
                                     </Table.Cell>
                                 </Table.Row>

@@ -5,15 +5,17 @@ import _isEmpty from 'lodash/isEmpty';
 import _find from 'lodash/find';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux'
-
+import dynamic from 'next/dynamic';
 
 import DonationAmountField from "../DonationAmountField";
 import PaymentOptions from '../../shared/PaymentInstruments';
 import { formatAmount, populatePaymentInstrument, validateDonationForm } from "../../../helpers/give/utils";
 import { getAllActivePaymentInstruments } from '../../../actions/give';
-import NewCreditCard from "../../shared/NewCreditCard";
 import { findItemBasedOnId } from "../../../helpers/utils";
 
+const NewCreditCard = dynamic(() => import('../../shared/NewCreditCard'), {
+    ssr: false
+});
 const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstrumentId }) => {
     const formatMessage = t;
     const intializeValidations = {
@@ -227,7 +229,9 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
 
 
 EditMonthlyDepositModal.defaultProps = {
-
+    currentMonthlyDepositAmount: '',
+    t: () => { },
+    paymentInstrumentId: ''
 };
 
 export default withTranslation(['donation', 'giveCommon'])(EditMonthlyDepositModal);

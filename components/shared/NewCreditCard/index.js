@@ -29,7 +29,6 @@ class NewCreditCard extends React.Component {
             inValidExpirationDate: true,
             inValidNameOnCard: true,
             isDefaultCard: false,
-            //showCreditCard: props.isCreditCardModalOpen,
         }
     }
 
@@ -264,7 +263,21 @@ class NewCreditCard extends React.Component {
 }
 
 NewCreditCard.defaultProps = {
-    isCreditCardModalOpen: false
+    flowObject: {
+        cardHolderName: '',
+        giveData: {
+            giveFrom: {},
+            giveTo: {
+                id: '',
+                type: 'user'
+            },
+        },
+        stripeCreditCard: '',
+        type: 'donations'
+    },
+    isCreditCardModalOpen: false,
+    handleCreditCardModal: () => { },
+    t: () => { }
 };
 
 export default withTranslation(['common'])(NewCreditCard);
