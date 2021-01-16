@@ -55,6 +55,7 @@ function DonationsTable(props) {
                     transactionType={attributes.transactionType}
                     deleteTransaction={deleteTransaction}
                     index={index}
+                    paymentInstrumentId={attributes.paymentInstrumentId || ''}
                 />);
             });
         }

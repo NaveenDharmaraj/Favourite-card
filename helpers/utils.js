@@ -254,10 +254,19 @@ const validateDate = (dateStr = '') => {
     return isValid;
 };
 
+/**
+ * Finding a particular item from a list of objects based on the id 
+ * @param {array} options Array of objects
+ * @param {string | number} expectedId The id that needs to be matched and returned.
+ * @returns {object} The matched object from the array.
+ */
+const findItemBasedOnId = (options, expectedId) => options.find(({ id }) => id == expectedId);
+
 export {
     getMainNavItems,
     isFalsy,
     distanceOfTimeInWords,
+    findItemBasedOnId,
     renderText,
     renderTextByCharacter,
     redirectIfNotUSer,
