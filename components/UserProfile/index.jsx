@@ -197,7 +197,7 @@ class UserProfileWrapper extends React.Component {
                                                     className='white-btn-rounded-def'
                                                     onClick={this.hidePreviewPage}
                                                 >
-                                                    Return to personal profile view
+                                                    Return to your personal profile view
                                             </Button>
                                             </div>
                                         </Grid.Column>

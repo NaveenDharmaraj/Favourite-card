@@ -78,7 +78,7 @@ const UserGoal = (props) => {
             {!_isEmpty(giving_goal_amt)
                 ? (
                     <Fragment>
-                        <p>contributed to your <span>{formatCurrency(giving_goal_amt, language, currency)}</span> goal this year</p>
+                        <p>contributed towards this  year's <span>{formatCurrency(giving_goal_amt, language, currency)}</span> goal</p>
                         <Progress percent={goalPercent} />
                     </Fragment>
                 )
