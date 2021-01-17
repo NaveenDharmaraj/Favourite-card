@@ -173,7 +173,7 @@ class TransactionTableRow extends React.Component {
                             <Table.Footer>
                                 <Table.Row>
                                     <Table.Cell colSpan='2'>
-                                        <Edit
+                                        <EditMonthlyDepositModal
                                             currentMonthlyDepositAmount={secondColoumn}
                                             paymentInstrumentId={paymentInstrumentId}
                                         />
