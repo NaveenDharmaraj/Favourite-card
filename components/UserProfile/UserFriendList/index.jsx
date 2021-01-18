@@ -634,6 +634,7 @@ class UserFriendList extends React.Component {
             showSearchResultDropdown,
             friendDropdownList,
         } = this.state;
+        const friendText = (number_of_friends == 1) ? 'friend' : 'friends';
         const activeIndex = this.props.friendPageStep === 'findFriends' ? 1 : 0;
         // const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         const isMyProfile = (profile_type === 'my_profile');
@@ -894,7 +895,7 @@ class UserFriendList extends React.Component {
                                             )}
 
                                         <div className="userfriends">
-                                            <Header as='h5'><span>{number_of_friends} friends</span></Header>
+                                            <Header as='h5'><span>{number_of_friends} {friendText}</span></Header>
                                         </div>
                                     </div>
                                     {!isMyFriendsPage

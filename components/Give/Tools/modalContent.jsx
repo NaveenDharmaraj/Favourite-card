@@ -49,6 +49,10 @@ function ModalContent(props) {
                 condition={validity.doesAmountExist && !validity.isAmountMoreThanOneDollor}
                 errorMessage="Please input a value more than 1$"
             />
+             <FormValidationErrorMessage
+                condition={!validity.doesAmountExist}
+                errorMessage="Please input a value more than 1$"
+            />
             <FormValidationErrorMessage
                 condition={validity.doesAmountExist && !validity.isValidPositiveNumber}
                 errorMessage="Please input a valid positive number"
