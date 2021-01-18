@@ -104,6 +104,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
             setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
             setValidity(validateDonationForm('donationAmount', value, validity));
         }
+        setValidity(validateDonationForm(name, value, validity));
     };
 
     const handlePresetAmountClick = (event, data) => {
@@ -142,9 +143,10 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
     /**
      * handling credit card modal close .
      * @param {boolean} callPaymentInstrumentListApi On succes of adding new credit card call PaymentInstrumentListApi.
+     * @param {string} id newly created credit card id.
      * @returns {void} .
      */
-    const handleCreditCardModal = (callPaymentInstrumentListApi = false) => {
+    const handleCreditCardModal = (callPaymentInstrumentListApi = false, id = "") => {
         setIsCreditCardModalOpen(false);
         setShowEditModal(true);
         setCurrentCardSelected(paymentInstrumentId);
@@ -153,7 +155,8 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
             getAllActivePaymentInstruments(currentUser.id, dispatch, 'user')
                 .then(({ data }) => {
                     setPaymentInstrumenOptions(populatePaymentInstrument(data, formatMessage));
-                    setLoader(false)
+                    setLoader(false);
+                    setCurrentCardSelected(id);
                 })
                 .catch(() => {
                     // handle Error

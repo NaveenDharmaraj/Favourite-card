@@ -166,7 +166,7 @@ class NewCreditCard extends React.Component {
             } = this.props;
             flowObject.cardHolderName = cardHolderName;
             flowObject.stripeCreditCard = stripeCreditCard;
-            dispatch(addNewCardAndLoad(flowObject, isDefaultCard)).then(() => {
+            dispatch(addNewCardAndLoad(flowObject, isDefaultCard)).then(({data}) => {
                 const statusMessageProps = {
                     message: 'Payment method added',
                     type: 'success',
@@ -179,7 +179,7 @@ class NewCreditCard extends React.Component {
                     },
                     type: 'TRIGGER_UX_CRITICAL_ERROR',
                 });
-                handleCreditCardModal(true);
+                handleCreditCardModal(true, data.id);
             }).catch((error) => {
                 this.setState({
                     buttonClicked: false,
