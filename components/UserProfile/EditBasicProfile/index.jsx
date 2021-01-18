@@ -510,7 +510,7 @@ class EditBasicProfile extends React.Component {
                                             <a
                                                 className='remvephoto'
                                                 onClick={this.handleRemoveProfilePhoto}
-                                            >Remove photo
+                                            >Remove current photo
                                             </a>
                                         )}
                                 </div>
@@ -534,7 +534,7 @@ class EditBasicProfile extends React.Component {
                                                 />
                                                 <FormValidationErrorMessage
                                                     condition={!validity.isFirstNameNotNull}
-                                                    errorMessage="Please input your first name"
+                                                    errorMessage="Enter your first name"
                                                 />
                                             </Form.Field>
                                         </Grid.Column>
@@ -554,7 +554,7 @@ class EditBasicProfile extends React.Component {
                                                 />
                                                 <FormValidationErrorMessage
                                                     condition={!validity.isLastNameNotNull}
-                                                    errorMessage="Please input your last name"
+                                                    errorMessage="Enter your last name"
                                                 />
                                             </Form.Field>
                                         </Grid.Column>
@@ -575,7 +575,7 @@ class EditBasicProfile extends React.Component {
                                     />
                                     <FormValidationErrorMessage
                                         condition={!validity.isDisplayNameNotNull}
-                                        errorMessage="Please input your display name"
+                                        errorMessage="Enter your display name"
                                     />
                                 </Form.Field>
                                 <Form.Field>
