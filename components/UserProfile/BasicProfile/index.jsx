@@ -316,7 +316,7 @@ class UserBasicProfile extends React.Component {
         } = this.state;
         let userProfileDeeplink = '';
         const isMyProfile = (profile_type === 'my_profile');
-        const friendText = (number_of_friends > 1) ? 'friends' : 'friend';
+        const friendText = (number_of_friends == 1) ? 'friend' : 'friends';
         const showUserFriends = (friends_visibility === 0 ||
             (profile_type === 'friends_profile' && friends_visibility === 1) ||
             (isMyProfile && !isPreviewMode) || (isPreviewMode && friends_visibility === previewValue));
