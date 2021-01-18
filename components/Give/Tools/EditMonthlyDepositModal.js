@@ -102,7 +102,6 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
         if ((name === 'donationAmount') && !_isEmpty(value) && value.match(isValidNumber)) {
             setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
-            setValidity(validateDonationForm('donationAmount', value, validity));
         }
         setValidity(validateDonationForm(name, value, validity));
     };
