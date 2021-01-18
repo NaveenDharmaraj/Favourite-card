@@ -639,6 +639,7 @@ class UserFriendList extends React.Component {
         // const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         const isMyProfile = (profile_type === 'my_profile');
         // const headerText = isMyProfile ? 'Your friends' : (`${display_name}'s friends`);
+
         let panes = [
             {
                 menuItem: 'Your friends',
@@ -712,34 +713,35 @@ class UserFriendList extends React.Component {
                     menuItem: 'Find friends',
                     render: () => (
                         <Tab.Pane>
-
                             <div className='findFriendsSearch'>
-                                <Search
-                                    open={showSearchResultDropdown}
-                                    fluid
-                                    placeholder="Find friends on Charitable Impact"
-                                    {...(showDropdownLoader ? ({ loading: true }) : undefined)}
-                                    onResultSelect={this.handleResultSelect}
-                                    onSearchChange={this.handleTypeAheadSearch}
-                                    onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch() : null; }}
-                                    results={friendDropdownList}
-                                    value={friendSearchText}
-                                    minCharacters={4}
-                                    showNoResults={showDropdownLoader ? false : true}
-                                    icon={
-                                        <Fragment>
-                                            {friendSearchText && <Icon
-                                                className='delete'
-                                                onClick={this.clearSearch}
-                                            />
-                                            }
-                                            <Icon
-                                                className='search'
-                                                onClick={this.handleFriendSearch}
-                                            />
-                                        </Fragment>
-                                    }
-                                />
+                                <div className={(showSearchResultDropdown) ? 'overflowScrollbarFx' : ''}>
+                                    <Search
+                                        open={showSearchResultDropdown}
+                                        fluid
+                                        placeholder="Find friends on Charitable Impact"
+                                        {...(showDropdownLoader ? ({ loading: true }) : undefined)}
+                                        onResultSelect={this.handleResultSelect}
+                                        onSearchChange={this.handleTypeAheadSearch}
+                                        onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch() : null; }}
+                                        results={friendDropdownList}
+                                        value={friendSearchText}
+                                        minCharacters={4}
+                                        showNoResults={showDropdownLoader ? false : true}
+                                        icon={
+                                            <Fragment>
+                                                {friendSearchText && <Icon
+                                                    className='delete'
+                                                    onClick={this.clearSearch}
+                                                />
+                                                }
+                                                <Icon
+                                                    className='search'
+                                                    onClick={this.handleFriendSearch}
+                                                />
+                                            </Fragment>
+                                        }
+                                    />
+                                </div>
                             </div>
                             <div className="findFriendswrapper">
                                 {userProfileFindFriendsLoader ?
@@ -779,7 +781,7 @@ class UserFriendList extends React.Component {
                                                 <p className='invite_text_2'>Your discoverability can be changed in Account Settings.</p>
                                                 <Button className='blue-btn-rounded-def' onClick={this.showInviteModal}>
                                                     Invite friends
-                                </Button>
+                                                </Button>
                                                 <Modal
                                                     size="tiny"
                                                     dimmer="inverted"
@@ -794,7 +796,7 @@ class UserFriendList extends React.Component {
                                                         <div className='inviteField'>
                                                             <label>
                                                                 Enter as many email addresses as you like, separated by a comma:
-                                            </label>
+                                                            </label>
                                                             <div className='fieldWrap'>
                                                                 <div className='label-input-wrap'>
                                                                     <div className="email-labels">
@@ -827,7 +829,7 @@ class UserFriendList extends React.Component {
                                                                     disabled={inviteButtonClicked}
                                                                 >
                                                                     Invite
-                                                </Button>
+                                                                </Button>
                                                             </div>
                                                         </div>
                                                         <div className="inviteField copylink">
@@ -846,7 +848,7 @@ class UserFriendList extends React.Component {
                                                                     onClick={this.handleCopyLink}
                                                                 >
                                                                     Copy link
-                                                </Button>
+                                                                </Button>
                                                             </div>
                                                         </div>
 

@@ -563,7 +563,7 @@ class EditBasicProfile extends React.Component {
                                 <Form.Field>
                                     <Form.Input
                                         fluid
-                                        label="Display Name"
+                                        label="Display name"
                                         id="displayName"
                                         name="displayName"
                                         placeholder="Display name"
@@ -581,7 +581,7 @@ class EditBasicProfile extends React.Component {
                                 <Form.Field>
                                     <Form.TextArea
                                         label="Bio"
-                                        placeholder="Bio..."
+                                        placeholder="Tell us a bit about yourself."
                                         id="about"
                                         name="about"
                                         maxLength="1000"

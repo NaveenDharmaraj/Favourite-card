@@ -231,7 +231,7 @@ class Privacy extends React.Component {
                                 </Button>
                             </List.Content>
                         </div>  
-                        <Responsive maxWidth={768} className='moblockdate'>
+                        <Responsive maxWidth={767} className='moblockdate'>
                             {blockedDate}
                         </Responsive>
                     </List.Item>
