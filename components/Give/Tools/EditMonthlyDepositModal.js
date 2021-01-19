@@ -3,13 +3,14 @@ import { Button, Dropdown, Form, Input, Modal } from "semantic-ui-react";
 import { withTranslation } from '../../../i18n';
 import _isEmpty from 'lodash/isEmpty';
 import _find from 'lodash/find';
+import _every from 'lodash/every';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic';
 
 import DonationAmountField from "../DonationAmountField";
 import PaymentOptions from '../../shared/PaymentInstruments';
-import { formatAmount, populatePaymentInstrument, validateDonationForm } from "../../../helpers/give/utils";
+import { formatAmount, isValidGiftAmount, populatePaymentInstrument, validateDonationForm } from "../../../helpers/give/utils";
 import { getAllActivePaymentInstruments } from '../../../actions/give';
 import { findItemBasedOnId } from "../../../helpers/utils";
 
@@ -33,7 +34,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
     // boolean for showing edit monthly modal
     const [showEditModal, setShowEditModal] = useState(false);
 
-    // intializing the default amount value in edit modal
+    // state for amount value in edit modal
     const [amount, setAmount] = useState(formatedCurrentMonthlyDepositAmount);
 
     // initializing payment options with empty array
@@ -42,14 +43,17 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
     // intializing validity for amount and payment
     const [validity, setValidity] = useState(intializeValidations);
 
-    // intializing loader for payment option to be fetched
+    // state for payment option
     const [loader, setLoader] = useState(true);
 
-    // intializing the default credit card to be selected
+    // state for current card select 
     const [currentCardSelected, setCurrentCardSelected] = useState(paymentInstrumentId);
 
     // boolean for showing add new credit card modal
     const [isCreditCardModalOpen, setIsCreditCardModalOpen] = useState(false);
+
+    //state for disable button
+    const [disableButton, setDisableButton] = useState(true);
 
     // initializing the flow object for edit flow
     const flowObject = {
@@ -91,6 +95,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
                     setIsCreditCardModalOpen(true);
                 }
         }
+        setDisableButton(false)
     };
 
     const handleInputOnBlur = (event, data) => {
@@ -103,7 +108,8 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         if ((name === 'donationAmount') && !_isEmpty(value) && value.match(isValidNumber)) {
             setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
         }
-        setValidity(validateDonationForm(name, value, validity));
+        const validitions = validateDonationForm(name, value, validity)
+        setValidity({ ...validitions });
     };
 
     const handlePresetAmountClick = (event, data) => {
@@ -135,9 +141,21 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         setLoader(false);
     }
 
+    // validating the form
+    const validateForm = () => {
+        let validation;
+        validation = validateDonationForm('donationAmount', amount, validity);
+        validation = validateDonationForm('creditCard', {value: currentCardSelected}, validity);
+        setValidity({ ...validation });
+        const validationsResponse = _every(validation);
+        return validationsResponse;
+    }
     //handling save button 
     const handleEditSave = () => {
+        setDisableButton(true);
+        if (validateForm()){
 
+        }
     }
     /**
      * handling credit card modal close .
@@ -219,6 +237,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
                         <Button
                             className="blue-btn-rounded-def"
                             onClick={() => handleEditSave()}
+                            disabled={disableButton || !isValidGiftAmount(validity)}
                         >
                             Save
                             </Button>
