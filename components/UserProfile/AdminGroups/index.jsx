@@ -17,6 +17,7 @@ import {
 } from 'prop-types';
 
 import {
+    actionTypes,
     getUserAdminGroup,
 } from '../../../actions/userProfile';
 import PlaceholderGrid from '../../shared/PlaceHolder';
@@ -69,7 +70,15 @@ class UserAdminGroupList extends React.Component {
         } = this.state;
         _isEmpty(adminData) && dispatch(getUserAdminGroup(friendUserId, id, currentPageNumber, false));
     }
-
+    componentWillUnmount() {
+        const {
+            dispatch
+        } = this.props;
+        dispatch({
+            type: actionTypes.USER_PROFILE_ADMIN_GROUP_CLEAR_DATA,
+            payload: {},
+        })
+    }
     showAdminCard() {
         const {
             userProfileAdminGroupData: {

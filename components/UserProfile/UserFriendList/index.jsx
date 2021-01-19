@@ -496,23 +496,7 @@ class UserFriendList extends React.Component {
     }
 
     handleResultSelect(event, data) {
-        const {
-            dispatch,
-            friendTypeAheadData,
-        } = this.props;
-        const selectedUser = [];
-        this.setState({
-            friendSearchText: data.result.title,
-        });
-        selectedUser.push(friendTypeAheadData[_findIndex(friendTypeAheadData, (friend) => friend.attributes.user_id === data.result.id)]);
-        const fsa = {
-            payload: {
-                count: 1,
-                data: selectedUser,
-            },
-            type: 'USER_PROFILE_FIND_FRIENDS',
-        }
-        dispatch(fsa);
+        Router.pushRoute(`/users/profile/${data.result.id}`)
     }
 
     onPageChanged(event, data) {
