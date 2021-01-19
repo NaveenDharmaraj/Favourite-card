@@ -71,6 +71,8 @@ class TransactionTableRow extends React.Component {
             paymentInstrumentId,
             modalHeader,
             index,
+            showEditButton,
+            transactionId,
         } = this.props;
 
         const {
@@ -132,10 +134,12 @@ class TransactionTableRow extends React.Component {
                     {(fourthColoumn) && (<Table.Cell>{fourthColoumn}</Table.Cell>)}
                     {(fifthColoumn) && (<Table.Cell>{fifthColoumn}</Table.Cell>)}
                     <Table.Cell>
-                        <EditMonthlyDepositModal
+                        {showEditButton && <EditMonthlyDepositModal
                             currentMonthlyDepositAmount={secondColoumn}
                             paymentInstrumentId={paymentInstrumentId}
+                            transactionId={transactionId}
                         />
+                        }
                         {deleteModal}
                     </Table.Cell>
                 </Responsive>
@@ -188,5 +192,9 @@ class TransactionTableRow extends React.Component {
             </Fragment>
         );
     }
+};
+
+TransactionTableRow.defaultProps = {
+    showEditButton : false,
 }
 export default TransactionTableRow;

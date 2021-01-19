@@ -17,7 +17,7 @@ import { findItemBasedOnId } from "../../../helpers/utils";
 const NewCreditCard = dynamic(() => import('../../shared/NewCreditCard'), {
     ssr: false
 });
-const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstrumentId }) => {
+const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstrumentId, transactionId }) => {
     const formatMessage = t;
     const intializeValidations = {
         doesAmountExist: true,
@@ -95,7 +95,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
                     setIsCreditCardModalOpen(true);
                 }
         }
-        setDisableButton(false)
+        setDisableButton(false);
     };
 
     const handleInputOnBlur = (event, data) => {
@@ -116,8 +116,10 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         const {
             value,
         } = data;
+        const validitions = validateDonationForm('donationAmount', value, validity)
+        setValidity({ ...validitions });
         setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
-        setValidity(validateDonationForm('donationAmount', value, validity));
+        setDisableButton(false);
     }
 
     const handleEditClick = () => {
@@ -145,7 +147,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
     const validateForm = () => {
         let validation;
         validation = validateDonationForm('donationAmount', amount, validity);
-        validation = validateDonationForm('creditCard', {value: currentCardSelected}, validity);
+        validation = validateDonationForm('creditCard', { value: currentCardSelected }, validity);
         setValidity({ ...validation });
         const validationsResponse = _every(validation);
         return validationsResponse;
@@ -153,7 +155,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
     //handling save button 
     const handleEditSave = () => {
         setDisableButton(true);
-        if (validateForm()){
+        if (validateForm()) {
 
         }
     }
@@ -252,7 +254,8 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
 EditMonthlyDepositModal.defaultProps = {
     currentMonthlyDepositAmount: '',
     t: () => { },
-    paymentInstrumentId: ''
+    paymentInstrumentId: '',
+    transactionId: ''
 };
 
 export default withTranslation(['donation', 'giveCommon'])(EditMonthlyDepositModal);
