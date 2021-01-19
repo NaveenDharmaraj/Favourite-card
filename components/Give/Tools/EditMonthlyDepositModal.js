@@ -28,7 +28,6 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         isCreditCardSelected: true,
     };
     const formatedCurrentMonthlyDepositAmount = currentMonthlyDepositAmount.replace('$', '');
-
     const dispatch = useDispatch();
     const currentUser = useSelector(state => state.user.info);
 
@@ -74,11 +73,14 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         script.src = 'https://js.stripe.com/v3/';
         script.async = true;
         document.body.appendChild(script);
+        const formatedCurrentMonthlyDepositAmount = currentMonthlyDepositAmount.replace('$', '');
+        setAmount(formatedCurrentMonthlyDepositAmount);
+        setCurrentCardSelected(paymentInstrumentId);
 
         return () => {
             document.body.removeChild(script);
         }
-    }, []);
+    }, [currentMonthlyDepositAmount, paymentInstrumentId]);
     const handleInputChange = (event, data) => {
         const {
             name,
@@ -157,13 +159,14 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
     const handleEditSave = () => {
         setDisableButton(true);
         if (validateForm()) {
-                return dispatch(editUpcommingDeposit(transactionId, amount, currentCardSelected, activePage, currentUser.id)).then (() => {
-                setShowEditModal(false);
-                setAmount(formatAmount(parseFloat(amount.replace(/,/g, ''))));
-                setCurrentCardSelected(currentCardSelected);
-            }).catch(() => {
-                setShowEditModal(true);
-            })
+            return dispatch(editUpcommingDeposit(transactionId, amount, currentCardSelected, activePage, currentUser.id))
+                .then(() => {
+                    setShowEditModal(false);
+                    setAmount(formatAmount(parseFloat(amount.replace(/,/g, ''))));
+                    setCurrentCardSelected(currentCardSelected);
+                }).catch(() => {
+                    setShowEditModal(true);
+                })
         }
     }
 
