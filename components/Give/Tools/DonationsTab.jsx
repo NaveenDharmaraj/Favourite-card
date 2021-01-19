@@ -43,6 +43,7 @@ function DonationsTab(props) {
                 
             </Segment>
             <DonationsTable
+                activePage={activePage}
                 upcomingTransactions={upcomingTransactions}
                 deleteTransaction={deleteTransaction}
                 monthlyTransactionApiCall={monthlyTransactionApiCall}

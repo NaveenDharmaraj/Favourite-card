@@ -20,7 +20,11 @@ import ModalContent from './modalContent';
 import { Router } from '../../../routes';
 import { connect } from 'react-redux';
 import {validateGivingGoal} from '../../../helpers/users/utils';
-import { getUpcomingTransactions,deleteUpcomingTransaction } from '../../../actions/user';
+import {
+    getUpcomingTransactions,
+    deleteUpcomingTransaction,
+    editUpcommingDeposit,
+} from '../../../actions/user';
 import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
 import {
     formatCurrency,
