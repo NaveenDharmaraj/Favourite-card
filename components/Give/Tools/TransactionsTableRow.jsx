@@ -14,25 +14,29 @@ import {
     TableBody,
     TableCell,
 } from 'semantic-ui-react';
+import dynamic from 'next/dynamic'
+
+const EditMonthlyDepositModal = dynamic(
+    () => import('./EditMonthlyDepositModal'),
+    { ssr: false }
+)
 
 class TransactionTableRow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          showDeleteModal: false,
-          showEditModal: false,
-          activeIndexs: [] 
+            showDeleteModal: false,
+            activeIndexs: []
         }
     }
 
     closeModal = () => {
-        this.setState({ 
+        this.setState({
             showDeleteModal: false,
-            showEditModal: false 
         });
     }
 
-    closeModalAndDelete = () =>{
+    closeModalAndDelete = () => {
         const {
             transactionId,
             transactionType,
@@ -46,16 +50,16 @@ class TransactionTableRow extends React.Component {
         const { index } = titleProps;
         const { activeIndexs } = this.state;
         const newIndex = activeIndexs;
-    
+
         const currentIndexPosition = activeIndexs.indexOf(index);
         if (currentIndexPosition > -1) {
-          newIndex.splice(currentIndexPosition, 1);
+            newIndex.splice(currentIndexPosition, 1);
         } else {
-          newIndex.push(index);
+            newIndex.push(index);
         }
-    
+
         this.setState({ activeIndexs: newIndex });
-      };
+    };
 
     render() {
         const {
@@ -64,18 +68,20 @@ class TransactionTableRow extends React.Component {
             thirdColoumn,
             fourthColoumn,
             fifthColoumn,
+            paymentInstrumentId,
             modalHeader,
             index,
+            showEditButton,
+            transactionId,
         } = this.props;
-        
+
         const {
             showDeleteModal,
-            showEditModal,
-            activeIndexs, 
-          } = this.state;
+            activeIndexs,
+        } = this.state;
 
-        const deleteModal  = (
-            <Modal 
+        const deleteModal = (
+            <Modal
                 size="tiny"
                 dimmer="inverted"
                 className="chimp-modal"
@@ -93,95 +99,30 @@ class TransactionTableRow extends React.Component {
             >
                 <Modal.Header>{modalHeader}</Modal.Header>
                 <Modal.Content>
-                <Modal.Description className="font-s-16">
-                    Are you sure you want to delete the transaction?
+                    <Modal.Description className="font-s-16">
+                        Are you sure you want to delete the transaction?
                 </Modal.Description>
-                <div className="btn-wraper pt-3 text-right">
-                    <Modal.Actions>
-                        <Button
-                            className="danger-btn-rounded-def c-small"
-                            color='red'
-                            onClick={this.closeModalAndDelete}
-                        >
-                            Delete
-                        </Button>
-                        <Button
-                            className="blue-bordr-btn-round-def c-small"
-                            onClick={() => this.setState({ showDeleteModal: false })}
-                        >
-                            Cancel
-                        </Button>
-                    </Modal.Actions>
-                    </div>
-                </Modal.Content>
-            </Modal>
-        );
-
-        const editModal = (
-            <Modal 
-                size="tiny"
-                dimmer="inverted"
-                className="chimp-modal"
-                closeIcon
-                onClose={this.closeModal}
-                open={showEditModal}
-                trigger={
-                    <Button
-                        className='blue-bordr-btn-round-def c-small'
-                        onClick={() => this.setState({ showEditModal: true })}
-                    >
-                        Edit
-                    </Button>
-                }
-            >
-                <Modal.Header>Edit monthly deposit</Modal.Header>
-                <Modal.Content>
-                <Modal.Description>
-                    <Form>
-                        <Form.Field
-                            label='Amount'
-                            control={Input}
-                            icon="dollar"
-                            iconPosition="left"
-                        />
-                        <div className="price_btn">
-                            <Button  className="btn-basic-outline btntext invisionwidth" type="button" size="small" >$25</Button>
-                            <Button  className="btn-basic-outline btntext invisionwidth" type="button" size="small" >$50</Button>
-                            <Button  className="btn-basic-outline btntext invisionwidth" type="button" size="small" >$100</Button>
-                            <Button  className="btn-basic-outline btntext invisionwidth" type="button" size="small" >$500</Button>
-                        </div>
-                        <div className='field mt-2'>
-                            <label>Payment method</label>
-                            <div className="paymentMethodDropdown">
-                                <Dropdown
-                                    id="creditCard"
-                                    name="creditCard"
-                                    button
-                                    icon='cardVisa'
-                                    className="dropdownWithArrowParent icon creditCardDropDown"
-                                    selection
-                                    fluid
-                                    floating
-                                    labeled
-                                />
-                            </div>
-                        </div>
-                    
-                    </Form>
-                </Modal.Description>
-                    <div className="btn-wraper pt-2 text-right">
+                    <div className="btn-wraper pt-3 text-right">
                         <Modal.Actions>
                             <Button
-                                className="blue-btn-rounded-def"
-                                onClick={() => this.setState({ showEditModal: false })}
+                                className="danger-btn-rounded-def c-small"
+                                color='red'
+                                onClick={this.closeModalAndDelete}
                             >
-                                Save
-                            </Button>
+                                Delete
+                        </Button>
+                            <Button
+                                className="blue-bordr-btn-round-def c-small"
+                                onClick={() => this.setState({ showDeleteModal: false })}
+                            >
+                                Cancel
+                        </Button>
                         </Modal.Actions>
                     </div>
                 </Modal.Content>
             </Modal>
         );
+
         return (
             <Fragment>
 
@@ -193,7 +134,12 @@ class TransactionTableRow extends React.Component {
                     {(fourthColoumn) && (<Table.Cell>{fourthColoumn}</Table.Cell>)}
                     {(fifthColoumn) && (<Table.Cell>{fifthColoumn}</Table.Cell>)}
                     <Table.Cell>
-                        {editModal}
+                        {showEditButton && <EditMonthlyDepositModal
+                            currentMonthlyDepositAmount={secondColoumn}
+                            paymentInstrumentId={paymentInstrumentId}
+                            transactionId={transactionId}
+                        />
+                        }
                         {deleteModal}
                     </Table.Cell>
                 </Responsive>
@@ -201,10 +147,10 @@ class TransactionTableRow extends React.Component {
 
                 {/* Mobile transaction details row start (Accordion) */}
                 <Responsive maxWidth={767} className='accordionWrap'>
-                    <Accordion.Title 
+                    <Accordion.Title
                         active={activeIndexs.includes(index)}
                         index={index}
-                        onClick={this.handleClick}   
+                        onClick={this.handleClick}
                     >
                         {firstColoumn}
                     </Accordion.Title>
@@ -231,7 +177,10 @@ class TransactionTableRow extends React.Component {
                             <Table.Footer>
                                 <Table.Row>
                                     <Table.Cell colSpan='2'>
-                                        {editModal}
+                                        <EditMonthlyDepositModal
+                                            currentMonthlyDepositAmount={secondColoumn}
+                                            paymentInstrumentId={paymentInstrumentId}
+                                        />
                                         {deleteModal}
                                     </Table.Cell>
                                 </Table.Row>
@@ -243,5 +192,9 @@ class TransactionTableRow extends React.Component {
             </Fragment>
         );
     }
+};
+
+TransactionTableRow.defaultProps = {
+    showEditButton : false,
 }
 export default TransactionTableRow;

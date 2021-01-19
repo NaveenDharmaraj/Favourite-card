@@ -23,14 +23,14 @@ function DonationsTable(props) {
         upcomingTransactions,
         deleteTransaction,
         monthlyTransactionApiCall,
-        i18n:{
+        i18n: {
             language,
         },
     } = props;
     const renderTableData = () => {
         const tableBody = [];
         if (!_.isEmpty(upcomingTransactions)) {
-            upcomingTransactions.forEach((transaction,index) => {
+            upcomingTransactions.forEach((transaction, index) => {
                 const {
                     attributes,
                     id,
@@ -45,6 +45,7 @@ function DonationsTable(props) {
                 const formattedAmount = formatCurrency(attributes.amount, language, 'USD');
 
                 tableBody.push(<TransactionTableRow
+                    showEditButton={true}
                     modalHeader="Delete monthly deposit?"
                     firstColoumn={attributes.paymentInformation}
                     secondColoumn={formattedAmount}
@@ -55,6 +56,7 @@ function DonationsTable(props) {
                     transactionType={attributes.transactionType}
                     deleteTransaction={deleteTransaction}
                     index={index}
+                    paymentInstrumentId={attributes.paymentInstrumentId || ''}
                 />);
             });
         }
@@ -80,10 +82,10 @@ function DonationsTable(props) {
                                 {
                                     renderTableData()
                                 }
-                            </Table.Body>) 
+                            </Table.Body>)
                             }
                         </Table>
-                    
+
                     </div>
                 </Responsive>
                 <Responsive maxWidth={767}>
@@ -92,7 +94,7 @@ function DonationsTable(props) {
                             {
                                 renderTableData()
                             }
-                        </Accordion>) 
+                        </Accordion>)
                         }
                     </div>
                 </Responsive>
