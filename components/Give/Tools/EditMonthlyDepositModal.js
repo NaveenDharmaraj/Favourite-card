@@ -17,7 +17,7 @@ import { findItemBasedOnId } from "../../../helpers/utils";
 const NewCreditCard = dynamic(() => import('../../shared/NewCreditCard'), {
     ssr: false
 });
-const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstrumentId, transactionId }) => {
+const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstrumentId, transactionId, editTransation }) => {
     const formatMessage = t;
     const intializeValidations = {
         doesAmountExist: true,
@@ -26,6 +26,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         isValidPositiveNumber: true,
         isCreditCardSelected: true,
     };
+    console.log(currentMonthlyDepositAmount);
     const formatedCurrentMonthlyDepositAmount = currentMonthlyDepositAmount.replace('$', '');
 
     const dispatch = useDispatch();
@@ -156,7 +157,11 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
     const handleEditSave = () => {
         setDisableButton(true);
         if (validateForm()) {
-
+            editTransation(transactionId, amount, currentCardSelected, 'RecurringDonation').then(() => {
+                setShowEditModal(false);
+                setAmount(formatAmount(parseFloat(amount.replace(/,/g, ''))));
+                setCurrentCardSelected(currentCardSelected);
+            });
         }
     }
     /**
@@ -253,6 +258,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
 
 EditMonthlyDepositModal.defaultProps = {
     currentMonthlyDepositAmount: '',
+    editTransation: () => {},
     t: () => { },
     paymentInstrumentId: '',
     transactionId: ''

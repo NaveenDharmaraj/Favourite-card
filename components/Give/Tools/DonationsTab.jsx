@@ -19,6 +19,7 @@ function DonationsTab(props) {
         onPageChange,
         totalPages,
         upcomingTransactions,
+        editTransation,
         deleteTransaction,
         monthlyTransactionApiCall,
     } = props;
@@ -45,6 +46,7 @@ function DonationsTab(props) {
             <DonationsTable
                 upcomingTransactions={upcomingTransactions}
                 deleteTransaction={deleteTransaction}
+                editTransation={editTransation}
                 monthlyTransactionApiCall={monthlyTransactionApiCall}
             />
             <div className="mb-2">

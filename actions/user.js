@@ -808,6 +808,50 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
     });
 };
 
+export const editUpcommingDeposit = (donationId, donationAmount, paymentInstruementId, activePage, userId) => (dispatch) => {
+    const donationData = {
+        attributes: {
+            amount: donationAmount,
+        },
+        id: donationId,
+        relationships: {
+            paymentInstrument: {
+                data: {
+                    id: paymentInstruementId,
+                    type: 'paymentInstruments',
+                },
+            },
+        },
+        type: 'recurringDonations',
+    };
+
+    return coreApi.patch(`recurringDonations/${donationId}`, {
+        data: donationData,
+    }).then(
+        () => {
+            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=RecurringDonation`;
+            getUpcomingTransactions(dispatch, activepageUrl);
+            const statusMessageProps = {
+                message: 'Your monthly deposit has been updated.',
+                type: 'success',
+            };
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: 'TRIGGER_UX_CRITICAL_ERROR',
+            });
+        },
+    ).catch((error) => {
+        triggerUxCritialErrors(error.errors || error, dispatch);
+        return Promise.reject(error);
+    });
+
+
+};
+
 export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
     const fsa = {
         payload: {

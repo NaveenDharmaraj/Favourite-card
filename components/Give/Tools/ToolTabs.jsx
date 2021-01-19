@@ -20,7 +20,11 @@ import ModalContent from './modalContent';
 import { Router } from '../../../routes';
 import { connect } from 'react-redux';
 import {validateGivingGoal} from '../../../helpers/users/utils';
-import { getUpcomingTransactions,deleteUpcomingTransaction } from '../../../actions/user';
+import {
+    getUpcomingTransactions,
+    deleteUpcomingTransaction,
+    editUpcommingDeposit,
+} from '../../../actions/user';
 import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
 import {
     formatCurrency,
@@ -43,6 +47,7 @@ class ToolTabs extends React.Component {
 
         this.onTabChangeFunc = this.onTabChangeFunc.bind(this);
         this.deleteTransaction = this.deleteTransaction.bind(this);
+        this.editTransation = this.editTransation.bind(this);
         this.onPageChange = this.onPageChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlurGivingGoal = this.handleInputOnBlurGivingGoal.bind(this);
@@ -160,6 +165,7 @@ class ToolTabs extends React.Component {
                             onPageChange={this.onPageChange}
                             upcomingTransactions={upcomingTransactions}
                             deleteTransaction={this.deleteTransaction}
+                            editTransation={this.editTransation}
                             monthlyTransactionApiCall={monthlyTransactionApiCall}
                             totalPages={totalPages}
                        />
@@ -319,6 +325,17 @@ class ToolTabs extends React.Component {
         if(id && transactionType){
             deleteUpcomingTransaction(dispatch,id, transactionType, activePage, this.props.currentUser.id)
         }
+    }
+
+    editTransation(id, amount, paymentInstruementId, type){
+        const {
+            dispatch,
+            currentUser,
+        } = this.props;
+        const {
+            activePage
+        } = this.state;
+        return dispatch(editUpcommingDeposit(id, amount, paymentInstruementId, activePage, currentUser.id));
     }
 
     onPageChange(event,data) {
