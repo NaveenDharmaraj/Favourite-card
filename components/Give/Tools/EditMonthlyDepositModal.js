@@ -13,11 +13,12 @@ import PaymentOptions from '../../shared/PaymentInstruments';
 import { formatAmount, isValidGiftAmount, populatePaymentInstrument, validateDonationForm } from "../../../helpers/give/utils";
 import { getAllActivePaymentInstruments } from '../../../actions/give';
 import { findItemBasedOnId } from "../../../helpers/utils";
+import { editUpcommingDeposit } from '../../../actions/user';
 
 const NewCreditCard = dynamic(() => import('../../shared/NewCreditCard'), {
     ssr: false
 });
-const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstrumentId, transactionId, editTransation }) => {
+const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstrumentId, transactionId, activePage }) => {
     const formatMessage = t;
     const intializeValidations = {
         doesAmountExist: true,
@@ -26,7 +27,6 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         isValidPositiveNumber: true,
         isCreditCardSelected: true,
     };
-    console.log(currentMonthlyDepositAmount);
     const formatedCurrentMonthlyDepositAmount = currentMonthlyDepositAmount.replace('$', '');
 
     const dispatch = useDispatch();
@@ -157,13 +157,16 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
     const handleEditSave = () => {
         setDisableButton(true);
         if (validateForm()) {
-            editTransation(transactionId, amount, currentCardSelected, 'RecurringDonation').then(() => {
+                return dispatch(editUpcommingDeposit(transactionId, amount, currentCardSelected, activePage, currentUser.id)).then (() => {
                 setShowEditModal(false);
                 setAmount(formatAmount(parseFloat(amount.replace(/,/g, ''))));
                 setCurrentCardSelected(currentCardSelected);
-            });
+            }).catch(() => {
+                setShowEditModal(true);
+            })
         }
     }
+
     /**
      * handling credit card modal close .
      * @param {boolean} callPaymentInstrumentListApi On succes of adding new credit card call PaymentInstrumentListApi.
@@ -258,7 +261,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
 
 EditMonthlyDepositModal.defaultProps = {
     currentMonthlyDepositAmount: '',
-    editTransation: () => {},
+    activePage: '',
     t: () => { },
     paymentInstrumentId: '',
     transactionId: ''

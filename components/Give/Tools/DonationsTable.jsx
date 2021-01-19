@@ -20,8 +20,8 @@ import TransactionTableRow from './TransactionsTableRow';
 
 function DonationsTable(props) {
     const {
+        activePage,
         upcomingTransactions,
-        editTransation,
         deleteTransaction,
         monthlyTransactionApiCall,
         i18n: {
@@ -56,7 +56,7 @@ function DonationsTable(props) {
                     transactionId={id}
                     transactionType={attributes.transactionType}
                     deleteTransaction={deleteTransaction}
-                    editTransation={editTransation}
+                    activePage={activePage}
                     index={index}
                     paymentInstrumentId={attributes.paymentInstrumentId || ''}
                 />);

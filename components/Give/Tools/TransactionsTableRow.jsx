@@ -73,7 +73,7 @@ class TransactionTableRow extends React.Component {
             index,
             showEditButton,
             transactionId,
-            editTransation,
+            activePage,
         } = this.props;
 
         const {
@@ -139,7 +139,7 @@ class TransactionTableRow extends React.Component {
                             currentMonthlyDepositAmount={secondColoumn}
                             paymentInstrumentId={paymentInstrumentId}
                             transactionId={transactionId}
-                            editTransation={editTransation}
+                            activePage={activePage}
                         />
                         }
                         {deleteModal}
@@ -182,7 +182,7 @@ class TransactionTableRow extends React.Component {
                                         {showEditButton && <EditMonthlyDepositModal
                                             currentMonthlyDepositAmount={secondColoumn}
                                             paymentInstrumentId={paymentInstrumentId}
-                                            editTransation={editTransation}
+                                            activePage={activePage}
                                         /> }
                                         {deleteModal}
                                     </Table.Cell>
