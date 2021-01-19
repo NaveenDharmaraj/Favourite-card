@@ -274,7 +274,6 @@ const getUserAdminGroup = (userId, sourceUserId, pageNumber = 1, seeMoreLoader =
             fsa.payload = {
                 data: result.data,
                 totalUserAdminGroupRecordCount: result.meta.recordCount,
-                seeMoreLoader,
             };
         },
     ).catch((error) => {
