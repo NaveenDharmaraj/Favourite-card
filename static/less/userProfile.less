@@ -89,6 +89,25 @@
                 margin-right: 0;
               }
             }
+            .blockBtn{
+              +.userProfile_drpbtn.threeDotBtn.ui.dropdown{
+                .menu{
+                  @media only screen and (max-width:767px) {
+                    left: 0 !important;
+                    right: auto !important;
+                  }
+                  @media only screen and (max-width:400px) {
+                    min-width: 200px;
+                  }
+                  @media only screen and (max-width:370px) {
+                    min-width: 180px;
+                  }
+                  @media only screen and (max-width:340px) {
+                    min-width: 160px;
+                  }
+                }
+              }
+            }
           }
           .ui.placeholder{
             margin-bottom: 22px;
@@ -420,133 +439,141 @@
     }
   }
 }
-.ui.modals.dimmer .chimp-modal.ui.modal > .content{
-  padding: 23px 35px 30px !important;
-  .editProfileModal{
-    .editProfilePhotoWrap{
-      display: flex;
-      align-items: center;
-      .userProfileImg{
-        border          : 0.4rem solid #F5F8FC;
-        border-radius   : 100%;
-        box-shadow      : 2px 2px 7px 0 rgba(105, 146, 203, 0.3);
-        overflow        : hidden;
-        margin          : 10px 30px 0 0px;
-        width           : 140px;
-        height          : 140px;
-        background-color: #ece5ed;
-
-        .ui.image {
-          width: 100%;
-          height: 100%;
-        }
-      }
-      .editprflButtonWrap{
-        margin-top: 25px;
-        .ui.button{
-          &.success-btn-rounded-def{
-            padding: 7.2px 19.75px;
-            margin-bottom: 10px;
-          }
-        }
-        .remvephoto{
-          .primeFont-semi-bold();
-          color: @greyNew;
-          font-size: 14px;
-          display: block;
-          cursor: pointer;
-        }
-      }
-    }
-    .ui.form{ 
-      .field{
-        margin: 28px 0 0;
-        >label{
-          font-size: 14px;
-          margin-bottom: 6px;
-        }
-        >.input{
-          color: @font-color;
-        }
-        >.label-info{
-          font-size: 12px;
-          line-height: 15px;
-          margin-bottom: 10px;
-        }
-        .field{
-          margin:0px;
-        }
-      }
-      .field-info{
-        text-align: right;
-        margin-top: 8px;
-        font-size: 12px;
-        color: @font-color;
-      }
-      .error-message{
-        font-size: 12px;
-        margin-top: 10px;
-      }
-      .price_btn{
-        margin-top: 10px;
-        .ui.button.basic{
-          .primeFont();
-          font-size: 14px;
-          height: 30px ;
-          width: 65px ;
-          padding: 7px 10px 6px ;      
-          color: @font-color !important;
-          margin-right: 10px; 
-          box-shadow: 0 0 0 1px rgba(34,36,38,.15) inset !important;
-          border-radius: 5px;
-          &.active{
-            box-shadow:none !important;
-            background-color: #F1F6FD !important;
-            border: 1px solid #DDDDDD;
-          }
-        }
-      }
-      .btnWrp{
-        text-align: right;
-        .ui.button.save{
-          width: 91px;
-          margin-top: 30px;
-          height: 40px;
-        }
-      }     
+.ui.modals.dimmer .chimp-modal.ui.modal.active {
+  > .header{
+    @media only screen and (max-width:767px) {
+      padding: 2.7rem 31px !important;
     }
   }
-  @media only screen and (min-width:767px) and (max-width:992px) {
-   .editProfileModal .editProfilePhotoWrap .userProfileImg{
-      margin          : 10px 20px 0 0px;
-      width           : 110px;
-      height          : 110px;
-    }
-  }
-  @media only screen and (max-width:767px) {
-    padding: 14px 31px !important;
+  > .content{
+    padding: 23px 35px 30px !important;
     .editProfileModal{
       .editProfilePhotoWrap{
-        flex-direction: column;
-        text-align: center;
-        margin: 14px 0;
+        display: flex;
+        align-items: center;
         .userProfileImg{
-          margin: 0;
+          border          : 0.4rem solid #F5F8FC;
+          border-radius   : 100%;
+          box-shadow      : 2px 2px 7px 0 rgba(105, 146, 203, 0.3);
+          overflow        : hidden;
+          margin          : 10px 30px 0 0px;
+          width           : 140px;
+          height          : 140px;
+          background-color: #ece5ed;
+
+          .ui.image {
+            width: 100%;
+            height: 100%;
+          }
         }
         .editprflButtonWrap{
-          margin-top: 20px;
+          margin-top: 25px;
+          .ui.button{
+            &.success-btn-rounded-def{
+              padding: 7.2px 19.75px;
+              margin-bottom: 10px;
+            }
+          }
+          .remvephoto{
+            .primeFont-semi-bold();
+            color: @greyNew;
+            font-size: 14px;
+            display: block;
+            cursor: pointer;
+          }
         }
       }
-      .ui.form{
-        .btnWrp .ui.button.save{
-          width: 100%;
-          height: 48px;
-          font-size: 17px;
-          margin-bottom: 16px;
+      .ui.form{ 
+        .field{
+          margin: 28px 0 0;
+          >label{
+            font-size: 14px;
+            margin-bottom: 6px;
+          }
+          >.input{
+            color: @font-color;
+          }
+          >.label-info{
+            font-size: 12px;
+            line-height: 15px;
+            margin-bottom: 10px;
+          }
+          .field{
+            margin:0px;
+          }
+        }
+        .field-info{
+          text-align: right;
+          margin-top: 8px;
+          font-size: 12px;
+          color: @font-color;
+        }
+        .error-message{
+          font-size: 12px;
+          margin-top: 10px;
+        }
+        .price_btn{
+          margin-top: 10px;
+          .ui.button.basic{
+            .primeFont();
+            font-size: 14px;
+            height: 30px ;
+            width: 65px ;
+            padding: 7px 10px 6px ;      
+            color: @font-color !important;
+            margin-right: 10px; 
+            box-shadow: 0 0 0 1px rgba(34,36,38,.15) inset !important;
+            border-radius: 5px;
+            &.active{
+              box-shadow:none !important;
+              background-color: #F1F6FD !important;
+              border: 1px solid #DDDDDD;
+            }
+          }
+        }
+        .btnWrp{
+          text-align: right;
+          .ui.button.save{
+            width: 91px;
+            margin-top: 30px;
+            height: 40px;
+          }
+        }     
+      }
+    }
+    @media only screen and (min-width:767px) and (max-width:992px) {
+    .editProfileModal .editProfilePhotoWrap .userProfileImg{
+        margin          : 10px 20px 0 0px;
+        width           : 110px;
+        height          : 110px;
+      }
+    }
+    @media only screen and (max-width:767px) {
+      padding: 14px 31px !important;
+      .editProfileModal{
+        .editProfilePhotoWrap{
+          flex-direction: column;
+          text-align: center;
+          margin: 14px 0;
+          .userProfileImg{
+            margin: 0;
+          }
+          .editprflButtonWrap{
+            margin-top: 20px;
+          }
+        }
+        .ui.form{
+          .btnWrp .ui.button.save{
+            width: 100%;
+            height: 48px;
+            font-size: 17px;
+            margin-bottom: 16px;
+          }
         }
       }
     }
   }
+
 }
 .ui.modals.dimmer{
   .ui.modal.editCauseModal{
@@ -1045,8 +1072,8 @@
     }
   }
   .menu{
-
     min-width: 245px;
+    margin-top: -10px;
     .item{
       border-top: 1px solid @border-light;
       padding: 13px 15px !important;
@@ -1142,6 +1169,11 @@
       margin-bottom: 0;
       color: @font-color;
     }
+    +.ui.grid{
+      .cardwrap{
+        margin-top: 1rem;
+      }
+    }
   }
   .cardwrap{
     display: flex;
@@ -1180,16 +1212,6 @@
             &.charityClr{
               color: #ED803B;
             }
-            a.edit{
-              float: right;
-              text-transform: capitalize;
-            }
-            .heart.icon{
-              float: right;
-              color: red;
-              font-size: 14px;
-              margin: 0;
-            }
           }
           h4{
             font-size: 14px;
@@ -1214,12 +1236,8 @@
           }
           p{
             margin-bottom: 2px;
+            color: #263238;
           }
-        }
-        .edit{
-          .primeFont-semi-bold();
-          color:@blueButton;
-          font-size: 14px;
         }
         .ui.placeholder{
           width: 100%;
@@ -1236,6 +1254,23 @@
             }
           }  
         }
+      }
+      a.edit{
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        text-transform: capitalize;
+        .primeFont-semi-bold();
+        color:@blueButton;
+        font-size: 14px;
+      }
+      .heart.icon{
+        position: absolute;
+        right: 10px;
+        top: 6px;
+        color: red;
+        font-size: 14px;
+        margin: 0;
       }
     }
   }
@@ -1348,6 +1383,7 @@
           display: flex;
           align-items: center;  
           justify-content: flex-end;
+          padding-left: 0;
           .userProfile_drpbtn.ui.dropdown {
             .ui.button{
               padding: 7.2px 51.39px 7.2px 22px !important;

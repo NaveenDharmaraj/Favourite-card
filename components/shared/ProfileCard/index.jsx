@@ -56,38 +56,36 @@ const ProfileCard = (props) => {
     }
     return (
         <Card>
-            <Card.Content>
-                <Fragment>
-                    <div className="cardPrflImg">
-                        <Link className="lnkChange" route={`/${route}/${slug}`} passHref>
+            <Link className="lnkChange" route={`/${route}/${slug}`} passHref>
+                <Card.Content>
+                    <Fragment>
+                        <div className="cardPrflImg">
                             <Image src={avatar} />
-                        </Link>
-                    </div>
-                    <div className="cardcontentWrap">
-                        <Header as="h6" className={`${(Profiletype === 'group' ? 'groupClr' : 'charityClr')}`}>
-                            {type}
-                            {(isMyProfile && (Profiletype === 'group') && !isPreviewMode && canEdit)
-                            && (
-                                <a className="edit" href={editLink}>Edit</a>
-                            )}
-                            {isFavourite
-                            && (
-                                <i aria-hidden="true" class="heart icon" />
-                            )}
-                        </Header>
-                        <Link className="lnkChange" route={`/${route}/${slug}`} passHref>
+                        </div>
+                        <div className="cardcontentWrap">
+                            <Header as="h6" className={`${(Profiletype === 'group' ? 'groupClr' : 'charityClr')}`}>
+                                {type}
+                            </Header>
                             <Header as="h4">{name}</Header>
-                        </Link>
-                        <p>{causes}</p>
-                        <p>{location}</p>
-                        {!_isEmpty(totalMoneyRaised)
-                        && (
-                            <p>{`Total Raised: ${formatCurrency(totalMoneyRaised, language, currency)}`}</p>
-                        )}
-                    </div>
-                </Fragment>
-            </Card.Content>
-        </Card>
+                            <p>{causes}</p>
+                            <p>{location}</p>
+                            {!_isEmpty(totalMoneyRaised)
+                            && (
+                                <p>{`Total Raised: ${formatCurrency(totalMoneyRaised, language, currency)}`}</p>
+                            )}
+                        </div>
+                    </Fragment>
+                </Card.Content>
+            </Link>
+            {(isMyProfile && (Profiletype === 'group') && !isPreviewMode && canEdit)
+            && (
+                <a className="edit" href={editLink}>Edit</a>
+            )}
+            {isFavourite
+            && (
+                <i aria-hidden="true" class="heart icon" />
+            )}
+        </Card>      
     );
 };
 

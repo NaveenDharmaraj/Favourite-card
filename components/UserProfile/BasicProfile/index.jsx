@@ -552,7 +552,7 @@ class UserBasicProfile extends React.Component {
                         {isBlocked
                             && (
                                 <Button
-                                    className="grey-btn-rounded-def"
+                                    className="grey-btn-rounded-def blockBtn"
                                     disabled={true}
                                 >
                                     Block

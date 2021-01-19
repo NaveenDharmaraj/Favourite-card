@@ -253,10 +253,7 @@ class NotificationWrapper extends React.Component {
                                                     <div className='NotifybtnWrap'>
                                                         <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
                                                         {ctaKey === 'accept' &&
-                                                            <Icon
-                                                                className="notifyTrash"
-                                                                onClick={() => self.rejectInvite(friendId, 'invitation', msg)}
-                                                            />
+                                                            <a className='ignore' onClick={() => self.rejectInvite(friendId, 'invitation', msg)}>Ignore</a>
                                                         }
                                                     </div>
                                                 </>
@@ -296,10 +293,7 @@ class NotificationWrapper extends React.Component {
                                                     <div className='NotifybtnWrap'>
                                                         <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
                                                         {ctaKey === 'accept' &&
-                                                            <Icon
-                                                                className="notifyTrash"
-                                                                onClick={() => self.rejectInvite(friendId, 'invitation', msg)}
-                                                            />
+                                                            <a className='ignore' onClick={() => self.rejectInvite(friendId, 'invitation', msg)}>Ignore</a>
                                                         }
                                                     </div>
                                                 </>

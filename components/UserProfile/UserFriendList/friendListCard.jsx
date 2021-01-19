@@ -220,10 +220,7 @@ class FriendListCard extends React.Component {
                     )}
                     {(type === 'invitation')
                     && (
-                        <Icon
-                            className="trash alternate outline"
-                            onClick={() => this.rejectInvite(user_id, email_hash, type)}
-                        />
+                        <a className='ignore' onClick={() => this.rejectInvite(user_id, email_hash, type)}>Ignore</a>
                     )}
                 </List.Content>
             </List.Item>
