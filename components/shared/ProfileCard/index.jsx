@@ -70,7 +70,7 @@ const ProfileCard = (props) => {
                             && (
                                 <a className="edit" href={editLink}>Edit</a>
                             )}
-                            {isFavourite
+                            {isFavourite && isMyProfile
                             && (
                                 <i aria-hidden="true" class="heart icon" />
                             )}

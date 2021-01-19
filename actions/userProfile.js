@@ -46,6 +46,7 @@ export const actionTypes = {
     USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS: 'USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_ADMIN_GROUP_LOAD_STATUS: 'USER_PROFILE_ADMIN_GROUP_LOAD_STATUS',
+    USER_PROFILE_ADMIN_GROUP_CLEAR_DATA: 'USER_PROFILE_ADMIN_GROUP_CLEAR_DATA',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
     USER_PROFILE_BLOCK_USER: 'USER_PROFILE_BLOCK_USER',
@@ -273,6 +274,7 @@ const getUserAdminGroup = (userId, sourceUserId, pageNumber = 1, seeMoreLoader =
             fsa.payload = {
                 data: result.data,
                 totalUserAdminGroupRecordCount: result.meta.recordCount,
+                seeMoreLoader,
             };
         },
     ).catch((error) => {

@@ -325,6 +325,7 @@ class UserBasicProfile extends React.Component {
             userProfileDeeplink = userProfileProfilelink.data.attributes['short-link'];
         }
         const isBlocked = (profile_type.substring(0, 7) === 'blocked') ? true : false;
+        const isBlockedIn = (profile_type.includes('blocked_profile_in')) ? true : false
         const isFriendPending = (profile_type.substring(0, 7) === 'pending') ? true : false;
         const isFriend = (profile_type === 'friends_profile') ? true : false;
         const isLimited = (profile_type === 'limited_profile') ? true : false;
@@ -405,7 +406,7 @@ class UserBasicProfile extends React.Component {
                             </Modal.Header>
                             <Modal.Content>
                                 <p>
-                                You and {first_name} {last_name} will no longer be friends on Charitable Impact.
+                                    You and {first_name} {last_name} will no longer be friends on Charitable Impact.
                                 </p>
                                 <div className="block-unfriend-Modal-buttons">
                                     <Button
@@ -452,7 +453,7 @@ class UserBasicProfile extends React.Component {
                                 </div>
                             )}
                     </div>
-                    <p className='textAboutuser'>{description}</p>
+                    {isBlockedIn ? "" : <p className='textAboutuser'>{description}</p>}
                     <div className="userButtonsWrap">
                         {(isMyProfile && !isPreviewMode)
                             && (
@@ -549,7 +550,7 @@ class UserBasicProfile extends React.Component {
                                 </Link>
                             )
                         }
-                        {isBlocked
+                        {(isBlocked && !isBlockedIn)
                             && (
                                 <Button
                                     className="grey-btn-rounded-def"
@@ -557,7 +558,8 @@ class UserBasicProfile extends React.Component {
                                 >
                                     Block
                                 </Button>
-                            )}
+                            )
+                        }
                         {(!isMyProfile || isPreviewMode)
                             && (
                                 <Fragment>
@@ -572,29 +574,39 @@ class UserBasicProfile extends React.Component {
                                                     Give
                                         </Button>
                                             </Link>
-                                        )}
-                                    <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left' disabled={isPreviewMode}>
-                                        <Dropdown.Menu >
-                                            <Dropdown.Item
-                                                text='Copy profile URL'
-                                                onClick={this.handleCopyLink}
-                                            />
-                                            {isFriend
-                                                && (
+                                        )
+                                    }
+                                    {isBlockedIn ? (
+                                        <div className="nodata-friendsprfl">
+                                            This profile cannot be viewed.
+                                        </div>
+                                    )
+                                        :
+                                        (
+                                            <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left' disabled={isPreviewMode}>
+                                                <Dropdown.Menu >
                                                     <Dropdown.Item
-                                                        text='Unfriend'
-                                                        onClick={this.handleUnfriendModal}
+                                                        text='Copy profile URL'
+                                                        onClick={this.handleCopyLink}
                                                     />
-                                                )}
-                                            {!isBlocked
-                                                && (
-                                                    <Dropdown.Item
-                                                        text='Block'
-                                                        onClick={this.handleBlockModal}
-                                                    />
-                                                )}
-                                        </Dropdown.Menu>
-                                    </Dropdown>
+                                                    {isFriend
+                                                        && (
+                                                            <Dropdown.Item
+                                                                text='Unfriend'
+                                                                onClick={this.handleUnfriendModal}
+                                                            />
+                                                        )}
+                                                    {!isBlocked
+                                                        && (
+                                                            <Dropdown.Item
+                                                                text='Block'
+                                                                onClick={this.handleBlockModal}
+                                                            />
+                                                        )}
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        )
+                                    }
                                 </Fragment>
                             )
                         }

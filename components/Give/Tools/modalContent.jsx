@@ -42,21 +42,21 @@ function ModalContent(props) {
                 />
             </Form.Field>
             <FormValidationErrorMessage
-                condition={validity.doesAmountExist && !validity.isAmountLessThanOneBillion}
+                condition={!validity.isAmountLessThanOneBillion}
                 errorMessage="Please input a value less than 10000000"
             />
-            <FormValidationErrorMessage
+            {/* <FormValidationErrorMessage
                 condition={validity.doesAmountExist && !validity.isAmountMoreThanOneDollor}
                 errorMessage="Please input a value more than 1$"
-            />
+            /> */}
              <FormValidationErrorMessage
-                condition={!validity.doesAmountExist}
-                errorMessage="Please input a value more than 1$"
+                condition={!validity.isValidPositiveNumber}
+                errorMessage="Please input a valid amount"
             />
-            <FormValidationErrorMessage
+            {/* <FormValidationErrorMessage
                 condition={validity.doesAmountExist && !validity.isValidPositiveNumber}
                 errorMessage="Please input a valid positive number"
-            />
+            /> */}
             {/* <FormValidationErrorMessage
                 condition={validity.doesAmountExist && !validity.isValidGiveAmount}
                 errorMessage="Please input a valid amount"

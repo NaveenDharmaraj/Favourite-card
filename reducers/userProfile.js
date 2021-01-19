@@ -56,6 +56,12 @@ const userProfile = (state = {}, action) => {
                 userProfileAdminGroupData: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_ADMIN_GROUP_CLEAR_DATA':
+            newState = {
+                ...state,
+                userProfileAdminGroupData: Object.assign({}, action.payload),
+            };
+            break;
         case 'USER_PROFILE_FAVOURITES':
             if (!_isEmpty(state.userProfileFavouritesData)) {
                 action.payload.data = [...state.userProfileFavouritesData.data, ...action.payload.data];
