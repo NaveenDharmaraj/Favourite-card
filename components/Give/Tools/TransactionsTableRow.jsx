@@ -73,6 +73,7 @@ class TransactionTableRow extends React.Component {
             index,
             showEditButton,
             transactionId,
+            transactionType,
             activePage,
         } = this.props;
 
@@ -123,7 +124,6 @@ class TransactionTableRow extends React.Component {
                 </Modal.Content>
             </Modal>
         );
-
         return (
             <Fragment>
 
@@ -158,24 +158,41 @@ class TransactionTableRow extends React.Component {
                     </Accordion.Title>
                     <Accordion.Content active={activeIndexs.includes(index)}>
                         <Table unstackable>
-                            <TableBody>
-                                <Table.Row>
-                                    <TableCell>Amount</TableCell>
-                                    <TableCell>{secondColoumn}</TableCell>
-                                </Table.Row>
-                                <Table.Row>
-                                    <TableCell>Day of month</TableCell>
-                                    <TableCell>{thirdColoumn}</TableCell>
-                                </Table.Row>
-                                <Table.Row>
-                                    <TableCell>Matched by</TableCell>
-                                    <TableCell>{fourthColoumn}</TableCell>
-                                </Table.Row>
-                                <Table.Row>
-                                    <TableCell>Created</TableCell>
-                                    <TableCell>{fifthColoumn}</TableCell>
-                                </Table.Row>
-                            </TableBody>
+                            {(transactionType === 'RecurringDonation') ? (
+                                <TableBody>
+                                    <Table.Row>
+                                        <TableCell>Amount</TableCell>
+                                        <TableCell>{secondColoumn}</TableCell>
+                                    </Table.Row>
+                                    <Table.Row>
+                                        <TableCell>Day of month</TableCell>
+                                        <TableCell>{thirdColoumn}</TableCell>
+                                    </Table.Row>
+                                    <Table.Row>
+                                        <TableCell>Matched by</TableCell>
+                                        <TableCell>{fourthColoumn}</TableCell>
+                                    </Table.Row>
+                                    <Table.Row>
+                                        <TableCell>Created</TableCell>
+                                        <TableCell>{fifthColoumn}</TableCell>
+                                    </Table.Row>
+                                </TableBody>
+                            ): (
+                                <TableBody>
+                                    <Table.Row>
+                                        <TableCell>Amount</TableCell>
+                                        <TableCell>{secondColoumn}</TableCell>
+                                    </Table.Row>
+                                    <Table.Row>
+                                        <TableCell>Day of month</TableCell>
+                                        <TableCell>{thirdColoumn}</TableCell>
+                                    </Table.Row>
+                                    <Table.Row>
+                                        <TableCell>Created</TableCell>
+                                        <TableCell>{fourthColoumn}</TableCell>
+                                    </Table.Row>
+                                </TableBody>
+                            )}
                             <Table.Footer>
                                 <Table.Row>
                                     <Table.Cell colSpan='2'>
