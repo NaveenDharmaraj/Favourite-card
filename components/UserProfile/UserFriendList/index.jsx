@@ -153,16 +153,12 @@ class UserFriendList extends React.Component {
     }
 
     showFriendsList(dataArray, type, isMyProfile) {
-        const {
-            hideFriendPage,
-        } = this.props;
         const friendListArray = [];
         dataArray.map((data) => {
             friendListArray.push(
                 <FriendListCard
                     data={data.attributes}
                     type={type}
-                    hideFriendPage={hideFriendPage}
                     isMyProfile={isMyProfile}
                 />,
             );
@@ -479,7 +475,8 @@ class UserFriendList extends React.Component {
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         dispatch(getMyFriendsList(email, 1, isMyprofile ? null : userId));
     }
-    handleFriendSearch = () => {
+    handleFriendSearch = (event) => {
+        event.stopPropagation();
         const {
             currentUser: {
                 id,
@@ -489,10 +486,11 @@ class UserFriendList extends React.Component {
         const {
             friendSearchText,
         } = this.state;
+        debugger
         (friendSearchText && friendSearchText.length > 3) && dispatch(getFriendsByText(id, friendSearchText, 1));
         this.setState({
             showSearchResultDropdown: false,
-        })
+        });
     }
 
     handleResultSelect(event, data) {
@@ -514,6 +512,7 @@ class UserFriendList extends React.Component {
         const isMyprofile = user_id === Number(userId);
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         dispatch(getMyFriendsList(email, data.activePage, isMyprofile ? null : userId));
+        debugger
         this.setState({
             currentActivePage: data.activePage,
         });
@@ -529,6 +528,7 @@ class UserFriendList extends React.Component {
             friendSearchText,
         } = this.state;
         (friendSearchText && friendSearchText.length > 3) && dispatch(getFriendsByText(id, friendSearchText, data.activePage));
+        
         this.setState({
             currentFindFriendsActivePage: data.activePage,
         });
@@ -571,8 +571,6 @@ class UserFriendList extends React.Component {
     }
     render() {
         const {
-            friendTypeAheadData,
-            hideFriendPage,
             userFriendProfileData: {
                 attributes: {
                     avatar,
@@ -706,7 +704,7 @@ class UserFriendList extends React.Component {
                                         {...(showDropdownLoader ? ({ loading: true }) : undefined)}
                                         onResultSelect={this.handleResultSelect}
                                         onSearchChange={this.handleTypeAheadSearch}
-                                        onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch() : null; }}
+                                        onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch(event) : null; }}
                                         results={friendDropdownList}
                                         value={friendSearchText}
                                         minCharacters={4}
@@ -969,7 +967,6 @@ UserFriendList.defaultProps = {
     },
     dispatch: () => { },
     friendTypeAheadData: [],
-    hideFriendPage: () => { },
     userFriendProfileData: {
         attributes: {
             avatar: '',
@@ -1004,7 +1001,6 @@ UserFriendList.propTypes = {
     }),
     dispatch: func,
     friendTypeAheadData: array,
-    hideFriendPage: () => { },
     userFriendProfileData: PropTypes.shape({
         attributes: PropTypes.shape({
             avatar: string,

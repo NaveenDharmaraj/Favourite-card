@@ -125,7 +125,6 @@ class FriendListCard extends React.Component {
                 friend_status,
             },
             type,
-            hideFriendPage,
             isMyProfile,
         } = this.props;
         const {
@@ -161,7 +160,7 @@ class FriendListCard extends React.Component {
             <List.Item>
                 <Image avatar src={!_isEmpty(avatar) ? avatar : friendAvatarPlaceholder} />
                 <List.Content>
-                    <List.Header onClick={hideFriendPage}>
+                    <List.Header>
                         <Link className="lnkChange" route={`/users/profile/${user_id}`}>
                             {`${first_name} ${last_name}`}
                         </Link>
@@ -184,6 +183,7 @@ class FriendListCard extends React.Component {
                             >
                                 {buttonText}
                             </Button>
+                            <a className='ignore' onClick={() => this.rejectInvite(user_id, email_hash, type)}>Ignore</a>
                         </Fragment>
                     )}
                     {(!_isEmpty(updatedStatus) && updatedStatus === 'PENDING_OUT')
@@ -217,10 +217,6 @@ class FriendListCard extends React.Component {
                         >
                             {buttonText}
                         </Button>
-                    )}
-                    {(type === 'invitation')
-                    && (
-                        <a className='ignore' onClick={() => this.rejectInvite(user_id, email_hash, type)}>Ignore</a>
                     )}
                 </List.Content>
             </List.Item>
@@ -276,7 +272,6 @@ FriendListCard.propTypes = {
         friend_status: string,
     }),
     type: string,
-    hideFriendPage: func,
     isMyProfile: bool,
     userFindFriendsList: PropTypes.shape({
         count: number,

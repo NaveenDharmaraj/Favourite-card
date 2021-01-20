@@ -37,8 +37,6 @@ class UserProfileWrapper extends React.Component {
         };
         this.showPreviewPage = this.showPreviewPage.bind(this);
         this.hidePreviewPage = this.hidePreviewPage.bind(this);
-        this.showFriendPage = this.showFriendPage.bind(this);
-        this.hideFriendPage = this.hideFriendPage.bind(this);
         this.togglePreviewPage = this.togglePreviewPage.bind(this);
     }
     componentWillUnmount() {
@@ -93,18 +91,6 @@ class UserProfileWrapper extends React.Component {
         });
         window.scrollTo(0,0);
         Router.pushRoute(`/users/profile/${currentUserId}`);
-    }
-
-    showFriendPage() {
-        this.setState({
-            showFriendsPage: true,
-        });
-    }
-
-    hideFriendPage() {
-        this.setState({
-            showFriendsPage: false,
-        });
     }
 
     togglePreviewPage(event, data) {
@@ -217,7 +203,6 @@ class UserProfileWrapper extends React.Component {
                                         <div className="userdetailsWrap">
                                             <UserBasicProfile
                                                 handlePreviewPage={this.showPreviewPage}
-                                                hanldeFriendPage={this.showFriendPage}
                                             />
                                         </div>
                                         {!isBlocked && <ProfileDetails
@@ -241,7 +226,6 @@ class UserProfileWrapper extends React.Component {
                     )
                     : (
                         <UserFriendList
-                            hideFriendPage={this.hideFriendPage}
                             isMyFriendsPage={isMyFriendsPage}
                             friendPageStep={this.props.friendPageStep}
                         />

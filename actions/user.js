@@ -16,6 +16,7 @@ import {
     generatePayloadBodyForFollowAndUnfollow,
 } from './profile';
 import storage from '../helpers/storage';
+import { getUserFavourites } from './userProfile';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -845,7 +846,7 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
     });
 };
 
-export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCount, pageSize, currentPageNumber, pageCount) => {
+export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCount, pageSize, currentPageNumber, pageCount, myProfile = false) => {
 
     const fsa = {
         payload: {
@@ -856,6 +857,10 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
     const params = generatePayloadBodyForFollowAndUnfollow(userId, favId, type);
     graphApi.post(`/users/deleterelationship`, params).then(
         async () => {
+            if(myProfile){
+                dispatch(getUserFavourites(userId, currentPageNumber, false));
+                return;
+            }
             const removedItem = (type === 'charity') ? { attributes: { charity_id: favId } }
                 : { attributes: { group_id: favId } };
             _.remove(dataArray, removedItem);
