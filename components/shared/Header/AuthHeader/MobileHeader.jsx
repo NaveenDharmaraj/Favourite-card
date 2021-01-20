@@ -25,6 +25,7 @@ import notificationIcon from '../../../../static/images/icons/icon-notification.
 import messageIcon from '../../../../static/images/icons/icon-message.svg';
 import logoutIcon from '../../../../static/images/icons/logout.svg';
 import settingsIcon from '../../../../static/images/icons/icon-account_settings.svg';
+import favouritesIcon from '../../../../static/images/icons/favourite.svg';
 import MainNavItem from './MainNavItem';
 import { getMainNavItems } from '../../../../helpers/utils';
 import { Link } from '../../../../routes';
@@ -121,12 +122,10 @@ const NavBarMobile = ({
                 {menuLinks.map((item) => <MainNavItem {...item} onPusherClick={onPusherClick} />)}
                 { (accountType === 'personal') && (
                     <Link route={favouritesUrl}>
-                        <List.Item as="a" onClick={onPusherClick}>
-                            <List.Icon name='heart' />
-                            <List.Content>
+                        <Menu.Item as="a" onClick={onPusherClick}>
+                        <span className="mobMenuLeftIcon settingsIcon"><Image src={favouritesIcon} /></span>
                                 Favourites
-                            </List.Content>
-                        </List.Item>
+                        </Menu.Item>
                     </Link>
                     )
                 }

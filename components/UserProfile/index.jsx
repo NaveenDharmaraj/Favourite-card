@@ -147,6 +147,7 @@ class UserProfileWrapper extends React.Component {
         const isMyFriendsPage = (friendPageStep === 'myfriends');
         const updatedFriendId =  Number(friendUserId) ? friendUserId : currentUserId;
         const isSingleColumnLayout = (profile_type !== 'my_profile' && causes_visibility === 2 && giving_goal_visibility === 2);
+        const isBlockedIn = (profile_type.includes('blocked_profile_in')) ? true : false
         const options = [
             {
                 key: 'Public',
@@ -220,6 +221,12 @@ class UserProfileWrapper extends React.Component {
                                                 hanldeFriendPage={this.showFriendPage}
                                             />
                                         </div>
+                                        {isBlockedIn && (
+                                            <div className="nodata-friendsprfl mt-2">
+                                                This profile cannot be viewed.
+                                            </div>
+                                        )}
+                                        
                                         {!isBlocked && <ProfileDetails
                                             friendUserId={updatedFriendId}
                                         />
