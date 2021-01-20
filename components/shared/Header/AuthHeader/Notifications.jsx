@@ -235,10 +235,7 @@ class Notifications extends React.Component {
                                                 <div className='NotifybtnWrap'>
                                                     <Button key={ctaKey} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
                                                     {ctaKey === 'accept' &&
-                                                        <Icon
-                                                            className="notifyTrash"
-                                                            onClick={() => this.rejectInvite(friendId, 'invitation', msg)}
-                                                        />
+                                                        <a className='ignore' onClick={() => this.rejectInvite(friendId, 'invitation', msg)}>Ignore</a>
                                                     }
                                                 </div>
                                             </>
