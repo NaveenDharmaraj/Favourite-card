@@ -475,8 +475,7 @@ class UserFriendList extends React.Component {
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         dispatch(getMyFriendsList(email, 1, isMyprofile ? null : userId));
     }
-    handleFriendSearch = (event) => {
-        event.stopPropagation();
+    handleFriendSearch = () => {
         const {
             currentUser: {
                 id,
@@ -486,7 +485,6 @@ class UserFriendList extends React.Component {
         const {
             friendSearchText,
         } = this.state;
-        debugger
         (friendSearchText && friendSearchText.length > 3) && dispatch(getFriendsByText(id, friendSearchText, 1));
         this.setState({
             showSearchResultDropdown: false,
@@ -512,7 +510,6 @@ class UserFriendList extends React.Component {
         const isMyprofile = user_id === Number(userId);
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         dispatch(getMyFriendsList(email, data.activePage, isMyprofile ? null : userId));
-        debugger
         this.setState({
             currentActivePage: data.activePage,
         });
@@ -704,7 +701,7 @@ class UserFriendList extends React.Component {
                                         {...(showDropdownLoader ? ({ loading: true }) : undefined)}
                                         onResultSelect={this.handleResultSelect}
                                         onSearchChange={this.handleTypeAheadSearch}
-                                        onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch(event) : null; }}
+                                        onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch() : null; }}
                                         results={friendDropdownList}
                                         value={friendSearchText}
                                         minCharacters={4}
