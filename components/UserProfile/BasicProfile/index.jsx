@@ -576,12 +576,7 @@ class UserBasicProfile extends React.Component {
                                             </Link>
                                         )
                                     }
-                                    {isBlockedIn ? (
-                                        <div className="nodata-friendsprfl">
-                                            This profile cannot be viewed.
-                                        </div>
-                                    )
-                                        :
+                                    {!isBlockedIn &&
                                         (
                                             <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left' disabled={isPreviewMode}>
                                                 <Dropdown.Menu >
