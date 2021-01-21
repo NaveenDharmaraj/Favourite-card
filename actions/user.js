@@ -16,7 +16,6 @@ import {
     generatePayloadBodyForFollowAndUnfollow,
 } from './profile';
 import storage from '../helpers/storage';
-import { getUserFavourites } from './userProfile';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -276,7 +275,7 @@ export const wpLogin = (token = null) => {
 
 export const chimpLogin = (token = null, options = null) => {
     let params = null;
-    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken','local');
+    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
     if (!_.isEmpty(token)) {
         params = {
             headers: {
@@ -857,14 +856,13 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
     const params = generatePayloadBodyForFollowAndUnfollow(userId, favId, type);
     graphApi.post(`/users/deleterelationship`, params).then(
         async () => {
-            if(myProfile){
-                dispatch(getUserFavourites(userId, currentPageNumber, false));
+            if (myProfile) {
                 dispatch({
                     payload: {
+                        userProfileFavouritesLoadStatus: true,
                     },
-                    type: actionTypes.ENABLE_FAVORITES_BUTTON,
+                    type: 'USER_PROFILE_FAVOURITES_LOAD_STATUS',
                 });
-                return;
             }
             const removedItem = (type === 'charity') ? { attributes: { charity_id: favId } }
                 : { attributes: { group_id: favId } };
@@ -875,6 +873,29 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
             if (currentData) {
                 if (_.size(currentData.data) === 0 && currentData.meta.pageCount < currentPageNumber) {
                     pageNumber = (currentData.meta.pageCount === 0) ? 1 : 0;
+                }
+                if (myProfile) {
+                    dispatch({
+                        payload: {
+                            data: _.uniqWith(_.concat(dataArray, currentData.data), _.isEqual),
+                            totalUserFavouritesRecordCount: currentData.meta.recordCount,
+                            totalUserFavouritesPageCount: currentData.meta.pageCount,
+                            seeMoreLoader: false,
+                        },
+                        type: 'USER_PROFILE_FAVOURITES',
+                    })
+                    dispatch({
+                        payload: {
+                        },
+                        type: actionTypes.ENABLE_FAVORITES_BUTTON,
+                    });
+                    dispatch({
+                        payload: {
+                            userProfileFavouritesLoadStatus: false,
+                        },
+                        type: 'USER_PROFILE_FAVOURITES_LOAD_STATUS',
+                    });
+                    return;
                 }
                 fsa.payload.favorites = {
                     currentPageNumber: pageNumber,
@@ -1002,7 +1023,7 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
             // Doing the other accounts API call on componentDidMount of success page. This is to make sure that it will 
             // work fine in login scenario too.
             // getUserAllDetails(dispatch, userId).then(() => {
-                Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
+            Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
             // });
         }
     ).catch(() => {
@@ -1047,9 +1068,9 @@ export const validateClaimCharityAccessCode = (accessCode) => (dispatch) => {
         });
 };
 
-export const claimCharityErrorCondition = (message) => (dispatch) =>{
+export const claimCharityErrorCondition = (message) => (dispatch) => {
     dispatch({
-        payload: { 
+        payload: {
             claimCharityErrorMessage: message
         },
         type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
