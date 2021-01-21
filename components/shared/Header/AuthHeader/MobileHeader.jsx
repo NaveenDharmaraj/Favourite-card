@@ -28,7 +28,7 @@ import settingsIcon from '../../../../static/images/icons/icon-account_settings.
 import favouritesIcon from '../../../../static/images/icons/favourite.svg';
 import MainNavItem from './MainNavItem';
 import { getMainNavItems } from '../../../../helpers/utils';
-import { Link } from '../../../../routes';
+import Link from '../../../shared/Link';
 import Notifications from './Notifications';
 import Chat from './Chat';
 import Give from './Give';
@@ -90,7 +90,7 @@ const NavBarMobile = ({
                         <List.Item>
                             <Image avatar src={avatar || IconIndividual} />
                             <List.Content>
-                                <Link route={`/user/profile/basic`}>
+                                <Link route={`/user/profile/basic`} activeClassName="active">
                                     <div className='name' onClick={onPusherClick}>
                                         {name}
                                     </div>
@@ -111,7 +111,7 @@ const NavBarMobile = ({
                         </List.Item>
                     </List>
                 </Menu.Item>
-                <Link route={logoUrl}>
+                <Link route={logoUrl} activeClassName="active">
                     <Menu.Item
                         as="a"
                         onClick={onPusherClick}
@@ -120,22 +120,22 @@ const NavBarMobile = ({
                     </Menu.Item>
                 </Link>
                 {menuLinks.map((item) => <MainNavItem {...item} onPusherClick={onPusherClick} />)}
-                { (accountType === 'personal') && (
-                    <Link route={favouritesUrl}>
+                {(accountType === 'personal') && (
+                    <Link route={favouritesUrl} activeClassName="active">
                         <Menu.Item as="a" onClick={onPusherClick}>
-                        <span className="mobMenuLeftIcon settingsIcon"><Image src={favouritesIcon} /></span>
+                            <span className="mobMenuLeftIcon settingsIcon"><Image src={favouritesIcon} /></span>
                                 Favourites
                         </Menu.Item>
                     </Link>
-                    )
+                )
                 }
                 {
                     (!isExternal) ? (
-                        <Link route={accountUrl}>
+                        <Link route={accountUrl} activeClassName="active">
                             <Menu.Item as='a' onClick={onPusherClick}><span className="mobMenuLeftIcon settingsIcon"><Image src={settingsIcon} /></span>{accountSettingsText}</Menu.Item>
                         </Link>
                     ) : (
-                            <a href={accountUrl}>
+                            <a href={accountUrl} activeClassName="active">
                                 <Menu.Item as='a' onClick={onPusherClick}><span className="mobMenuLeftIcon"><Image src={settingsIcon} /></span>{accountSettingsText}</Menu.Item>
                             </a>
                         )
@@ -161,7 +161,7 @@ const NavBarMobile = ({
                 <Menu secondary className="fixed-header">
                     <Give />
                     <Menu.Item className="logoImg">
-                        <Link route={logoUrl}>
+                        <Link route={logoUrl} activeClassName="active">
                             <Image src={logo} />
                         </Link>
                     </Menu.Item>

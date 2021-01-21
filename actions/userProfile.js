@@ -274,6 +274,7 @@ const getUserAdminGroup = (userId, sourceUserId, pageNumber = 1, seeMoreLoader =
             fsa.payload = {
                 data: result.data,
                 totalUserAdminGroupRecordCount: result.meta.recordCount,
+                seeMoreLoader,
             };
         },
     ).catch((error) => {
@@ -333,6 +334,8 @@ const getUserFavourites = (userId, pageNumber = 1, seeMoreLoader = false) => dis
             fsa.payload = {
                 data: result.data,
                 totalUserFavouritesRecordCount: result.meta.recordCount,
+                totalUserFavouritesPageCount: result.meta.pageCount,
+                seeMoreLoader,
             };
         },
     ).catch((error) => {

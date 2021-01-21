@@ -153,16 +153,12 @@ class UserFriendList extends React.Component {
     }
 
     showFriendsList(dataArray, type, isMyProfile) {
-        const {
-            hideFriendPage,
-        } = this.props;
         const friendListArray = [];
         dataArray.map((data) => {
             friendListArray.push(
                 <FriendListCard
                     data={data.attributes}
                     type={type}
-                    hideFriendPage={hideFriendPage}
                     isMyProfile={isMyProfile}
                 />,
             );
@@ -195,7 +191,7 @@ class UserFriendList extends React.Component {
         const isMyprofile = user_id === Number(userId);
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         if (!_isEmpty(searchText)) {
-            dispatch(searchMyfriend(userId, searchText));
+            dispatch(searchMyfriend(user_id, searchText));
         } else {
             dispatch(getMyFriendsList(email, 1, isMyprofile ? null : userId));
         }
@@ -492,7 +488,7 @@ class UserFriendList extends React.Component {
         (friendSearchText && friendSearchText.length > 3) && dispatch(getFriendsByText(id, friendSearchText, 1));
         this.setState({
             showSearchResultDropdown: false,
-        })
+        });
     }
 
     handleResultSelect(event, data) {
@@ -529,6 +525,7 @@ class UserFriendList extends React.Component {
             friendSearchText,
         } = this.state;
         (friendSearchText && friendSearchText.length > 3) && dispatch(getFriendsByText(id, friendSearchText, data.activePage));
+        
         this.setState({
             currentFindFriendsActivePage: data.activePage,
         });
@@ -571,8 +568,6 @@ class UserFriendList extends React.Component {
     }
     render() {
         const {
-            friendTypeAheadData,
-            hideFriendPage,
             userFriendProfileData: {
                 attributes: {
                     avatar,
@@ -969,7 +964,6 @@ UserFriendList.defaultProps = {
     },
     dispatch: () => { },
     friendTypeAheadData: [],
-    hideFriendPage: () => { },
     userFriendProfileData: {
         attributes: {
             avatar: '',
@@ -1004,7 +998,6 @@ UserFriendList.propTypes = {
     }),
     dispatch: func,
     friendTypeAheadData: array,
-    hideFriendPage: () => { },
     userFriendProfileData: PropTypes.shape({
         attributes: PropTypes.shape({
             avatar: string,

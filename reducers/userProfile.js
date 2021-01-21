@@ -44,7 +44,7 @@ const userProfile = (state = {}, action) => {
             };
             break;
         case 'USER_PROFILE_ADMIN_GROUP':
-            if (!_isEmpty(state.userProfileAdminGroupData)) {
+            if (!_isEmpty(state.userProfileAdminGroupData) && action.payload.seeMoreLoader) {
                 action.payload.data = [...state.userProfileAdminGroupData.data, ...action.payload.data];
                 return newState = {
                     ...state,
@@ -63,7 +63,7 @@ const userProfile = (state = {}, action) => {
             };
             break;
         case 'USER_PROFILE_FAVOURITES':
-            if (!_isEmpty(state.userProfileFavouritesData)) {
+            if (!_isEmpty(state.userProfileFavouritesData) && action.payload.seeMoreLoader) {
                 action.payload.data = [...state.userProfileFavouritesData.data, ...action.payload.data];
                 return newState = {
                     ...state,

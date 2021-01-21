@@ -42,22 +42,20 @@ class FavouritesList extends React.Component {
         } = props;
         this.state = {
             currentPageNumber: _isEmpty(favouritesData) ? 1 : Math.floor(_size(favouritesData) / 10),
+            pageSize: 10,
         }
     }
     componentDidMount() {
         const {
             dispatch,
             friendUserId,
-            userProfileFavouritesData: {
-                data: favouritesData,
-            },
         } = this.props;
         const {
             currentPageNumber
         } = this.state;
-        _isEmpty(favouritesData) && dispatch(getUserFavourites(friendUserId, currentPageNumber, false));
+        dispatch(getUserFavourites(friendUserId, currentPageNumber, false));
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         const {
             dispatch
         } = this.props;
@@ -75,11 +73,17 @@ class FavouritesList extends React.Component {
             },
             userProfileFavouritesData: {
                 data: favouritesData,
+                totalUserFavouritesRecordCount,
+                totalUserFavouritesPageCount,
             },
             previewMode: {
                 isPreviewMode,
             },
         } = this.props;
+        const {
+            currentPageNumber,
+            pageSize
+        } = this.state;
         const memberArray = [];
         if (!_isEmpty(favouritesData)) {
             favouritesData.map((favourite) => {
@@ -88,7 +92,6 @@ class FavouritesList extends React.Component {
                     && !_isEmpty(favourite.attributes.province)) {
                     locationDetails = getLocation(favourite.attributes.city, favourite.attributes.province);
                 }
-
                 memberArray.push(
                     <ProfileCard
                         avatar={favourite.attributes.avatar}
@@ -103,6 +106,12 @@ class FavouritesList extends React.Component {
                         isPreviewMode={isPreviewMode}
                         canEdit={false}
                         isFavourite
+                        entityId={favourite.attributes.type === 'charity' ? favourite.attributes.charity_id : favourite.attributes.group_id}
+                        currentPageNumber={currentPageNumber}
+                        pageSize={pageSize}
+                        favouritesData={favouritesData}
+                        totalUserFavouritesRecordCount={totalUserFavouritesRecordCount}
+                        totalUserFavouritesPageCount={totalUserFavouritesPageCount}
                     />,
                 );
             });
@@ -222,6 +231,7 @@ FavouritesList.defaultProps = {
     userProfileFavouritesData: {
         data: [],
         totalUserFavouritesRecordCount: 0,
+        totalUserFavouritesPageCount: 0,
     },
     userProfileFavouritesLoadStatus: true,
 };
@@ -239,6 +249,7 @@ FavouritesList.propTypes = {
     userProfileFavouritesData: PropTypes.shape({
         data: array,
         totalUserFavouritesRecordCount: number,
+        totalUserFavouritesPageCount: number,
     }),
     userProfileFavouritesLoadStatus: bool,
 };
