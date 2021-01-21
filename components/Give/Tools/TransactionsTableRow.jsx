@@ -101,25 +101,23 @@ class TransactionTableRow extends React.Component {
             >
                 <Modal.Header>{modalHeader}</Modal.Header>
                 <Modal.Content>
-                    <Modal.Description className="font-s-16">
+                    <span>
                         Are you sure you want to delete the transaction?
-                </Modal.Description>
-                    <div className="btn-wraper pt-3 text-right">
-                        <Modal.Actions>
-                            <Button
-                                className="danger-btn-rounded-def c-small"
-                                color='red'
-                                onClick={this.closeModalAndDelete}
-                            >
-                                Delete
+                    </span>
+                    <div className="pt-2 pb-1 text-right">
+                        <Button
+                            className="danger-btn-rounded-def c-small"
+                            color='red'
+                            onClick={this.closeModalAndDelete}
+                        >
+                            Delete
                         </Button>
-                            <Button
-                                className="blue-bordr-btn-round-def c-small"
-                                onClick={() => this.setState({ showDeleteModal: false })}
-                            >
-                                Cancel
+                        <Button
+                            className="blue-bordr-btn-round-def c-small"
+                            onClick={() => this.setState({ showDeleteModal: false })}
+                        >
+                            Cancel
                         </Button>
-                        </Modal.Actions>
                     </div>
                 </Modal.Content>
             </Modal>

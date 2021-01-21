@@ -232,7 +232,10 @@ h4{
           &.ui{
             &.modal{
               >.header{
-                padding: 2.7rem 1rem !important;
+                padding: 2.7rem 35px !important;
+              }
+              >.content{
+                padding: 30px 35px 1rem !important;
               }
             }
           }
@@ -1648,9 +1651,11 @@ h4{
         font-size: 12px !important;
         color: #263238;
       }
+      .ui.button{
+        margin-right: 15px;
+      }
       .deleteLink{
         .primeFont-semi-bold();
-        margin-left: 15px;
         cursor: pointer;
       }
     }
@@ -1758,6 +1763,43 @@ h4{
       }
   }
 }
+.editMonthlyModal{
+  .ui.form{
+    >.field{
+      margin-bottom: 30px;
+      .icon.input{
+        input{
+          padding-left: 27px !important;
+          font-size: 14px;
+          padding: 11.1px 14px;
+        }
+        .icon{
+          &.dollar{
+            font-size: 14px;
+            color: #263238;
+            opacity: 1;
+          }
+        }
+      }
+    }
+    .error-message{
+      font-size: 12px;
+      margin-top: -4px;
+    }
+  }
+  .btn-wraper{
+    margin-bottom: 1rem;
+    .actions{
+      .ui.button{
+        padding: 12.2px 28.68px ;
+      }
+    }
+  }
+}
+.hyperLinks-style{
+  color: #055CE5;
+  cursor: pointer;
+}
 .paymentMethodDropdown{
   .ui.active.visible.fluid.search.selection.dropdown.dropdownsearchField.grouped.medium {
       &::before{
@@ -1782,6 +1824,8 @@ h4{
               padding-top: 12px;
               padding-bottom: 12px;
               padding-right: 32px !important;
+              text-align: left;
+              .primeFont();
               &.taxReceiptDropDown{
                   height: auto;
               }
@@ -1804,6 +1848,7 @@ h4{
                               background-color: #055CE5;
                               color: #fff;
                               border-color: #055CE5;
+                              font-weight: normal;
                               span{
                                   color: #fff;
                                   .hyperLinks-style{
@@ -1862,6 +1907,8 @@ h4{
                       }
                   }
                   .item{
+                    border-bottom: 1px solid #dddddd;
+                    padding: 12.7px 16px !important;
                       .text{
                           span{
                               line-height: 14px;
@@ -1885,6 +1932,13 @@ h4{
                               object-fit: contain;
                           }
                       }
+                      &:last-child{
+                        border-bottom: none ;
+                      }
+                      .hyperLinks-style{
+                        margin: 0px;
+                        .primeFont-semi-bold() !important; 
+                    }
                   }
               }
               .icon{
@@ -1918,7 +1972,7 @@ h4{
                           background-image: url("@{img_url}/images/icons/icon-cc-american-express-colour.png") !important;
                           left: 10px;
                           width: 31px;
-                          height: 11px;
+                          height: 18px;
                       }
                   }
               }

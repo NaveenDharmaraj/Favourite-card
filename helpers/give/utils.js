@@ -580,7 +580,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
         const newCreditCard = [
             {
                 disabled: false,
-                text: ReactHtmlParser('<span class="hyperLinks-style">+ Add new card</span>'),
+                text: ReactHtmlParser('<span class="hyperLinks-style">+&nbsp;&nbsp;&nbsp;Add new card</span>'),
                 value: 0,
             },
         ];
