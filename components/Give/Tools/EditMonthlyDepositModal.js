@@ -198,7 +198,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         <Modal
             size="tiny"
             dimmer="inverted"
-            className="chimp-modal"
+            className="chimp-modal editMonthlyModal"
             closeIcon
             onClose={() => handleCloseModal()}
             open={showEditModal}
@@ -245,7 +245,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
                         }
                     </Form>
                 </Modal.Description>
-                <div className="btn-wraper pt-2 text-right">
+                <div className="btn-wraper text-right">
                     <Modal.Actions>
                         <Button
                             className="blue-btn-rounded-def"
