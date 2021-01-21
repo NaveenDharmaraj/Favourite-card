@@ -859,6 +859,11 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
         async () => {
             if(myProfile){
                 dispatch(getUserFavourites(userId, currentPageNumber, false));
+                dispatch({
+                    payload: {
+                    },
+                    type: actionTypes.ENABLE_FAVORITES_BUTTON,
+                });
                 return;
             }
             const removedItem = (type === 'charity') ? { attributes: { charity_id: favId } }
