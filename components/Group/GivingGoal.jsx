@@ -40,6 +40,11 @@ const {
 
 const GivingGoal = (props) => {
     const {
+        currentUser: {
+            attributes: {
+                hasAdminAccess,
+            },
+        },
         dispatch,
         groupDetails: {
             attributes: {
@@ -113,7 +118,7 @@ const GivingGoal = (props) => {
     );
 
     if (isAuthenticated) {
-        if (isMember) {
+        if (isMember || hasAdminAccess) {
             giveButton = (
                 <Fragment>
                     <Divider />
@@ -202,6 +207,11 @@ const GivingGoal = (props) => {
 };
 
 GivingGoal.defaultProps = {
+    currentUser: {
+        attributes: {
+            hasAdminAccess: false,
+        },
+    },
     dispatch: () => { },
     groupDetails: {
         attributes: {
@@ -223,6 +233,11 @@ GivingGoal.defaultProps = {
 };
 
 GivingGoal.propTypes = {
+    currentUser: PropTypes.shape({
+        attributes: PropTypes.shape({
+            hasAdminAccess: bool,
+        }),
+    }),
     dispatch: PropTypes.func,
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
@@ -245,6 +260,7 @@ GivingGoal.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        currentUser: state.user.info,
         groupDetails: state.group.groupDetails,
         isAuthenticated: state.auth.isAuthenticated,
     };
