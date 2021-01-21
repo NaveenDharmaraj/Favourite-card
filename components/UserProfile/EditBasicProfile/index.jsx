@@ -3,6 +3,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
 import _find from 'lodash/find';
 import _every from 'lodash/every';
+import _replace from 'lodash/replace';
 import {
     Button,
     Form,
@@ -80,7 +81,7 @@ class EditBasicProfile extends React.Component {
                 givingGoal: givingGoalAmount,
                 lastName: last_name,
                 displayName: display_name,
-                formatedGoalAmount: formatCurrency(giving_goal_amt, 'en', 'USD'),
+                formatedGoalAmount: _replace(formatCurrency(giving_goal_amt, 'en', 'USD'), '$', ''),
             },
             activeAmount: 0,
             validity: this.intializeValidations(),
@@ -113,8 +114,7 @@ class EditBasicProfile extends React.Component {
             this.setState({
                 userBasicDetails: {
                     ...userBasicDetails,
-                    formatedGoalAmount: formatCurrency(userFriendProfileData.attributes.giving_goal_amt, 'en', 'USD'),
-
+                    formatedGoalAmount: _replace(formatCurrency(userFriendProfileData.attributes.giving_goal_amt, 'en', 'USD'), '$', ''),
                 },
             });
         }
@@ -128,7 +128,7 @@ class EditBasicProfile extends React.Component {
             validity,
         } = this.state;
         userBasicDetails.givingGoal = formatAmount(amount);
-        userBasicDetails.formatedGoalAmount = formatCurrency(userBasicDetails.givingGoal, 'en', 'USD');
+        userBasicDetails.formatedGoalAmount = _replace(formatCurrency(userBasicDetails.givingGoal, 'en', 'USD'), '$', '');
         validity = this.validateUserProfileBasicForm('givingGoal', amount, validity);
         this.setState({
             buttonClicked: false,
@@ -195,7 +195,8 @@ class EditBasicProfile extends React.Component {
         if ((name === 'givingGoal') && !_isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             userBasicDetails[name] = inputValue;
-            userBasicDetails.formatedGoalAmount = formatCurrency(inputValue, 'en', 'USD');
+            userBasicDetails.formatedGoalAmount = _replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            
         }
         validity = this.validateUserProfileBasicForm(name, inputValue, validity);
         this.setState({
@@ -432,6 +433,49 @@ class EditBasicProfile extends React.Component {
     handleCustomSearch = (options) => {
         return options
     }
+
+    handleEditModalClose = () => {
+        const {
+            currentUser: {
+                attributes: {
+                    logoFileName,
+                }
+            },
+            userFriendProfileData: {
+                attributes: {
+                    city,
+                    province,
+                    description,
+                    display_name,
+                    first_name,
+                    last_name,
+                    giving_goal_amt,
+                },
+            },
+        } = this.props;
+        const givingGoalAmount = (!_isEmpty(giving_goal_amt) ? formatAmount(Number(giving_goal_amt)) : '');
+        const location = getLocation(city, province);
+        this.setState({ 
+            showEditProfileModal: false,
+            buttonClicked: true,
+            isImageChanged: false,
+            isDefaultImage: logoFileName === null ? true : false,
+            uploadImage: '',
+            uploadImagePreview: '',
+            searchQuery: (!_isEmpty(location)) ? location : null,
+            locationDropdownValue: '',
+            userBasicDetails: {
+                about: description,
+                firstName: first_name,
+                givingGoal: givingGoalAmount,
+                lastName: last_name,
+                displayName: display_name,
+                formatedGoalAmount: _replace(formatCurrency(giving_goal_amt, 'en', 'USD'), '$', ''),
+            },
+            activeAmount: 0,
+            validity: this.intializeValidations(),
+         })
+    }
     render() {
         const {
             showEditProfileModal,
@@ -472,7 +516,7 @@ class EditBasicProfile extends React.Component {
                     closeIcon
                     className="chimp-modal"
                     open={showEditProfileModal}
-                    onClose={() => { this.setState({ showEditProfileModal: false }) }}
+                    onClose={() => this.handleEditModalClose()}
                     trigger={
                         <Button className='blue-bordr-btn-round-def' onClick={() => this.setState({ showEditProfileModal: true })}>
                             Edit profile
@@ -626,7 +670,7 @@ class EditBasicProfile extends React.Component {
                                         Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account throughout the calendar year. Goals are reset to $0 at the start of each year, and you can update your goal anytime.
                                 </div>
                                     <ModalContent
-                                        showDollarIcon={false}
+                                        showDollarIcon={true}
                                         showLabel={false}
                                         handleInputChange={this.handleInputChange}
                                         handleInputOnBlurGivingGoal={this.handleInputOnBlur}

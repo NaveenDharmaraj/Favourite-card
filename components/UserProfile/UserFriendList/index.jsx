@@ -191,7 +191,7 @@ class UserFriendList extends React.Component {
         const isMyprofile = user_id === Number(userId);
         const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         if (!_isEmpty(searchText)) {
-            dispatch(searchMyfriend(userId, searchText));
+            dispatch(searchMyfriend(user_id, searchText));
         } else {
             dispatch(getMyFriendsList(email, 1, isMyprofile ? null : userId));
         }
