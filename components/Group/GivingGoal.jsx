@@ -40,6 +40,11 @@ const {
 
 const GivingGoal = (props) => {
     const {
+        currentUser: {
+            attributes: {
+                hasAdminAccess,
+            },
+        },
         dispatch,
         groupDetails: {
             attributes: {
@@ -51,6 +56,7 @@ const GivingGoal = (props) => {
                 goal,
                 fundraisingPercentage,
                 isAdmin,
+                isMember,
                 slug,
                 totalMoneyRaised,
             },
@@ -112,20 +118,29 @@ const GivingGoal = (props) => {
     );
 
     if (isAuthenticated) {
-        giveButton = (
-            <div className="buttonWraper">
-                <Link route={`/give/to/group/${slug}/new`}>
-                    {giveButtonElement}
-                </Link>
-            </div>
-        );
+        if (isMember || hasAdminAccess) {
+            giveButton = (
+                <Fragment>
+                    <Divider />
+                    <div className="buttonWraper">
+                        <Link route={`/give/to/group/${slug}/new`}>
+                            {giveButtonElement}
+                        </Link>
+                    </div>
+                </Fragment>
+
+            );
+        }
     } else {
         giveButton = (
-            <div className="buttonWraper">
-                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
-                    {giveButtonElement}
-                </a>
-            </div>
+            <Fragment>
+                <Divider />
+                <div className="buttonWraper">
+                    <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
+                        {giveButtonElement}
+                    </a>
+                </div>
+            </Fragment>
         );
     }
     return (
@@ -156,7 +171,6 @@ const GivingGoal = (props) => {
                                     </div>
                                 )}
                             <Responsive minWidth={768}>
-                                <Divider />
                                 {giveButton}
                             </Responsive>
                         </Fragment>
@@ -183,7 +197,6 @@ const GivingGoal = (props) => {
                                     </div>
                                 )}
                             <Responsive minWidth={768}>
-                                <Divider />
                                 {giveButton}
                             </Responsive>
                         </Fragment>
@@ -194,6 +207,11 @@ const GivingGoal = (props) => {
 };
 
 GivingGoal.defaultProps = {
+    currentUser: {
+        attributes: {
+            hasAdminAccess: false,
+        },
+    },
     dispatch: () => { },
     groupDetails: {
         attributes: {
@@ -204,6 +222,7 @@ GivingGoal.defaultProps = {
             goal: '',
             goalAmountRaised: '',
             isAdmin: false,
+            isMember: false,
             lastDonationAt: '',
             slug: '',
             totalMoneyRaised: '',
@@ -214,6 +233,11 @@ GivingGoal.defaultProps = {
 };
 
 GivingGoal.propTypes = {
+    currentUser: PropTypes.shape({
+        attributes: PropTypes.shape({
+            hasAdminAccess: bool,
+        }),
+    }),
     dispatch: PropTypes.func,
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
@@ -224,6 +248,7 @@ GivingGoal.propTypes = {
             goal: string,
             goalAmountRaised: string,
             isAdmin: bool,
+            isMember: bool,
             lastDonationAt: string,
             slug: string,
             totalMoneyRaised: string,
@@ -235,6 +260,7 @@ GivingGoal.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        currentUser: state.user.info,
         groupDetails: state.group.groupDetails,
         isAuthenticated: state.auth.isAuthenticated,
     };

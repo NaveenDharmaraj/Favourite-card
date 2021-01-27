@@ -115,6 +115,11 @@ class GroupProfile extends React.Component {
 
         const {
             dispatch,
+            currentUser: {
+                attributes: {
+                    hasAdminAccess,
+                },
+            },
             groupDetails: {
                 attributes: {
                     avatar,
@@ -123,6 +128,7 @@ class GroupProfile extends React.Component {
                     location,
                     name,
                     isCampaign,
+                    isMember,
                     slug,
                 },
             },
@@ -141,13 +147,15 @@ class GroupProfile extends React.Component {
         const giveButtonElement = <Button onClick={() => { resetFlowObject('group', dispatch); }} className="blue-btn-rounded-def">{formatMessage('common:giveButtonText')}</Button>;
         let giveButton = null;
         if (isAuthenticated) {
-            giveButton = (
-                <div className="buttonWraper">
-                    <Link route={`/give/to/group/${slug}/new`}>
-                        {giveButtonElement}
-                    </Link>
-                </div>
-            );
+            if (isMember || hasAdminAccess) {
+                giveButton = (
+                    <div className="buttonWraper">
+                        <Link route={`/give/to/group/${slug}/new`}>
+                            {giveButtonElement}
+                        </Link>
+                    </div>
+                );
+            }
         } else {
             giveButton = (
                 <div className="buttonWraper">
@@ -183,6 +191,11 @@ class GroupProfile extends React.Component {
 }
 
 GroupProfile.defaultProps = {
+    currentUser: {
+        attributes: {
+            hasAdminAccess: false,
+        },
+    },
     dispatch: () => {},
     groupDetails: {
         attributes: {
@@ -190,6 +203,7 @@ GroupProfile.defaultProps = {
             causes: [],
             description: '',
             isCampaign: false,
+            isMember: false,
             location: '',
             name: '',
             slug: '',
@@ -211,6 +225,11 @@ GroupProfile.defaultProps = {
 };
 
 GroupProfile.propTypes = {
+    currentUser: PropTypes.shape({
+        attributes: PropTypes.shape({
+            hasAdminAccess: bool,
+        }),
+    }),
     dispatch: func,
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
@@ -218,6 +237,7 @@ GroupProfile.propTypes = {
             causes: array,
             description: string,
             isCampaign: bool,
+            isMember: bool,
             location: string,
             name: string,
             slug: string,
