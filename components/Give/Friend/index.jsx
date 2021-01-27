@@ -27,6 +27,8 @@ import _cloneDeep from 'lodash/cloneDeep';
 import ReactHtmlParser from 'react-html-parser';
 import _ from 'lodash';
 import ChimpDatePicker from './p2pDatePicker';
+import P2pReasons from './p2pReasons';
+import P2pFrequency from './p2pFrequency';
 
 import {
     formatCurrency,
@@ -1017,6 +1019,12 @@ class Friend extends React.Component {
                                                             </div>
                                                             <div>
                                                                 <ChimpDatePicker dateValue={this.state.goalStartDate} onChangeValue={date => this.setState({goalStartDate:date})}/>
+                                                            </div>
+                                                            <div>
+                                                                <P2pFrequency/>
+                                                            </div>
+                                                            <div>
+                                                                <P2pReasons/>
                                                             </div>
                                                         </div>
                                                         
