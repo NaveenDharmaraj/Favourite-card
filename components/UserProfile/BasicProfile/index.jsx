@@ -46,6 +46,7 @@ import {
 
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import EditBasicProfile from '../EditBasicProfile';
+import PlaceholderUser  from '../../../static/images/no-data-avatar-user-profile.png';
 
 class UserBasicProfile extends React.Component {
     constructor(props) {
@@ -335,7 +336,7 @@ class UserBasicProfile extends React.Component {
         return (
             <Fragment>
                 <div className="user_profileImage">
-                    <Image src={avatar} />
+                    <Image src={isBlocked ? PlaceholderUser : avatar} />
                 </div>
                 <div className='user_profileDetails'>
                     <Header className="usrName">{`${display_name}`}</Header>
