@@ -2903,3 +2903,37 @@ body{
         }
     }
 }
+.react-datepicker-wrapper{
+    .react-datepicker__input-container{
+        .field{
+            .ui{
+                &.icon{
+                    &.input{
+                        i{
+                            &.calendar{
+                                cursor: pointer;
+                                &.icon{
+                                    pointer-events: unset;
+                                    &::before{
+                                        content: '';
+                                        width: 24px;
+                                        height: 24px;
+                                        top: 0;
+                                        bottom: 0;
+                                        left: 0;
+                                        right: 0;
+                                        margin: auto;
+                                        background-image: url("@{img_url}/images/icons/calendar.svg") !important;
+                                        background-position: center !important;
+                                        background-size: contain !important;
+                                        background-repeat: no-repeat !important;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
