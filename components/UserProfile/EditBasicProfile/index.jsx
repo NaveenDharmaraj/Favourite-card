@@ -40,7 +40,28 @@ import {
 } from '../../../helpers/give/giving-form-validation';
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 import ModalContent from '../../Give/Tools/modalContent';
-
+const genderOptions = [
+    {
+      key: 'Non-binary',
+      text: 'Non-binary',
+      value: 'Non-binary',
+    },
+    {
+        key: 'Male',
+        text: 'Male',
+        value: 'Male',
+    },
+    {
+        key: 'Female',
+        text: 'Female',
+        value: 'Female',
+    },
+    {
+        key: 'Prefer not to say',
+        text: 'Prefer not to say',
+        value: 'Prefer not to say',
+    },
+]
 let timeout = '';
 class EditBasicProfile extends React.Component {
     constructor(props) {
@@ -623,6 +644,19 @@ class EditBasicProfile extends React.Component {
                                     />
                                 </Form.Field>
                                 <Form.Field>
+                                    <label htmlFor="gender">
+                                        Gender (optional)
+                                    </label>
+                                    <Form.Field
+                                        className="chimpSelectDropdown"
+                                        single
+                                        control={Select}
+                                        id="gender"
+                                        name="gender"
+                                        options={genderOptions}
+                                    />
+                                </Form.Field>
+                                <Form.Field>
                                     <Form.TextArea
                                         label="Bio"
                                         placeholder="Tell us a bit about yourself."
@@ -638,11 +672,11 @@ class EditBasicProfile extends React.Component {
                                 <Form.Field>
                                     <label htmlFor="location">
                                         Location
-                                </label>
+                                    </label>
                                     <Form.Field
                                         single
                                         control={Select}
-                                        className="locationSearchDropdown"
+                                        className="locationSearchDropdown chimpSelectDropdown"
                                         style={{ minHeight: 'auto' }}
                                         id="location"
                                         name="location"
