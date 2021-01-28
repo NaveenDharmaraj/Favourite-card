@@ -616,23 +616,7 @@
     }
     .about_descCardWrap{
       margin-bottom: 10px;
-      .ui.card{
-        width: 100%;
-        padding: 25px;
-        border: 1px solid #EBEBEB;
-        border-radius: 7px;
-        box-shadow: 0 2px 4px 0 #00000010;
-        margin-bottom: 15px;
-        .header{
-          .primeFont-semi-bold();
-          font-size: 14px;
-          margin-bottom: 25px;
-        }
-        .content{
-          padding: 0;
-          border: 0;
-        }
-      }
+      position: relative;
     }
    .groupPrflWrap {
       display: -webkit-box;
@@ -715,6 +699,24 @@
         left: 5px;
       }
     }  
+  }
+}
+.ui.card.DragDesc{
+  position: relative;
+  width: 100%;
+  padding: 25px;
+  border: 1px solid #EBEBEB;
+  border-radius: 7px;
+  box-shadow: 0 2px 4px 0 #00000010;
+  margin-bottom: 15px;
+  .header{
+    .primeFont-semi-bold();
+    font-size: 14px;
+    margin-bottom: 25px;
+  }
+  .content{
+    padding: 0;
+    border: 0;
   }
 }
 .ui.form{
@@ -856,4 +858,3 @@
     
   }
 }
-

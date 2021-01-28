@@ -16,14 +16,54 @@ import { generateBreadCrum } from '../../../helpers/createGrouputils';
 import { Link } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 
+import {SortableContainer, SortableElement} from 'react-sortable-hoc';
+import arrayMove from 'array-move';
+
 const breakCrumArray = ['Basic settings', 'About the group', 'Pics & video', 'Charities and goal'];
 const currentActiveStepCompleted = [1, 2];
 class CreateGivingGroupAbout extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showModal: false }
+        this.state = { 
+            showModal: false,
+            items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'],
+         }
     }
+
+    onSortEnd = ({oldIndex, newIndex}) => {
+        this.setState(({items}) => ({
+          items: arrayMove(items, oldIndex, newIndex),
+        }));
+        console.log(this.state.items)
+    };
+
     render() {
+        const SortableItem = SortableElement(({value}) => 
+            <Card className='DragDesc' as='div' onClick={() => this.setState({ showModal: true })}>
+                <Card.Header>{value}</Card.Header>
+                <div className='moveDeleteWrap'>
+                    <Icon className='move'/>
+                    <Dropdown className='threeDotBtn' direction='left'>
+                        <Dropdown.Menu >
+                            <Dropdown.Item text='Delete'/>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
+                <Card.Content>
+                    {value}
+                </Card.Content>
+            </Card>
+        );
+
+        const SortableList = SortableContainer(({items}) => {
+            return (
+                <div className='about_descCardWrap'>
+                    {items.map((value, index) => (
+                        <SortableItem key={`item-${value}`} index={index} value={value} />
+                    ))}
+                </div>
+            );
+        });
         return (
             <Container>
                 <div className='createNewGroupWrap'>
@@ -51,47 +91,14 @@ class CreateGivingGroupAbout extends React.Component {
                                 <div className='createnewSec'>
                                     <Header className='sectionHeader'>Expand your group description <span className='optional'>(optional)</span></Header>
                                     <p>Provide additional details about your Giving Group. You can add up to 5 sections, and you can edit or re-order how they appear on your profile anytime.</p>
-                                    <div className='about_descCardWrap'>
-                                        <Card>
-                                            <Card.Header>The Group's purpose</Card.Header>
-                                            <div className='moveDeleteWrap'>
-                                                <Icon className='move' />
-                                                <Dropdown className='threeDotBtn' direction='left'>
-                                                    <Dropdown.Menu >
-                                                        <Dropdown.Item text='Delete' />
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </div>
-                                            <Card.Content>Coming from many different backgrounds and working in a wide range of situations, YWAMers are united in their
-desire to be part of changing people's lives and have responded to the "Great Commission".</Card.Content>
-                                        </Card>
-                                        <Card>
-                                            <Card.Header>The Group's purpose</Card.Header>
-                                            <div className='moveDeleteWrap'>
-                                                <Icon className='move' />
-                                                <Dropdown className='threeDotBtn' direction='left'>
-                                                    <Dropdown.Menu >
-                                                        <Dropdown.Item text='Delete' />
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </div>
-                                            <Card.Content>Coming from many different backgrounds and working in a wide range of situations, YWAMers are united in their
-desire to be part of changing people's lives and have responded to the "Great Commission".</Card.Content>
-                                        </Card>
-                                        <Card>
-                                            <Card.Header>The Group's purpose</Card.Header>
-                                            <div className='moveDeleteWrap'>
-                                                <Icon className='move' />
-                                                <Dropdown className='threeDotBtn' direction='left'>
-                                                    <Dropdown.Menu >
-                                                        <Dropdown.Item text='Delete' />
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </div>
-                                            <Card.Content>Coming from many different backgrounds and working in a wide range of situations, YWAMers are united in their
-desire to be part of changing people's lives and have responded to the "Great Commission".</Card.Content>
-                                        </Card>
-                                    </div>
+
+                                    <SortableList 
+                                            items={this.state.items} 
+                                            onSortEnd={this.onSortEnd} 
+                                            distance = {10}
+                                            disableAutoscroll={true}
+                                    />
+
                                     <Modal
                                         className="chimp-modal addAbout-Modal"
                                         closeIcon
