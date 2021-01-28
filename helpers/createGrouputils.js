@@ -6,9 +6,6 @@ import { Breadcrumb } from 'semantic-ui-react';
  * @param {array} currentActiveStepArray List of items covered in the breadcrums.
  * @returns {HTMLElement} returns the html elements of all the breadcrums.
  */
-function add(num1, num2) {
-    return num1 + num2;
-}
 export const generateBreadCrum = (breakCrumArray = [], currentActiveStepArray = []) => {
     return (
         <div className="flowBreadcrumb">
