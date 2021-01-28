@@ -40,7 +40,28 @@ import {
 } from '../../../helpers/give/giving-form-validation';
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 import ModalContent from '../../Give/Tools/modalContent';
-
+const genderOptions = [
+    {
+      key: '3',
+      text: 'Non-binary',
+      value: '3',
+    },
+    {
+        key: '0',
+        text: 'Male',
+        value: '0',
+    },
+    {
+        key: '1',
+        text: 'Female',
+        value: '1',
+    },
+    {
+        key: '2',
+        text: 'Prefer not to say',
+        value: '2',
+    },
+]
 let timeout = '';
 class EditBasicProfile extends React.Component {
     constructor(props) {
@@ -60,6 +81,7 @@ class EditBasicProfile extends React.Component {
                     first_name,
                     last_name,
                     giving_goal_amt,
+                    private_information,
                 },
             },
         } = props;
@@ -82,6 +104,7 @@ class EditBasicProfile extends React.Component {
                 lastName: last_name,
                 displayName: display_name,
                 formatedGoalAmount: _replace(formatCurrency(giving_goal_amt, 'en', 'USD'), '$', ''),
+                gender: !_isEmpty(private_information) ? private_information : '2',
             },
             activeAmount: 0,
             validity: this.intializeValidations(),
@@ -89,6 +112,7 @@ class EditBasicProfile extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
+        this.handleGenderChange = this.handleGenderChange.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
         this.handleRemoveProfilePhoto = this.handleRemoveProfilePhoto.bind(this);
         this.handleLocationSearchChange = this.handleLocationSearchChange.bind(this);
@@ -205,6 +229,23 @@ class EditBasicProfile extends React.Component {
                 ...userBasicDetails,
             },
             validity,
+        });
+    }
+
+    handleGenderChange(event, data) {
+        const {
+            value,
+        } = data;
+        let {
+            userBasicDetails,
+        } = this.state;
+        userBasicDetails[`gender`] = value,
+        this.setState({
+            buttonClicked: false,
+            userBasicDetails: {
+                ...this.state.userBasicDetails,
+                ...userBasicDetails,
+            },
         });
     }
 
@@ -450,6 +491,7 @@ class EditBasicProfile extends React.Component {
                     first_name,
                     last_name,
                     giving_goal_amt,
+                    private_information,
                 },
             },
         } = this.props;
@@ -467,6 +509,7 @@ class EditBasicProfile extends React.Component {
             userBasicDetails: {
                 about: description,
                 firstName: first_name,
+                gender: !_isEmpty(private_information) ? private_information : '2',
                 givingGoal: givingGoalAmount,
                 lastName: last_name,
                 displayName: display_name,
@@ -488,6 +531,7 @@ class EditBasicProfile extends React.Component {
                 about,
                 displayName,
                 formatedGoalAmount,
+                gender,
             },
             searchQuery,
             uploadImagePreview,
@@ -623,6 +667,21 @@ class EditBasicProfile extends React.Component {
                                     />
                                 </Form.Field>
                                 <Form.Field>
+                                    <label htmlFor="gender">
+                                        Gender (optional)
+                                    </label>
+                                    <Form.Field
+                                        className="chimpSelectDropdown"
+                                        single
+                                        control={Select}
+                                        id="gender"
+                                        name="gender"
+                                        onChange={this.handleGenderChange}
+                                        options={genderOptions}
+                                        value={gender}
+                                    />
+                                </Form.Field>
+                                <Form.Field>
                                     <Form.TextArea
                                         label="Bio"
                                         placeholder="Tell us a bit about yourself."
@@ -638,11 +697,11 @@ class EditBasicProfile extends React.Component {
                                 <Form.Field>
                                     <label htmlFor="location">
                                         Location
-                                </label>
+                                    </label>
                                     <Form.Field
                                         single
                                         control={Select}
-                                        className="locationSearchDropdown"
+                                        className="locationSearchDropdown chimpSelectDropdown"
                                         style={{ minHeight: 'auto' }}
                                         id="location"
                                         name="location"

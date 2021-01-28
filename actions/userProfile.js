@@ -614,6 +614,7 @@ const saveUserBasicProfile = (userData, userId, email, isMyprofile = false) => d
         city: userData.city,
         description: userData.about,
         family_name: userData.lastName,
+        gender: userData.gender,
         given_name: userData.firstName,
         giving_goal_amt: givingAmount,
         province: userData.province,
