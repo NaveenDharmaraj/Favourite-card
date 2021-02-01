@@ -10,6 +10,7 @@ import {
     Icon,
 } from 'semantic-ui-react';
 import { generateBreadCrum } from '../../../helpers/createGrouputils';
+import ImageGallery from '../../../components/shared/ImageGallery';
 
 import { Link } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
@@ -17,6 +18,23 @@ import '../../../static/less/create_manage_group.less';
 const CreateGivingGroupPicsVideo = () => {
     const breakCrumArray = ['Basic settings', 'About the group', 'Pics & video', 'Charities and goal'];
     const currentActiveStepCompleted = [1, 2, 3];
+    const removeImage = (
+        <Icon className='remove' onClick={() => alert('Delete photo')} />
+    );
+    const imageArray = [{
+                            src: "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
+                            thumbnail: "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_n.jpg",
+                            thumbnailWidth: 80,
+                            thumbnailHeight: 80,
+                            customOverlay: removeImage
+                        },
+                        {
+                            src: "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
+                            thumbnail: "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_n.jpg",
+                            thumbnailWidth: 80,
+                            thumbnailHeight: 80,
+                            customOverlay: removeImage
+                        }]
     return (
         <Container>
             <div className='createNewGroupWrap'>
@@ -65,41 +83,14 @@ const CreateGivingGroupPicsVideo = () => {
                                 <p>You can add up to 10 photos to your group's gallery. <span>
                                     These photos will appear on your group profile.</span></p>
                                 <Button className='success-btn-rounded-def uploadBtn'><Icon className='upload' />Upload photos</Button>
-                                <div className='photosWrap'>
-                                    <div className="photos">
-                                        <Icon className='remove' />
-                                        <Image src='../../static/images/no-data-avatar-giving-group-profile.png' />
-                                    </div>
-                                    <div className="photos">
-                                        <Icon className='remove' />
-                                        <Image src='../../static/images/no-data-avatar-giving-group-profile.png' />
-                                    </div>
-                                    <div className="photos">
-                                        <Icon className='remove' />
-                                        <Image src='../../static/images/no-data-avatar-giving-group-profile.png' />
-                                    </div>
-                                    <div className="photos">
-                                        <Icon className='remove' />
-                                        <Image src='../../static/images/no-data-avatar-giving-group-profile.png' />
-                                    </div>
-                                    <div className="photos">
-                                        <Icon className='remove' />
-                                        <Image src='../../static/images/no-data-avatar-giving-group-profile.png' />
-                                    </div>
-                                    <div className="photos">
-                                        <Icon className='remove' />
-                                        <Image src='../../static/images/no-data-avatar-giving-group-profile.png' />
-                                    </div>
-                                    <div className="photos">
-                                        <Icon className='remove' />
-                                        <Image src='../../static/images/no-data-avatar-giving-group-profile.png' />
-                                    </div>
-                                    <div className="photos">
-                                        <Icon className='remove' />
-                                        <Image src='../../static/images/no-data-avatar-giving-group-profile.png' />
-                                    </div>
-                                </div>
-                                <p>You can still add 0 more photos.</p>
+                                
+                                <ImageGallery
+                                    imagesArray={imageArray}
+                                    enableImageSelection={false}
+                                    rowHeight={80}
+                                />
+                                 
+                                <p>You can still add {10 - imageArray.length} more photos.</p>
                             </div>
                         </Form>
                         <div className='buttonsWrap'>

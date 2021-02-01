@@ -21,6 +21,7 @@ import arrayMove from 'array-move';
 
 const breakCrumArray = ['Basic settings', 'About the group', 'Pics & video', 'Charities and goal'];
 const currentActiveStepCompleted = [1, 2];
+
 class CreateGivingGroupAbout extends React.Component {
     constructor(props) {
         super(props);
@@ -93,10 +94,11 @@ class CreateGivingGroupAbout extends React.Component {
                                     <p>Provide additional details about your Giving Group. You can add up to 5 sections, and you can edit or re-order how they appear on your profile anytime.</p>
 
                                     <SortableList 
-                                            items={this.state.items} 
-                                            onSortEnd={this.onSortEnd} 
-                                            distance = {10}
-                                            disableAutoscroll={true}
+                                        items={this.state.items} 
+                                        onSortEnd={this.onSortEnd} 
+                                        lockAxis='y'
+                                        pressDelay={220}
+                                        disableAutoscroll={true}
                                     />
 
                                     <Modal
