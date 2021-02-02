@@ -74,10 +74,11 @@ const UserGoal = (props) => {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            <Header>{formatCurrency(giving_goal_met, language, currency)}</Header>
+            {/* <Header>{formatCurrency(giving_goal_met, language, currency)}</Header> */}
             {!_isEmpty(giving_goal_amt)
                 ? (
                     <Fragment>
+                        <Header>{formatCurrency(giving_goal_met, language, currency)}</Header>
                         <p>contributed towards this  year's <span>{formatCurrency(giving_goal_amt, language, currency)}</span> goal</p>
                         <Progress percent={goalPercent} />
                     </Fragment>
