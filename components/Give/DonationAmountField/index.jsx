@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
     Button,
     Form,
@@ -59,7 +59,7 @@ function DonationAmountField(props) {
                 icon={(amount) ? 'dollar' : null}
                 iconPosition="left"
                 name={isGiveFlow ? 'giveAmount' : 'donationAmount'}
-                maxLength="8"
+                maxLength={isGiveFlow ? '13' : '8'}
                 onBlur={handleAmountBlur}
                 onChange={handleDonationAmountFieldInputChange}
                 placeholder={formatMessage('giveCommon:amountPlaceHolder')}
@@ -74,16 +74,22 @@ function DonationAmountField(props) {
                     minAmount: (fromCharity) ? 5 : 1,
                 }) : formatMessage('giveCommon:errorMessages.amountLessOrInvalid', { minAmount: 5 })}
             />
-            <FormValidationErrorMessage
+            
+            {isGiveFlow ? (
+                <Fragment>
+                    <FormValidationErrorMessage
+                        condition={!validity.isAmountCoverGive}
+                        errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
+                    />
+                    <FormValidationErrorMessage
+                        condition={!validity.isAmountLessThanOneBillion}
+                        errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAllocationAmountError'))}
+                    />
+                </Fragment>
+            ):(<FormValidationErrorMessage
                 condition={!validity.isAmountLessThanOneBillion}
                 errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
-            />
-            {isGiveFlow && (
-                <FormValidationErrorMessage
-                    condition={!validity.isAmountCoverGive}
-                    errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
-                />
-            )}
+            /> )}
             <div className="price_btn">
                 <Button data-test="Give_DonationAmountField_presetamount25_button" name="give_amount_button" active={activeIndex === 1} className="btn-basic-outline btntext invisionwidth" index={1} type="button" size="small" value="25" onClick={handleDonationPresetAmountClick}>$25</Button>
                 <Button data-test="Give_DonationAmountField_presetamount50_button" name="give_amount_button" active={activeIndex === 2} className="btn-basic-outline btntext invisionwidth" index={2} type="button" size="small" value="50" onClick={handleDonationPresetAmountClick}>$50</Button>
