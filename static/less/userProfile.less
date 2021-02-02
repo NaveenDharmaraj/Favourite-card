@@ -1,7 +1,7 @@
 @import "_mixins.less";
 .userProfileScreen{
   .userHeaderBanner {
-    background: url(../images/user_profile_banner.svg) no-repeat;
+    background: url("@{img_url}/images/user_profile_banner.svg") no-repeat;
     min-height: 70px;
     height: 70px;
     background-size: cover;
@@ -255,7 +255,7 @@
     }
     .ggFavorite.noData{
       background-color: #FFB9B9;
-      background-image: url('../images/favourites-nodataBg.svg');
+      background-image: url("@{img_url}/images/favourites-nodataBg.svg");
       background-size: cover;
       background-repeat: no-repeat;
       .noDataLeftImg.ui.image {
@@ -362,7 +362,7 @@
         position: relative;
         &::after{
           content: '';
-          background-image: url(../images/manage_giving_groups_illo_mobile.png) !important;
+          background-image: url("@{img_url}/images/manage_giving_groups_illo_mobile.png") !important;
           background-size: contain !important;
           width: 185px;
           height: 37px;
@@ -373,7 +373,7 @@
         }
         &::before{
           content: '';
-          background-image: url(../images/shapes-8.png) !important;
+          background-image: url("@{img_url}/images/shapes-8.png") !important;
           background-size: contain !important;
           width: 152px;
           height: 95px;
@@ -394,7 +394,7 @@
         position: relative;
         &::after{
           content: '';
-          background-image: url(../images/joined_giving_groups_illo_mobile.png) !important;
+          background-image: url("@{img_url}/images/joined_giving_groups_illo_mobile.png") !important;
           background-size: contain !important;
           width: 170px;
           height: 47px;
@@ -415,7 +415,7 @@
         position: relative;
         &::after{
           content: '';
-          background-image: url(../images/favourites_giving_groups_illo_mobile.png) !important;
+          background-image: url("@{img_url}/images/favourites_giving_groups_illo_mobile.png") !important;
           background-size: contain !important;
           width: 197px;
           height: 30px;
@@ -697,7 +697,7 @@
               margin: auto;
               &::before{
                 content: '';
-                background-image: url(../images/icons/close.svg) !important;
+                background-image: url("@{img_url}/images/icons/close.svg") !important;
                 background-size: contain !important;
                 width: 10px;
                 height: 10px;
@@ -730,7 +730,7 @@
           position: relative;
           &::before{
             content: '';
-            background-image: url(../images/icons/icon_blue_open-tab.svg) !important;
+            background-image: url("@{img_url}/images/icons/icon_blue_open-tab.svg") !important;
             background-size: contain !important;
             width: 19px;
             height: 19px;
@@ -838,7 +838,7 @@
     cursor: pointer;
       &::before{
         content: "";
-        background-image: url('../images/icons/icon-search.svg');
+        background-image: url("@{img_url}/images/icons/icon-search.svg");
         background-repeat: no-repeat !important;
         background-size: contain !important;
         background-position: center !important;
@@ -864,7 +864,7 @@
     cursor: pointer;
     &::before{
       content: '';
-      background-image: url(../images/icons/close.svg) !important;
+      background-image: url("@{img_url}/images/icons/close.svg") !important;
       background-size: contain !important;
       width: 12px;
       height: 12px;
@@ -927,7 +927,7 @@
         pointer-events: auto;
         &::before{
           content: '';
-          background-image: url(../images/icons/close.svg) !important;
+          background-image: url("@{img_url}/images/icons/close.svg") !important;
           background-size: contain !important;
           width: 15px;
           height: 15px;
@@ -956,7 +956,7 @@
         z-index: 99;
         &:before{
           content: "";
-          background-image: url('../images/icons/icon-search.svg') !important;
+          background-image: url("@{img_url}/images/icons/icon-search.svg") !important;
           background-repeat: no-repeat !important;
           background-size: contain !important;
           background-position: center !important;
@@ -1101,7 +1101,7 @@
       left: 0;
       right: 0;
       margin: auto;
-      background-image: url(../images//icons/ellipsis.svg) !important;
+      background-image: url("@{img_url}/images//icons/ellipsis.svg") !important;
       background-position: center !important;
       background-size: contain !important;
       background-repeat: no-repeat !important;
@@ -1453,7 +1453,7 @@
             position: relative;
             &::before{
               content: '';
-              background-image: url(../images/icons/icon_gray_delete.svg) !important;
+              background-image: url("@{img_url}/images/icons/icon_gray_delete.svg") !important;
               background-size: contain !important;
               width: 19px;
               height: 19px;
@@ -1573,17 +1573,17 @@
       }
       &.globe{
         &::before{
-          background-image: url(../images/icons/icon_globe.svg) !important;
+          background-image: url("@{img_url}/images/icons/icon_globe.svg") !important;
         }
       }
       &.users{
         &::before{
-          background-image: url(../images/icons/group.svg) !important;
+          background-image: url("@{img_url}/images/icons/group.svg") !important;
         }
       }
       &.lock{
         &::before{
-          background-image: url(../images/icons/privacy.svg) !important;
+          background-image: url("@{img_url}/images/icons/privacy.svg") !important;
         }
       } 
     }
@@ -1642,17 +1642,17 @@
             }
             &.globe{
               &::before{
-                background-image: url(../images/icons/icon_globe.svg) !important;
+                background-image: url("@{img_url}/images/icons/icon_globe.svg") !important;
               }
             }
             &.users{
               &::before{
-                background-image: url(../images/icons/group.svg) !important;
+                background-image: url("@{img_url}/images/icons/group.svg") !important;
               }
             }
             &.lock{
               &::before{
-                background-image: url(../images/icons/privacy.svg) !important;
+                background-image: url("@{img_url}/images/icons/privacy.svg") !important;
               }
             } 
           }
@@ -1744,12 +1744,12 @@
                 }
                 &.globe{
                   &::before{
-                    background-image: url(../images/icons/icon_globe.svg) !important;
+                    background-image: url("@{img_url}/images/icons/icon_globe.svg") !important;
                   }
                 }
                 &.users{
                   &::before{
-                    background-image: url(../images/icons/group.svg) !important;
+                    background-image: url("@{img_url}/images/icons/group.svg") !important;
                   }
                 }
               }
@@ -1885,7 +1885,7 @@
                   cursor: pointer;
                   &:before{
                     content: '';
-                    background-image: url(../images/icons/close.svg) !important;
+                    background-image: url("@{img_url}/images/icons/close.svg") !important;
                     background-size: contain !important;
                     width: 10px;
                     height: 10px;
