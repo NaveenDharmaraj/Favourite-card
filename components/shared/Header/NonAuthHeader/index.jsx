@@ -45,7 +45,7 @@ const NonAuthHeader = () => (
                     <Dropdown.Item as="a" href={`${CORP_DOMAIN}/contact/`} text="Contact us" />
                 </Dropdown.Menu>
             </Dropdown>
-            <Menu.Item as="a" href="/blog">
+            <Menu.Item as="a" href={`${CORP_DOMAIN}/blog/`}>
                 Blog
             </Menu.Item>
         </Menu.Menu>
