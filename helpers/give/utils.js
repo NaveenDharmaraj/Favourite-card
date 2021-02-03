@@ -9,7 +9,6 @@ import {
     isInputLengthLessThanOneThousand,
     isValidPositiveNumber,
     isAmountMoreThanOneDollor,
-    isAllocationAmountLessThanOneBillion,
     isAmountLessThanOneBillion,
     isAmountMoreOrEqualToOneDollor,
     isInputBlank,
@@ -1010,7 +1009,7 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
         case 'giveAmount':
             validity.doesAmountExist = !isInputBlank(value);
             validity.isAmountLessThanOneBillion = (giveData.giftType.value > 0)
-                ? isAmountLessThanOneBillion(value) : isAllocationAmountLessThanOneBillion(value);
+                ? isAmountLessThanOneBillion(value) : true;
             validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries')
                 ? isAmountMoreThanOneDollor(value) : isAmountMoreOrEqualToOneDollor(value);
             validity.isValidPositiveNumber = isValidPositiveNumber(value);

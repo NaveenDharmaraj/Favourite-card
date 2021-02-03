@@ -89,13 +89,6 @@ export const isAmountMoreOrEqualToOneDollor = (number) => {
 export const isAmountLessThanOneBillion = (number) => {
     return isValidPositiveNumber(number) ? number <= 9999 : true;
 };
-
-// Check if input is less than 1000000000
-// Ignore the error if it is not a valid positive number
-export const isAllocationAmountLessThanOneBillion = (number) => {
-    return isValidPositiveNumber(number) ? number <= 1000000000 : true;
-};
-
 // Check if input is less than 10000000
 // Ignore the error if it is not a valid positive number
 export const isAmountLessThanOneBillionDollars = (number) => {
