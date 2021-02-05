@@ -57,7 +57,7 @@ class SwitchAccountModal extends React.Component {
             <Modal
                 size="tiny"
                 dimmer="inverted"
-                className="chimp-modal small-close"
+                className="chimp-modal small-close switchAccountModal"
                 closeIcon
                 open={open}
                 onClose={close}
