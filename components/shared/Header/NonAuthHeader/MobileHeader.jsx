@@ -126,7 +126,7 @@ class MobileHeader extends React.Component {
                             </Accordion.Content>
                         </Menu.Item>
                     </Accordion>
-                    <Menu.Item as='a' href="/blog">Blog</Menu.Item>
+                    <Menu.Item as='a' href={`${CORP_DOMAIN}/blog/`}>Blog</Menu.Item>
                 </Sidebar>
                 <Sidebar.Pusher
                 onClick={this.handlePusher}

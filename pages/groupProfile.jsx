@@ -115,6 +115,11 @@ class GroupProfile extends React.Component {
 
         const {
             dispatch,
+            currentUser: {
+                attributes: {
+                    hasAdminAccess,
+                },
+            },
             groupDetails: {
                 attributes: {
                     avatar,
@@ -142,7 +147,7 @@ class GroupProfile extends React.Component {
         const giveButtonElement = <Button onClick={() => { resetFlowObject('group', dispatch); }} className="blue-btn-rounded-def">{formatMessage('common:giveButtonText')}</Button>;
         let giveButton = null;
         if (isAuthenticated) {
-            if (isMember) {
+            if (isMember || hasAdminAccess) {
                 giveButton = (
                     <div className="buttonWraper">
                         <Link route={`/give/to/group/${slug}/new`}>
@@ -186,6 +191,11 @@ class GroupProfile extends React.Component {
 }
 
 GroupProfile.defaultProps = {
+    currentUser: {
+        attributes: {
+            hasAdminAccess: false,
+        },
+    },
     dispatch: () => {},
     groupDetails: {
         attributes: {
@@ -215,6 +225,11 @@ GroupProfile.defaultProps = {
 };
 
 GroupProfile.propTypes = {
+    currentUser: PropTypes.shape({
+        attributes: PropTypes.shape({
+            hasAdminAccess: bool,
+        }),
+    }),
     dispatch: func,
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
