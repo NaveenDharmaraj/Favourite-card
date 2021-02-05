@@ -1,5 +1,12 @@
 import _isEmpty from 'lodash/isEmpty';
 import Bowser from 'bowser';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    AMZ_TRACE_ID_VERSION,
+} = publicRuntimeConfig;
 
 const isFalsy = (val) => {
     const falsyArray = [
@@ -254,7 +261,24 @@ const validateDate = (dateStr = '') => {
     return isValid;
 };
 
+const randHex = (len)=> {
+    var maxlen = 8,
+    min = Math.pow(16, Math.min(len, maxlen) - 1);
+    let max = Math.pow(16, Math.min(len, maxlen)) - 1, n = Math.floor(Math.random() * (max - min + 1)) + min, r = n.toString(16);
+
+    while (r.length < len) {
+        r = r + randHex(len - maxlen);
+    }
+    return r;
+};
+
+const createCustomAmzTraceId = ()=>{
+    new Date;
+    return `${AMZ_TRACE_ID_VERSION}-${(Date.now()).toString(16)}-${randHex(24)}`
+}
+
 export {
+    createCustomAmzTraceId,
     getMainNavItems,
     isFalsy,
     distanceOfTimeInWords,
