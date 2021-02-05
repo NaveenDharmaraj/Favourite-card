@@ -998,34 +998,37 @@ class Friend extends React.Component {
                                                         </p>
                                                         
                                                         <div className="p2pCalenderWrapper">
-                                                            <div>
-                                                                <Form.Field>
-                                                                    <label>When would you like to send this gift?</label>
-                                                                </Form.Field>
-                                                                <Form.Field>
+                                                            <div className="p2p_gift">
+                                                                    <label className="label_gift">When would you like to send this gift?</label>
+                                                               
+                                                                <Form.Field className="radio_btn">
                                                                     <Radio
                                                                         label='Send now'
                                                                         name='radioGroup'
+                                                                        className='checkbox chimpRadio'
                                                                         value='Now'
                                                                     />
                                                                 </Form.Field>
-                                                                <Form.Field>
+                                                                <Form.Field className="radio_btn">
                                                                     <Radio
                                                                         label='Schedule gift'
                                                                         name='radioGroup'
+                                                                        className='checkbox chimpRadio'
                                                                         value='Schedule'
                                                                     />
                                                                 </Form.Field>
+                                                             
                                                             </div>
-                                                            <div>
+                                                            <div className="Send_date">
+                                                            <label className="label_gift">Send date</label>
                                                                 <ChimpDatePicker dateValue={this.state.goalStartDate} onChangeValue={date => this.setState({goalStartDate:date})}/>
                                                             </div>
                                                             <div>
                                                                 <P2pFrequency/>
-                                                            </div>
-                                                            <div>
-                                                                <P2pReasons/>
-                                                            </div>
+                                                            </div> 
+                                                                <div>
+                                                                    <P2pReasons/>
+                                                                </div>
                                                         </div>
                                                         
                                                         <div className="give_flow_field">

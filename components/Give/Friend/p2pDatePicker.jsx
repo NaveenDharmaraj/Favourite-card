@@ -25,6 +25,7 @@ function ChimpDatePicker(props) {
             showPopperArrow={false}
             dateFormat="yyyy/MM/dd"
             strictParsing
+            popperPlacement="bottom-end"
         />
     )
 }
