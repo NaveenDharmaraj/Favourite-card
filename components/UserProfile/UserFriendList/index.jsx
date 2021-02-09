@@ -76,6 +76,7 @@ class UserFriendList extends React.Component {
             friendSearchText: '',
             showDropdownLoader: false,
             friendDropdownList: [],
+            scrollbarFixHeight: '',
         };
         this.showFriendsList = this.showFriendsList.bind(this);
         this.handleOnChangeSearch = this.handleOnChangeSearch.bind(this);
@@ -117,6 +118,7 @@ class UserFriendList extends React.Component {
         if (isMyprofile) {
             dispatch(getFriendsInvitations(email, 1));
         }
+          
     }
 
     componentDidUpdate(prevProps) {
@@ -404,6 +406,12 @@ class UserFriendList extends React.Component {
                         showDropdownLoader: false,
                         showSearchResultDropdown: true,
                     });
+
+                    let resultsHeight = document.querySelector('.overflowScrollbarFx .results').clientHeight;
+                    self.setState({
+                        scrollbarFixHeight: resultsHeight + 78,
+                    });
+
                 })
             }, 300);
         }
@@ -612,6 +620,7 @@ class UserFriendList extends React.Component {
             showDropdownLoader,
             showSearchResultDropdown,
             friendDropdownList,
+            scrollbarFixHeight
         } = this.state;
         const friendText = (number_of_friends == 1) ? 'friend' : 'friends';
         const activeIndex = this.props.friendPageStep === 'findFriends' ? 1 : 0;
@@ -693,7 +702,7 @@ class UserFriendList extends React.Component {
                     render: () => (
                         <Tab.Pane>
                             <div className='findFriendsSearch'>
-                                <div className={(showSearchResultDropdown) ? 'overflowScrollbarFx' : ''}>
+                                <div className={(showSearchResultDropdown) ? 'overflowScrollbarFx' : ''} style={(showSearchResultDropdown) ? { height: scrollbarFixHeight } : {}}>
                                     <Search
                                         open={showSearchResultDropdown}
                                         fluid
