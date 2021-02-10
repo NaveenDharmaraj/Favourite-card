@@ -17,7 +17,7 @@
     "invalidAddress": "Address should have at least 2 characters.",
     "invalidCity": "City should have at least 2 characters.",
     "invalidPostalCode": "Enter a valid postal code.",
-    "usCountryNote": "Remarque: le reçu fiscal ne sera utile qu'aux personnes qui gagnent un revenu canadien. Pourquoi? Les reçus sont remis par la fondation CHIMP: Charitable Impact Foundation, un organisme de bienfaisance canadien.",
+    "usCountryNote": "CHIMP: Charitable Impact Foundation (Canada) welcomes donations from US residents, but we can only issue Canadian tax receipts. You may be able to use these receipts under certain circumstances. Please consult with your accountant or tax advisor.",
     "invalidProvince": "Select a province.",
     "addressPlaceHolder": "123 rue Chemin",
     "secondAddressPlaceHolder": "Apt/suite number",

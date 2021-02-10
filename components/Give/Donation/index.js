@@ -91,6 +91,7 @@ class Donation extends React.Component {
         }
         let flowObject = _.cloneDeep(payload);
         this.state = {
+            allowDefaultCardTaxSelect: true,
             buttonClicked: false,
             flowObject: { ...flowObject, },
             disableButton: !props.userAccountsFetched,
@@ -132,7 +133,7 @@ class Donation extends React.Component {
             currentAccount,
         } = this.props;
         dispatch(getDonationMatchAndPaymentInstruments(id, 'donations'));
-        if(currentAccount.accountType === 'company'){
+        if (currentAccount.accountType === 'company') {
             getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
         }
     }
@@ -176,9 +177,9 @@ class Donation extends React.Component {
         let inputValue = value;
         const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
         if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isValidNumber)) {
-                inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
-                giveData[name] = inputValue;
-                giveData.formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+            giveData[name] = inputValue;
+            giveData.formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         }
         if (name !== 'giveTo') {
             validity = validateDonationForm(name, inputValue, validity, giveData);
@@ -215,13 +216,13 @@ class Donation extends React.Component {
         validity = validateDonationForm('donationAmount', donationAmount, validity);
         validity = validateDonationForm('noteToSelf', noteToSelf, validity);
         validity = validateDonationForm('giveTo', giveTo.value, validity);
-        validity = validateDonationForm('taxReceipt', taxReceipt, validity );
+        validity = validateDonationForm('taxReceipt', taxReceipt, validity);
         validity = validateDonationForm('creditCard', creditCard, validity);
         this.setState({ validity });
         const validationsResponse = _.every(validity);
         if (!validationsResponse) {
             const errorNode = findingErrorElement(validity, 'donation');
-            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({behavior: "smooth", block: "center"});
+            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({ behavior: "smooth", block: "center" });
         }
         return validationsResponse;
     }
@@ -233,6 +234,7 @@ class Donation extends React.Component {
             value,
         } = data;
         let {
+            allowDefaultCardTaxSelect,
             flowObject: {
                 giveData,
             },
@@ -256,6 +258,7 @@ class Donation extends React.Component {
                     if (giveData.giveTo.type === 'companies') {
                         setDisableFlag = true;
                         const { dispatch } = this.props;
+                        allowDefaultCardTaxSelect = true;
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveTo.id));
                         giveData.creditCard = {
                             value: null,
@@ -292,6 +295,7 @@ class Donation extends React.Component {
                 default: break;
             }
             this.setState({
+                allowDefaultCardTaxSelect,
                 disableButton: setDisableFlag,
                 flowObject: {
                     ...this.state.flowObject,
@@ -330,7 +334,7 @@ class Donation extends React.Component {
                 taxReceipt,
             },
         } = flowObject;
-        if(this.validateForm()) {
+        if (this.validateForm()) {
             const validateCC = this.isValidCC(
                 creditCard,
                 inValidCardNumber,
@@ -441,8 +445,8 @@ class Donation extends React.Component {
                                     {formatMessage(
                                         'donationMatchPolicyNote', {
                                         companyName: (!_.isEmpty(donationMatchedData.attributes.displayName))
-                                                ? donationMatchedData.attributes.displayName
-                                                : donationMatchedData.attributes.companyName,
+                                            ? donationMatchedData.attributes.displayName
+                                            : donationMatchedData.attributes.companyName,
                                         policyMax:
                                             formatCurrency(
                                                 donationMatchedData.attributes.policyMax,
@@ -487,6 +491,7 @@ class Donation extends React.Component {
 
     componentDidUpdate(oldProps) {
         let {
+            allowDefaultCardTaxSelect,
             flowObject,
         } = this.state;
         let {
@@ -496,6 +501,7 @@ class Donation extends React.Component {
         const {
             companiesAccountsData,
             companyDetails,
+            companyAccountsFetched,
             currentAccount,
             i18n: {
                 language,
@@ -507,7 +513,8 @@ class Donation extends React.Component {
         if (this.props.userAccountsFetched !== oldProps.userAccountsFetched) {
             doSetState = true;
         }
-        if (giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
+        if (giveData.giveTo.type === 'companies' && allowDefaultCardTaxSelect && (!_.isEqual(this.props.companyDetails, oldProps.companyDetails)
+            || (!_.isEmpty(this.props.companyDetails) && companyAccountsFetched !== oldProps.companyAccountsFetched && companyAccountsFetched))) {
             giveData.creditCard = getDefaultCreditCard(
                 populatePaymentInstrument(
                     this.props.companyDetails.companyPaymentInstrumentsData,
@@ -555,7 +562,7 @@ class Donation extends React.Component {
                     value: fund.id,
                 };
                 giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
-                giveData.taxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage), defaultTaxReceiptProfile.id);
+                giveData.taxReceipt = !_isEmpty(defaultTaxReceiptProfile) && getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage), defaultTaxReceiptProfile.id);
                 if (!_.isEmpty(this.props.donationMatchData)) {
                     const [
                         defaultMatch,
@@ -566,46 +573,46 @@ class Donation extends React.Component {
             }
         }
         // If the selected account is company by then pre-selecting the company account from giveTo dropdown
-        if(!_isEmpty(this.props.companyDetails) && !_isEmpty(currentAccount) && currentAccount.accountType === 'company' && giveData.giveTo.value === null && !_isEmpty(companiesAccountsData)){
-        companiesAccountsData.find(company => {
-            if(currentAccount.id == company.id) {
-                const {
-                    attributes: {
+        if (!_isEmpty(this.props.companyDetails) && !_isEmpty(currentAccount) && currentAccount.accountType === 'company' && giveData.giveTo.value === null && !_isEmpty(companiesAccountsData)) {
+            companiesAccountsData.find(company => {
+                if (currentAccount.id == company.id) {
+                    const {
+                        attributes: {
+                            avatar,
+                            balance,
+                            name,
+                            companyFundId,
+                            companyFundName,
+                            slug
+                        },
+                        type,
+                        id
+                    } = company;
+                    giveData.giveTo = {
                         avatar,
-                        balance, 
+                        balance,
+                        disabled: false,
+                        id: id,
                         name,
-                        companyFundId,
-                        companyFundName,
-                        slug
-                    },
-                    type,
-                    id
-                } = company;
-                giveData.giveTo = {
-                    avatar,
-                    balance,
-                    disabled: false,
-                    id: id,
-                    name,
-                    text: `${companyFundName} (${formatCurrency(balance, language, currency)})`,
-                    type,
-                    slug,
-                    value: companyFundId,
-                };
-                giveData.creditCard = getDefaultCreditCard(
-                    populatePaymentInstrument(
-                        companyDetails.companyPaymentInstrumentsData,
-                        formatMessage
-                    ));
-                giveData.taxReceipt = getTaxReceiptById(
-                    populateTaxReceipts(
-                        companyDetails.taxReceiptProfiles,
-                        formatMessage),
-                    companyDetails.companyDefaultTaxReceiptProfile.id
-                );
-                doSetState = true;
-                return true;
-             }
+                        text: `${companyFundName} (${formatCurrency(balance, language, currency)})`,
+                        type,
+                        slug,
+                        value: companyFundId,
+                    };
+                    giveData.creditCard = getDefaultCreditCard(
+                        populatePaymentInstrument(
+                            companyDetails.companyPaymentInstrumentsData,
+                            formatMessage
+                        ));
+                    giveData.taxReceipt = getTaxReceiptById(
+                        populateTaxReceipts(
+                            companyDetails.taxReceiptProfiles,
+                            formatMessage),
+                        companyDetails.companyDefaultTaxReceiptProfile.id
+                    );
+                    doSetState = true;
+                    return true;
+                }
             })
         }
         if (doSetState) {
@@ -629,7 +636,7 @@ class Donation extends React.Component {
      * @return {void}
      */
     validateStripeCreditCardNo(inValidCardNumber) {
-        this.setState({ 
+        this.setState({
             inValidCardNumber,
             disableCreditCard: false,
         });
@@ -641,7 +648,7 @@ class Donation extends React.Component {
      * @return {void}
      */
     validateStripeExpirationDate(inValidExpirationDate) {
-        this.setState({ 
+        this.setState({
             inValidExpirationDate,
             disableCreditCard: false,
         });
@@ -653,10 +660,10 @@ class Donation extends React.Component {
      * @return {void}
      */
     validateCreditCardCvv(inValidCvv) {
-        this.setState({ 
+        this.setState({
             disableCreditCard: false,
             inValidCvv
-         });
+        });
     }
 
     /**     
@@ -725,7 +732,7 @@ class Donation extends React.Component {
         if (e.target.id === "addNewCreditCard") {
             this.setState({
                 isCreditCardModalOpen: true,
-                isDefaultCard:false,
+                isDefaultCard: false,
             })
         } else if (e.target.id === "addFirstCreditCard") {
             this.setState({
@@ -739,10 +746,10 @@ class Donation extends React.Component {
         }
     }
 
-    handleSetPrimaryClick(event, data) {   
+    handleSetPrimaryClick(event, data) {
         let {
             isDefaultCard,
-        } = this.state;      
+        } = this.state;
         isDefaultCard = data.checked;
         this.setState({ isDefaultCard });
     }
@@ -775,6 +782,7 @@ class Donation extends React.Component {
         );
         if (validateCC) {
             this.setState({
+                allowDefaultCardTaxSelect: false,
                 buttonClicked: true,
             });
             const {
@@ -792,13 +800,13 @@ class Donation extends React.Component {
                     },
                 } = result;
                 let paymentInstruments;
-                if(giveTo.type === 'user') {
+                if (giveTo.type === 'user') {
                     paymentInstruments = this.props.paymentInstrumentsData;
-                } else if(giveTo.type === 'companies'){
+                } else if (giveTo.type === 'companies') {
                     paymentInstruments = this.props.companyDetails.companyPaymentInstrumentsData
                 }
-                let paymentList = populatePaymentInstrument(paymentInstruments,formatMessage);
-                newCreditCard =  _.find(paymentList, {
+                let paymentList = populatePaymentInstrument(paymentInstruments, formatMessage);
+                newCreditCard = _.find(paymentList, {
                     'id': id
                 });
                 const statusMessageProps = {
@@ -823,9 +831,9 @@ class Donation extends React.Component {
                             creditCard: newCreditCard,
                         }
                     },
-                    validity:{
+                    validity: {
                         ...this.state.validity,
-                        isCreditCardSelected:true,
+                        isCreditCardSelected: true,
                     }
                 });
             }).catch((error) => {
@@ -853,7 +861,7 @@ class Donation extends React.Component {
         const {
             dispatch,
         } = this.props;
-        const{
+        const {
             flowObject: {
                 giveData: {
                     giveTo
@@ -861,7 +869,9 @@ class Donation extends React.Component {
             }
         } = this.state;
         const formatMessage = this.props.t;
-
+        this.setState({
+            allowDefaultCardTaxSelect: false,
+        })
         return dispatch(addNewTaxReceiptProfileAndLoad(flowObject, newTaxReceiptProfile, isDefaultChecked)).then((result) => {
             const {
                 data: {
@@ -891,9 +901,9 @@ class Donation extends React.Component {
                         taxReceipt: { ...newtaxReceipt }
                     }
                 },
-                validity:{
+                validity: {
                     ...this.state.validity,
-                    isTaxReceiptSelected:true,
+                    isTaxReceiptSelected: true,
                 }
             })
             this.handleTaxReceiptModalClose();
@@ -915,7 +925,7 @@ class Donation extends React.Component {
             },
         })
     }
-    handleOnChangeCardName= () => {
+    handleOnChangeCardName = () => {
         this.setState({
             disableCreditCard: false,
         })
@@ -998,15 +1008,15 @@ class Donation extends React.Component {
                                                             validity={validity}
                                                         />
                                                         <div className="give_flow_field">
-                                                        <DropDownAccountOptions
-                                                            formatMessage={formatMessage}
-                                                            type={type}
-                                                            validity={validity.isValidAddingToSource}
-                                                            selectedValue={this.state.flowObject.giveData.giveTo.value}
-                                                            name="giveTo"
-                                                            parentInputChange={this.handleInputChange}
-                                                            parentOnBlurChange={this.handleInputOnBlur}
-                                                        />
+                                                            <DropDownAccountOptions
+                                                                formatMessage={formatMessage}
+                                                                type={type}
+                                                                validity={validity.isValidAddingToSource}
+                                                                selectedValue={this.state.flowObject.giveData.giveTo.value}
+                                                                name="giveTo"
+                                                                parentInputChange={this.handleInputChange}
+                                                                parentOnBlurChange={this.handleInputOnBlur}
+                                                            />
                                                         </div>
                                                         <DonationFrequency
                                                             formatMessage={formatMessage}
@@ -1081,7 +1091,7 @@ class Donation extends React.Component {
                                                                 </Modal.Content>
                                                             </Modal>
                                                         }
-                                                        
+
                                                         <TaxReceiptDropDown
                                                             giveTo={giveData.giveTo}
                                                             formatMessage={formatMessage}
@@ -1091,7 +1101,7 @@ class Donation extends React.Component {
                                                             taxReceipt={giveData.taxReceipt}
                                                             taxReceiptsOptions={taxReceiptsOptions}
                                                             validity={validity}
-                                                        />    
+                                                        />
                                                         {
                                                             isTaxReceiptModelOpen && (
                                                                 <TaxReceiptModal
@@ -1114,16 +1124,16 @@ class Donation extends React.Component {
                                                 <Grid.Row className="to_space">
                                                     <Grid.Column mobile={16} tablet={16} computer={16}>
                                                         <div className="give_flow_field">
-                                                        <Note
-                                                            fieldName="noteToSelf"
-                                                            handleOnInputChange={this.handleInputChange}
-                                                            handleOnInputBlur={this.handleInputOnBlur}
-                                                            formatMessage={formatMessage}
-                                                            labelText={formatMessage('noteToSelfLabel')}
-                                                            popupText={formatMessage('donorNoteToSelfPopup')}
-                                                            placeholderText={formatMessage('noteToSelfPlaceHolder')}
-                                                            text={giveData.noteToSelf}
-                                                        />
+                                                            <Note
+                                                                fieldName="noteToSelf"
+                                                                handleOnInputChange={this.handleInputChange}
+                                                                handleOnInputBlur={this.handleInputOnBlur}
+                                                                formatMessage={formatMessage}
+                                                                labelText={formatMessage('noteToSelfLabel')}
+                                                                popupText={formatMessage('donorNoteToSelfPopup')}
+                                                                placeholderText={formatMessage('noteToSelfPlaceHolder')}
+                                                                text={giveData.noteToSelf}
+                                                            />
                                                         </div>
                                                         <Form.Button
                                                             primary
@@ -1158,6 +1168,7 @@ const mapStateToProps = (state) => {
     return {
         currentAccount: state.user.currentAccount,
         companyDetails: state.give.companyData,
+        companyAccountsFetched: state.give.companyAccountsFetched,
         currentUser: state.user.info,
         userTaxReceiptProfiles: state.user.taxReceiptProfiles,
         userAccountsFetched: state.user.userAccountsFetched,

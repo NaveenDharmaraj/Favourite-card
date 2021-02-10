@@ -16,6 +16,7 @@ import {
 import {
     connect,
 } from 'react-redux';
+import getConfig from 'next/config';
 
 import {
     getDashBoardData,
@@ -30,6 +31,11 @@ import {
 } from '../../../helpers/give/utils';
 import DashboardTransactionDetails from '../DashboardTransactionDetails';
 
+const { publicRuntimeConfig } = getConfig();
+const {
+    CORP_DOMAIN,
+    HELP_CENTRE_URL,
+} = publicRuntimeConfig;
 class DashboradList extends React.Component {
     constructor(props) {
         super(props);
@@ -120,7 +126,20 @@ class DashboradList extends React.Component {
                 let date = new Date(data.attributes.createdAt);
                 const dd = date.getDate();
                 const mm = date.getMonth();
-                const month = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
+                const month = [
+                    'January',
+                    'February',
+                    'March',
+                    'April',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
+                    'September',
+                    'October',
+                    'November',
+                    'December',
+                ];
                 const yyyy = date.getFullYear();
                 date = `${month[mm]} ${dd}, ${yyyy}`;
                 const modalDate = `${month[mm]} ${dd}, ${yyyy}`;
@@ -138,22 +157,30 @@ class DashboradList extends React.Component {
                 let informationSharedEntity = '';
                 let imageCls = 'ui image';
                 let transactionTypeDisplay = '';
+                const isGiftCancelled = (data.attributes.status === 'cancelled'
+                || data.attributes.status === 'returned_to_donor'
+                || data.attributes.status === 'expired'
+                || data.attributes.status === 'bounced');
+                const giftReversed = <label className='giftNotSent'>GIFT CANCELLED</label>;
+                const giftReturned = <label className='giftNotSent'>GIFT RETURNED</label>;
+                const giftRefund = <label className='giftNotSent'>REFUND</label>;
+                const matchReturned = <label className='giftNotSent'>MATCH RETURNED</label>;
                 if (!_.isEmpty(data.attributes.destination)) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
                         givingType = 'giving group';
                         rowClass = 'm-allocation';
                         givingTypeClass = 'grp-color';
-                        transactionTypeDisplay = 'Gift given';
+                        transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = `groups/${data.attributes.destination.slug}`;
-                        informationSharedEntity = 'Giving Group admin';
+                        informationSharedEntity = data.attributes.hasCampaign ? 'Giving Group and Campaign admins' : 'Giving Group admin';
                     } else if (data.attributes.destination.type.toLowerCase() === 'beneficiary') {
                         givingType = 'charity';
                         rowClass = 'allocation';
                         givingTypeClass = 'charity-color';
-                        transactionTypeDisplay = 'Gift given';
+                        transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
@@ -163,7 +190,7 @@ class DashboradList extends React.Component {
                         givingType = 'campaign';
                         rowClass = 'allocation';
                         givingTypeClass = 'grp-color';
-                        transactionTypeDisplay = 'Gift given';
+                        transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
@@ -175,20 +202,21 @@ class DashboradList extends React.Component {
                         descriptionType = 'Added to ';
                         entity = 'your Impact Account';
                         transactionSign = '+';
+                        transactionTypeDisplay = isGiftCancelled ? giftRefund : 'Deposit';
                         imageCls = 'ui avatar image';
                     } else if (data.attributes.transactionType.toLowerCase() === 'matchallocation') {
                         givingType = '';
                         rowClass = 'gift';
                         descriptionType = 'Matched by ';
-                        transactionTypeDisplay = 'Matched';
+                        transactionTypeDisplay = isGiftCancelled ? matchReturned : 'Matched';
                         entity = data.attributes.source.name;
                         transactionSign = '+';
                     } else if (data.attributes.destination.id === Number(id)) {
                         givingType = '';
                         rowClass = 'gift';
                         descriptionType = 'Received a gift from ';
-                        transactionTypeDisplay = 'Gift received';
-                        transactionSign = '+';
+                        transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift received';
+                        transactionSign = isGiftCancelled ? '-' : '+';
                         if (!_.isEmpty(data.attributes.source)) {
                             entity = data.attributes.source.name;
                             if (data.attributes.source.type === 'User') {
@@ -205,7 +233,7 @@ class DashboradList extends React.Component {
                     } else if ((data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation')) {
                         givingType = '';
                         rowClass = 'gift';
-                        transactionTypeDisplay = 'Gift given';
+                        transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
@@ -214,10 +242,10 @@ class DashboradList extends React.Component {
                 } else if (data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation') {
                     givingType = '';
                     rowClass = 'gift';
-                    transactionTypeDisplay = 'Gift given';
+                    transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                     descriptionType = 'Given to ';
                     entity = data.attributes.recipientEmail;
-                    transactionSign = '-';
+                    transactionSign = isGiftCancelled ? '+' : '-';
                 } else if (data.attributes.source.id === Number(id)) {
                     // last catch block to handle all other senarios
                     transactionTypeDisplay = 'Gift given';
@@ -225,12 +253,11 @@ class DashboradList extends React.Component {
                     transactionSign = '-';
                     // for catransfer destination is blank but it is a deposit
                     if (data.attributes.transactionType.toLowerCase() === 'catransfer') {
-                        transactionSign = '+';
-                        transactionTypeDisplay = 'Deposit';
+                        transactionSign = isGiftCancelled ? '+' : '-';
+                        transactionTypeDisplay = isGiftCancelled ? giftReversed : 'Deposit';
                     }
                 }
                 const amount = formatCurrency(data.attributes.amount, language, 'USD');
-                const transactionType = data.attributes.transactionType.toLowerCase() === 'donation' ? 'Deposit' : transactionTypeDisplay;
                 return (
                     <Table.Row className={rowClass} key={index}>
                         <Table.Cell className={dateClass}>{date}</Table.Cell>
@@ -261,16 +288,24 @@ class DashboradList extends React.Component {
                                                             {transactionSign}
                                                             {amount}
                                                             <Header.Subheader>
-                                                                {descriptionType}
-                                                                {(profileUrl) ? (
-                                                                    <span>
-                                                                        {entity}
-                                                                    </span>
-                                                                ) : (
-                                                                    <span>
-                                                                        {entity}
-                                                                    </span>
-                                                                )}
+                                                                {isGiftCancelled
+                                                                    ? (
+                                                                        transactionTypeDisplay
+                                                                    )
+                                                                    : (
+                                                                        <Fragment>
+                                                                            {descriptionType}
+                                                                            {(profileUrl) ? (
+                                                                                <span>
+                                                                                    {entity}
+                                                                                </span>
+                                                                            ) : (
+                                                                                <span>
+                                                                                    {entity}
+                                                                                </span>
+                                                                            )}
+                                                                        </Fragment>
+                                                                    )}
                                                             </Header.Subheader>
                                                         </Header>
                                                     </div>
@@ -284,6 +319,19 @@ class DashboradList extends React.Component {
                                                             />
                                                         )
                                                     }
+                                                    {isGiftCancelled
+                                                    && (
+                                                        <div className="learnAboutWrap">
+                                                            {(data.attributes.transactionType.toLowerCase() === 'matchallocation')
+                                                            && (
+                                                                <p>Due to a refund in a previous transaction. </p>
+                                                            )}
+                                                            If you have questions about this transaction,
+                                                            <a href={`${CORP_DOMAIN}/contact/`}> contact us </a>
+                                                            for help.
+                                                        </div>
+                                                    )
+                                                    }
                                                 </Modal.Content>
                                             </Modal>
                                         </List.Header>
@@ -294,7 +342,7 @@ class DashboradList extends React.Component {
                                 </List.Item>
                             </List>
                         </Table.Cell>
-                        <Table.Cell className="reason">{transactionType}</Table.Cell>
+                        <Table.Cell className="reason">{transactionTypeDisplay}</Table.Cell>
                         <Table.Cell className="amount">
                             {transactionSign}
                             {amount}
@@ -328,16 +376,16 @@ class DashboradList extends React.Component {
                             <Grid.Column mobile={16} tablet={12} computer={12}>
                                 <Header as="h3">
                                     <Header.Content>
-                                    Account activity
+                                        Account activity
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
                     <div className="pt-2">
-                        { dashboardListLoader ? (
+                        {dashboardListLoader ? (
                             <Table padded unstackable className="no-border-table">
-                                <PlaceHolderGrid row={4} column={4} placeholderType="table" />
+                                <PlaceHolderGrid row={6} column={4} placeholderType="table" />
                             </Table>
                         ) : (
                             this.listItem()
@@ -369,4 +417,6 @@ function mapStateToProps(state) {
     };
 }
 
-export default withTranslation(['giveCommon'])(connect(mapStateToProps)(DashboradList));
+export default withTranslation([
+    'giveCommon',
+])(connect(mapStateToProps)(DashboradList));

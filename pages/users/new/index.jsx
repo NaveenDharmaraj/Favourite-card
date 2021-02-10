@@ -15,7 +15,7 @@ import {
 import storage from '../../../helpers/storage';
 import { Router } from '../../../routes';
 import Layout from '../../../components/shared/Layout';
-import { validateUserRegistrationForm } from '../../../helpers/users/utils';
+import { validateUserRegistrationForm, addGtmEventsSignUp } from '../../../helpers/users/utils';
 import FirstStep from '../../../components/New/FirstStep';
 import SecondStep from '../../../components/New/SecondStep';
 import CausesSelection from '../../../components/New/CausesSelection';
@@ -199,6 +199,7 @@ class Login extends React.Component {
             const {
                 dispatch,
             } = this.props;
+            addGtmEventsSignUp(stepIndex, 'Continue', userCauses);
             if (stepIndex === 3) {
                 this.setState({
                     buttonClicked: true,
@@ -236,6 +237,7 @@ class Login extends React.Component {
         let {
             stepIndex
         } = this.state;
+        addGtmEventsSignUp(stepIndex, 'Back');
         this.setState({
             stepIndex: stepIndex - 1,
         });

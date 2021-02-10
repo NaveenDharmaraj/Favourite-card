@@ -17,7 +17,7 @@
     "invalidAddress": "Address should have at least 2 characters.",
     "invalidCity": "City should have at least 2 characters.",
     "invalidPostalCode": "Enter a valid postal code.",
-    "usCountryNote": "Note: The tax receipt will only be valuable to people who earn Canadian income. Why? The receipts are issued by the CHARITABLE IMPACT: Charitable Impact Foundation which is a Canadian charity.",
+    "usCountryNote": "CHIMP: Charitable Impact Foundation (Canada) welcomes donations from US residents, but we can only issue Canadian tax receipts. You may be able to use these receipts under certain circumstances. Please consult with your accountant or tax advisor.",
     "invalidProvince": "Select a province.",
     "addressPlaceHolder": "123 Street Road",
     "secondAddressPlaceHolder": "Apt/suite number",

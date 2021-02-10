@@ -34,8 +34,7 @@ class SearchCharitiesGroups extends React.Component {
                     <Link route={`/charities/${charity.attributes.slug}`} passHref>
 
                         <Card as="a" key={i}>
-                            <div className="searchCardTopImg" style={{backgroundImage:`url(${!_isEmpty(charity.attributes.avatar) ? charity.attributes.avatar : charityImg})`}}>
-                            </div>
+                            <div className="searchCardTopImg" style={{ backgroundImage: `url('${!_isEmpty(charity.attributes.avatar) ? charity.attributes.avatar : charityImg}')` }} />
                             <Card.Content>
                                 <Card.Header>{charity.attributes.name}</Card.Header>
                                 <Card.Description>
@@ -70,8 +69,7 @@ class SearchCharitiesGroups extends React.Component {
                     <Grid.Column mobile={16} tablet={8} computer={4}>
                         <Link route={route} passHref>
                             <Card as="a" key={i}>
-                                <div className="searchCardTopImg" style={{backgroundImage:`url(${!_isEmpty(group.attributes.avatar) ? group.attributes.avatar : groupImg})`}}>
-                                </div>
+                                <div className="searchCardTopImg" style={{ backgroundImage: `url('${!_isEmpty(group.attributes.avatar) ? group.attributes.avatar : groupImg}')` }} />
                                 <Card.Content>
                                     <Card.Header>{group.attributes.name}</Card.Header>
                                     <Card.Description>
@@ -99,7 +97,7 @@ class SearchCharitiesGroups extends React.Component {
             charityLoader,
             groupLoader,
             groups,
-            searchWord
+            searchWord,
         } = this.props;
         let searchQueryParam = '';
         let showNoData = false;

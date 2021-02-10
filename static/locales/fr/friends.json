@@ -3,7 +3,7 @@
     "includeMessageLabel": "Inclure un message (facultatif)",
     "invalidEmailError": "Entrez des adresses courriels valides, séparées par des virgules",
     "duplicateEmail": "Les destinataires ne peuvent pas contenir de doublon.",
-    "haveSenderEmail": "Les destinataires ne peuvent pas contenir l’adresse courriel de l’utilisateur en cours.",
+    "haveSenderEmail": "You cannot send charitable dollars to yourself. Select another recipient to give to.",
     "maxEmail": "Le nombre de destinataires ne peut dépasser 25.",
     "recipientsLabel": "Donner à",
     "recipientsPopup": "Vous pouvez envoyer un don à plusieurs destinataires en même temps en séparant les adresses courriel avec des virgules.",

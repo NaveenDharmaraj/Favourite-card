@@ -3,7 +3,7 @@
     "includeMessageLabel": "Include a message (optional) ",
     "invalidEmailError":  "Enter valid email addresses, separated by commas",
     "duplicateEmail": "Recipients cannot contain duplicates.",
-    "haveSenderEmail": "Recipients cannot contain Logged in User Email.",
+    "haveSenderEmail": "You cannot send charitable dollars to yourself. Select another recipient to give to.",
     "maxEmail": "Number of recipients cannot exceed 25.",
     "recipientsLabel": "Give to",
     "recipientsPopup": "You can give a gift to multiple recipients at the same time, just separate email addresses with a comma.",

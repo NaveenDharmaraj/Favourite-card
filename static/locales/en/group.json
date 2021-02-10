@@ -1,7 +1,7 @@
 {
     "repeatThisGiftLabel": "Repeat this gift?",
     "giveToLabel": "Give to",
-    "giveGroupToEqualGiveFrom": "The source and destination group cannot be the same",
+    "giveGroupToEqualGiveFrom": "The recipient you give to cannot be the same as the account you give from",
     "amountLabel": "Amount",
     "giveFromLabel": "Give from",
     "donorGiveFromPopup": "You can give from your personal account or those that you administer.  Note that Group accounts with a Matching Campaign are not listed because they can only give directly to a charity.",

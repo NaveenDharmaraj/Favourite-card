@@ -57,12 +57,12 @@ class SwitchAccountModal extends React.Component {
             <Modal
                 size="tiny"
                 dimmer="inverted"
-                className="chimp-modal small-close"
+                className="chimp-modal small-close switchAccountModal"
                 closeIcon
                 open={open}
                 onClose={close}
             >
-                <Modal.Header>Switch Account</Modal.Header>
+                <Modal.Header>Switch account</Modal.Header>
                 <Modal.Content>
                     <Modal.Description className="font-s-16">
                         <div className="messageSearch">

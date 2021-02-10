@@ -20,11 +20,11 @@ import HubspotForm from 'react-hubspot-form';
 import { Link } from '../../../routes';
 import '../../../static/less/footer.less';
 import flogo from '../../../static/images/CharitableImpact.svg';
-import appimg from '../../../static/images/Get-it-on-apple-store.png';
-import facebook from '../../../static/images/icons/facebook.png';
-import instagram from '../../../static/images/icons/instagram.png';
-import linkedin from '../../../static/images/icons/linkedin.png';
-import twitter from '../../../static/images/icons/twitter.png';
+import appimg from '../../../static/images/footer_appstore.svg';
+import facebook from '../../../static/images/icons/icon_social_facebook.svg';
+import instagram from '../../../static/images/icons/icon_social_instagram.svg';
+import linkedin from '../../../static/images/icons/icon_social_linkedin.svg';
+import twitter from '../../../static/images/icons/icon_social_twitter.svg';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -44,11 +44,11 @@ const ERRORMESSAGES = {
 const Footer = (props) => {
     const {
         isAuthenticated,
-        isCharityPage,
+        isProfilePage,
     } = props;
     return (
         <div>
-            <div className={`my-footer ${isCharityPage ? 'BottomfixedBtn_Footer' : ''}`}>
+            <div className={`my-footer ${isProfilePage ? 'BottomfixedBtn_Footer' : ''}`}>
                 <Container>
                     <div className="footer-search">
                         <Grid verticalAlign="middle" columns={2} centered>
@@ -146,7 +146,11 @@ const Footer = (props) => {
                                                 </List>
                                             </Grid.Column>
                                             <Grid.Column mobile={16} tablet={4} computer={4}>
-                                                <Header as="h4"><a href={`${CORP_DOMAIN}/charities/`}>Charitable Impact for charities</a></Header>
+                                                <Header as="h4" content="Solutions" />
+                                                <List link className="solutionsLinks">
+                                                    <List.Item as="a" href={`${CORP_DOMAIN}/advisors/`}>For Advisors</List.Item>
+                                                    <List.Item as="a" href={`${CORP_DOMAIN}/charities/`}>For Charities</List.Item>
+                                                </List>
                                                 <div className="app_logo">
                                                     <Header as="h5">Get the app</Header>
                                                     <Image
@@ -183,12 +187,12 @@ const Footer = (props) => {
 
 Footer.propTypes = {
     isAuthenticated: bool,
-    isCharityPage: bool,
+    isProfilePage: bool,
 };
 
 Footer.defaultProps = {
     isAuthenticated: false,
-    isCharityPage: false,
+    isProfilePage: false,
 };
 
 export default Footer;

@@ -14,6 +14,7 @@ import {
     getNextAllocationMonth,
     formatCurrency,
     formatAmount,
+    fullMonthNames,
     setDateForRecurring,
 } from '../../../../helpers/give/utils';
 import { Link } from '../../../../routes';
@@ -34,6 +35,7 @@ const CharitySuccess = (props) => {
             giftType,
             giveAmount,
         },
+        result,
     } = successData;
     const {
         eftEnabled,
@@ -59,7 +61,18 @@ const CharitySuccess = (props) => {
                 month,
             });
     } else {
-        const month = getNextAllocationMonth(formatMessage, eftEnabled, language);
+        const {
+            attributes: {
+                disbursementDate,
+            },
+        } = result;
+        // sample disbursementDate respone from api "2020-12-01"
+        const allocationDate = disbursementDate ? disbursementDate.split('-') : [];
+        const months = fullMonthNames(formatMessage);
+        const month = (language === 'fr')
+            ? `${allocationDate[2]}er ${months[allocationDate[1] - 1]} ${allocationDate[0]}`
+            : `${months[allocationDate[1] - 1]} ${allocationDate[2]}, ${allocationDate[0]}`;
+        // const month = getNextAllocationMonth(formatMessage, eftEnabled, language);
         secondParagraph = (giveFrom.type === 'user')
             ? formatMessage('charityTimeForSending', {
                 charityName: name,
@@ -96,7 +109,7 @@ const CharitySuccess = (props) => {
                     <p className="text-center">
                         If you like, you can also
                         {' '}
-                        <Link route={`/user/recurring-donations`}>set up a monthly deposit</Link>
+                        <Link route="/user/recurring-donations">set up a monthly deposit</Link>
                         {' '}
                         into your account to cover this monthly gift.
                     </p>
@@ -141,6 +154,11 @@ CharitySuccess.propTypes = {
                 name: PropTypes.string,
             }),
         }),
+        result: PropTypes.shape({
+            attributes: PropTypes.shape({
+                disbursementDate: PropTypes.string,
+            }),
+        }),
         type: PropTypes.string,
     }),
     t: PropTypes.func,
@@ -164,6 +182,11 @@ CharitySuccess.defaultProps = {
             giveTo: {
                 eftEnabled: false,
                 name: '',
+            },
+        },
+        result: {
+            attributes: {
+                disbursementDate: '',
             },
         },
         type: null,

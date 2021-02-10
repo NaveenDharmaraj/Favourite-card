@@ -265,7 +265,7 @@ h4{
                     height: 15px;
                     &:before{
                       content: '';
-                      background-image: url(../images/icons/close.svg) !important;
+                      background-image: url("@{img_url}/images/icons/close.svg") !important;
                       background-size: contain !important;
                       background-repeat: no-repeat !important;
                       display: inline-block;
@@ -296,7 +296,7 @@ h4{
                   width: 17px;
                   &:before{
                     content: '';
-                    background-image: url(../images/icons/close.svg) !important;
+                    background-image: url("@{img_url}/images/icons/close.svg") !important;
                     background-size: contain !important;
                     background-repeat: no-repeat !important;
                     display: inline-block;
@@ -316,7 +316,7 @@ h4{
               }
             }
             >.header{
-              background-image: url('../images/header.svg');
+              background-image: url("@{img_url}/images/header.svg");
               background-size: contain;
               background-repeat: no-repeat;
               background-position: center right;
@@ -605,16 +605,16 @@ h4{
     margin-left: 1rem;
   }
   &.search{
-    background-image: url('../images/icons/icon-search.png');
+    background-image: url("@{img_url}/images/icons/icon-search.png");
     background-size: cover;
     min-width: 30px;
     min-height: 30px;
   }
   &.bell{
-    background-image: url('../images/icons/icon-notification.png');
+    background-image: url("@{img_url}/images/icons/icon-notification.png");
   }
   &.chat{
-    background-image: url('../images/icons/icon-message.png');
+    background-image: url("@{img_url}/images/icons/icon-message.png");
   }
   .notify-red{
     background-color: #db0163;
@@ -921,8 +921,8 @@ h4{
             overflow-y: hidden;
             scrollbar-width: none;
             &::-webkit-scrollbar {
-              width: 3px;
-              height: 5px;
+              width: 0px;
+              height: 0px;
               border-radius:6px;
             }
             &::-webkit-scrollbar-track {
@@ -930,7 +930,7 @@ h4{
                 background-color: transparent;
             }
             &::-webkit-scrollbar-thumb {
-              background-color: #ddd;
+              background-color: transparent;
               //outline: 1px solid slategrey;
               border-radius:6px;
             }
@@ -1002,7 +1002,7 @@ h4{
       &.segment{
         &.tab{
           border: none;
-          padding-top: 25px;
+          padding-top: 0rem;
         }
       }
     }
@@ -1079,6 +1079,7 @@ h4{
           margin-top: -1rem;
           .ui.grid >.row{
             padding-top: 0px;
+            padding-bottom: 2rem;
             
           }
           .user-left-menu{
@@ -1157,18 +1158,19 @@ h4{
       padding-bottom: 0px!important;
     }
     &.pMethodHead{
-      padding-top: 3px !important;
+      // padding-top: 3px !important;
+      .ui.grid{
+        margin-top: 0;
+      }
     }
     p{
       >a{
         text-decoration: underline;
       }
     }
-    &:first-child{
-      padding-top: 0px;
-    }
     &:last-child{
       border-bottom: 0px solid transparent;
+      padding-bottom:0 !important ;
     }
     .success-btn-rounded-def{
       min-width: 166px;
@@ -1178,6 +1180,9 @@ h4{
         &.list{
           &.userList{
             padding-bottom: 20px;
+            &:last-child{
+              padding-bottom:0 ;
+            }
             .item{
               &:last-child{
                 border-bottom: 1px solid rgba(34,36,38,.15);
@@ -1199,12 +1204,21 @@ h4{
         &.header{
           font-size: 17px;
           line-height: 15px;
+          margin-top: 0;
         }
       }
     }
     p{
       line-height: 28/@rem;
       font-size: 1rem;
+      &:last-child{
+        margin-bottom: -4px;
+      }
+    }
+    button.ui.button.success-btn-rounded-def{
+      @media only screen and (max-width: 991px){
+        margin-top: 5px;
+      }
     }
   }
 }
@@ -1325,7 +1339,7 @@ h4{
           &::before{
             position: absolute;
             content: '';
-            background-image: url(../images/illustration-find-friends.png) !important;
+            background-image: url("@{img_url}/images/illustration-find-friends.png") !important;
             background-size: cover !important;
             background-repeat: no-repeat !important;
             top: 0;
@@ -1346,6 +1360,9 @@ h4{
   +.border-top{
     .settingsTab{
       border-top: 1px solid @grey-lighten-2;
+      > div .ui.grid{
+        margin-top: 0;
+      }
     }
   }
 }
@@ -1785,7 +1802,7 @@ h4{
   }
  }
  .loginPageBg{
-   background-image: url(../images/login_bg.png);
+   background-image: url("@{img_url}/images/login_bg.png");
    background-repeat: no-repeat;
    background-size: contain;
    background-position: top left;
@@ -1795,7 +1812,7 @@ h4{
       left: -75px;
       right: 100px;
       top: 0;
-      background-image: url('../images/Login.png');
+      background-image: url("@{img_url}/images/Login.png");
       background-size: contain;
       height: 100%;
       background-position: center;
@@ -1891,7 +1908,7 @@ h4{
       left: 0px;
       right: 100px;
       top: 0;
-      background-image: url('../images/verifyemail.png');
+      background-image: url("@{img_url}/images/verifyemail.png");
       background-size: contain;
       height: 100%;
       background-position: center;
@@ -1906,7 +1923,7 @@ h4{
     left: -75px;
     right: 100px;
     top: 0;
-    background-image: url('../images/signup.png');
+    background-image: url("@{img_url}/images/signup.png");
     background-size: contain;
     height: 100%;
     background-position: center;
@@ -2076,7 +2093,7 @@ h4{
     position: absolute;
     right: 32px;
     top: 14px;
-    background-image: url(../images/causes.png);
+    background-image: url("@{img_url}/images/causes.png");
     background-size: contain;
     background-position: top;
     background-repeat: no-repeat;
@@ -2090,7 +2107,7 @@ h4{
     position: absolute;
     right: 32px;
     top: 14px;
-    background-image: url(../images/img_discoverable.svg);
+    background-image: url("@{img_url}/images/img_discoverable.svg");
     background-size: contain;
     background-position: top;
     background-repeat: no-repeat;
@@ -2216,7 +2233,7 @@ h4{
       position: absolute;
       right: 32px;
       top: 14px;
-      background-image: url(../images/causes.png);
+      background-image: url("@{img_url}/images/causes.png");
       background-size: contain;
       background-position: top;
       background-repeat: no-repeat;
@@ -2498,7 +2515,7 @@ h4{
         &.link{
           &.icon{
             &::before{
-              content: url(../images/icons/password-unhide.svg);
+              content: url("@{img_url}/images/icons/password-unhide.svg");
             }
           }
         }
@@ -2731,7 +2748,7 @@ h4{
       &.search{
         &::before{
           content: "";
-          background-image: url(../images/icons/icon-search.svg) !important;
+          background-image: url("@{img_url}/images/icons/icon-search.svg") !important;
           background-repeat: no-repeat !important;
           background-size: contain !important;
           background-position: center !important;
@@ -3311,14 +3328,14 @@ body{
 .c-db-header{
   padding-top: 63/@rem;
   padding-bottom: 66/@rem;
-  background-image: url(../images/dashboard_bg.png);   
+  background-image: url("@{img_url}/images/dashboard_bg.png");   
   background-size: cover;
   background-repeat: no-repeat;
 }
 .db-card-blue{
   &.ui{
     &.card{
-      background-image: url(../images/dashboard_account.png);
+      background-image: url("@{img_url}/images/dashboard_account.png");
       background-color: #3D58A7;
       background-repeat: no-repeat;
       background-size: contain;
@@ -3329,7 +3346,7 @@ body{
 .db-card-red{
   &.ui{
     &.card{
-      background-image: url(../images/dashboard_gift.png);
+      background-image: url("@{img_url}/images/dashboard_gift.png");
       background-color: #EE4141;
       background-repeat: no-repeat;
       background-size: 156px;
@@ -3343,7 +3360,7 @@ body{
         right: 0;
         width: 100%;
         max-width: 228px;
-        background-image: url(../images/gift_bg.png);
+        background-image: url("@{img_url}/images/gift_bg.png");
         background-size: contain;
         background-repeat: no-repeat;
         background-position: bottom right;
@@ -3476,6 +3493,9 @@ body{
       }
       .reason{
         text-align: right;
+        &.reasonText{
+          padding-right: 45px !important;
+        }
       }
       .amount{
         text-align: right;
@@ -3520,6 +3540,18 @@ body{
         font-weight: 600;
       }
     }
+  }
+}
+label.giftNotSent{
+  color: #F34A48;
+  border: 1px solid #DDDDDD;
+  font-size: 10px;
+  line-height: 20px;
+  letter-spacing: 1px;
+  border-radius: 25px;
+  padding: 3px 16px;
+  @media only screen and (max-width:991px) {
+    padding: 3px 12px;
   }
 }
 .right-align{
@@ -3597,7 +3629,7 @@ body{
                 top: 0;
                 bottom: 0;
                 margin: auto;
-                background-image: url(../images/icons/icon-arrow-down.svg) !important;
+                background-image: url("@{img_url}/images/icons/icon-arrow-down.svg") !important;
                 background-size: contain !important;
                 background-repeat: no-repeat !important;
                 background-position: center !important;
@@ -3640,14 +3672,14 @@ body{
       &.createGift{
         background-color: #E3E8F0;	
         box-shadow: 2px 2px 7px 0 rgba(135,135,135,0.3);
-        background-image: url(../images/findfriends_bg.png);
+        background-image: url("@{img_url}/images/findfriends_bg.png");
         background-size: contain;
         position: relative;
         height: 100%;
         &::before{
           content: '';
           position: absolute;
-          background-image: url(../images/findfriends_box.png);
+          background-image: url("@{img_url}/images/findfriends_box.png");
           background-size: contain;
           background-repeat: no-repeat;
           background-position: 0px -5px;
@@ -3815,7 +3847,7 @@ body{
               &::before{
                 content: '';
                 position: absolute;
-                background-image: url('../images/icons/ellipsis.svg') !important;
+                background-image: url("@{img_url}/images/icons/ellipsis.svg") !important;
                 height: 3.44px;	width: 18.63px;
                 background-size: contain !important;
                 background-repeat: no-repeat !important;
@@ -3831,7 +3863,9 @@ body{
             >.column{
             position: relative;
             &:first-child{
-              //padding-right: 0px;
+              @media only screen and (max-width:1199px) and (min-width:992px) {
+                padding-right: 0px;
+              }
               .ui{
                 &.image{
                   margin-left: 0px;
@@ -3839,6 +3873,7 @@ body{
                   border-radius: .28571429rem;
                   @media only screen and (max-width:1199px) and (min-width:992px) {
                     height: 108px;
+                    width: 108px;
                   }
                 }
               }
@@ -3850,20 +3885,22 @@ body{
                 padding-top: 3px;
                 padding-bottom: 3px;
                 bottom: 15px;
+                line-height: 13px;
                 @media only screen and (max-width:1199px) and (min-width:992px) {
                   right: auto;
-                  left:0;
+                  left:14px;
                   bottom: 3px;
                 }
                 &.editOpt{
                   left: 58px;
                   @media only screen and (max-width:1199px) and (min-width:992px) {
-                    right: auto;
+                    left: 72px;
                   }
                 }
                 @media only screen and (max-width:400px) {
-                  bottom: 9px;
+                  bottom: 5px;
                 }
+                
               }
               .chimp-lbl{
                 margin-bottom: 5px;
@@ -3875,6 +3912,9 @@ body{
                   font-size: 14px;
                   cursor: pointer;
                 }
+              }
+              @media only screen and (max-width:1199px) and (min-width:992px) {
+                padding-left: 14px;
               }
             }
             .ui{
@@ -3928,8 +3968,8 @@ body{
             font-weight: 400;
           }
           @media only screen and (max-width:400px) {
-            font-size: 13px;
-            line-height: 13px;
+            font-size: 12px;
+            line-height: 12px;
           }
         }
       }
@@ -3978,7 +4018,7 @@ body{
         z-index: 2;
         margin: auto;
         padding: 0px;
-        background-image: url(../images/icons/close.svg);
+        background-image: url("@{img_url}/images/icons/close.svg");
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -4158,7 +4198,7 @@ body{
                 left: 0;
                 bottom: 0;
                 right: 0;
-                background-image: url(../images/icons/icon-account_settings.svg) !important;
+                background-image: url("@{img_url}/images/icons/icon-account_settings.svg") !important;
                 background-size: contain !important;
                 background-position: center;
               }
@@ -4198,7 +4238,7 @@ body{
               left: 0;
               bottom: 0;
               right: 0;
-              background-image: url(../images/icons/icon-account_settings.svg) !important;
+              background-image: url("@{img_url}/images/icons/icon-account_settings.svg") !important;
               background-size: contain !important;
               background-position: center !important;
             }
@@ -4383,10 +4423,10 @@ body{
       text-align: left;
       padding-left: 47px !important;
     }
-    .db-activity-tbl.ui.basic .amount{
-      text-align: left;
-      padding-left: 47px !important;
-    }
+    // .db-activity-tbl.ui.basic .amount{
+    //   text-align: left;
+    //   padding-left: 47px;
+    // }
   }
   .left-img-card{
     &.ui{
@@ -4510,7 +4550,7 @@ body{
   .helpImg{
     position: relative;
     >div{
-      background-image: url(../images/helpcentre_banner.png);
+      background-image: url("@{img_url}/images/helpcentre_banner.png");
       position: absolute;
       top: -73px;
       bottom: 0;
@@ -4539,7 +4579,7 @@ body{
   }
 }
 .helpCenterImage{
-  background-image: url(../images/helpcentre_banner.png);
+  background-image: url("@{img_url}/images/helpcentre_banner.png");
   height: 200px;
   width: 100%;
   background-repeat: no-repeat;
@@ -4557,15 +4597,15 @@ body{
   background-size: cover;
   background-repeat: no-repeat;
   &.charity{
-    background-image: url(../images/charity_profile_bg.png); 
+    background-image: url("@{img_url}/images/charity_profile_bg.png"); 
   }
   &.campaign{
-    background-image: url(../images/giving_and_campaign_group_profile_bg.png); 
+    background-image: url("@{img_url}/images/giving_and_campaign_group_profile_bg.png"); 
   }
   &.user{
     min-height: 150px;
     height: 150px;
-    background-image: url(../images/user_profile_bg.png);
+    background-image: url("@{img_url}/images/user_profile_bg.png");
   }
 }
 .profile-header{
@@ -4596,7 +4636,7 @@ body{
                   bottom: 0;
                   left: 0;
                   right: 0;
-                  background-image: url(../images/icons/group.svg) !important;
+                  background-image: url("@{img_url}/images/icons/group.svg") !important;
                   background-position: center !important;
                   background-size: contain !important;
                   background-repeat: no-repeat !important;
@@ -4760,13 +4800,13 @@ body{
       }
     }
     &.charity{
-      background-image: url(../images/charity_info_card_bg.png);
+      background-image: url("@{img_url}/images/charity_info_card_bg.png");
     }
     &.campaign{
-      background-image: url(../images/campaigns_info_card_bg.png);
+      background-image: url("@{img_url}/images/campaigns_info_card_bg.png");
     }
     &.giving{
-      background-image: url(../images/giving_info_card_bg.png);
+      background-image: url("@{img_url}/images/giving_info_card_bg.png");
       @media only screen and (min-width:991px){
         overflow: hidden;
       }
@@ -4802,27 +4842,27 @@ body{
           }
           &.user{
             &::before{
-              background-image:url(../images/icons/user.svg) !important;
+              background-image:url("@{img_url}/images/icons/user.svg") !important;
             }
           }
           &.phone{
             &::before{
-              background-image:url(../images/icons/phone.svg) !important;
+              background-image:url("@{img_url}/images/icons/phone.svg") !important;
             }
           }
           &.mail{
             &::before{
-              background-image:url(../images/icons/mail.svg) !important;
+              background-image:url("@{img_url}/images/icons/mail.svg") !important;
             }
           }
           &.linkify{
             &::before{
-              background-image:url(../images/icons/website.svg) !important;
+              background-image:url("@{img_url}/images/icons/website.svg") !important;
             }
           }
           &.users{
             &::before{
-              background-image:url(../images/icons/group.svg) !important;
+              background-image:url("@{img_url}/images/icons/group.svg") !important;
             }
           }
           &.map{
@@ -4834,12 +4874,12 @@ body{
               }
             }
             &::before{
-              background-image:url(../images/icons/location.svg) !important;
+              background-image:url("@{img_url}/images/icons/location.svg") !important;
             }
           }
           &.briefcase{
             &::before{
-              background-image:url(../images/icons/business.svg) !important;
+              background-image:url("@{img_url}/images/icons/business.svg") !important;
             }
           }
         }
@@ -5191,14 +5231,23 @@ body{
 .statusMsgWraper{
   position: fixed;
   z-index: 99999999;
-  right:19%;
-  margin-top: 48px;
-  @media only screen and (max-width:991px){
-    top: 0px;
-    left: calc(50% - 167.5px);
-    right: auto;
-    margin: 48px auto auto;
+  margin-top: 30px;
+  max-width: 1127px;
+  margin-left: auto!important;
+  margin-right: auto!important;
+  text-align: right;
+  width: 100%;
+  @media only screen and (max-width:1199px) and (min-width:992px){
+    max-width: 933px;
   }
+  @media only screen and (max-width:991px){
+      top: 0px;
+      left: calc(50% - 167.5px);
+      right: auto;
+      margin: 48px auto auto;
+      text-align: center;
+      width: auto;
+    }
 }
 .status-message-container{
   margin-bottom: 5px;
@@ -5347,6 +5396,50 @@ body{
     }
   }
 }
+.switchAccountModal{
+  &.chimp-modal{
+    &.modal{
+      > .content{
+        > .description{
+          .messageSearch{
+            .ui.fluid.left.icon.input{
+              font-size: 1em;
+              i.icon{
+                left: 1px;
+                top: auto;
+              }
+              input{
+                height: 35px;
+                line-height: 1.21428571em !important;
+                padding-left: 2.67142857em!important;
+                padding-top: .67857143em !important;
+                padding-bottom: .67857143em;
+                padding-right: 1em !important;
+                font-size: 1em !important;
+                &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                  font-size: 1em !important;
+                  color: #ccc;
+                }
+                &::-moz-placeholder { /* Firefox 19+ */
+                  font-size: 1em !important;
+                  color: #ccc;
+                }
+                &:-ms-input-placeholder { /* IE 10+ */
+                  font-size: 1em !important;
+                  color: #ccc;
+                }
+                &:-moz-placeholder { /* Firefox 18- */
+                  font-size: 1em !important;
+                  color: #ccc;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .messageSearch{
   padding-top: 0/@rem;
   padding-right: 0;
@@ -5361,7 +5454,7 @@ body{
       i{
         &.icon{
           &.search{
-            background-image: url(../images/icons/icon-search.svg);
+            background-image: url("@{img_url}/images/icons/icon-search.svg");
             background-repeat: no-repeat;
             background-position: center;
             background-size: 47%;
@@ -5492,7 +5585,7 @@ body{
             border-radius: 100%;
             &.ellipsis{
               &::before{
-                content: url(../images/icons/ellipsis.svg);
+                content: url("@{img_url}/images/icons/ellipsis.svg");
               }
             }
           }
@@ -5735,7 +5828,7 @@ body{
          }
         max-width: 335px;	
         width: 100%;
-        border-radius: 10px;	
+        border-radius: 10px;
         background-color: #FFFFFF;	
         box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
         margin-left: auto;
@@ -5760,7 +5853,7 @@ body{
           &.close{
             &::before{
               content: '';
-              background-image: url(../images/icons/close.svg) !important;
+              background-image: url("@{img_url}/images/icons/close.svg") !important;
               background-size: contain !important;
               background-position: center !important;
               background-repeat: no-repeat !important;
@@ -5785,7 +5878,7 @@ body{
                   position: relative;
                   &::before{
                     content: '';
-                    background-image: url(../images/icons/red.svg) !important;
+                    background-image: url("@{img_url}/images/icons/red.svg") !important;
                     background-size: contain !important;
                     background-position: center !important;
                     background-repeat: no-repeat !important;
@@ -5841,7 +5934,7 @@ body{
             &.close{
               &::before{
                 content: '';
-                background-image: url(../images/icons/close.svg) !important;
+                background-image: url("@{img_url}/images/icons/close.svg") !important;
                 background-size: contain !important;
                 background-position: center !important;
                 background-repeat: no-repeat !important;
@@ -5863,7 +5956,7 @@ body{
               position: relative;
               &::before{
                 content: '';
-                background-image: url(../images/icons/green.svg) !important;
+                background-image: url("@{img_url}/images/icons/green.svg") !important;
                 background-size: contain !important;
                 background-position: center !important;
                 background-repeat: no-repeat !important;
@@ -5946,7 +6039,7 @@ body{
     border-radius: 5px;	
     box-shadow: 0 13px 40px 0 rgba(0,0,0,0.13);
     background-color: #F8EBFB;
-    background-image: url(../images/bg_givinggroup_banner.png);
+    background-image: url("@{img_url}/images/bg_givinggroup_banner.png");
     background-size: cover;
     background-position: center bottom;
     background-repeat: no-repeat;
@@ -5966,7 +6059,7 @@ body{
       left: 53px;
       top: 40px;
       bottom: 0px;
-      background-image: url(../images/givinggroup_banner.png);
+      background-image: url("@{img_url}/images/givinggroup_banner.png");
       width: 287px;
       background-size: cover;
       background-repeat: no-repeat;
@@ -6128,7 +6221,7 @@ body{
             left: 0;
             bottom: 0;
             right: 0;
-            background-image: url(../images/icons/icon-account_settings.svg) !important;
+            background-image: url("@{img_url}/images/icons/icon-account_settings.svg") !important;
             background-size: contain !important;
             background-position: center;
           }
@@ -6282,6 +6375,7 @@ body{
             margin-left: 0em;
             margin-right: .8em;
             font-size: 12px;
+            color: #263238;
           }
           >a{
             color: @link;
@@ -6357,52 +6451,52 @@ body{
                 margin-top: -4px;
                 &.user{
                   &::before{
-                    content: url(../images/icons/user.svg);
+                    content: url("@{img_url}/images/icons/user.svg");
                   }
                 }
                 &.edit{
                   &::before{
-                    content: url(../images/icons/edit.svg);
+                    content: url("@{img_url}/images/icons/edit.svg");
                   }
                 }
                 &.group{
                   &::before{
-                    content: url(../images/icons/give-hand.svg);
+                    content: url("@{img_url}/images/icons/give-hand.svg");
                   }
                 }
                 &.privacy{
                   &::before{
-                    content: url(../images/icons/privacy.svg);
+                    content: url("@{img_url}/images/icons/privacy.svg");
                   }
                 }
                 &.credit{
                   &::before{
-                    content: url(../images/icons/transaction.svg);
+                    content: url("@{img_url}/images/icons/transaction.svg");
                   }
                 }
                 &.bell{
                   &::before{
-                    content: url(../images/icons/icon-notification.svg);
+                    content: url("@{img_url}/images/icons/icon-notification.svg");
                   }
                 }
                 &.support{
                   &::before{
-                    content: url(../images/icons/support.svg);
+                    content: url("@{img_url}/images/icons/support.svg");
                   }
                 }
                 &.legal{
                   &::before{
-                    content: url(../images/icons/legal.svg);
+                    content: url("@{img_url}/images/icons/legal.svg");
                   }
                 }
                 &.friends{
                   &::before{
-                    content: url(../images/icons/group.svg);
+                    content: url("@{img_url}/images/icons/group.svg");
                   }
                 }
                 &.find_friends{
                   &::before{
-                    content: url(../images/icons/find-user.svg);
+                    content: url("@{img_url}/images/icons/find-user.svg");
                   }
                 }
               }
@@ -6465,55 +6559,55 @@ body{
           &.edit{
             &::before{
               content: '';
-              background-image: url(../images/icons/edit.svg) !important;
+              background-image: url("@{img_url}/images/icons/edit.svg") !important;
             }
           }
           &.group{
             &::before{
               content: '';
-              background-image: url(../images/icons/give-hand.svg) !important;
+              background-image: url("@{img_url}/images/icons/give-hand.svg") !important;
             }
           }
           &.privacy{
             &::before{
               content: '';
-              background-image: url(../images/icons/privacy.svg) !important;
+              background-image: url("@{img_url}/images/icons/privacy.svg") !important;
             }
           }
           &.credit{
             &::before{
               content: '';
-              background-image: url(../images/icons/transaction.svg) !important;
+              background-image: url("@{img_url}/images/icons/transaction.svg") !important;
             }
           }
           &.bell{
             &::before{
               content: '';
-              background-image: url(../images/icons/icon-notification.svg) !important;
+              background-image: url("@{img_url}/images/icons/icon-notification.svg") !important;
             }
           }
           &.support{
             &::before{
               content: '';
-              background-image: url(../images/icons/support.svg) !important;
+              background-image: url("@{img_url}/images/icons/support.svg") !important;
             }
           }
           &.legal{
             &::before{
               content: '';
-              background-image: url(../images/icons/legal.svg) !important;
+              background-image: url("@{img_url}/images/icons/legal.svg") !important;
             }
           }
           &.friends{
             &::before{
               content: '';
-              background-image: url(../images/icons/group.svg) !important;
+              background-image: url("@{img_url}/images/icons/group.svg") !important;
             }
           }
           &.find_friends{
             &::before{
               content: '';
-              background-image: url(../images/icons/find-user.svg) !important;
+              background-image: url("@{img_url}/images/icons/find-user.svg") !important;
             }
           }
         }
@@ -6569,7 +6663,7 @@ button.ui.button.blue-bordr-btn-round-def{
             .content{
               padding-left: 0px;
               .header{
-                padding-bottom: 7px;
+                padding-bottom: 0px;
                 .pending{
                   display: inline-block;
                   margin-left: 10px;
@@ -6599,6 +6693,7 @@ button.ui.button.blue-bordr-btn-round-def{
   .ui{
     &.list{
       &.celled{
+        margin-bottom: 0;
         .item{
           padding: 2rem 0rem; 
           .ellipsis{
@@ -6606,7 +6701,8 @@ button.ui.button.blue-bordr-btn-round-def{
               &.icon{
                 width: 30px;
                 &::before{
-                  content: url(../images/icons/ellipsis.svg);
+                  content: url("@{img_url}/images/icons/ellipsis.svg");
+                  top: 10px;
                 }
               }
             }
@@ -6619,7 +6715,7 @@ button.ui.button.blue-bordr-btn-round-def{
               &.visa{
                 &::before{
                   content: '';
-                  background-image: url(../images/icons/icon-cc-visa-colour.png) !important;
+                  background-image: url("@{img_url}/images/icons/icon-cc-visa-colour.png") !important;
                   background-size: contain !important;
                   background-position: center !important;
                   background-repeat: no-repeat !important;
@@ -6633,7 +6729,7 @@ button.ui.button.blue-bordr-btn-round-def{
               &.master{
                 &::before{
                   content: '';
-                  background-image: url(../images/icons/icon-cc-mastercard-colour.png) !important;
+                  background-image: url("@{img_url}/images/icons/icon-cc-mastercard-colour.png") !important;
                   background-size: contain !important;
                   background-position: center !important;
                   background-repeat: no-repeat !important;
@@ -6647,7 +6743,7 @@ button.ui.button.blue-bordr-btn-round-def{
               &.american{
                 &::before{
                   content: '';
-                  background-image: url(../images/icons/icon-cc-american-express-colour.png) !important;
+                  background-image: url("@{img_url}/images/icons/icon-cc-american-express-colour.png") !important;
                   background-size: contain !important;
                   background-position: center !important;
                   background-repeat: no-repeat !important;
@@ -6661,7 +6757,7 @@ button.ui.button.blue-bordr-btn-round-def{
               &.apple{
                 &::before{
                   content: '';
-                  background-image: url(../images/icons/icon-cc-apple-pay-colour.png) !important;
+                  background-image: url("@{img_url}/images/icons/icon-cc-apple-pay-colour.png") !important;
                   background-size: contain !important;
                   background-position: center !important;
                   background-repeat: no-repeat !important;
@@ -6713,6 +6809,12 @@ button.ui.button.blue-bordr-btn-round-def{
           }
         }
       }
+    }
+  }
+  .db-pagination{
+    text-align: right;
+    .ui.menu{
+      min-height: auto;
     }
   }
 }
@@ -6900,7 +7002,7 @@ button.ui.button.blue-bordr-btn-round-def{
     position: absolute;
     left: -25px;
     height: 19px;	width: 19px;
-    background-image: url(../images/icons/icon-refine-search.svg);
+    background-image: url("@{img_url}/images/icons/icon-refine-search.svg");
     background-size: contain;
     .imgColorBlue();
   }
@@ -7149,7 +7251,7 @@ button.ui.button.blue-bordr-btn-round-def{
       box-shadow:none;	
       padding: 15px 15px 15px 36px;
       @media only screen and (max-width: 420px){
-        padding: 15px 15px 15px 15px;
+        padding: 20px 15px 20px 15px;
       }
       //box-shadow: 0 1px 7px 0 rgba(0,0,0,0.17);
       &.rightImg{
@@ -7174,7 +7276,7 @@ button.ui.button.blue-bordr-btn-round-def{
           }
           >.header{
             width: calc(100% - 150px);
-            margin: 30px 0px;
+            margin: 20px 0px;
             font-size: 14px;
             @media only screen and (max-width: 420px){
               width: 100%;
@@ -7223,6 +7325,10 @@ button.ui.button.blue-bordr-btn-round-def{
       &.ui{
         .content{
           font-size: 17px;
+          padding-right: 15px;
+          @media only screen and (max-width:767px) {
+            padding-right: 0px;
+          }
           .sub{
             &.header{
               margin-top: 10px;
@@ -7235,7 +7341,7 @@ button.ui.button.blue-bordr-btn-round-def{
   }
   &.givingGroup{
     background-color: #DDE8FA;
-    background-image: url(../images/campaignprofile_nodata_illustration_BG.svg);
+    background-image: url("@{img_url}/images/campaignprofile_nodata_illustration_BG.svg");
     background-size: cover;
     background-repeat: no-repeat;
     .noDataLeftImg{
@@ -7245,6 +7351,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-left: auto;
           margin-right: auto;
+          width: 100%;
         }
       }
     }
@@ -7252,9 +7359,38 @@ button.ui.button.blue-bordr-btn-round-def{
       max-width: 417px;
     }
   }
+  &.campaignProfile_noData{
+    background-color: #E3E8F0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    .noDataLeftImg{
+      &.ui{
+        &.image{
+          max-width: 293px;
+          margin-bottom: -1rem;
+          margin-left: auto;
+          margin-right: auto;
+          width: 100%;
+        }
+      }
+    }
+    .givingGroupNoDataContent{
+      max-width: 417px;
+    }
+    .givingGroupNoDataContent{
+      .sub{
+        &.header{
+          font-size: 14px !important;
+          line-height: 22px;
+          color: #263238;
+          font-family: 'ProximaNova-Regular'
+        }
+      }
+    }
+  }
   &.ggManage{
     background-color: #DDE8FA;
-    background-image: url(../images/bg_givinggroupsyoumanage_nodata_illustration.svg);
+    background-image: url("@{img_url}/images/bg_givinggroupsyoumanage_nodata_illustration.svg");
     background-size: cover;
     background-repeat: no-repeat;
     .noDataLeftImg{
@@ -7264,13 +7400,14 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-top: -1rem;
           margin-bottom: -1rem;
           margin-right: auto;
+          width: 100%;
         }
       }
     }
   }
   &.ggJoin{
     background-color: #85E4B2;
-    background-image: url(../images/bg_givinggroupsyoujoined_nodata_illustration1.svg);
+    background-image: url("@{img_url}/images/bg_givinggroupsyoujoined_nodata_illustration1.svg");
     background-size: cover;
     background-repeat: no-repeat;
     .noDataLeftImg{
@@ -7281,13 +7418,14 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-right: auto;
           margin-left: auto;
+          width: 100%;
         }
       }
     }
   }
   &.favouritesNoData{
     background-color: #A1C4FF;
-    background-image: url(../images/bg_favourites_nodata_illustration.svg);
+    background-image: url("@{img_url}/images/bg_favourites_nodata_illustration.svg");
     background-size: cover;
     background-repeat: no-repeat;
     .noDataLeftImg{
@@ -7297,6 +7435,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-top: -1rem;
           margin-right: auto;
+          width: 100%;
         }
       }
     }
@@ -7312,6 +7451,7 @@ button.ui.button.blue-bordr-btn-round-def{
           margin-bottom: -1rem;
           margin-left: auto;
           margin-right: auto;
+          width: 100%;  
         }
       }
     }
@@ -7328,6 +7468,23 @@ button.ui.button.blue-bordr-btn-round-def{
       }
     }
     &.givingGroup{
+      .noDataLeftImg{
+        text-align: center;
+        &.ui{
+          &.image{
+            max-width: 293px;
+            margin-bottom: 1rem;
+          }
+        }
+      }
+      .givingGroupNoDataContent{
+        max-width: 415px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+      }
+    }
+    &.campaignProfile_noData{
       .noDataLeftImg{
         text-align: center;
         &.ui{
@@ -7437,7 +7594,7 @@ body{
             bottom: 3px;
             right: 0;
             left: 0;
-            background-image: url(../images/icons/tooltip.svg) !important;
+            background-image: url("@{img_url}/images/icons/tooltip.svg") !important;
             background-size: contain !important;
             background-repeat: no-repeat !important;
           }
@@ -7492,7 +7649,7 @@ body{
     .ui.radio.checkbox input:checked~.box:before, .ui.radio.checkbox input:checked~label:before{
       background-color: #0CC965;
       border-color: #0CC965;
-      background-image: url(../images/icons/green.svg);
+      background-image: url("@{img_url}/images/icons/green.svg");
       background-position: center;
       background-size: contain;
       background-repeat: no-repeat;
@@ -7657,7 +7814,7 @@ body{
   &.ui{
     &.basic{
       &.segment{
-        background-image: url(../images/error_bg.png);
+        background-image: url("@{img_url}/images/error_bg.png");
         background-position: right bottom;
         background-size: contain;
         background-repeat: no-repeat;
@@ -7735,7 +7892,7 @@ body{
 .btn-icon-line {
   display: inline !important;
   img{
-    .imgColorBlue();
+    .iconColorBlue();
     padding-left: 5px;
     width: 25px;
     height: 25px;
@@ -7781,7 +7938,7 @@ body{
                     left: 0;
                     bottom: 0;
                     right: 0;
-                    background-image: url(../images/icons/inactive.svg) !important;
+                    background-image: url("@{img_url}/images/icons/inactive.svg") !important;
                     background-repeat: no-repeat !important;
                     background-size: contain !important;
                     background-position: center !important;
@@ -7802,7 +7959,7 @@ body{
                     left: 0;
                     bottom: 0;
                     right: 0;
-                    background-image: url(../images/icons/active.svg) !important;
+                    background-image: url("@{img_url}/images/icons/active.svg") !important;
                     background-repeat: no-repeat !important;
                     background-size: contain !important;
                     background-position: center !important;
@@ -7823,11 +7980,19 @@ body{
                     left: 0;
                     bottom: 0;
                     right: 0;
-                    background-image: url(../images/icons/share.svg) !important;
+                    background-image: url("@{img_url}/images/icons/share.svg") !important;
                     background-repeat: no-repeat !important;
                     background-size: contain !important;
                     background-position: center !important;
                     
+                  }
+                }
+              }
+              &.ellipsis{
+                &.horizontal{
+                  position: relative;
+                  &::before{
+                    height: 5px;	width: 22px;
                   }
                 }
               }
@@ -7849,8 +8014,12 @@ body{
       &.divided{
         &.relaxed{
           >.item{
+            display: flex;
+            align-items: center;
+            vertical-align: middle;
+            padding:20px 5px 20px 5px !important;
             &.shareCopyLink{
-              padding: 20px 15px 20px 5px;
+              padding: 20px 5px 20px 5px;
               border-bottom:1px solid rgba(34,36,38,.15);
               margin-bottom: 50px;
               .shareLinkLeft{
@@ -7876,7 +8045,16 @@ body{
             }
             >i{
               &.icon{
-                padding:15px 15px 15px 5px;
+                //padding:15px 15px 15px 5px;
+              }
+            }
+            .content{
+              margin-top: 0px;
+                padding-top: 0px;
+                width: 100%;
+              a{
+                margin: 0px;
+                padding: 0px;
               }
             }
           }
@@ -7930,7 +8108,7 @@ span{
             font-size: 17px;
           }
           >.content{
-            padding:0px;
+            padding:0px 0 45px 0;
             .acntActivityHeader{
               background-color: #f5f8fc;
               padding: 15px 0px;
@@ -7967,7 +8145,7 @@ span{
               }
             }
             .acntActivityContent{
-              padding: 15px 25px 45px;
+              padding: 15px 25px 0px;
               .acntActivityList{
                 &.ui{
                   &.list{
@@ -7987,6 +8165,12 @@ span{
                   }
                 }
               }
+            }
+            .learnAboutWrap{
+              max-width: 286px;
+              width: 100%;
+              text-align: center;
+              margin: 30px auto 0;
             }
           }
         }
@@ -8205,9 +8389,16 @@ body .userEllips{
 .error_page{
   margin-top:100px;
 }
+.footer-border{
+  border-top: 1px solid #DDE8FA;
+  @media only screen and (max-width: 768px) {
+    width: 200px;
+    margin: auto;
+  }
+}
 .app_logo{
   border-top: 1px solid #C0C3D4;
-  margin-top: 5px;
+  margin-top: -24px;
   padding-top: 20px;
   h5{
     &.ui{
@@ -8221,9 +8412,8 @@ body .userEllips{
     }
     }
   img{
-    width: 130px;
+    width: 120px;
       @media only screen and (max-width: 768px) {
-        width: 150px !important;
         padding: 0px;
         margin: auto;
         text-align: center;
@@ -8244,7 +8434,7 @@ body .userEllips{
     &::before{
       position: absolute;
       right: 0px;
-      background-image: url(../images/error_bg.png) !important;
+      background-image: url("@{img_url}/images/error_bg.png") !important;
       background-size: contain !important;
       background-repeat: no-repeat !important;
       background-position: center !important;
@@ -8406,6 +8596,11 @@ body{
 .charityTab{
   &.user-profile-settings{
     margin-bottom: 0px;
+    .user-messaging{
+      .ui.pointing.secondary.menu{
+        margin-bottom: 0;
+      }
+    }
     .settingsTab{
       margin-bottom: -3rem;
       >div{
@@ -8442,4 +8637,8 @@ body{
       }
     }
   }
+}
+
+.isDisabled {
+  pointer-events: none;
 }

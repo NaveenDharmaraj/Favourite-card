@@ -89,3 +89,4 @@ FlowBreadcrumbs.propTypes = {
 };
 
 export default FlowBreadcrumbs;
+export { FlowBreadcrumbs };
