@@ -38,13 +38,9 @@ import { populateDropdownInfoToShare } from '../users/utils';
  * @param {*} giveData state object for give page
  * @return {boolean} true if no credit card data is present, false otherwise.
  */
-const isCreditCardBlank = (giveData) => {
-    return (_.isEmpty(giveData.creditCard) || giveData.creditCard.value === null);
-};
+const isCreditCardBlank = (giveData) => (_.isEmpty(giveData.creditCard) || giveData.creditCard.value === null);
 
-const isFieldBlank = (field) => {
-    return (_.isEmpty(field) || field.value === null || field.value === 0);
-};
+const isFieldBlank = (field) => (_.isEmpty(field) || field.value === null || field.value === 0);
 
 const formatCurrency = (value, language, currencyType) => {
     const currencyFormat = {
@@ -200,9 +196,7 @@ const getDefaultCreditCard = (paymentInstrumentList) => {
     return creditCard;
 };
 
-const formatAmount = (amount) => {
-    return parseFloat(amount).toFixed(2);
-};
+const formatAmount = (amount) => parseFloat(amount).toFixed(2);
 
 /**
 * onWhatDayList array list
@@ -238,7 +232,6 @@ const createDonationMatchString = (companyName, attributes, formatMessage, langu
             break;
     }
     return `${companyName}: ${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText}`;
-
 };
 
 /**
@@ -537,25 +530,23 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
 * @return {object[]} drop down options array
 */
 
-const populateGiftType = (formatMessage) => {
-    return [
-        {
-            disabled: false,
-            text: formatMessage('giftTypeSingle'),
-            value: 0,
-        },
-        {
-            disabled: false,
-            text: formatMessage('specialInstruction:giftTypeRecurring1'),
-            value: 1,
-        },
-        {
-            disabled: false,
-            text: formatMessage('specialInstruction:giftTypeRecurring15'),
-            value: 15,
-        },
-    ];
-};
+const populateGiftType = (formatMessage) => [
+    {
+        disabled: false,
+        text: formatMessage('giftTypeSingle'),
+        value: 0,
+    },
+    {
+        disabled: false,
+        text: formatMessage('specialInstruction:giftTypeRecurring1'),
+        value: 1,
+    },
+    {
+        disabled: false,
+        text: formatMessage('specialInstruction:giftTypeRecurring15'),
+        value: 15,
+    },
+];
 
 const populateCardData = (selectCardDetails, cardAmount) => {
     const isEnglishCard = selectCardDetails.indexOf(' ending ');
@@ -610,6 +601,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
                             const cardProcessors = {
                                 amex: expressCard,
                                 discover: visaIcon,
+                                express: expressCard,
                                 mastercard: mastercardIcon,
                                 stripe: visaIcon,
                                 visa: visaIcon,
@@ -653,11 +645,9 @@ const populateTaxReceipts = (taxReceiptData, formatMessage) => {
                 taxReceiptData,
                 null,
                 (item) => item.id,
-                (attributes) => {
-                    return ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
+                (attributes) => ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
                                     <span class="attributes"> ${attributes.addressOne} ${attributes.addressTwo} </span>
-                                    <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`);
-                },
+                                    <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`),
                 (attributes) => false,
             ),
             newTaxReceipt,
@@ -667,7 +657,10 @@ const populateTaxReceipts = (taxReceiptData, formatMessage) => {
 };
 
 const getTaxReceiptById = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
-    const selectedProfile = _.find(taxReceiptProfiles, ['id', selectedTaxReceiptProfile]);
+    const selectedProfile = _.find(taxReceiptProfiles, [
+        'id',
+        selectedTaxReceiptProfile,
+    ]);
     return selectedProfile;
 };
 
@@ -680,8 +673,7 @@ const percentage = (donationMatch) => {
     let matchAmount = {};
     if (!_.isEmpty(donationMatch)) {
         matchAmount = (donationMatch.donationAmount / 100) * donationMatch.policyPercentage;
-        const matchRemainingAmount =
-            Number(donationMatch.policyMax) - Number(donationMatch.totalMatched);
+        const matchRemainingAmount = Number(donationMatch.policyMax) - Number(donationMatch.totalMatched);
         if (Number(matchRemainingAmount) < Number(matchAmount)) {
             matchAmount = Number(matchRemainingAmount);
         }
@@ -744,8 +736,8 @@ const getFirstThirdTuesday = (currentDateUTC, monthNames, formatMessage, lang) =
         return setDateForRecurring(tuesdays[0].getDate(), formatMessage, lang);
     }
     // Checking Condition for 3rd week Tuesday
-    if (currentDateUTC.getDate() >= tuesdays[0].getDate() &&
-        currentDateUTC.getDate() < tuesdays[2].getDate()) {
+    if (currentDateUTC.getDate() >= tuesdays[0].getDate()
+        && currentDateUTC.getDate() < tuesdays[2].getDate()) {
         // return setDateFormat(tuesdays[2], monthNames);
         return setDateForRecurring(tuesdays[2].getDate(), formatMessage, lang);
     }
@@ -763,8 +755,8 @@ const getFirstThirdTuesday = (currentDateUTC, monthNames, formatMessage, lang) =
 
 const getNextAllocationMonth = (formatMessage, eftEnabled, lang) => {
     const currentDate = new Date();
-    const currentDateUTC = new Date(currentDate.getTime() +
-        (currentDate.getTimezoneOffset() * 60000));
+    const currentDateUTC = new Date(currentDate.getTime()
+        + (currentDate.getTimezoneOffset() * 60000));
     currentDateUTC.setHours(currentDateUTC.getHours() - 8);
     const monthNames = fullMonthNames(formatMessage);
     if (eftEnabled) {
@@ -1018,7 +1010,7 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
             validity.doesAmountExist = !isInputBlank(value);
             validity.isAmountLessThanOneBillion = (giveData.giftType.value > 0)
                 ? isAmountLessThanOneBillion(value) : true;
-            validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries') || giveData.giftType.value > 0
+            validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries')
                 ? isAmountMoreThanOneDollor(value) : isAmountMoreOrEqualToOneDollor(value);
             validity.isValidPositiveNumber = isValidPositiveNumber(value);
             validity.isAmountCoverGive = (giveData.giveFrom.type === 'groups'
@@ -1138,10 +1130,10 @@ const resetDataForGiftTypeChange = (giveData, dropDownOptions, coverFeesData) =>
                 dropDownOptions.paymentInstrumentList,
             );
         }
-        if (giveData.giveFrom.type === 'user' &&
-            !_.isEmpty(dropDownOptions.donationMatchList) &&
-            (_.isEmpty(giveData.donationMatch) ||
-                giveData.donationMatch.value === null)
+        if (giveData.giveFrom.type === 'user'
+            && !_.isEmpty(dropDownOptions.donationMatchList)
+            && (_.isEmpty(giveData.donationMatch)
+                || giveData.donationMatch.value === null)
         ) {
             const [
                 defaultMatch,
@@ -1159,11 +1151,11 @@ const resetDataForGiftTypeChange = (giveData, dropDownOptions, coverFeesData) =>
                 value: null,
             };
         }
-        if (Number(giveData.donationAmount) > 0 &&
-            giveData.giveFrom.type === 'user' &&
-            !_.isEmpty(dropDownOptions.donationMatchList) &&
-            (_.isEmpty(giveData.donationMatch) ||
-                giveData.donationMatch.value === null)
+        if (Number(giveData.donationAmount) > 0
+            && giveData.giveFrom.type === 'user'
+            && !_.isEmpty(dropDownOptions.donationMatchList)
+            && (_.isEmpty(giveData.donationMatch)
+                || giveData.donationMatch.value === null)
         ) {
             const [
                 defaultMatch,
@@ -1263,7 +1255,7 @@ const populateDonationReviewPage = (giveData, data, displayName, currency, forma
         } else {
             const selectedData = _.find(companiesAccountsData, { id: giveTo.id });
             if (!_.isEmpty(selectedData)) {
-                state.mainDisplayText = selectedData.attributes.companyFundName;
+                state.mainDisplayText = `To ${selectedData.attributes.companyFundName}`;
                 state.accountType = 'company';
             }
         }
@@ -1314,7 +1306,7 @@ const populateDonationReviewPage = (giveData, data, displayName, currency, forma
 
         listingData.push({
             name: 'reviewNoteToSelf',
-            value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf')
+            value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf'),
         });
         state.listingData = listingData;
         return (state);
@@ -1385,13 +1377,18 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             value: ReactHtmlParser(frequencyMessage),
         });
 
-        if (!_.isEmpty(giveGroupDetails) && (!_.isEmpty(groupMatchingDetails) && groupMatchingDetails.giveFromFund === giveFrom.value)) {
+        if (!_.isEmpty(groupMatchingDetails) && groupMatchingDetails.giveFromFund === giveFrom.value) {
+            const {
+                activeMatch,
+            } = giveTo;
+
             const {
                 attributes: {
-                    activeMatch,
+                    matchAvailable,
+                    availableFund,
                 },
-            } = giveGroupDetails;
-            const activeMatchAmount = Number(groupMatchingDetails.attributes.matchAvailable);
+            } = groupMatchingDetails;
+            const activeMatchAmount = Number(matchAvailable);
             if ((activeMatchAmount > 0) && (!_.isEmpty(matchingPolicyDetails) && matchingPolicyDetails.isValidMatchPolicy)) {
                 const {
                     company,
@@ -1403,13 +1400,23 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                     amount: state.mainDisplayAmount,
                     heading: `Your gift amount`,
                     matchingAmount: formatCurrency(activeMatchAmount, language, currency),
-                    matchingHeading: (state.isRecurring) ? `Match amount requested` : `Match amount from ${company}`,
-                    matchingSubHeading: (state.isRecurring) ? `(from ${company} until funds ran out or expire)` : '',
-                    popUpMessage: `For every $1.00 you give to this ${(giveTo.isCampaign) ? 'Campaign' : 'Group'}, ${company} will match your gift with $1.00 up to ${formatCurrency(maxMatchAmount, language, currency)} per gift, until the matching funds run out or expire.`,
-                    subHeading: `(From ${giveFrom.text})`,
+                    matchingHeading: (state.isRecurring) ? `Match amount from ${company} today` : `Match amount from ${company}`,
+                    matchingSubHeading: (state.isRecurring) ? `(continues until matching funds run out or expire)` : '',
+                    popUpMessage: `For every $1.00 you give to this ${(giveTo.isCampaign) ? 'Campaign' : 'group'}, ${company} will match your gift with $1.00 up to maximum of ${formatCurrency(maxMatchAmount, language, currency)} per donor, until the matching funds run out or expire.`,
+                    subHeading: `(from ${giveFrom.text})`,
                     totalAmount: formatCurrency(sumAmount, language, currency),
                     totalHeading: `Total with matching`,
                 };
+
+                if (Number(giveAmount) > activeMatchAmount) {
+                    if (maxMatchAmount === activeMatchAmount) {
+                        state.toDetailsForMatching.popUpMessage = `Your gift is only being partially matched because the maximum match amount per donor is ${formatCurrency(maxMatchAmount, language, currency)}. Matching is available until the funds run out or expire.`;
+                    } else if ((activeMatchAmount === Number(availableFund)) && (maxMatchAmount > Number(availableFund))) {
+                        state.toDetailsForMatching.popUpMessage = 'Your gift is only being partially matched because not enough matching funds remain. Matching is available until the funds run out or expire.';
+                    } else if (maxMatchAmount > activeMatchAmount) {
+                        state.toDetailsForMatching.popUpMessage = `Your gift is only being partially matched because previous gifts you've sent to this ${(giveTo.isCampaign) ? 'Campaign' : 'group'} have already been matched. The maximum match amount is ${formatCurrency(maxMatchAmount, language, currency)} per donor. Matching is available until funds run out or expire.`;
+                    }
+                }
             }
         }
 
@@ -1537,7 +1544,6 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         if (emails.length === 1 && _.isEmpty(selectedFriendsList)) {
             state.mainDisplayImage = (recipientImage) || placeholderUser;
             state.mainDisplayText = `${formatMessage('reviewGiveToText')} ${(recipientName) || emails[0]}`;
-
         } else if (selectedFriendsList.length === 1 && _.isEmpty(emails)) {
             state.mainDisplayImage = (selectedFriendsList[0].avatar) || placeholderUser;
             state.mainDisplayText = `${formatMessage('reviewGiveToText')} ${(selectedFriendsList[0].displayName)}`;
@@ -1577,7 +1583,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
     }
     state.listingData = listingData;
     return (state);
-}
+};
 
 /**
  * Calculates what we need to give in total to all of our recipients.
@@ -1694,7 +1700,7 @@ const populateFriendsList = (friendsList) => {
 };
 
 const validateForReload = (validity, type, giveAmount, balance) => {
-    validity.isReloadRequired = (type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance) ? false : true;
+    validity.isReloadRequired = !((type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance));
     return validity;
 };
 
@@ -1708,9 +1714,7 @@ const getSelectedFriendList = (options, values) => {
     let index = null;
     let preparedFriendList = {};
     values.map((value) => {
-        index = _.findIndex(options, (opt) => {
-            return opt.attributes.user_id === value;
-        });
+        index = _.findIndex(options, (opt) => opt.attributes.user_id === value);
         preparedFriendList = {
             avatar: options[index].attributes.avatar,
             displayName: options[index].attributes.display_name,
@@ -1729,57 +1733,64 @@ const getSelectedFriendList = (options, values) => {
  * @param {number} day tells which day of monthly allocation.
  * @param {string} name name of company giving matching policy.
  * @param {function} formatMessage language translation function
+ * @param {boolean} expiry check whether its a valid match or not
  * @return {boolean} expired or not.
  */
-const checkMatchPolicyExpiry = (date, day, name, formatMessage) => {
+const checkMatchPolicyExpiry = (date, day, name, formatMessage, expiry) => {
     const companyExpireDate = new Date(date).getTime();
     const nextAllocationDate = setDateForRecurring(day, formatMessage);
     const nextAllocationDateTime = new Date(nextAllocationDate).getTime();
     return companyExpireDate > nextAllocationDateTime ? {
         hasMatchingPolicy: true,
         isValidMatchPolicy: true,
+        matchingPolicyExpiry: expiry,
         matchPolicyTitle: `${name} will match your gift.`,
     } : {
-            hasMatchingPolicy: true,
-            isValidMatchPolicy: false,
-            matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
-        };
+        hasMatchingPolicy: true,
+        isValidMatchPolicy: false,
+        matchingPolicyExpiry: expiry,
+        matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
+    };
 };
 
 
 /**
  * Validate Match policy.
- * @param {object} giveGroupDetails give group details.
+ * @param {object} matchingPolicyObj give matchingPolicyObj attributes.
  * @param {number} giftType tells whether allocation is monthly or once.
  * @param {function} formatMessage language translation function
+ * @param {boolean} expiry check whether its a valid match or not
  * @return {boolean} match policy condition.
  */
-const checkMatchPolicy = (giveGroupDetails = {}, giftType = 0, formatMessage) => {
-    if (!_.isEmpty(giveGroupDetails)) {
+const checkMatchPolicy = (matchingPolicyObj = {}, giftType = 0, formatMessage, expiry = true) => {
+    if (!_.isEmpty(matchingPolicyObj)) {
         const {
-            attributes: {
-                activeMatch,
-                hasActiveMatch,
-            },
-        } = giveGroupDetails;
+            activeMatch,
+            hasActiveMatch,
+            isCampaign,
+        } = matchingPolicyObj;
         if (!_.isEmpty(activeMatch) && hasActiveMatch) {
-            if (giftType > 0) {
-                return activeMatch.matchClose ? checkMatchPolicyExpiry(activeMatch.matchClose, giftType, activeMatch.company, formatMessage) : {
+            if (giftType > 0 && expiry) {
+                return activeMatch.matchClose ? checkMatchPolicyExpiry(activeMatch.matchClose, giftType, activeMatch.company, formatMessage, expiry) : {
                     hasMatchingPolicy: true,
                     isValidMatchPolicy: true,
+                    matchingPolicyExpiry: expiry,
                     matchPolicyTitle: `${activeMatch.company} will match your gift.`,
                 };
             }
             return {
                 hasMatchingPolicy: true,
-                isValidMatchPolicy: true,
-                matchPolicyTitle: `${activeMatch.company} will match your gift.`,
+                isValidMatchPolicy: !!expiry,
+                matchingPolicyExpiry: expiry,
+                matchPolicyTitle: expiry ? `${activeMatch.company} will match your gift.`
+                    : `Matching will not be available for this gift. Previous gifts you’ve given to this ${(isCampaign) ? 'Campaign' : 'group'} have already been fully matched the maximum amount per donor.`,
             };
         }
     }
     return {
         hasMatchingPolicy: false,
         isValidMatchPolicy: false,
+        matchingPolicyExpiry: false,
         matchPolicyTitle: '',
     };
 };
@@ -1806,24 +1817,24 @@ const findingErrorElement = (validity, type) => {
             }
             break;
         case 'allocation':
-            if ((typeof validity.isValidGiveTo === "boolean") && !validity.isValidGiveTo) {
+            if ((typeof validity.isValidGiveTo === 'boolean') && !validity.isValidGiveTo) {
                 return '.group-to-give';
-            } if (typeof validity.isValidEmailList === "boolean" && (!validity.isValidEmailList
+            } if (typeof validity.isValidEmailList === 'boolean' && (!validity.isValidEmailList
                 || !validity.isRecipientListUnique || !validity.isRecipientHaveSenderEmail
                 || !validity.isNumberOfEmailsLessThanMax || !validity.isRecepientSelected
             )) {
-                return '.friends-error'
+                return '.friends-error';
             }
             if (!isValidGiftAmount(validity) || !validity.isAmountCoverGive) {
                 return '.amountField';
             } if (!validity.isValidGiveFrom || !validity.isReloadRequired) {
                 return '.giveFromAccount';
             }
-            if ((typeof validity.isDedicateGiftEmpty === "boolean") && !validity.isDedicateGiftEmpty) {
+            if ((typeof validity.isDedicateGiftEmpty === 'boolean') && !validity.isDedicateGiftEmpty) {
                 return '.dedicate-flow';
             } if (!validity.isValidNoteToCharity || !validity.isValidNoteToSelf) {
                 return '.noteToSelf';
-            } 
+            }
             return '';
         default: break;
     }

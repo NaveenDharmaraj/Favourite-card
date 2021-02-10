@@ -69,8 +69,11 @@ body{
          font-family: 'ProximaNova-Regular';
          max-width: 550px;
          width: 100%;
-         margin:0px auto 40px;
+         margin:0px auto 20px;
          text-align: center;
+         +.mt-1{
+            margin-top: 40px !important;
+         }
      }
     } 
     button{
@@ -215,7 +218,7 @@ body{
                                     bottom: 0;
                                     width: 12px;
                                     height: 16px;
-                                    background-image: url(../images/icons/icon-arrow-down.svg) !important;
+                                    background-image: url("@{img_url}/images/icons/icon-arrow-down.svg") !important;
                                     background-size: contain !important;
                                     background-repeat: no-repeat !important;
                                     background-position: center !important;
@@ -231,7 +234,7 @@ body{
 }
 /***********flowReviewbanner********/
 .givinggroupbanner{
-    background-image: url(../images/banner_give-to-gg-campaign.svg)!important;
+    background-image: url("@{img_url}/images/banner_give-to-gg-campaign.svg")!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -269,7 +272,7 @@ body{
 }
 /*******/
 .charityallocationbanner{
-    background-image: url(../images/banner_give-to-charity.svg)!important;
+    background-image: url("@{img_url}/images/banner_give-to-charity.svg")!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -307,7 +310,7 @@ body{
 }
 /*****/
 .flowReviewbanner{
-    background-image: url(../images/banner_give-fromgg.svg)!important;
+    background-image: url("@{img_url}/images/banner_give-fromgg.svg")!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -423,6 +426,14 @@ body{
                                         vertical-align: top;
                                         word-break: break-word;
                                     }
+                                    b{
+                                        font-family: 'ProximaNova-Semibold'; 
+                                    }
+                                }
+                                &.tablethree{
+                                    @media only screen and (max-width:767px) {
+                                        display: none !important;
+                                    }
                                 }
                                 &.transaction-text{
                                     font-size: 12px;
@@ -514,13 +525,26 @@ body{
                 }    
             }
         }
+       
     }
     .right.aligned{
         font-family: 'ProximaNova-Semibold';
     }
 }
 }
-
+.layoutfixed{
+    table-layout: fixed;
+    td:first-child{
+        width: 75%;
+    }
+    td:last-child{
+        width: 25%;
+    }
+    .matchingAmount{
+        display: flex;
+        align-items: flex-start;
+    }
+}
 
 /***********flowReviewbanner*close*******/ 
 .flowBreadcrumb{
@@ -579,11 +603,15 @@ body{
                 padding-top: 7px;
                 padding-bottom: 6px;
                 font-family: 'ProximaNova-Regular';
+                font-weight: 400;
                 &:hover{
                     font-family: 'ProximaNova-Regular';
                 }
                 +.small{
                     margin-left: 10px;
+                }
+                @media only screen and (max-width:767px) {
+                    padding: 0 12px;
                 }
             }
             &:hover,&:focus{
@@ -607,6 +635,9 @@ body{
                 }
                 +.button{
                     margin-left: 10px;
+                    @media only screen and (max-width:360px) {
+                        margin-left: 5px;
+                    } 
                 }
                 &:hover,&:focus{
                     background-color: #F1F6FD;
@@ -983,7 +1014,9 @@ body{
     .ui{
         &.button{
             &.dropdown{
-                height: 41px;
+                padding-top: 12px;
+                padding-bottom: 12px;
+                padding-right: 32px !important;
                 &.taxReceiptDropDown{
                     height: auto;
                 }
@@ -1023,7 +1056,7 @@ body{
                 }
                 &::before{
                     content: '';
-                    background-image: url(../images/icons/icon-arrow-down.svg);
+                    background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
                     height: 7px;
                     width: 13.5px;
                     position: absolute;
@@ -1099,7 +1132,7 @@ body{
                     &.cardVisa{
                         &::before{
                             content: '';
-                            background-image: url(../images/icons/icon-cc-visa-colour.png) !important;
+                            background-image: url("@{img_url}/images/icons/icon-cc-visa-colour.png") !important;
                             left: 10px;
                             width: 31px;
                             height: 11px;
@@ -1108,7 +1141,7 @@ body{
                     &.cardMaster{
                         &::before{
                             content: '';
-                            background-image: url(../images/icons/icon-cc-mastercard-colour.png) !important;
+                            background-image: url("@{img_url}/images/icons/icon-cc-mastercard-colour.png") !important;
                             left: 10px;
                             width: 31px;
                             height: 11px;
@@ -1117,7 +1150,7 @@ body{
                     &.cardExpress{
                         &::before{
                             content: '';
-                            background-image: url(../images/icons/icon-cc-american-express-colour.png) !important;
+                            background-image: url("@{img_url}/images/icons/icon-cc-american-express-colour.png") !important;
                             left: 10px;
                             width: 31px;
                             height: 11px;
@@ -1137,21 +1170,16 @@ body{
     }
 }
 .noteDefault{
-    border-radius: 4px;	
     background-color: #E3E8F0;
-    padding:7px 9px 6px;
+    padding:10px 16px 9px;
     &.info{
-        background-color: #E5F5F5;
+        background-color: fade(#90459A, 10%);
         &.mt-2{
             margin-top: 20px;
         }
-        .noteWraper{
-            .leftImg{
-                .notifyDefaultIcon{
-                    &::before{
-                        filter: invert(61%) sepia(64%) saturate(7283%) hue-rotate(156deg) brightness(96%) contrast(103%);
-                    }
-                }
+        .noteWraper .leftImg .notifyDefaultIcon.purpleIcon{
+            &::before{
+                background-image: url("@{img_url}/images/icons/purple.svg");
             }
         }
     }
@@ -1168,7 +1196,7 @@ body{
                 display: inline-block;
                 width: 23px;
                 height: 23px;
-                background-color: #fff;
+                // background-color: #fff;
                 border-radius: 100%;
                 position: relative;
                 &::before{
@@ -1179,10 +1207,10 @@ body{
                     top: 0px;
                     bottom: 0px;
                     margin: auto;
-                    background-image: url(../images/icons/exclamation.svg);
+                    background-image: url("@{img_url}/images/icons/ico_addmoney.svg");
                     background-repeat: no-repeat;
                     background-position: center;
-                    background-size: auto 14px;
+                    background-size: 23px;
                 }
             }
         }
@@ -1259,7 +1287,7 @@ body{
             width: 17px;
             height: 17px;
             display: block;
-            background-image: url(../images/icons/red.svg);
+            background-image: url("@{img_url}/images/icons/red.svg");
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -1343,7 +1371,7 @@ body{
     }
     &::before{
         content: '';
-        background-image: url(../images/icons/icon-arrow-down.svg);
+        background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
         height: 15px;
         width: 15px;
         position: absolute;
@@ -1364,7 +1392,8 @@ body{
     text-align:left;
     @media only screen and (max-width:767px) {
         >.menu{
-            min-height: 240px;
+            min-height:auto;
+            max-height: 220px;
         }
     }
     &:before{
@@ -1373,6 +1402,22 @@ body{
 }
 .ui.button.fluid.floating.selection.dropdown.creditCardDropDown{
     text-align:left;
+    &.active{
+        .menu{
+            &.visible{
+                @media only screen and (max-width:767px) {
+                    overflow-y: auto;
+                    &::-webkit-scrollbar {
+                        width: 7px;
+                    }
+                }
+            }
+            >.item{
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
 }
 .taxReceiptDropDown >.text >span{
     display:block
@@ -1387,12 +1432,12 @@ button.ui.button.blue-bordr-btn-round-def.flowConfirmBtn.fast_btn {
     margin-bottom: 40px !important;
     padding: 12px !important;
     font-size: 17px !important;
-    font-family: 'ProximaNova-Medium' !important;
+    font-weight: 600;
 }
 button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
     padding: 12px !important;
     font-size: 17px !important;
-    font-family: 'ProximaNova-Medium' !important;
+    font-weight: 600;
 }
 .recurringMsg{
     line-height: 12px;
@@ -1623,7 +1668,7 @@ span.attributes {
                     opacity: 1;
                     &::before{
                         content: '';
-                        background-image: url(../images/icons/close.svg) !important;
+                        background-image: url("@{img_url}/images/icons/close.svg") !important;
                         background-size : contain !important;
                         width: 10px;
                         height: 10px;
@@ -1648,7 +1693,7 @@ span.attributes {
         }
         &::after{
             content: '';
-            background-image: url(../images/icons/icon-arrow-down.svg);
+            background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
             height: 15px;
             width: 15px;
             position: absolute;
@@ -1715,7 +1760,7 @@ p{
     z-index: 1;
     opacity: .8;
     padding: .625rem 0 0 0;
-    background-image: url('../images/icons/close.svg') !important;
+    background-image: url("@{img_url}/images/icons/close.svg") !important;
     background-size: contain !important;
     background-repeat: no-repeat !important;
 }
@@ -1750,10 +1795,10 @@ p{
                     top: 0px;
                     bottom: 0px;
                     margin: auto;
-                    background-image: url(../images/icons/exclamation.svg);
+                    background-image: url("@{img_url}/images/icons/ico_addmoney.svg");
                     background-repeat: no-repeat;
                     background-position: center;
-                    background-size: auto 19px; 
+                    background-size: auto 28px; 
                 }
             }
         }
@@ -2184,7 +2229,7 @@ input{
                             white-space: nowrap;
                             overflow: hidden;
                             text-overflow: ellipsis;
-                            max-width: calc(100% - 40px);
+                            max-width: 100%;
                             left:0px;
                         }
                         &.grouped{
@@ -2194,6 +2239,12 @@ input{
                                     line-height: 22px;
                                     color: #263238;
                                     border: 0px solid transparent;
+                                    &.selected{
+                                        background:transparent;
+                                    }
+                                    &.active{
+                                        background: rgba(0, 0, 0, 0.03);
+                                    }
                                     &.disabled{
                                         opacity: 1;
                                         color: #BBBBBB;
@@ -2256,7 +2307,7 @@ input{
         }
         &::after{
             content: '';
-            background-image: url(../images/icons/icon-arrow-down.svg);
+            background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
             height: 7px;
             width: 13.5px;
             position: absolute;
@@ -2285,7 +2336,7 @@ input{
         bottom: 0;
         width: 20px;
         height: 20px;
-        background-image: url(../images/icons/icon-search.svg) !important;
+        background-image: url("@{img_url}/images/icons/icon-search.svg") !important;
         background-size: contain !important;
         background-repeat: no-repeat !important;
         background-position: center !important;
@@ -2385,25 +2436,35 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     margin-bottom: 20px;
     }
 }
-.matching-fund-modal{
-    >.content{
-        >p{
-            line-height: 22px;
-            color: #263238;
-            font-size: 14px;
+.ui.modals.dimmer .chimp-modal.ui.modal{
+    &.matching-fund-modal{
+        i.icon.close{
+            opacity: 1;
+        }
+        >.header{
+            border-color: #E6E1E8;
+        }
+        >.content{
+            padding: 14px 35px 15px;
+            >p{
+                line-height: 22px;
+                color: #263238;
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
         }
     }
 }
 .matching-fund-modal-wrapper{
-    display: flex;
-    padding-bottom: 15px;
-    @media only screen and (max-width:991px) {
-        flex-direction: column;
+    padding-top: 10px;
+    padding-bottom: 12px;
+    .ui.grid{
+        width: 100%;
     }
     .matching-fund-modal-inner-wrapper{
         display: flex;
         align-items: center; 
-        width: 72%;
+        height: 100%;
     }
     .matching-progress-wrapper{
         width: 21px;
@@ -2465,26 +2526,29 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             line-height: 22px;
             color: #263238;
             margin-top: 20px;
+            margin-bottom: 33px;
             font-family: 'ProximaNova-Semibold';
+            @media only screen and (max-width:991px) {
+                margin-bottom: 0px;
+            }
         }
     }
     .matching-fund-expire{
         display: flex;
         align-items: flex-end;
-        @media only screen and (max-width:991px) {
-            width: 100%;
-        }
+        justify-content:  flex-end;
+        height: 100%;
         .expire-date{
             display: inline-block;
             font-size: 12px;
             font-family: 'ProximaNova-Medium';
             border-radius: 12.17px;
             background-color: fade(#90459A, 10%);
-            padding: 4px 5px;
-            text-align: center;
-            @media only screen and (max-width:991px) {
-                margin-top: 30px;
-            }
+            padding: 3.6px 9.4px;
+            text-align: center;          
+        }
+        @media only screen and (max-width:991px) {
+            justify-content:  start;
         }
     }
 }
@@ -2506,6 +2570,17 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                             .icon{
                                 &.question{
                                     margin-left: 10px;
+                                    margin-bottom: 0px;
+                                    margin-top: 0;
+                                    width: 100%;
+                                    max-width: 28px;
+                                    +.note{
+                                        margin-top: 3px;
+                                    }
+                                    &::before{
+                                        right: 3px;
+                                        background-position: center !important;
+                                    }
                                 }
                             }
                         }
@@ -2541,9 +2616,18 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                 font-size: 12px;
                 line-height: 15px;
                 text-align: center;
-                @media only screen and (min-width:768px) {
-                    width: 340px;
+                width: 100%;
+                @media only screen and (min-width:991px) {
                     max-width: 340px;
+                }
+                @media only screen and (max-width:991px) {
+                    max-width: 280px;
+                }
+                @media only screen and (max-width:767px) {
+                    max-width: 240px;
+                }
+                @media only screen and (max-width:340px) {
+                    max-width: 225px;
                 }
             }
         }
@@ -2566,6 +2650,23 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     >.header{
         font-family: 'ProximaNova-semibold';
         color: #263238;
+    }
+    @media only screen and (max-width: 767px){
+        .selection{
+            &.dropdown{
+                &.ui{
+                    .menu{
+                        min-height: 220px;
+                        &.visible{
+                            overflow-y: auto;
+                            &::-webkit-scrollbar {
+                                width: 7px !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     .ui{
         &.form{

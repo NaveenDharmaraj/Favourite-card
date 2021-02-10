@@ -8,6 +8,8 @@ import {
     isAmountMoreOrEqualToOneDollor,
     isInputBlank,
 } from '../give/giving-form-validation';
+import { isFalsy } from '../utils';
+import { addToDataLayer } from './googleTagManager';
 
 const hasLowerCase = (str) => {
     return (/[a-z]/.test(str));
@@ -168,7 +170,7 @@ const populateDropdownInfoToShare = (infoShareOptions = [], preferences = {}, na
                     privacySetting: `${info.privacySetting}`,
                     text: ReactHtmlParser(`<div class="attributes">${info.name}</div>
                     <div class="attributes">${info.email}</div>
-                    <div class="attributes"> ${info.address_one} ${info.address_two} </div>
+                    <div class="attributes"> ${info.address_one} ${!isFalsy(info.address_two) ? info.address_two : ''} </div>
                     <div class="attributes">${info.city}, ${info.province} ${info.country} ${info.postal_code}</div>`),
                     value: `${info.privacySetting}-${info.privacyData}`,
                 });
@@ -192,7 +194,54 @@ const populateDropdownInfoToShare = (infoShareOptions = [], preferences = {}, na
     return infoToShare;
 };
 
+/**
+   * create a gtm events based on step index
+   * Step index 0  firstname and last name
+   * Step index 1 email paswword
+   * Step index 2 causes selection
+   * Step index 3 create impact account
+   * @param {number} stepIndex tells the step on each continue click in sign up page.
+   * @param {string} buttonClicked tells which button clicked continue or back.
+   * @param {string[]} userCauses causes selected by user
+   * @return {void} create a gtm events based on step index.
+   */
+const addGtmEventsSignUp = (stepIndex, buttonClicked, userCauses = []) => {
+    const tagManagerArgs = {
+        dataLayer: {},
+        dataLayerName: 'dataLayer',
+    };
+    const parentRoute = '/users/new';
+    const parentEvent = 'ci_users_new';
+    if (buttonClicked === 'Continue') {
+        if (stepIndex === 0) {
+            tagManagerArgs.dataLayer.page = `${parentRoute}/email`;
+            tagManagerArgs.dataLayer.web_event = `ci_first_last_name_added`;
+        } else if (stepIndex === 1) {
+            tagManagerArgs.dataLayer.page = `${parentRoute}/cause`;
+            tagManagerArgs.dataLayer.web_event = `ci_email_password_verified`;
+        } else if (stepIndex === 2) {
+            tagManagerArgs.dataLayer.page = `${parentRoute}/confirm`;
+            tagManagerArgs.dataLayer.web_event = `ci_signup_causes`;
+            tagManagerArgs.dataLayer.causes = [
+                ...userCauses,
+            ];
+        }
+    } else if (buttonClicked === 'Back') {
+        if (stepIndex === 1) {
+            tagManagerArgs.dataLayer.page = `${parentRoute}`;
+            tagManagerArgs.dataLayer.web_event = `${parentEvent}`;
+        } else if (stepIndex === 2) {
+            tagManagerArgs.dataLayer.page = `${parentRoute}/email`;
+            tagManagerArgs.dataLayer.web_event = `ci_first_last_name_added`;
+        }
+    }
+    tagManagerArgs.dataLayer.event = 'pageview';
+    addToDataLayer(tagManagerArgs);
+};
+
+
 export {
+    addGtmEventsSignUp,
     populateDropdownInfoToShare,
     validateGivingGoal,
     validateUserRegistrationForm,

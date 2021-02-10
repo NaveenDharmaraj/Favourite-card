@@ -317,7 +317,7 @@ button,a{
                 &.bell{
                   &::before{
                     content: '';
-                    background-image: url(../images/icons/icon-notification.svg) !important;
+                    background-image: url("@{img_url}/images/icons/icon-notification.svg") !important;
                     background-position: center !important;
                     background-size: contain !important;
                     background-repeat: no-repeat !important;
@@ -383,7 +383,7 @@ button,a{
                     content: '';
                     width: 27px;
                     height: 27px;                
-                    background-image: url(../images/icons/chatIcon.svg) !important;
+                    background-image: url("@{img_url}/images/icons/chatIcon.svg") !important;
                     background-position: center !important;
                     background-size: contain !important;
                     background-repeat: no-repeat !important;
@@ -490,7 +490,7 @@ button,a{
           .chatIcon{
             transform: scale(.8);
             &::before{
-              content: url('../images/icons/compose.svg');
+              content: url("@{img_url}/images/icons/compose.svg");
               position: absolute;
             }
           }
@@ -632,7 +632,7 @@ button,a{
                 right: 0;
                 top: 0;
                 bottom: 0;
-                background-image: url(../images/icons/icon-account_settings.svg) !important;
+                background-image: url("@{img_url}/images/icons/icon-account_settings.svg") !important;
                 background-size:contain !important;
                 background-repeat:no-repeat !important;
                 background-position: center !important;
@@ -898,7 +898,7 @@ body{
           position: relative;
           &::before{
             content: '' !important;
-            background-image: url('../images/icons/ellipsis.svg') !important;
+            background-image: url("@{img_url}/images/icons/ellipsis.svg") !important;
             background-position: center !important;
             background-size: contain !important;
             background-repeat: no-repeat !important;
@@ -1230,7 +1230,7 @@ body{
                     bottom: 0;
                     left: 0;
                     right: 0;
-                    background-image: url(../images/icons/notifications.svg) !important;
+                    background-image: url("@{img_url}/images/icons/notifications.svg") !important;
                     background-size: contain !important;
                     background-repeat: no-repeat !important;
                     background-position: center !important;
@@ -1271,7 +1271,7 @@ body{
                     bottom: 0;
                     left: 0;
                     right: 0;
-                    background-image: url(../images/icons/messages.svg) !important;
+                    background-image: url("@{img_url}/images/icons/messages.svg") !important;
                     background-size: contain !important;
                     background-repeat: no-repeat !important;
                     background-position: center !important;
@@ -1407,7 +1407,7 @@ body{
                         &::before{
                           content: '';
                           position: absolute;
-                          background-image: url('../images/icons/icon-arrow-down.svg') !important;
+                          background-image: url("@{img_url}/images/icons/icon-arrow-down.svg") !important;
                           width: 10px;
                           height: 10px;
                           background-position: center !important;
@@ -1470,7 +1470,7 @@ body{
           }
           &.userPrifileHeader{
             padding: 15px 20px 15px 20px;
-            background-image: url('../images/bg_menu_tablet.svg');
+            background-image: url("@{img_url}/images/bg_menu_tablet.svg");
             background-size: 60%;
             background-repeat: no-repeat;
             background-position: right top;
@@ -1660,7 +1660,7 @@ body{
     &.sidebar{
       .user-menu-header{
         padding: 1rem 2rem;
-        background-image: url(../images/dashboard_bg.png);
+        background-image: url("@{img_url}/images/dashboard_bg.png");
         background-size: contain;
         background-repeat: no-repeat;
         text-align: left;
@@ -1694,22 +1694,26 @@ body{
           &.twoBtnWraper{
             background-color: #F2F5FA;
             padding: 19px 1.14285714em;
+            &:hover{
+              background-color: #F2F5FA;
+              border: 0;
+            }
             .ui{
               &.blue{
                 &.button{
                   box-sizing: border-box;	
-                  height: 36px;	
-                  width: 132px;	
+                  height: 40px;	
                   border: 1px solid #055CE5;	
                   background-color: #055CE5;
                   color: #fff !important;
-                  padding:10px;
-                  border-radius: 20.5px;
+                  padding:11px 30px;
+                  line-height: 15px;
+                  margin: 0 5px;
+                  border-radius: 22px;
                   box-shadow: none !important;
                   &.basic{
                     border: 1px solid #055CE5;	
                     color: #055CE5 !important;
-                    margin-right: 8px;
                   }
                 }
               }
@@ -1780,7 +1784,7 @@ body{
                     margin-left: -7.5px;
                     &:after{
                       content: '';
-                      background-image: url(../images/icons/icon-arrow-down.svg);
+                      background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
                       background-size: contain;
                       background-repeat: no-repeat;
                       background-position: center;
@@ -2049,10 +2053,16 @@ body{
   -webkit-transform: none !important;
   transform: none !important;
   padding-top: 0px !important;
+  border: 0px;
+  .fadeOut();
+    &.visible{
+      .fadeIn();
+    }
 }
 .pushable:not(body){
   -webkit-transform: none !important;
   transform: none !important;
+  
 }
 .ui.bottom.right.basic.popup.transition.visible.notification-popup.sticky-dropdown{
   margin-top: 17px !important;
@@ -2066,9 +2076,51 @@ body{
 .c-m-default-header .ui.right.overlay.sidebar {
   -webkit-transform: none !important;
   transform: none !important;
+  -webkit-box-shadow: 0 0 20px rgba(34,36,38,.15);
+    box-shadow: 0 0 20px rgba(34,36,38,.15);
+    .fadeOut();
+    &.visible{
+      .fadeIn();
+    }
 }
 .c-m-default-header .ui.sidebar.menu{
   position: fixed;
   margin-top: 67px !important;
 }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+@-webkit-keyframes fadeOut {
+  0% {opacity: 1;}
+  100% {opacity: 0;}
+}
+
+@keyframes fadeOut {
+  0% {opacity: 1;}
+  100% {opacity: 0;}
+}
+.animated{
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+.fadeIn{
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+  .animated();
+}
+.fadeOut{
+  -webkit-animation-name: fadeOut;
+  animation-name: fadeOut;
+  .animated();
 }

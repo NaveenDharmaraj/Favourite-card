@@ -27,7 +27,7 @@ class Donations extends React.Component {
 
     render() {
         return (
-            <Layout authRequired={true} >
+            <Layout authRequired stripe>
                     <div className="pageWraperGive">
                         <GiveWrapper {...this.props} baseUrl='/donations'>
                             <Donation />

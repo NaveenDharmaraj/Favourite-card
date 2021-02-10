@@ -8,6 +8,7 @@ import ReactHtmlParser from 'react-html-parser';
 import {
     PropTypes,
 } from 'prop-types';
+import _isEmpty from 'lodash/isEmpty';
 
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import {
@@ -39,11 +40,11 @@ function DonationAmountField(props) {
         handleInputChange(event, data);
     };
     const handleAmountBlur = (event, data) => {
-        if (event && event.relatedTarget && event.relatedTarget.name === 'give_amount_button') {
-            handlePresetAmountClick(event, event.relatedTarget);
-        } else {
+        // if (event && event.relatedTarget && event.relatedTarget.name === 'give_amount_button' && _isEmpty(amount)) {
+        //     handlePresetAmountClick(event, event.relatedTarget);
+        // } else {
             handleInputOnBlur(event, data);
-        }
+        //}
     };
     return (
         <Form.Field>
@@ -51,6 +52,7 @@ function DonationAmountField(props) {
                 {formatMessage('giveCommon:amountLabel')}
             </label>
             <Form.Field
+                data-test="Give_DonationAmountField_input"
                 control={Input}
                 id={isGiveFlow ? 'giveAmount' : 'donationAmount'}
                 error={!isValidGiftAmount(validity)}
@@ -83,10 +85,10 @@ function DonationAmountField(props) {
                 />
             )}
             <div className="price_btn">
-                <Button name="give_amount_button" active={activeIndex === 1} className="btn-basic-outline btntext invisionwidth" index={1} type="button" size="small" value="25" onClick={handleDonationPresetAmountClick}>$25</Button>
-                <Button name="give_amount_button" active={activeIndex === 2} className="btn-basic-outline btntext invisionwidth" index={2} type="button" size="small" value="50" onClick={handleDonationPresetAmountClick}>$50</Button>
-                <Button name="give_amount_button" active={activeIndex === 3} className="btn-basic-outline btntext invisionwidth" index={3} type="button" size="small" value="100" onClick={handleDonationPresetAmountClick}>$100</Button>
-                <Button name="give_amount_button" active={activeIndex === 4} className="btn-basic-outline btntext invisionwidth" index={4} type="button" size="small" value="500" onClick={handleDonationPresetAmountClick}>$500</Button>
+                <Button data-test="Give_DonationAmountField_presetamount25_button" name="give_amount_button" active={activeIndex === 1} className="btn-basic-outline btntext invisionwidth" index={1} type="button" size="small" value="25" onClick={handleDonationPresetAmountClick}>$25</Button>
+                <Button data-test="Give_DonationAmountField_presetamount50_button" name="give_amount_button" active={activeIndex === 2} className="btn-basic-outline btntext invisionwidth" index={2} type="button" size="small" value="50" onClick={handleDonationPresetAmountClick}>$50</Button>
+                <Button data-test="Give_DonationAmountField_presetamount100_button" name="give_amount_button" active={activeIndex === 3} className="btn-basic-outline btntext invisionwidth" index={3} type="button" size="small" value="100" onClick={handleDonationPresetAmountClick}>$100</Button>
+                <Button data-test="Give_DonationAmountField_presetamount500_button" name="give_amount_button" active={activeIndex === 4} className="btn-basic-outline btntext invisionwidth" index={4} type="button" size="small" value="500" onClick={handleDonationPresetAmountClick}>$500</Button>
             </div>
         </Form.Field>
     );
@@ -102,3 +104,4 @@ DonationAmountField.propTypes = {
 
 
 export default DonationAmountField;
+export { DonationAmountField };

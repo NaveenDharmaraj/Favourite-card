@@ -30,6 +30,10 @@ class Groups extends React.Component {
                 'noteTo',
                 'accountTopUp',
                 'privacyOptions',
+                'review',
+                'taxReceipt',
+                'success',
+                'error',
             ],
             slug: query.slug,
             step: (query.slug) ? `${query.slug}/${query.step}` : query.step,
@@ -56,7 +60,7 @@ class Groups extends React.Component {
             flowSteps[0] = `${slug}/${firstStep}`;
         }
         return (
-            <Layout authRequired={true}>
+            <Layout authRequired stripe>
                 <div className="pageWraperGive">
                     <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
                         <Group />

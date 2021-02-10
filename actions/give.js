@@ -24,6 +24,7 @@ import {
 import {
     getTaxReceiptProfileMakeDefault,
 } from './taxreceipt';
+
 export const actionTypes = {
     ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
     COVER_AMOUNT_DISPLAY: 'COVER_AMOUNT_DISPLAY',
@@ -184,6 +185,7 @@ const saveCharityAllocation = (allocation) => {
         coverFees,
         dedicateGift,
         giveAmount,
+        giveFrom,
         infoToShare,
         noteToCharity,
         noteToSelf,
@@ -193,8 +195,8 @@ const saveCharityAllocation = (allocation) => {
         coverFees,
         noteToCharity,
         noteToSelf,
-        privacyData: infoToShare.privacyData,
-        privacySetting: infoToShare.privacySetting,
+        privacyData: (giveFrom.type === 'user') ? infoToShare.privacyData : null,
+        privacySetting: (giveFrom.type === 'user') ? infoToShare.privacySetting : infoToShare.value,
     };
     if (!_.isEmpty(dedicateGift.dedicateType)) {
         attributes = {
@@ -253,7 +255,7 @@ const postP2pAllocations = async (allocations) => {
                     parentAllocation: {
                         data: {
                             type: 'fundAllocations',
-                            id: parentAllocationId ,
+                            id: parentAllocationId,
                         },
                     },
                 },
@@ -267,15 +269,15 @@ const postP2pAllocations = async (allocations) => {
         //     data: data,
         // };
         const result = await coreApi.post(`/${allocationData.type}`, {
-            data : {
+            data: {
                 ...data,
             },
         });
-        if  (result && result.data) {
+        if (result && result.data) {
             parentAllocationId = result.data.id;
         }
         results.push(result);
-    };
+    }
 
     return results;
 };
@@ -351,7 +353,7 @@ const checkForQuaziSuccess = (error) => {
         if (!_.isEmpty(checkQuaziSuccess.meta)
             && !_.isEmpty(checkQuaziSuccess.meta.recoverableState)
             && (checkQuaziSuccess.meta.recoverableState === 'true'
-            || checkQuaziSuccess.meta.recoverableState === true)) {
+                || checkQuaziSuccess.meta.recoverableState === true)) {
             return true;
         }
     }
@@ -398,7 +400,7 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
             },
         },
     );
-    
+
     Promise.all([
         fetchData,
         paymentInstruments,
@@ -481,9 +483,9 @@ const transformStripeErrorToJsonApi = (err) => {
 };
 
 const getAllActivePaymentInstruments = (id, dispatch, type = 'user') => {
-    const url = (type === 'companies') ?
-        `/companies/${id}/activePaymentInstruments?&sort=-default` :
-        `/users/${id}/activePaymentInstruments?sort=-default`
+    const url = (type === 'companies')
+        ? `/companies/${id}/activePaymentInstruments?&sort=-default`
+        : `/users/${id}/activePaymentInstruments?sort=-default`;
     return coreApi.get(
         url,
         {
@@ -495,54 +497,60 @@ const getAllActivePaymentInstruments = (id, dispatch, type = 'user') => {
     );
 };
 
-const setUserDefaultCreditCard = (paymentInstrumentId) => {
-    return coreApi.patch(`/paymentInstruments/${Number(paymentInstrumentId)}/set_as_default`);
+const setUserDefaultCreditCard = (paymentInstrumentId) => coreApi.patch(`/paymentInstruments/${Number(paymentInstrumentId)}/set_as_default`);
+
+const checkForDuplicateCcError = (error) => {
+    if (!_.isEmpty(error) && error.length === 1) {
+        const checkCcError = error[0];
+        if (!_.isEmpty(checkCcError.title) && (checkCcError.title === 'This credit card number has already been added.')) {
+            return true;
+        }
+    }
+    return false;
 };
 
-export const addNewCardAndLoad = (flowObject, isDefaultCard) => {
-    return (dispatch) => {
-        dispatch({
-            payload: {
-                creditCardApiCall: true,
+export const addNewCardAndLoad = (flowObject, isDefaultCard) => (dispatch) => {
+    dispatch({
+        payload: {
+            creditCardApiCall: true,
+        },
+        type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+    });
+    const {
+        giveData: {
+            giveFrom,
+            giveTo,
+        },
+    } = flowObject;
+    const accountDetails = {
+        id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
+        type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
+    };
+    let addedCreditCard = null;
+    return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
+        const paymentInstrumentsData = {
+            attributes: {
+                stripeToken: token.id,
             },
-            type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
-        });
-        const {
-            giveData: {
-                giveFrom,
-                giveTo,
-            },
-        } = flowObject;
-        const accountDetails = {
-            id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
-            type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
-        };
-        let addedCreditCard = null;
-        return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
-            const paymentInstrumentsData = {
-                attributes: {
-                    stripeToken: token.id,
-                },
-                relationships: {
-                    paymentable: {
-                        data: {
-                            id: accountDetails.id,
-                            type: accountDetails.type,
-                        },
+            relationships: {
+                paymentable: {
+                    data: {
+                        id: accountDetails.id,
+                        type: accountDetails.type,
                     },
                 },
-                type: 'paymentInstruments',
-            };
-            return savePaymentInstrument(paymentInstrumentsData);
-        }).then((result) => {
-            addedCreditCard = result;
-            if (isDefaultCard) {
-                return setUserDefaultCreditCard(Number(result.data.id));
-            }
-            return null;
-        }).then((response) => {
-            return getAllActivePaymentInstruments(accountDetails.id, dispatch, accountDetails.type);
-        }).then((res) => {
+            },
+            type: 'paymentInstruments',
+        };
+        return savePaymentInstrument(paymentInstrumentsData);
+    }).then((result) => {
+        addedCreditCard = result;
+        if (isDefaultCard) {
+            return setUserDefaultCreditCard(Number(result.data.id));
+        }
+        return null;
+    }).then((response) => getAllActivePaymentInstruments(accountDetails.id, dispatch, accountDetails.type))
+        .then((res) => {
             const userFsa = {
                 payload: {
                     paymentInstrumentsData: [
@@ -565,10 +573,21 @@ export const addNewCardAndLoad = (flowObject, isDefaultCard) => {
                 dispatch(userFsa);
             }
             return addedCreditCard;
-        }).catch((err) => {
-            triggerUxCritialErrors(err.errors || err, dispatch);
+        })
+        .catch((err) => {
+            if (checkForDuplicateCcError(err.errors)) {
+                const duplicateError = [
+                    {
+                        detail: 'This credit card number has already been added.',
+                    },
+                ];
+                triggerUxCritialErrors(duplicateError, dispatch);
+            } else {
+                triggerUxCritialErrors(err.errors || err, dispatch);
+            }
             return Promise.reject(err);
-        }).finally(() => {
+        })
+        .finally(() => {
             dispatch({
                 payload: {
                     creditCardApiCall: false,
@@ -576,13 +595,11 @@ export const addNewCardAndLoad = (flowObject, isDefaultCard) => {
                 type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
             });
         });
-    };
 };
 
 // eslint-disable-next-line import/exports-last
-export const getAllTaxReceipts = (id, dispatch, type = "user") => {
-    
-    const accountType = (type === "user") ? "users" : "companies";
+export const getAllTaxReceipts = (id, dispatch, type = 'user') => {
+    const accountType = (type === 'user') ? 'users' : 'companies';
     return coreApi.get(
         `/${accountType}/${id}?include=defaultTaxReceiptProfile,taxReceiptProfiles`,
         {
@@ -594,95 +611,92 @@ export const getAllTaxReceipts = (id, dispatch, type = "user") => {
     );
 };
 
-const addNewTaxReceiptProfile = (taxReceiptProfile) => {
-    return coreApi.post('/taxReceiptProfiles', {
-        data: taxReceiptProfile,
-    });
-};
+const addNewTaxReceiptProfile = (taxReceiptProfile) => coreApi.post('/taxReceiptProfiles', {
+    data: taxReceiptProfile,
+});
 // eslint-disable-next-line max-len
-export const addNewTaxReceiptProfileAndLoad = (flowObject, selectedTaxReceiptProfile, isDefaultChecked) => {
-    return (dispatch) => {
+export const addNewTaxReceiptProfileAndLoad = (flowObject, selectedTaxReceiptProfile, isDefaultChecked) => (dispatch) => {
+    const {
+        giveData: {
+            giveTo,
+            giveFrom,
+        },
+    } = flowObject;
+    const fsa = {
+        payload: {
+            companyDefaultTaxReceiptProfile: {},
+            defaultTaxReceiptProfile: {},
+            taxReceiptProfiles: [],
+        },
+        type: actionTypes.GET_ALL_USER_TAX_RECEIPT_PROFILES,
+    };
+    let newTaxReceipt = {};
+    const accountDetails = {
+        id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
+        type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
+    };
+
+    return addNewTaxReceiptProfile(selectedTaxReceiptProfile).then((result) => {
+        newTaxReceipt = result;
         const {
-            giveData: {
-                giveTo,
-                giveFrom,
-            },
-        } = flowObject;
-        const fsa = {
-            payload: {
-                companyDefaultTaxReceiptProfile: {},
-                defaultTaxReceiptProfile: {},
-                taxReceiptProfiles: [],
-            },
-            type: actionTypes.GET_ALL_USER_TAX_RECEIPT_PROFILES,
-        };
-        let newTaxReceipt = {};
-        const accountDetails = {
-            id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
-            type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
-        };
-        
-        return addNewTaxReceiptProfile(selectedTaxReceiptProfile).then((result) => {
-            newTaxReceipt = result;
-            const {
-                id,
-            } = result.data;
-            if (isDefaultChecked) {
-                return getTaxReceiptProfileMakeDefault(id);
+            id,
+        } = result.data;
+        if (isDefaultChecked) {
+            return getTaxReceiptProfileMakeDefault(id);
+        }
+        return null;
+    }).then((response) => {
+        const {
+            attributes,
+        } = newTaxReceipt.data;
+        attributes.isDefault = isDefaultChecked;
+        return getAllTaxReceipts(Number(accountDetails.id), dispatch, accountDetails.type);
+    }).then((resultData) => {
+        if (accountDetails.type === 'companies') {
+            fsa.type = actionTypes.GET_ALL_COMPANY_TAX_RECEIPT_PROFILES;
+        }
+        if (!_.isEmpty(resultData.included)) {
+            const { included } = resultData;
+            let defaultTaxReceiptId = null;
+            if (!_.isEmpty(resultData.data.relationships.defaultTaxReceiptProfile.data)) {
+                defaultTaxReceiptId = resultData.data.relationships.defaultTaxReceiptProfile.data.id;
             }
-            return null;
-        }).then((response) => {
-            const {
-                attributes,
-            } = newTaxReceipt.data;
-            attributes.isDefault = isDefaultChecked;
-            return getAllTaxReceipts(Number(accountDetails.id), dispatch, accountDetails.type);
-        }).then((resultData) => {
-            if (accountDetails.type === 'companies') {
-                fsa.type = actionTypes.GET_ALL_COMPANY_TAX_RECEIPT_PROFILES;
-            }
-            if (!_.isEmpty(resultData.included)) {
-                const { included } = resultData;
-                let defaultTaxReceiptId = null;
-                if (!_.isEmpty(resultData.data.relationships.defaultTaxReceiptProfile.data)) {
-                    defaultTaxReceiptId = resultData.data.relationships.defaultTaxReceiptProfile.data.id;
-                }
-                included.map((item) => {
-                    const {
-                        attributes,
-                        id,
-                        type,
-                    } = item;
-                    if (type === 'taxReceiptProfiles') {
-                        if (id === defaultTaxReceiptId && accountDetails.type === 'companies') {
-                            fsa.payload.companyDefaultTaxReceiptProfile = {
-                                attributes,
-                                id,
-                                type,
-                            };
-                        }
-                        if (id === defaultTaxReceiptId && accountDetails.type === 'user') {
-                            fsa.payload.defaultTaxReceiptProfile = {
-                                attributes,
-                                id,
-                                type,
-                            };
-                        }
-                        fsa.payload.taxReceiptProfiles.push({
+            included.map((item) => {
+                const {
+                    attributes,
+                    id,
+                    type,
+                } = item;
+                if (type === 'taxReceiptProfiles') {
+                    if (id === defaultTaxReceiptId && accountDetails.type === 'companies') {
+                        fsa.payload.companyDefaultTaxReceiptProfile = {
                             attributes,
                             id,
                             type,
-                        });
+                        };
                     }
-                });
-                dispatch(fsa);     
-                return newTaxReceipt;
-            }
-        }).catch((err) => {
+                    if (id === defaultTaxReceiptId && accountDetails.type === 'user') {
+                        fsa.payload.defaultTaxReceiptProfile = {
+                            attributes,
+                            id,
+                            type,
+                        };
+                    }
+                    fsa.payload.taxReceiptProfiles.push({
+                        attributes,
+                        id,
+                        type,
+                    });
+                }
+            });
+            dispatch(fsa);
+            return newTaxReceipt;
+        }
+    })
+        .catch((err) => {
             triggerUxCritialErrors(err.errors || err, dispatch);
             return Promise.reject(err);
         });
-    };
 };
 
 export const proceed = (
@@ -691,7 +705,7 @@ export const proceed = (
     if (lastStep) {
         return (dispatch) => {
             let fn;
-            let successData = _.merge({}, flowObject);
+            const successData = _.merge({}, flowObject);
             let nextStepToProcced = nextStep;
             switch (flowObject.type) {
                 case 'donations':
@@ -716,7 +730,7 @@ export const proceed = (
                 ],
             ).then((results) => {
                 if (!_.isEmpty(results[0])) {
-                    successData.result = results[0];
+                    successData.result = results[0].data;
                 }
             }).catch((err) => {
                 if (checkForQuaziSuccess(err.errors)) {
@@ -733,7 +747,7 @@ export const proceed = (
                     type: actionTypes.SAVE_SUCCESS_DATA,
                 });
                 const defaultProps = {
-                    'donations': donationDefaultProps,
+                    donations: donationDefaultProps,
                     'give/to/charity': beneficiaryDefaultProps,
                     'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
@@ -852,7 +866,7 @@ const getCoverFeesApi = async (amount, fundId) => {
 
     const giveAmountData = await coreApi.post(`/allocationFees`, {
         data: params,
-        //uxCritical: true,
+        // uxCritical: true,
     });
 
     return giveAmountData;
@@ -911,21 +925,19 @@ export const getCoverAmount = async (fundId, giveAmount, dispatch) => {
     dispatch(fsa);
 };
 
-export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
-    return callApiAndGetData(`/companies/${companyId}/taxReceiptProfiles?page[size]=50&sort=-id`).then((result) => {
-        // return dispatch(setTaxReceiptProfile(result, type = ''));
-        const fsa = {
-            payload: {
-                companyTaxReceiptProfiles: (!_.isEmpty(result)) ? result : [],
-                taxReceiptGetApiStatus: true,
-            },
-            type: actionTypes.GET_COMPANY_TAXRECEIPTS,
-        };
-        return dispatch(fsa);
-    }).catch((error) => {
-        // console.log(error);
-    });
-};
+export const getCompanyTaxReceiptProfile = (dispatch, companyId) => callApiAndGetData(`/companies/${companyId}/taxReceiptProfiles?page[size]=50&sort=-id`).then((result) => {
+    // return dispatch(setTaxReceiptProfile(result, type = ''));
+    const fsa = {
+        payload: {
+            companyTaxReceiptProfiles: (!_.isEmpty(result)) ? result : [],
+            taxReceiptGetApiStatus: true,
+        },
+        type: actionTypes.GET_COMPANY_TAXRECEIPTS,
+    };
+    return dispatch(fsa);
+}).catch((error) => {
+    // console.log(error);
+});
 
 
 export const getGroupsFromSlug = (dispatch, slug) => {
@@ -955,25 +967,23 @@ export {
     createToken,
 };
 
-const fetchCompanyDetails = (dispatch, companyId) => {
-    return coreApi.get(
-        `/companies/${companyId}`,
-        {
-            params: {
-                dispatch,
-                uxCritical: true,
-            },
+const fetchCompanyDetails = (dispatch, companyId) => coreApi.get(
+    `/companies/${companyId}`,
+    {
+        params: {
+            dispatch,
+            uxCritical: true,
         },
-    ).then((result) => {
-        const payload = {
-            companyDetails: result.data,
-        };
-        dispatch({
-            payload,
-            type: actionTypes.UPDATE_COMPANY_BALANCE,
-        });
+    },
+).then((result) => {
+    const payload = {
+        companyDetails: result.data,
+    };
+    dispatch({
+        payload,
+        type: actionTypes.UPDATE_COMPANY_BALANCE,
     });
-};
+});
 
 
 export const walletTopUp = (reloadObject, successMessage) => {
@@ -981,31 +991,29 @@ export const walletTopUp = (reloadObject, successMessage) => {
         id: reloadObject.giveData.giveTo.id,
         type: reloadObject.giveData.giveTo.type,
     };
-    return (dispatch) => {
-        return saveDonations(reloadObject).then((result) => {
-            if (accountDetails.type === 'user') {
-                return getUserFund(dispatch, accountDetails.id);
-            } else if (accountDetails.type === 'companies') {
-                return fetchCompanyDetails(dispatch, accountDetails.id);
-            }
-        }).then(() => {
-            const statusMessageProps = {
-                message: successMessage,
-                type: 'success',
-            };
-            dispatch({
-                payload: {
-                    errors: [
-                        statusMessageProps,
-                    ],
-                },
-                type: 'TRIGGER_UX_CRITICAL_ERROR',
-            });
-        }).catch((error) => {
-            triggerUxCritialErrors(error.errors || error, dispatch);
-            return Promise.reject(error);
+    return (dispatch) => saveDonations(reloadObject).then((result) => {
+        if (accountDetails.type === 'user') {
+            return getUserFund(dispatch, accountDetails.id);
+        } else if (accountDetails.type === 'companies') {
+            return fetchCompanyDetails(dispatch, accountDetails.id);
+        }
+    }).then(() => {
+        const statusMessageProps = {
+            message: successMessage,
+            type: 'success',
+        };
+        dispatch({
+            payload: {
+                errors: [
+                    statusMessageProps,
+                ],
+            },
+            type: 'TRIGGER_UX_CRITICAL_ERROR',
         });
-    };
+    }).catch((error) => {
+        triggerUxCritialErrors(error.errors || error, dispatch);
+        return Promise.reject(error);
+    });
 };
 
 export const resetFlowObject = (type, dispatch) => {
@@ -1026,29 +1034,65 @@ export const resetFlowObject = (type, dispatch) => {
     dispatch(fsa);
 };
 
-export const fetchGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId) => (dispatch) => {
-    const bodyData = {
-        data: {
-            attributes: {
-                amount: giveAmount,
-            },
-            relationships: {
-                destinationFund: {
-                    data: {
-                        id: giveToFundId,
-                        type: 'accountHolders',
-                    },
-                },
-                fund: {
-                    data: {
-                        id: giveFromFundId,
-                        type: 'accountHolders',
-                    },
-                },
-            },
-        },
+export const fetchGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId, dispatchMatchData = true) => async (dispatch) => {
+    // const bodyData = {
+    //     data: {
+    //         attributes: {
+    //             amount: giveAmount,
+    //         },
+    //         relationships: {
+    //             destinationFund: {
+    //                 data: {
+    //                     id: giveToFundId,
+    //                     type: 'accountHolders',
+    //                 },
+    //             },
+    //             fund: {
+    //                 data: {
+    //                     id: giveFromFundId,
+    //                     type: 'accountHolders',
+    //                 },
+    //             },
+    //         },
+    //     },
+    // };
+    const queryParam = {
+        amount: giveAmount,
+        destinationFund: giveToFundId,
+        fund: giveFromFundId,
     };
-    coreApi.post('/groupAllocations/fetchMatchAmount', bodyData).then((result) => {
+    try {
+        const result = await coreApi.get('/groupAllocations/fetchMatchAmount',
+            {
+                params: queryParam,
+            });
+        if (result && !_.isEmpty(result.data)) {
+            const matchingData = result.data;
+            matchingData.giveFromFund = giveFromFundId;
+            // if (dispatchMatchData) {
+            //     dispatch({
+            //         payload: matchingData,
+            //         type: actionTypes.GET_MATCHING_DETAILS_FOR_GROUPS,
+            //     });
+            // }
+            return Number(result.data.attributes.matchAvailable) === 1;
+        }
+    } catch (err) {
+        //
+    }
+};
+
+export const fetchFinalGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId) => (dispatch) => {
+    const queryParam = {
+        amount: giveAmount,
+        destinationFund: giveToFundId,
+        fund: giveFromFundId,
+    };
+    coreApi.get(`/groupAllocations/fetchMatchAmount`,
+        {
+            params: queryParam,
+        }
+    ).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             const matchingData = result.data;
             matchingData.giveFromFund = giveFromFundId;

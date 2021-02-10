@@ -46,7 +46,6 @@ export const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
             };
             relationship = 'LIKES';
             break;
-        
         default:
             break;
     }
@@ -76,10 +75,120 @@ export const actionTypes = {
     SAVE_FOLLOW_STATUS_GROUP: 'SAVE_FOLLOW_STATUS_GROUP',
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
     SLUG_API_ERROR_STATUS: 'SLUG_API_ERROR_STATUS',
+    STORE_SEARCH_KEY_FOR_CAMPAIGN: 'STORE_SEARCH_KEY_FOR_CAMPAIGN',
     SUB_GROUP_LIST_LOADER: 'SUB_GROUP_LIST_LOADER',
+    TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
 };
 
-export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
+export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pageSize = 6) => async (dispatch) => {
+    dispatch({
+        payload: {
+            campaignSubGroupDetails: [],
+        },
+        type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
+    });
+    dispatch({
+        payload: {
+            subGroupListLoader: true,
+        },
+        type: actionTypes.SUB_GROUP_LIST_LOADER,
+    });
+    let filterParam;
+    if (searchKey) {
+        filterParam = {
+            'filter[name]': searchKey,
+        }
+    };
+    const fullParams = {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+            'page[number]': pageNumber,
+            'page[size]': pageSize,
+            ...filterParam,
+        },
+    };
+    await coreApi.get(`campaigns/${id}/subGroups`, {
+        ...fullParams,
+    }).then((subGroupSearchResult) => {
+        dispatch({
+            payload: {
+                subGroupListLoader: false,
+            },
+            type: actionTypes.SUB_GROUP_LIST_LOADER,
+        });
+        dispatch({
+            payload: {
+                campaignSubGroupDetails: subGroupSearchResult,
+            },
+            type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
+        });
+        dispatch({
+            payload: {
+                searchData: searchKey,
+            },
+            type: actionTypes.STORE_SEARCH_KEY_FOR_CAMPAIGN,
+        });
+    }).catch((err) => {
+        dispatch({
+            payload: {
+                subGroupListLoader: false,
+            },
+            type: actionTypes.SUB_GROUP_LIST_LOADER,
+        });
+        // console.log(err);
+    });
+};
+export const getCampaignGalleryImages = (id) => async (dispatch) => {
+    const fullParams = {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+        },
+    };
+    coreApi.get(`campaigns/${id}/galleryImages`,
+        {
+            ...fullParams,
+        })
+        .then((galleryImagesResult) => {
+            dispatch({
+                payload: {
+                    campaignImageGallery: galleryImagesResult.data,
+                },
+                type: actionTypes.GET_IMAGES_FOR_CAMPAIGN,
+            });
+        }).catch((error) => {
+            // console.log(error);
+        });
+};
+
+export const getCampaignBeneficiariesCount = (id) => async (dispatch) => {
+    const fullParams = {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+        },
+    };
+    coreApi.get(`campaigns/${id}/groupBeneficiaries`,
+        {
+            ...fullParams,
+        })
+        .then((campaignRelatedBeneficiaries) => {
+            dispatch({
+                payload: {
+                    campaignRelatedBeneficiariesCount: campaignRelatedBeneficiaries.data.length,
+                },
+                type: actionTypes.GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN,
+            });
+        }).catch((error) => {
+            // console.log(error);
+        });
+};
+
+export const getCampaignFromSlug = (slug, token = null) => async (dispatch) => {
     dispatch({
         payload: {
             slugApiErrorStats: false,
@@ -108,92 +217,20 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
     // return coreApi.get(`campaign/find_by_slug`, {
     await coreApi.get(`campaigns/find_by_slug`, {
         ...fullParams,
-    }).then(
-        (result) => {
-            dispatch({
-                payload: {
-                    subGroupListLoader: true,
-                },
-                type: actionTypes.SUB_GROUP_LIST_LOADER,
-            });
-            dispatch({
-                payload: {
-                    campaignDetails: result.data,
-                },
-                type: actionTypes.GET_CAMPAIGN_FROM_SLUG,
-            });
-            const fullParams = {
-                params: {
-                    dispatch,
-                    ignore401: true,
-                    uxCritical: true,
-                },
-            };
-            if (!_.isEmpty(token)) {
-                fullParams.headers = {
-                    Authorization: `Bearer ${token}`,
-                };
-            }
-            // API call for subgroups
-            if (result.data) {
-                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=9`,
-                    {
-                        ...fullParams,
-                    }).then(
-                    (subGroupResult) => {
-                        dispatch({
-                            payload: {
-                                campaignSubGroupDetails: subGroupResult,
-                            },
-                            type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
-                        });
-                        dispatch({
-                            payload: {
-                                subGroupListLoader: false,
-                            },
-                            type: actionTypes.SUB_GROUP_LIST_LOADER,
-                        });
-                    },
-                ).catch((error) => {
-                    // console.log(error);
-                });
-            }
-            // API call for images & related beneficiaries
-            if (result.data) {
-                coreApi.get(result.data.relationships.galleryImages.links.related,
-                    {
-                        ...fullParams,
-                    }).then(
-                    (galleryImagesResult) => {
-                        dispatch({
-                            payload: {
-                                campaignImageGallery: galleryImagesResult.data,
-                            },
-                            type: actionTypes.GET_IMAGES_FOR_CAMPAIGN,
-                        });
-                    },
-                ).catch((error) => {
-                    // console.log(error);
-                });
-                // API call for related beneficiaries
-                coreApi.get(result.data.relationships.groupBeneficiaries.links.related, {
-                    params: {
-                        dispatch,
-                        ignore401: true,
-                    },
-                }).then((campaignRelatedBeneficiaries) => {
-                    dispatch({
-                        payload: {
-                            campaignRelatedBeneficiariesCount: campaignRelatedBeneficiaries.data.length,
-                        },
-                        type: actionTypes.GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN,
-                    });
-                }).catch((error) => {
-                    // console.log(error);
-                });
-            }
-        },
-    ).catch((error) => {
+    }).then((result) => {
+        dispatch({
+            payload: {
+                subGroupListLoader: true,
+            },
+            type: actionTypes.SUB_GROUP_LIST_LOADER,
+        });
+        dispatch({
+            payload: {
+                campaignDetails: result.data,
+            },
+            type: actionTypes.GET_CAMPAIGN_FROM_SLUG,
+        });
+    }).catch((error) => {
         // console.log(error);
         dispatch({
             payload: {
@@ -205,6 +242,7 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
     });
 };
 
+// TODO unit test as BASIC_AUTH_HEADER is passed as parameter getting then of undefined
 export const generateDeepLink = (url, dispatch) => {
     const fsa = {
         payload: {
@@ -227,7 +265,7 @@ export const generateDeepLink = (url, dispatch) => {
     }).finally(() => dispatch(fsa));
 };
 
-export const followProfile = (dispatch, userId, entityId, type) => {
+export const followProfile = (userId, entityId, type, toastMessage) => (dispatch) => {
     const fsa = {
         payload: {
             followStatus: false,
@@ -238,6 +276,10 @@ export const followProfile = (dispatch, userId, entityId, type) => {
             disableFollow: false,
         },
         type: actionTypes.DISABLE_FOLLOW_BUTTON,
+    };
+    const toastMessageProps = {
+        message: toastMessage,
+        type: 'success',
     };
     // Must check types for other cases
     switch (type) {
@@ -254,7 +296,7 @@ export const followProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`core/create/relationship`, payloadObj, {
+    return graphApi.post(`core/create/relationship`, payloadObj, {
         params: {
             dispatch,
             ignore401: true,
@@ -262,6 +304,14 @@ export const followProfile = (dispatch, userId, entityId, type) => {
     }).then(
         (result) => {
             fsa.payload.followStatus = true;
+            dispatch({
+                payload: {
+                    errors: [
+                        toastMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
         },
     ).catch((error) => {
         // console.log(error);
@@ -272,7 +322,7 @@ export const followProfile = (dispatch, userId, entityId, type) => {
     });
 };
 
-export const unfollowProfile = (dispatch, userId, entityId, type) => {
+export const unfollowProfile = (userId, entityId, type) => (dispatch) => {
     const fsa = {
         payload: {
             followStatus: true,
@@ -299,7 +349,7 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`/users/deleterelationship`, payloadObj, {
+    return graphApi.post(`/users/deleterelationship`, payloadObj, {
         params: {
             dispatch,
             ignore401: true,
@@ -317,7 +367,7 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
     });
 };
 
-export const campaignSubGroupSeeMore = (url, dispatch, isViewMore) => {
+export const campaignSubGroupSeeMore = (url, isViewMore) => (dispatch) => {
     return coreApi.get(url, {
         params: {
             dispatch,

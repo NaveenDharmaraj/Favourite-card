@@ -86,7 +86,9 @@ function FirstStep(props) {
                             && (<Button type="submit" onClick={handleSubmit} primary>Continue</Button>)}
                             { (!firstName || !lastName)
                             && (<Button type="submit" disabled onClick={handleSubmit} primary>Continue</Button>)} */}
-                            <Button type="submit" 
+                            <Button
+                                type="submit"
+                                id="signUpCreateName"
                                 onClick={handleSubmit}
                                 primary
                                 disabled={!isButtonDisabled([

@@ -196,7 +196,7 @@ class EmailList extends React.Component {
                         <Grid verticalAlign="middle">
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={16} computer={11}>
-                                    <div className="pt-1">
+                                    <div>
                                         <Header as="h4">Email addresses </Header>
                                         <p>
                                             If you use multiple email addresses, you can add them here.

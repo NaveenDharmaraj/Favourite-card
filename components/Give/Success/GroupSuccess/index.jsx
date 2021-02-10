@@ -22,7 +22,6 @@ const GroupSuccess = (props) => {
         i18n: {
             language,
         },
-        giveGroupDetails,
         groupMatchingDetails,
         successData,
         t: formatMessage,
@@ -46,10 +45,8 @@ const GroupSuccess = (props) => {
     const isNonRecurring = !!(giftType && giftType.value === 0);
     if (!_isEmpty(groupMatchingDetails) && (!_isEmpty(matchingPolicyDetails) && matchingPolicyDetails.isValidMatchPolicy)) {
         const {
-            attributes: {
-                activeMatch,
-            },
-        } = giveGroupDetails;
+            activeMatch,
+        } = giveTo;
         const activeMatchAmount = Number(groupMatchingDetails.attributes.matchAvailable);
         if (activeMatchAmount > 0 && groupMatchingDetails.giveFromFund === giveFrom.value) {
             const {
@@ -136,16 +133,6 @@ const GroupSuccess = (props) => {
 };
 
 GroupSuccess.propTypes = {
-    giveGroupDetails: PropTypes.shape({
-        attributes: PropTypes.shape({
-            activeMatch: PropTypes.shape({
-                balance: PropTypes.string,
-                company: PropTypes.string,
-                maxMatchAmount: PropTypes.string,
-            }),
-            hasActiveMatch: PropTypes.bool,
-        }),
-    }),
     groupMatchingDetails: PropTypes.shape({
         attributes: PropTypes.shape({
             matchAvailable: PropTypes.string,
@@ -185,16 +172,6 @@ GroupSuccess.propTypes = {
     t: PropTypes.func,
 };
 GroupSuccess.defaultProps = {
-    giveGroupDetails: {
-        attributes: {
-            activeMatch: {
-                balance: '',
-                company: '',
-                maxMatchAmount: '',
-            },
-            hasActiveMatch: false,
-        },
-    },
     groupMatchingDetails: {
         attributes: {
             matchAvailable: '0.0',
