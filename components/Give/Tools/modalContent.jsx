@@ -16,11 +16,14 @@ function ModalContent(props) {
         givingGoal,
         validity,
         currentYear,
+        placeholder,
+        showDollarIcon,
+        showLabel,
     } = props;
     return (
         <Form>
             <Form.Field inline>
-                <label>My {currentYear} Goal is</label>
+                {showLabel && <label>My {currentYear} Goal is</label>}
                 <Form.Field
                     control={Input}
                     id="givingGoal"
@@ -29,33 +32,43 @@ function ModalContent(props) {
                     error={!validity.isValidGiveAmount}
                     onChange={handleInputChange}
                     onBlur={handleInputOnBlurGivingGoal}
-                    placeholder="Enter goal amount"
+                    placeholder={placeholder}
                     fluid
-                    icon={(
+                    icon={showDollarIcon && (
                         <Icon
                             name='dollar sign'
                         />
                     )}
-                    iconPosition="left"
+                    iconPosition={showDollarIcon && "left"}
                 />
             </Form.Field>
             <FormValidationErrorMessage
-                condition={validity.doesAmountExist && !validity.isAmountLessThanOneBillion}
+                condition={!validity.isAmountLessThanOneBillion}
                 errorMessage="Please input a value less than 10000000"
             />
-            <FormValidationErrorMessage
+            {/* <FormValidationErrorMessage
                 condition={validity.doesAmountExist && !validity.isAmountMoreThanOneDollor}
                 errorMessage="Please input a value more than 1$"
-            />
+            /> */}
             <FormValidationErrorMessage
+                condition={!validity.isValidPositiveNumber}
+                errorMessage="Please input a valid amount"
+            />
+            {/* <FormValidationErrorMessage
                 condition={validity.doesAmountExist && !validity.isValidPositiveNumber}
                 errorMessage="Please input a valid positive number"
-            />
+            /> */}
             {/* <FormValidationErrorMessage
                 condition={validity.doesAmountExist && !validity.isValidGiveAmount}
                 errorMessage="Please input a valid amount"
             /> */}
         </Form>
     );
+};
+
+ModalContent.defaultProps = {
+    placeholder: "Amount",
+    showLabel: true,
+    showDollarIcon: true
 }
 export default ModalContent;

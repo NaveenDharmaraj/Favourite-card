@@ -14,12 +14,14 @@ import taxreceipt from './taxreceipt';
 import profile from './profile';
 import firebase from './firebase';
 import chat from './chat';
+import createGivingGroup from './createGivingGroup';
 
 const root = combineReducers({
     app,
     auth,
     charity,
     chat,
+    createGivingGroup,
     dashboard,
     firebase,
     give,

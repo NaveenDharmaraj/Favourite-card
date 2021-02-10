@@ -11,6 +11,7 @@ import {
 } from 'semantic-ui-react';
 
 import Layout from '../../components/shared/Layout';
+import { CreateGivingGroupFlowSteps } from '../../helpers/createGrouputils';
 import { Link } from '../../routes';
 import '../../static/less/create_manage_group.less';
 
@@ -42,7 +43,7 @@ function MyProfile() {
                         <div class="grp_campBannerTxt">
                             <Header as='h3'>Give together</Header>
                             <p>With a Giving Group, multiple people can combine forces, pool or raise money, and support one or more charities together.</p>
-                            <Link route='/giving-groups/create-group/basic'>
+                            <Link route={CreateGivingGroupFlowSteps.stepOne}>
                                 <Button className='success-btn-rounded-def'>Create a new Giving Group</Button>
                             </Link>
                         </div>   

@@ -3,21 +3,21 @@ import {
     Container,
     Header,
     Button,
-    Dropdown,
-    Input,
     Form,
     TextArea,
     Icon,
-    Modal,
-    Card,
 } from 'semantic-ui-react';
-import { generateBreadCrum } from '../../../helpers/createGrouputils';
-
-import { Link } from '../../../routes';
-import '../../../static/less/create_manage_group.less';
-
-import {SortableContainer, SortableElement} from 'react-sortable-hoc';
+import _isEmpty from 'lodash/isEmpty';
 import arrayMove from 'array-move';
+import dynamic from 'next/dynamic';
+
+import { aboutDescriptionLimit, CreateGivingGroupFlowSteps, generateBreadCrum, initializeAddSectionModalObject, intializeCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { Router } from '../../../routes';
+import '../../../static/less/create_manage_group.less';
+import CreateGivingGroupAddSectionModal from '../CreateGivingGroupAddSectionModal';
+import { updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+
+const SortableList = dynamic(() => import('../../shared/DragAndDropComponent'), { ssr: false });
 
 const breakCrumArray = ['Basic settings', 'About the group', 'Pics & video', 'Charities and goal'];
 const currentActiveStepCompleted = [1, 2];
@@ -25,46 +25,165 @@ const currentActiveStepCompleted = [1, 2];
 class CreateGivingGroupAbout extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
+            addModalSectionObject: initializeAddSectionModalObject,
+            disableContinue: !_isEmpty((props.createGivingGroupStoreFlowObject)
+                && props.createGivingGroupStoreFlowObject.attributes
+                && props.createGivingGroupStoreFlowObject.attributes.short) ? false : true,
             showModal: false,
-            items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'],
-         }
+            createGivingGroupObjectState: !_isEmpty(props.createGivingGroupStoreFlowObject) ? props.createGivingGroupStoreFlowObject : intializeCreateGivingGroup,
+            doesDescriptionPresent: true,
+        }
     }
-
-    onSortEnd = ({oldIndex, newIndex}) => {
-        this.setState(({items}) => ({
-          items: arrayMove(items, oldIndex, newIndex),
+    componentWillUnmount() {
+        const {
+            dispatch
+        } = this.props;
+        !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
+            dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
+    }
+    onSortEnd = ({ oldIndex, newIndex }) => {
+        this.setState(({ createGivingGroupObjectState }) => ({
+            createGivingGroupObjectState: {
+                ...createGivingGroupObjectState,
+                groupDescriptions: arrayMove(createGivingGroupObjectState.groupDescriptions, oldIndex, newIndex),
+            }
         }));
-        console.log(this.state.items)
     };
 
-    render() {
-        const SortableItem = SortableElement(({value}) => 
-            <Card className='DragDesc' as='div' onClick={() => this.setState({ showModal: true })}>
-                <Card.Header>{value}</Card.Header>
-                <div className='moveDeleteWrap'>
-                    <Icon className='move'/>
-                    <Dropdown className='threeDotBtn' direction='left'>
-                        <Dropdown.Menu >
-                            <Dropdown.Item text='Delete'/>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </div>
-                <Card.Content>
-                    {value}
-                </Card.Content>
-            </Card>
-        );
+    handleOnChange = (event, data) => {
+        let {
+            name,
+            value,
+        } = data || event.target;
+        const {
+            createGivingGroupObjectState
+        } = this.state;
+        this.setState({
+            createGivingGroupObjectState: {
+                ...createGivingGroupObjectState,
+                attributes: {
+                    ...createGivingGroupObjectState.attributes,
+                    [name]: value,
+                }
+            },
+            disableContinue: false,
+            doesDescriptionPresent: true,
+        })
+    };
 
-        const SortableList = SortableContainer(({items}) => {
-            return (
-                <div className='about_descCardWrap'>
-                    {items.map((value, index) => (
-                        <SortableItem key={`item-${value}`} index={index} value={value} />
-                    ))}
-                </div>
-            );
+    handleOnBlur = (event, data) => {
+        let {
+            value,
+        } = data || event.target;
+        this.setState({
+            doesDescriptionPresent: value ? true : false
+        })
+    };
+
+    handleParentModalClick = (modalState, addSectionObject = {}) => {
+        const {
+            createGivingGroupObjectState: {
+                groupDescriptions,
+            },
+            addModalSectionObject,
+        } = this.state;
+        if (!_isEmpty(addSectionObject)) {
+            let index;
+            groupDescriptions.find((item, i) => {
+                if (item.id === addModalSectionObject.id) {
+                    index = i;
+                    return;
+                }
+            });
+            Number(index) >= 0 ? groupDescriptions.splice(index, 1, addSectionObject) :
+                groupDescriptions.push(
+                    { ...addSectionObject, id: `${addSectionObject.name}${groupDescriptions.length}` }
+                );
+            this.setState({
+                createGivingGroupObjectState: {
+                    ...this.state.createGivingGroupObjectState,
+                    groupDescriptions: [...groupDescriptions],
+                },
+                showModal: modalState
+            })
+        } else {
+            this.setState({
+                addModalSectionObject: initializeAddSectionModalObject,
+                showModal: modalState
+            })
+        }
+    };
+    handleOnSortableItemClick = (modalState, currentSelectedCard = initializeAddSectionModalObject) => {
+        this.setState({
+            addModalSectionObject: currentSelectedCard,
+            showModal: modalState
         });
+    };
+    handleOnSortableItemDelete = (event, addSectionObject = {}) => {
+        event.stopPropagation();
+        const {
+            createGivingGroupObjectState: {
+                groupDescriptions,
+            },
+        } = this.state;
+        if (!_isEmpty(addSectionObject)) {
+            let index;
+            groupDescriptions.find((item, i) => {
+                if (item.id === addSectionObject.id) {
+                    index = i;
+                    return;
+                }
+            });
+            Number(index) >= 0 ? groupDescriptions.splice(index, 1) :
+                this.setState({
+                    createGivingGroupObjectState: {
+                        ...this.state.createGivingGroupObjectState,
+                        groupDescriptions: [...groupDescriptions],
+                    },
+                })
+        }
+    }
+    handleContinue = () => {
+        this.setState({
+            disableContinue: true,
+        });
+        const {
+            createGivingGroupObjectState: {
+                attributes: {
+                    short,
+                }
+            }
+        } = this.state;
+        const {
+            dispatch
+        } = this.props;
+        if (short === '') {
+            this.setState({
+                doesDescriptionPresent: false,
+            });
+            return;
+        }
+        dispatch(updateCreateGivingGroupObj(this.state.createGivingGroupObjectState));
+        Router.pushRoute(CreateGivingGroupFlowSteps.stepThree);
+
+    };
+    render() {
+        const {
+            addModalSectionObject,
+            createGivingGroupObjectState: {
+                attributes: {
+                    short,
+                },
+                groupDescriptions,
+            },
+            disableContinue,
+            doesDescriptionPresent,
+            showModal,
+        } = this.state;
+        const {
+            dispatch
+        } = this.props;
         return (
             <Container>
                 <div className='createNewGroupWrap'>
@@ -82,75 +201,70 @@ class CreateGivingGroupAbout extends React.Component {
                                         <p className='label-info'>Provide a brief summary about why you started this Giving Group.</p>
                                         <Form.Field
                                             control={TextArea}
+                                            value={short}
+                                            onChange={this.handleOnChange}
+                                            onBlur={this.handleOnBlur}
+                                            name="short"
+                                            error={!doesDescriptionPresent}
+                                            maxLength={aboutDescriptionLimit}
                                         />
                                         <div className='fieldInfoWrap'>
-                                            <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
-                                            <div class="field-info">0 of 300</div>
+                                            <p className="error-message">
+                                                {!doesDescriptionPresent
+                                                    &&
+                                                    (
+                                                        <>
+                                                            <Icon name="exclamation circle" />
+                                                            The field is required
+                                                        </>
+                                                    )
+                                                }
+                                            </p>
+                                            <div class="field-info">{short.length} of 300</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className='createnewSec'>
                                     <Header className='sectionHeader'>Expand your group description <span className='optional'>(optional)</span></Header>
                                     <p>Provide additional details about your Giving Group. You can add up to 5 sections, and you can edit or re-order how they appear on your profile anytime.</p>
-
-                                    <SortableList 
-                                        items={this.state.items} 
-                                        onSortEnd={this.onSortEnd} 
-                                        lockAxis='y'
-                                        pressDelay={220}
-                                        disableAutoscroll={true}
-                                    />
-
-                                    <Modal
-                                        className="chimp-modal addAbout-Modal"
-                                        closeIcon
-                                        size="small"
-                                        open={this.state.showModal}
-                                        onClose={() => { this.setState({ showModal: false }) }}
-                                        trigger={
-                                            <Button className='light-blue-btn-bordered addBtn' onClick={() => this.setState({ showModal: true })}><span><Icon className='plus' />Add about section</span></Button>
-                                        }
-                                        dimmer="inverted"
-                                    >
-                                        <Modal.Header>Add section</Modal.Header>
-                                        <Modal.Content>
-                                            <p>Use this section to add more information about your group, such as information about your group's organizers or how people can help.</p>
-                                            <Form>
-                                                <div className="requiredfield field">
-                                                    <Form.Field
-                                                        id='form-input-control-Section-title'
-                                                        control={Input}
-                                                        label='Section title'
-                                                        placeholder='How to help'
-                                                    />
-                                                    <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
-                                                </div>
-                                                <div className='requiredfield field'>
-                                                    <label>Description</label>
-                                                    <Form.Field
-                                                        control={TextArea}
-                                                    />
-                                                    <div className='fieldInfoWrap'>
-                                                        <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
-                                                        <div class="field-info">500 of 10,000</div>
-                                                    </div>
-                                                </div>
-                                                <div className='buttonsWrap'>
-                                                    <Button className='blue-btn-rounded-def'>Add</Button>
-                                                    <Button className='blue-bordr-btn-round-def'>Cancel</Button>
-                                                </div>
-                                            </Form>
-                                        </Modal.Content>
-                                    </Modal>
+                                    {!_isEmpty(groupDescriptions)
+                                        &&
+                                        <SortableList
+                                            addSectionItems={groupDescriptions}
+                                            onSortEnd={this.onSortEnd}
+                                            disableAutoscroll={true}
+                                            handleOnSortableItemClick={this.handleOnSortableItemClick}
+                                            handleOnSortableItemDelete={this.handleOnSortableItemDelete}
+                                            pressDelay={220}
+                                            lockAxis='y'
+                                        />
+                                    }
+                                    {groupDescriptions.length < 5 &&
+                                        <CreateGivingGroupAddSectionModal
+                                            addModalSectionObject={addModalSectionObject}
+                                            handleParentModalClick={this.handleParentModalClick}
+                                            showModal={showModal}
+                                        />
+                                    }
                                 </div>
                             </Form>
                             <div className='buttonsWrap'>
-                                <Link route='/giving-groups/create-group/basic'>
-                                    <Button className='blue-bordr-btn-round-def'>Back</Button>
-                                </Link>
-                                <Link route='/giving-groups/create-group/pics-video'>
-                                    <Button className='blue-btn-rounded-def'>Continue</Button>
-                                </Link>
+                                <Button
+                                    className='blue-bordr-btn-round-def'
+                                    onClick={() => {
+                                        dispatch(updateCreateGivingGroupObj(this.state.createGivingGroupObjectState));
+                                        Router.pushRoute(CreateGivingGroupFlowSteps.stepOne)
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                                <Button
+                                    className='blue-btn-rounded-def'
+                                    disabled={disableContinue || !doesDescriptionPresent}
+                                    onClick={this.handleContinue}
+                                >
+                                    Continue
+                                    </Button>
                             </div>
                         </div>
                     </div>
@@ -160,4 +274,8 @@ class CreateGivingGroupAbout extends React.Component {
     }
 }
 
-export default CreateGivingGroupAbout;
+CreateGivingGroupAbout.defaultProps = {
+    createGivingGroupStoreFlowObject: { ...intializeCreateGivingGroup },
+    dispatch: () => { }
+};
+export default React.memo(CreateGivingGroupAbout);

@@ -27,6 +27,7 @@ import noDataggJoin from '../../../static/images/givinggroupsyoujoined_nodata_il
 
 import GroupsAndCampaignsList from './GroupsAndCampaignsList';
 import PrivacySetting from '../../shared/Privacy';
+import { CreateGivingGroupFlowSteps } from '../../../helpers/createGrouputils';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -100,7 +101,7 @@ class GroupsAndCampaigns extends React.Component {
                 <PlaceholderGrid row={2} column={3} />
             );
         } if (!_.isEmpty(typeData) && !_.isEmpty(typeData.data)
-                    && typeData.data.length > 0) {
+            && typeData.data.length > 0) {
             return (
                 <GroupsAndCampaignsList
                     listingType={type}
@@ -120,13 +121,13 @@ class GroupsAndCampaigns extends React.Component {
                             <Grid verticalAlign="middle">
                                 <Grid.Row>
                                     <Grid.Column mobile={16} tablet={8} computer={8}>
-                                        <Image src={noDataggManage} className="noDataLeftImg"/>
+                                        <Image src={noDataggManage} className="noDataLeftImg" />
                                     </Grid.Column>
                                     <Grid.Column mobile={16} tablet={8} computer={8}>
                                         <div className="givingGroupNoDataContent">
                                             <Header as="h4">
                                                 <Header.Content>
-                                                Groups you manage will appear here
+                                                    Groups you manage will appear here
                                                 </Header.Content>
                                             </Header>
                                             <div>
@@ -153,7 +154,7 @@ class GroupsAndCampaigns extends React.Component {
                                         <div className="givingGroupNoDataContent">
                                             <Header as="h4">
                                                 <Header.Content>
-                                                Groups you've joined will appear here
+                                                    Groups you've joined will appear here
                                                 </Header.Content>
                                             </Header>
                                             <div>
@@ -182,7 +183,7 @@ class GroupsAndCampaigns extends React.Component {
                                                 <Header.Content>
                                                     Support this Campaign by creating a Giving Group
                                                     <Header.Subheader>
-                                                    A Giving Group is like a fundraising page where multiple people can combine forces, pool or raise money, and support causes together.
+                                                        A Giving Group is like a fundraising page where multiple people can combine forces, pool or raise money, and support causes together.
                                                     </Header.Subheader>
                                                 </Header.Content>
                                             </Header>
@@ -240,15 +241,15 @@ class GroupsAndCampaigns extends React.Component {
                                     </Header.Subheader>
                                 </Header>
                                 <Fragment>
-                                    { showInitialButton ? (
+                                    {showInitialButton ? (
                                         <a href={`${HELP_CENTRE_URL}article/147-what-is-a-giving-group`}>
                                             <Button fluid className="success-btn-rounded-def">Learn how to start a Giving Group</Button>
                                         </a>
-                                        ) : (
-                                        <a href={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}>
-                                            <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
-                                        </a>
-                                    )
+                                    ) : (
+                                            <Link route={CreateGivingGroupFlowSteps.stepOne}>
+                                                <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
+                                            </Link>
+                                        )
                                     }
                                 </Fragment>
 

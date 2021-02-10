@@ -6,9 +6,9 @@ import {
 } from 'semantic-ui-react';
 import "../../../static/less/datePicker.less";
 
-function ChimpDatePicker(props) {
+function ChimpDatePicker({ handleonDateChange, dateValue, name }) {
 
-    const DatePickerCustomInput = ({onChange, value, onClick}) => (
+    const DatePickerCustomInput = ({ onChange, value, onClick }) => (
         <Form.Field
             control={Input}
             placeholder='yyyy-mm-dd'
@@ -16,18 +16,21 @@ function ChimpDatePicker(props) {
             value={value}
             icon={<i aria-hidden="true" class="calendar icon" onClick={onClick}></i>}
         />
-      );
+    );
 
     return (
-        <DatePicker 
-            selected={props.dateValue} 
-            onChange={props.onChangeValue}
+        <DatePicker
+            selected={dateValue}
+            onChange={date => handleonDateChange(date, name)}
             customInput={<DatePickerCustomInput />}
             showPopperArrow={false}
-            dateFormat="yyyy/MM/dd"
+            dateFormat="yyyy-MM-dd"
             strictParsing
         />
     )
 }
-
-export default ChimpDatePicker;
+ChimpDatePicker.defaultProps = {
+    handleonDateChange: () => { },
+    dateValue: null,
+}
+export default React.memo(ChimpDatePicker);
