@@ -18,7 +18,7 @@ import _find from 'lodash/find';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { withTranslation } from '../../../i18n';
-import { createGivingBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, intializeCreateGivingGroup, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, intializeCreateGivingGroup, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import ModalContent from '../../Give/Tools/modalContent';
@@ -43,7 +43,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, t }) =>
     const initalizeObject = _isEmpty(createGivingGroupStoreFlowObject) ? intializeCreateGivingGroup : createGivingGroupStoreFlowObject;
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(initalizeObject);
     const formatMessage = t;
-    const breakCrumArray = createGivingBreadCrum(formatMessage);
+    const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
     const [validity, setValidity] = useState(intializeValidity);
     const dispatch = useDispatch();
 

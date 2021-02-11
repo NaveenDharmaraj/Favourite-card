@@ -14,7 +14,7 @@ import {
 import _isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
 
-import { createGivingBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, getBase64, intializeCreateGivingGroup, youTubeVimeoValidator } from '../../../helpers/createGrouputils';
+import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, getBase64, intializeCreateGivingGroup, youTubeVimeoValidator } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import { withTranslation } from '../../../i18n';
 import '../../../static/less/create_manage_group.less';
@@ -27,7 +27,7 @@ const ImageGallery = dynamic(() => import('../../../components/shared/ImageGalle
 const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch, t }) => {
     const currentActiveStepCompleted = [1, 2, 3];
     const formatMessage = t;
-    const breakCrumArray = createGivingBreadCrum(formatMessage);
+    const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
     const initalizeObject = _isEmpty(createGivingGroupStoreFlowObject) ? intializeCreateGivingGroup : createGivingGroupStoreFlowObject;
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(initalizeObject);
     const uploadLogoImageRef = useRef(null);

@@ -3,7 +3,7 @@ import _isEmpty from 'lodash/isEmpty';
 import { validateGivingGoal } from './users/utils';
 
 // intializing breadCrum
-export const createGivingBreadCrum = (formatMessage) => {
+export const createGivingGroupBreadCrum = (formatMessage) => {
     return [
         `${formatMessage('createGivingGroupBreadCrum.basicSettings')}`,
         `${formatMessage('createGivingGroupBreadCrum.aboutTheGroup')}`,

@@ -11,7 +11,7 @@ import _isEmpty from 'lodash/isEmpty';
 import arrayMove from 'array-move';
 import dynamic from 'next/dynamic';
 
-import { aboutDescriptionLimit, createGivingBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, initializeAddSectionModalObject, intializeCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { aboutDescriptionLimit, createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, initializeAddSectionModalObject, intializeCreateGivingGroup } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import CreateGivingGroupAddSectionModal from '../CreateGivingGroupAddSectionModal';
@@ -35,7 +35,7 @@ class CreateGivingGroupAbout extends React.Component {
             createGivingGroupObjectState: !_isEmpty(props.createGivingGroupStoreFlowObject) ? props.createGivingGroupStoreFlowObject : intializeCreateGivingGroup,
             doesDescriptionPresent: true,
         }
-        breakCrumArray = createGivingBreadCrum(props.t);
+        breakCrumArray = createGivingGroupBreadCrum(props.t);
     }
     componentWillUnmount() {
         const {

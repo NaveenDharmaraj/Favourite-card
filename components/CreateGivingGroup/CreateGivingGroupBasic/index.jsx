@@ -12,7 +12,7 @@ import {
     Icon,
     Checkbox,
 } from 'semantic-ui-react';
-import { createGivingBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, generateFormatMessage, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, generateFormatMessage, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
 import {
     PropTypes,
 } from 'prop-types';
@@ -29,7 +29,7 @@ const provinceOptions = canadaProvinceOptions;
 
 const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     const formatMessage = t;
-    const breakCrumArray = createGivingBreadCrum(formatMessage);
+    const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
     const currentActiveStepCompleted = [1];
     const whoCanSeeOptions = [
         {
