@@ -11,15 +11,16 @@ import _isEmpty from 'lodash/isEmpty';
 import arrayMove from 'array-move';
 import dynamic from 'next/dynamic';
 
-import { aboutDescriptionLimit, CreateGivingGroupFlowSteps, generateBreadCrum, initializeAddSectionModalObject, intializeCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { aboutDescriptionLimit, createGivingBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, initializeAddSectionModalObject, intializeCreateGivingGroup } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import CreateGivingGroupAddSectionModal from '../CreateGivingGroupAddSectionModal';
 import { updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import { withTranslation } from '../../../i18n';
 
 const SortableList = dynamic(() => import('../../shared/DragAndDropComponent'), { ssr: false });
 
-const breakCrumArray = ['Basic settings', 'About the group', 'Pics & video', 'Charities and goal'];
+let breakCrumArray;
 const currentActiveStepCompleted = [1, 2];
 
 class CreateGivingGroupAbout extends React.Component {
@@ -34,6 +35,7 @@ class CreateGivingGroupAbout extends React.Component {
             createGivingGroupObjectState: !_isEmpty(props.createGivingGroupStoreFlowObject) ? props.createGivingGroupStoreFlowObject : intializeCreateGivingGroup,
             doesDescriptionPresent: true,
         }
+        breakCrumArray = createGivingBreadCrum(props.t);
     }
     componentWillUnmount() {
         const {
@@ -182,23 +184,24 @@ class CreateGivingGroupAbout extends React.Component {
             showModal,
         } = this.state;
         const {
-            dispatch
+            dispatch,
+            t: formatMessage,
         } = this.props;
         return (
             <Container>
                 <div className='createNewGroupWrap'>
                     <div className='createNewGrpheader'>
-                        <Header as='h2'>Create a new Giving Group</Header>
+                        <Header as='h2'>{formatMessage('createGivingGroupHeader')}</Header>
                         {generateBreadCrum(breakCrumArray, currentActiveStepCompleted)}
                     </div>
                     <div className='mainContent'>
                         <div className='about-group'>
-                            <Header className='titleHeader'>About the group</Header>
+                            <Header className='titleHeader'>{formatMessage('createGivingGroupAbout.aboutHeader')}</Header>
                             <Form>
                                 <div className='createnewSec'>
                                     <div className='requiredfield field'>
-                                        <label>Describe your group</label>
-                                        <p className='label-info'>Provide a brief summary about why you started this Giving Group.</p>
+                                        <label>{formatMessage('createGivingGroupAbout.aboutDescriptionLabel')}</label>
+                                        <p className='label-info'>{formatMessage('createGivingGroupAbout.aboutDescription')}</p>
                                         <Form.Field
                                             control={TextArea}
                                             value={short}
@@ -220,13 +223,14 @@ class CreateGivingGroupAbout extends React.Component {
                                                     )
                                                 }
                                             </p>
-                                            <div class="field-info">{short.length} of 300</div>
+                                            <div class="field-info">{short.length} {formatMessage('ofText')} 300</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className='createnewSec'>
-                                    <Header className='sectionHeader'>Expand your group description <span className='optional'>(optional)</span></Header>
-                                    <p>Provide additional details about your Giving Group. You can add up to 5 sections, and you can edit or re-order how they appear on your profile anytime.</p>
+                                    <Header className='sectionHeader'>{formatMessage('createGivingGroupAbout.additionAboutDescriptionHeader')}
+                                        <span className='optional'>&nbsp;{formatMessage('createGivingGroupAbout.additionAboutDescriptionHeaderOptional')}</span></Header>
+                                    <p>{formatMessage('createGivingGroupAbout.additionAboutDescriptionDescriptionLabel')}</p>
                                     {!_isEmpty(groupDescriptions)
                                         &&
                                         <SortableList
@@ -244,6 +248,7 @@ class CreateGivingGroupAbout extends React.Component {
                                             addModalSectionObject={addModalSectionObject}
                                             handleParentModalClick={this.handleParentModalClick}
                                             showModal={showModal}
+                                            formatMessage={formatMessage}
                                         />
                                     }
                                 </div>
@@ -256,14 +261,14 @@ class CreateGivingGroupAbout extends React.Component {
                                         Router.pushRoute(CreateGivingGroupFlowSteps.stepOne)
                                     }}
                                 >
-                                    Back
+                                    {formatMessage('backButton')}
                                 </Button>
                                 <Button
                                     className='blue-btn-rounded-def'
                                     disabled={disableContinue || !doesDescriptionPresent}
                                     onClick={this.handleContinue}
                                 >
-                                    Continue
+                                    {formatMessage('continueButton')}
                                     </Button>
                             </div>
                         </div>
@@ -278,4 +283,4 @@ CreateGivingGroupAbout.defaultProps = {
     createGivingGroupStoreFlowObject: { ...intializeCreateGivingGroup },
     dispatch: () => { }
 };
-export default React.memo(CreateGivingGroupAbout);
+export default React.memo(withTranslation('givingGroup')(CreateGivingGroupAbout));

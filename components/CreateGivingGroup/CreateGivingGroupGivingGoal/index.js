@@ -17,7 +17,8 @@ import _every from 'lodash/every';
 import _find from 'lodash/find';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { CreateGivingGroupFlowSteps, generateBreadCrum, intializeCreateGivingGroup, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { withTranslation } from '../../../i18n';
+import { createGivingBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, intializeCreateGivingGroup, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import ModalContent from '../../Give/Tools/modalContent';
@@ -28,7 +29,6 @@ import groupImg from '../../../static/images/no-data-avatar-giving-group-profile
 import { actionTypes, createGivingGroupApiCall, getCharityBasedOnSearchQuery, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
 import { isFalsy } from '../../../helpers/utils';
 
-const breakCrumArray = ['Basic settings', 'About the group', 'Pics & video', 'Charities and goal'];
 const currentActiveStepCompleted = [1, 2, 3, 4];
 const intializeValidity = {
     doesAmountExist: true,
@@ -39,10 +39,11 @@ const intializeValidity = {
     isEndDateGreaterThanStartDate: true,
 };
 let timeout = ''
-const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject }) => {
+const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, t }) => {
     const initalizeObject = _isEmpty(createGivingGroupStoreFlowObject) ? intializeCreateGivingGroup : createGivingGroupStoreFlowObject;
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(initalizeObject);
-
+    const formatMessage = t;
+    const breakCrumArray = createGivingBreadCrum(formatMessage);
     const [validity, setValidity] = useState(intializeValidity);
     const dispatch = useDispatch();
 
@@ -249,21 +250,21 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject }) => {
         <Container>
             <div className='createNewGroupWrap'>
                 <div className='createNewGrpheader'>
-                    <Header as='h2'>Create a new Giving Group</Header>
+                    <Header as='h2'>{formatMessage('createGivingGroupHeader')}</Header>
                     {generateBreadCrum(breakCrumArray, currentActiveStepCompleted)}
                 </div>
                 <div className='mainContent'>
                     <div className='basicsettings'>
-                        <Header className='titleHeader'>Charities and goal</Header>
+                        <Header className='titleHeader'>{formatMessage('createGivingGroupGivingGoal.givingGoalHeader')}</Header>
                         <Form>
                             <div className='createnewSec'>
                                 <Header className='sectionHeader'>
-                                    Giving goal
-                                    <span className='optional'>(optional)</span>
+                                    {formatMessage('createGivingGroupGivingGoal.givingGoalTitle')}
+                                    <span className='optional'>$&nbsp;{formatMessage('optional')}</span>
                                 </Header>
                                 <div className='givingGoalForm'>
                                     <div className="field">
-                                        <label>Goal amount</label>
+                                        <label>{formatMessage('createGivingGroupGivingGoal.givingGoalAmount')}</label>
                                         <ModalContent
                                             showDollarIcon={true}
                                             showLabel={false}
@@ -272,13 +273,13 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject }) => {
                                             givingGoal={fundraisingGoal}
                                             validity={validity}
                                             currentYear={''}
-                                            placeholder={'Enter a custom amount'}
+                                            placeholder={formatMessage('createGivingGroupGivingGoal.modalContentGivingGoalPlaceholder')}
                                         />
                                     </div>
                                     <div className='field'>
-                                        <label>Goal start date</label>
+                                        <label>{formatMessage('createGivingGroupGivingGoal.goalStartDate')}</label>
                                         <p className='label-info'>
-                                            All money sent to the group from this date will count towards your group goal.
+                                            {formatMessage('createGivingGroupGivingGoal.goalStartDateDescription')}
                                         </p>
                                         <ChimpDatePicker
                                             dateValue={fundraisingCreated}
@@ -287,7 +288,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject }) => {
                                         />
                                     </div>
                                     <div className='field'>
-                                        <label>Goal end date</label>
+                                        <label>{formatMessage('createGivingGroupGivingGoal.goalEndDate')}</label>
                                         <ChimpDatePicker
                                             dateValue={fundraisingDate}
                                             handleonDateChange={handleOnDateChange}
@@ -295,20 +296,23 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject }) => {
                                         />
                                         {
                                             !validity.isEndDateGreaterThanStartDate &&
-                                            <p className="error-message"><Icon name="exclamation circle" /> End date should be greater than start date</p>
+                                            <p className="error-message">
+                                                <Icon name="exclamation circle" />
+                                                End date should be greater than start date
+                                            </p>
                                         }
                                     </div>
                                 </div>
                             </div>
                             <div className='createnewSec'>
                                 <Header className='sectionHeader'>
-                                    Charities to support
-                                    <span className='optional'>(optional)</span>
+                                    {formatMessage('createGivingGroupGivingGoal.charitiesToSupport')}
+                                    <span className='optional'>&nbsp;{formatMessage('optional')}</span>
                                 </Header>
                                 <p>
-                                    Choose which charities this group plans to support.
+                                {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc1')}
                                     <span>
-                                        You can select up to 5 charities and you can change these anytime.
+                                    {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
                                     </span>
                                 </p>
                                 <div className="searchBox charitysearch">
@@ -326,7 +330,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject }) => {
                                         search={(options) => options}
                                         selection
                                         searchQuery={charitySearchQuery}
-                                        placeholder="Search for charity"
+                                        placeholder={formatMessage('createGivingGroupGivingGoal.chairtiesToSupportPlaceholder')}
                                         loading={charitiesSearchQueryBasedLoader}
                                         onClick={() => {
                                             charitiesQueryBasedOptions.length > 0
@@ -349,8 +353,9 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject }) => {
                                     dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
                                     Router.pushRoute(CreateGivingGroupFlowSteps.stepThree)
                                 }}
+                                disabled={disableContinueButton}
                             >
-                                Back
+                                {formatMessage('backButton')}
                                 </Button>
                             <Button
                                 className='blue-btn-rounded-def'
@@ -361,7 +366,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject }) => {
                                 }
                                 loading={disableContinueButton}
                             >
-                                Create Giving Group
+                                {formatMessage('createGivingGroupGivingGoal.createGivingGroupButton')}
                             </Button>
                         </div>
                     </div>
@@ -399,4 +404,4 @@ CreateGivingGroupGivingGoal.prototype = {
     }),
     dispatch: PropTypes.func
 };
-export default CreateGivingGroupGivingGoal;
+export default withTranslation('givingGroup')(CreateGivingGroupGivingGoal);

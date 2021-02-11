@@ -12,7 +12,7 @@ import {
     Icon,
     Checkbox,
 } from 'semantic-ui-react';
-import { CreateGivingGroupFlowSteps, generateBreadCrum, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { createGivingBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, generateFormatMessage, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
 import {
     PropTypes,
 } from 'prop-types';
@@ -22,25 +22,27 @@ import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import { getUniqueCities, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
 import { canadaProvinceOptions } from '../../../helpers/constants';
+import {withTranslation} from '../../../i18n';
 
 const provinceOptions = canadaProvinceOptions;
-const whoCanSeeOptions = [
-    {
-        key: 'Public',
-        text: <span className='text'><Icon className='globe' />This group is public, anyone can see it.</span>,
-        value: 'Public',
-    },
-    {
-        key: 'Private',
-        text: <span className='text'><Icon className='lock' />This group is private, only those who are invited to the Giving Group can join</span>,
-        value: 'Private',
-    },
-];
 
-const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject }) => {
-    const breakCrumArray = ['Basic settings', 'About the group', 'Pics & video', 'Charities and goal'];
+
+const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
+    const formatMessage = t;
+    const breakCrumArray = createGivingBreadCrum(formatMessage);
     const currentActiveStepCompleted = [1];
-
+    const whoCanSeeOptions = [
+        {
+            key: 'CreateGivingGroupBasic.whoCanSeeDropdownPublic',
+            text: <span className='text'><Icon className='globe' />{formatMessage('createGivingGroupBasic.whoCanSeeDropdownPublic')}</span>,
+            value: 'Public',
+        },
+        {
+            key: 'CreateGivingGroupBasic.whoCanSeeDropdownPrivate',
+            text: <span className='text'><Icon className='lock' />{formatMessage('createGivingGroupBasic.whoCanSeeDropdownPrivate')}</span>,
+            value: 'Private',
+        },
+    ];
     const dispatch = useDispatch();
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(createGivingGroupStoreFlowObject);
     const [validity, setValidity] = useState(intializeValidity);
@@ -106,12 +108,12 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject }) => {
         <Container>
             <div className='createNewGroupWrap'>
                 <div className='createNewGrpheader'>
-                    <Header as='h2'>Create a new Giving Group</Header>
+                    <Header as='h2'>{formatMessage('createGivingGroupHeader')}</Header>
                     {generateBreadCrum(breakCrumArray, currentActiveStepCompleted)}
                 </div>
                 <div className='mainContent'>
                     <div className='basicsettings'>
-                        <Header className='titleHeader'>Basic settings</Header>
+                        <Header className='titleHeader'>{formatMessage('createGivingGroupBasic.basicHeader')}</Header>
                         <Form>
                             <div className='createnewSec'>
                                 <div className="requiredfield field">
@@ -119,8 +121,8 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject }) => {
                                         id='form-input-control-group-name'
                                         name="name"
                                         control={Input}
-                                        label='Group name'
-                                        placeholder='Your group name'
+                                        label={formatMessage('createGivingGroupBasic.groupLabel')}
+                                        placeholder={formatMessage('createGivingGroupBasic.groupNamePlaceholder')}
                                         value={name}
                                         onChange={handleOnChange}
                                         onBlur={handleOnBlur}
@@ -136,8 +138,8 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject }) => {
                                         control={Select}
                                         options={provinceOptions}
                                         name='province'
-                                        label={{ children: 'Province (optional)', htmlFor: 'form-select-control-province' }}
-                                        placeholder='Select a province'
+                                        label={{ children: `${formatMessage('createGivingGroupBasic.provinveLabel')}`, htmlFor: 'form-select-control-province' }}
+                                        placeholder={formatMessage('createGivingGroupBasic.provincePlaceholder')}
                                         searchInput={{ id: 'form-select-control-province' }}
                                         onChange={handleOnChange}
                                         value={province}
@@ -148,8 +150,8 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject }) => {
                                         control={Select}
                                         loading={true}
                                         options={uniqueCities}
-                                        label={{ children: 'City (optional)', htmlFor: 'form-select-control-city' }}
-                                        placeholder='Select a city'
+                                        label={{ children: `${formatMessage('createGivingGroupBasic.cityLabel')}`, htmlFor: 'form-select-control-city' }}
+                                        placeholder={formatMessage('createGivingGroupBasic.cityPlaceholder')}
                                         searchInput={{ id: 'form-select-control-city' }}
                                         value={city}
                                         onChange={handleOnChange}
@@ -157,7 +159,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject }) => {
                                     />
                                 </Form.Group>
                                 <div className='field'>
-                                    <label>Who can see this group?</label>
+                                    <label>{formatMessage('createGivingGroupBasic.whoCanSeeHeader')}</label>
                                     <Dropdown
                                         inline
                                         options={whoCanSeeOptions}
@@ -170,15 +172,15 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject }) => {
                                 </div>
                             </div>
                             <div className='createnewSec'>
-                                <Header className='sectionHeader'>Monthly gifts</Header>
-                                <p>Choose whether supporters can set up monthly gifts to your Giving Group.</p>
+                                <Header className='sectionHeader'>{formatMessage('createGivingGroupBasic.monthlyGiftsHeader')}</Header>
+                                <p>{formatMessage('createGivingGroupBasic.monthlyGiftsDescription')}</p>
                                 <Checkbox
                                     checked={prefersRecurringEnabled === "1"}
                                     toggle
                                     className="c-chkBox left"
                                     id="discoverability"
                                     name="prefersRecurringEnabled"
-                                    label='Allow monthly gifts to the Giving Group'
+                                    label={formatMessage('createGivingGroupBasic.monthlyGiftsLabel')}
                                     onChange={handleOnChange}
                                 />
                             </div>
@@ -189,7 +191,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject }) => {
                                 disabled={disableContinue || !validity.doesNameExist}
                                 onClick={handleContinue}
                             >
-                                Continue
+                               {formatMessage('continueButton')}
                             </Button>
                         </div>
                     </div>
@@ -225,4 +227,4 @@ CreateGivingGroupBasic.prototype = {
     })
 };
 
-export default CreateGivingGroupBasic;
+export default withTranslation('givingGroup')(CreateGivingGroupBasic);
