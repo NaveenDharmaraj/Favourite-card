@@ -101,6 +101,9 @@ class UserFriendList extends React.Component {
     componentDidMount() {
         const {
             currentUser: {
+                attributes: {
+                    email,
+                },
                 id: userId,
             },
             dispatch,
@@ -110,10 +113,11 @@ class UserFriendList extends React.Component {
                     user_id,
                 },
             },
+            updatedFriendId,
         } = this.props;
-        const isMyprofile = user_id === Number(userId);
-        const email = !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
-        dispatch(getMyFriendsList(email, 1, isMyprofile ? null : userId));
+        const isMyprofile = Number(updatedFriendId) === Number(userId);
+        const currentEmail = isMyprofile ? email : !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
+        dispatch(getMyFriendsList(currentEmail, 1, isMyprofile ? null : userId));
         dispatch(generateDeeplinkSignup('signup'));
         if (isMyprofile) {
             dispatch(getFriendsInvitations(email, 1));
