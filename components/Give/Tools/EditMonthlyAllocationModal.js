@@ -194,6 +194,25 @@ const EditMonthlyAllocationModal = ({ currentMonthlyAllocAmount, t, paymentInstr
                 })
         }
     }
+    // Frequency section 
+    renderRepeatGift = (giveTo, giftType, giveFrom, formatMessage, language) => {
+        let repeatGift = null;
+        if (giveFrom.type === 'user' || giveFrom.type === 'companies') {
+            repeatGift = (
+                <DonationFrequency
+                    isGiveFlow={true}
+                    formatMessage={formatMessage}
+                    giftType={giftType}
+                    handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
+                    handleInputChange={this.handleInputChange}
+                    language={language}
+                    recurringDisabled={!giveTo.recurringEnabled}
+                    isCampaign={giveTo.isCampaign}
+                />
+            );
+        }
+        return repeatGift;
+    }
     return (
         <Modal
             size="tiny"
@@ -223,26 +242,7 @@ const EditMonthlyAllocationModal = ({ currentMonthlyAllocAmount, t, paymentInstr
                             handlePresetAmountClick={handlePresetAmountClick}
                             validity={validity}
                         />
-                        <PaymentOptions
-                            creditCard={findItemBasedOnId(paymentInstrumenOptions, currentCardSelected)}
-                            giveTo={{ value: currentCardSelected }}
-                            handleAddNewButtonClicked={() => { }}
-                            handleInputChange={handleInputChange}
-                            disableField={loader}
-                            formatMessage={formatMessage}
-                            options={paymentInstrumenOptions}
-                            validity={validity}
-                        />
-                        {isCreditCardModalOpen &&
-                            <NewCreditCard
-                                handleCreditCardModal={handleCreditCardModal}
-                                isCreditCardModalOpen={isCreditCardModalOpen}
-                                setIsCreditCardModalOpen={setIsCreditCardModalOpen}
-                                paymentInstrumenOptions={paymentInstrumenOptions}
-                                flowObject={flowObject}
-                                dispatch={dispatch}
-                            />
-                        }
+                        {renderRepeatGift(giveTo, giftType, giveFrom, formatMessage, language)}
                     </Form>
                 </Modal.Description>
                 <div className="btn-wraper text-right">
