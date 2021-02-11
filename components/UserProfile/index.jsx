@@ -235,6 +235,7 @@ class UserProfileWrapper extends React.Component {
                         <UserFriendList
                             isMyFriendsPage={isMyFriendsPage}
                             friendPageStep={this.props.friendPageStep}
+                            updatedFriendId={updatedFriendId}
                         />
                     )}
             </Fragment>
