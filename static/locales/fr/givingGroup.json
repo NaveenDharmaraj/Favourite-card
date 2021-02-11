@@ -1,4 +1,10 @@
 {
+    "createGivingGroupBreadCrum": {
+        "basicSettings": "Basic settings",
+        "aboutTheGroup": "About the group",
+        "picsVideos": "Pics & video",
+        "charitiesGoals": "Charities and goal"
+    },
     "createGivingGroupHeader": "Create a new Giving Group",
     "createGivingGroupBasic": {
         "basicHeader": "Basic settings",
