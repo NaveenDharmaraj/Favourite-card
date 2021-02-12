@@ -2,6 +2,15 @@ import { Breadcrumb } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import { validateGivingGoal } from './users/utils';
 
+// intializing breadCrum
+export const createGivingGroupBreadCrum = (formatMessage) => {
+    return [
+        `${formatMessage('createGivingGroupBreadCrum.basicSettings')}`,
+        `${formatMessage('createGivingGroupBreadCrum.aboutTheGroup')}`,
+        `${formatMessage('createGivingGroupBreadCrum.picsVideos')}`,
+        `${formatMessage('createGivingGroupBreadCrum.charitiesGoals')}`
+    ]
+}
 // initialzing constant value for limits for the words
 export const aboutDescriptionLimit = 300;
 export const addModalDescriptionLimit = 10000;

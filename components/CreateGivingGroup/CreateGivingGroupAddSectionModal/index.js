@@ -7,6 +7,7 @@ const CreateGivingGroupAddSectionModal = ({
     showModal,
     handleParentModalClick,
     addModalSectionObject,
+    formatMessage,
 }) => {
     //initialzing the add modal object 
     const [addModalObj, setAddModalObj] = useState(addModalSectionObject);
@@ -61,21 +62,21 @@ const CreateGivingGroupAddSectionModal = ({
                     className='light-blue-btn-bordered addBtn'
                     onClick={() => handleOnModalClick(true, '')}
                 >
-                    <span><Icon className='plus' />Add about section</span>
+                    <span><Icon className='plus' />{formatMessage('createGivingGroupAbout.addSectionModalAddButton')}</span>
                 </Button>
             }
             dimmer="inverted"
         >
-            <Modal.Header>Add section</Modal.Header>
+            <Modal.Header>{formatMessage('createGivingGroupAbout.addSectionModalHeader')}</Modal.Header>
             <Modal.Content>
-                <p>Use this section to add more information about your group, such as information about your group's organizers or how people can help.</p>
+                <p>{formatMessage('createGivingGroupAbout.addSectionModalDescription')}</p>
                 <Form>
                     <div className="requiredfield field">
                         <Form.Field
                             id='form-input-control-Section-title'
                             control={Input}
-                            label='Section title'
-                            placeholder='How to help'
+                            label={formatMessage('createGivingGroupAbout.addSectionModalTile')}
+                            placeholder={formatMessage('createGivingGroupAbout.addSectionModalSectionTitlePlaceholder')}
                             value={addModalObj.name}
                             name='name'
                             onChange={handleOnChange}
@@ -90,7 +91,7 @@ const CreateGivingGroupAddSectionModal = ({
                         }
                     </div>
                     <div className='requiredfield field'>
-                        <label>Description</label>
+                        <label>{formatMessage('createGivingGroupAbout.addSectionModalSectionDescription')}</label>
                         <Form.Field
                             control={TextArea}
                             value={addModalObj.description}
@@ -111,7 +112,7 @@ const CreateGivingGroupAddSectionModal = ({
                                     )
                                 }
                             </p>
-                            <div class="field-info">{addModalObj.description.length} of 10,000</div>
+                            <div class="field-info">{addModalObj.description.length}/10,000</div>
                         </div>
                     </div>
                     <div className='buttonsWrap'>
@@ -124,13 +125,13 @@ const CreateGivingGroupAddSectionModal = ({
                             }
                             onClick={() => handleOnModalClick(false, 'add')}
                         >
-                            Add
+                            {formatMessage('addButton')}
                         </Button>
                         <Button
                             className='blue-bordr-btn-round-def'
                             onClick={() => handleOnModalClick(false, 'cancel')}
                         >
-                            Cancel
+                            {formatMessage('cancelButton')}
                         </Button>
                     </div>
                 </Form>
@@ -142,6 +143,7 @@ const CreateGivingGroupAddSectionModal = ({
 
 CreateGivingGroupAddSectionModal.defaultProps = {
     addModalSectionObject: initializeAddSectionModalObject,
+    formatMessage: () => { },
     handleParentModalClick: () => { },
     modalTitle: '',
     showModal: false,
