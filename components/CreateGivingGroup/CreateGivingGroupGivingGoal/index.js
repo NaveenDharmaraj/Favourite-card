@@ -254,7 +254,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, t }) =>
                     {generateBreadCrum(breakCrumArray, currentActiveStepCompleted)}
                 </div>
                 <div className='mainContent'>
-                    <div className='basicsettings'>
+                    <div className='givingGoal'>
                         <Header className='titleHeader'>{formatMessage('createGivingGroupGivingGoal.givingGoalHeader')}</Header>
                         <Form>
                             <div className='createnewSec'>

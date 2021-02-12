@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Fragment } from 'react';
 import {
     Container,
     Header,
@@ -263,13 +263,16 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
                                     <Icon className='upload' />
                                     {formatMessage('createGivingGroupPicsVideo.photoGalleryUploadButton')}
                                 </Button>
-                                {galleryImages.length > 0 && <ImageGallery
-                                    imagesArray={galleryImages}
-                                    enableImageSelection={false}
-                                    rowHeight={80}
-                                />
+                                {galleryImages.length > 0 && 
+                                    <Fragment>
+                                        <ImageGallery
+                                            imagesArray={galleryImages}
+                                            enableImageSelection={false}
+                                            rowHeight={80}
+                                        />
+                                        <p> You can still add {10 - galleryImages.length} more photos.</p>
+                                    </Fragment>
                                 }
-                                < p > {formatMessage('createGivingGroupPicsVideo.photoGalleryCountDesc1')} {10 - galleryImages.length} {formatMessage('createGivingGroupPicsVideo.photoGalleryCountDesc2')}</p>
                             </div>
                         </Form>
                         <div className='buttonsWrap'>
