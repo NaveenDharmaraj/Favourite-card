@@ -8,8 +8,9 @@ function ImageGallery(props) {
         enableImageSelection,
         imagesArray,
         rowHeight,
+        renderSingleImage
     } = props;
-    if (imagesArray.length === 1) {
+    if (imagesArray.length === 1 && renderSingleImage) {
         return (
             <Grid.Row>
                 <Grid.Column mobile={16} tablet={16} computer={16} className="OneGrProfileImg">
@@ -18,20 +19,18 @@ function ImageGallery(props) {
             </Grid.Row>
         );
     }
-    else if (imagesArray.length > 1) {
-        return (
-            <Gallery
-                images={imagesArray}
-                enableImageSelection={enableImageSelection}
-                margin={8}
-                rowHeight={rowHeight}
-            />
-        );
-    }
-    return null;
+    return (
+        <Gallery
+            images={imagesArray}
+            enableImageSelection={enableImageSelection}
+            margin={8}
+            rowHeight={rowHeight}
+        />
+    );
 }
 
 ImageGallery.defaultProps = {
-    rowHeight: null
+    rowHeight: null,
+    renderSingleImage: true,
 };
 export default ImageGallery;

@@ -97,6 +97,7 @@ function ProfileDetails(props) {
                                                         <ImageGallery
                                                             imagesArray={imageArray}
                                                             enableImageSelection={false}
+                                                            renderSingleImage = {true}
                                                         />
                                                     </Grid.Column>
                                                 </Grid.Row>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useDispatch } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -12,7 +12,7 @@ import {
     Icon,
     Checkbox,
 } from 'semantic-ui-react';
-import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, generateFormatMessage, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
 import {
     PropTypes,
 } from 'prop-types';
@@ -20,12 +20,8 @@ import { useSelector } from 'react-redux'
 
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
-import { getUniqueCities, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
-import { canadaProvinceOptions } from '../../../helpers/constants';
-import {withTranslation} from '../../../i18n';
-
-const provinceOptions = canadaProvinceOptions;
-
+import { actionTypes, getProvincesList, getUniqueCities, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import { withTranslation } from '../../../i18n';
 
 const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     const formatMessage = t;
@@ -46,8 +42,11 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     const dispatch = useDispatch();
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(createGivingGroupStoreFlowObject);
     const [validity, setValidity] = useState(intializeValidity);
+    const provinceOptions = useSelector(state => state.createGivingGroup.provinceOptions || []);
+    const provincesListLoader = useSelector(state => state.createGivingGroup.provincesListLoader || false);
     const uniqueCities = useSelector(state => state.createGivingGroup.uniqueCities);
     const uniqueCitiesLoader = useSelector(state => state.createGivingGroup.uniqueCitiesLoader || false);
+    const [showCitiesDropdown, setShowCitiesDropdown] = useState(false);
     const [disableContinue, setDisableContinue] = useState(_isEmpty(createGivingGroupObject.attributes.name));
     const {
         attributes: {
@@ -60,7 +59,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     } = createGivingGroupObject;
     useEffect(() => {
         scrollTo(0, 0);
-        _isEmpty(uniqueCities) && dispatch(getUniqueCities(1, 50));
+        _isEmpty(provinceOptions) && dispatch(getProvincesList(1, 50));
         return () => {
             !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
                 dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
@@ -78,6 +77,14 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
             value = checked ? "1" : "0";
         } else if (name === 'name') {
             setDisableContinue(false);
+        } else if (name === 'province') {
+            dispatch({
+                type: actionTypes.GET_UNIQUE_CITIES,
+                payload: [],
+            });
+            dispatch(getUniqueCities(1, 50, value));
+        } else if (name === 'city') {
+            setShowCitiesDropdown(false);
         }
         setCreateGivingGroupObject({
             ...createGivingGroupObject,
@@ -136,6 +143,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                     <Form.Field
                                         className='dropdownWithArrowParent'
                                         control={Select}
+                                        loading={true}
                                         options={provinceOptions}
                                         name='province'
                                         label={{ children: `${formatMessage('createGivingGroupBasic.provinveLabel')}`, htmlFor: 'form-select-control-province' }}
@@ -145,17 +153,20 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                         value={province}
                                     />
                                     <Form.Field
+                                        open={showCitiesDropdown}
                                         className='dropdownWithArrowParent'
                                         name='city'
+                                        loading={uniqueCitiesLoader}
                                         control={Select}
-                                        loading={true}
+                                        search
                                         options={uniqueCities}
                                         label={{ children: `${formatMessage('createGivingGroupBasic.cityLabel')}`, htmlFor: 'form-select-control-city' }}
                                         placeholder={formatMessage('createGivingGroupBasic.cityPlaceholder')}
-                                        searchInput={{ id: 'form-select-control-city' }}
                                         value={city}
                                         onChange={handleOnChange}
-                                        loading={uniqueCitiesLoader}
+                                        selectOnBlur={false}
+                                        onClick={() => setShowCitiesDropdown(true)}
+                                        onBlur={() => setShowCitiesDropdown(false)}
                                     />
                                 </Form.Group>
                                 <div className='field'>
@@ -191,7 +202,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                 disabled={disableContinue || !validity.doesNameExist}
                                 onClick={handleContinue}
                             >
-                               {formatMessage('continueButton')}
+                                {formatMessage('continueButton')}
                             </Button>
                         </div>
                     </div>
