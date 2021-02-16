@@ -92,16 +92,7 @@ export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => as
         });
     return getUniqueCitiesPromise;
 };
-const getAllPaginationData = async (url, params = null) => {
-    // Right now taking the only relative url from the absolute url.
-    const replacedUrl = _.split(url, '/core/v2').pop();
-    const result = await coreApi.get(replacedUrl, params);
-    const dataArray = result.data;
-    if (result.links.next) {
-        return dataArray.concat(await getAllPaginationData(result.links.next, params));
-    }
-    return dataArray;
-};
+
 export const getCharityBasedOnSearchQuery = (query = '', pageNumber = '', pageSize = '') => dispatch => {
     dispatch({
         type: actionTypes.GET_CHARITY_BASED_ON_SERACH_QUERY_LOADER,
@@ -215,4 +206,4 @@ export const getProvincesList = (pageNumber = 1, pageSize = 50) => dispatch => {
             });
         });
     return getProvincesListPromise;
-}
+};

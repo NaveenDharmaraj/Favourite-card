@@ -143,7 +143,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                     <Form.Field
                                         className='dropdownWithArrowParent'
                                         control={Select}
-                                        loading={true}
+                                        loading={provincesListLoader}
                                         options={provinceOptions}
                                         name='province'
                                         label={{ children: `${formatMessage('createGivingGroupBasic.provinveLabel')}`, htmlFor: 'form-select-control-province' }}
