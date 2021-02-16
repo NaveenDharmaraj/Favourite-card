@@ -62,7 +62,7 @@ export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => as
             });
             if (data.meta.pageCount > 1) {
                 const citiesPromise = [];
-                for (let i = 2; i < data.meta.pageCount; i++) {
+                for (let i = 2; i <= data.meta.pageCount; i++) {
                     citiesPromise.push(getPaginatedCitiesCalls(i, 50, value, false));
                 }
                 Promise.all(citiesPromise).then((data) => {
