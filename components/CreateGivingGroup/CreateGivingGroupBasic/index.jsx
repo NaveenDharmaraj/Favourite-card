@@ -48,6 +48,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     const uniqueCitiesLoader = useSelector(state => state.createGivingGroup.uniqueCitiesLoader || false);
     const [showCitiesDropdown, setShowCitiesDropdown] = useState(false);
     const [disableContinue, setDisableContinue] = useState(_isEmpty(createGivingGroupObject.attributes.name));
+    const [enableCitySearchOption, setEnableCitySearchOption] = useState(false);
     const {
         attributes: {
             city,
@@ -95,6 +96,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                 break;
             case 'city':
                 setShowCitiesDropdown(false);
+                setEnableCitySearchOption(false);
                 if (value === "defaultCity") {
                     value = ""
                 }
@@ -177,7 +179,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                         name='city'
                                         loading={uniqueCitiesLoader}
                                         control={Select}
-                                        search={!_isEmpty(uniqueCities)}
+                                        search={enableCitySearchOption && !_isEmpty(uniqueCities)}
                                         options={uniqueCities.length > 1 ? [{
                                             key: formatMessage('createGivingGroupBasic.cityPlaceholder'),
                                             text: formatMessage('createGivingGroupBasic.cityPlaceholder'),
@@ -189,7 +191,10 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                         onChange={handleOnChange}
                                         selectOnBlur={false}
                                         selectOnNavigation={false}
-                                        onClick={() => setShowCitiesDropdown(true)}
+                                        onClick={() => {
+                                            setEnableCitySearchOption(true)
+                                            setShowCitiesDropdown(true)
+                                        }}
                                         onBlur={() => setShowCitiesDropdown(false)}
                                     />
                                 </Form.Group>
