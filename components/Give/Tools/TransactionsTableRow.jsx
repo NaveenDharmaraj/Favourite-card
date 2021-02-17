@@ -76,6 +76,10 @@ class TransactionTableRow extends React.Component {
 			transactionId,
 			transactionType,
 			activePage,
+            language,
+            giftType,
+            destinationType,
+            noteToRecipient
 		} = this.props;
 
 		const { showDeleteModal, activeIndexs } = this.state;
@@ -138,10 +142,15 @@ class TransactionTableRow extends React.Component {
 					<Table.Cell>
 						{isAllocation ? (
 							<EditMonthlyAllocationModal
+								recipientName={firstColoumn}
 								currentMonthlyAllocAmount={secondColoumn}
 								paymentInstrumentId={paymentInstrumentId}
 								transactionId={transactionId}
 								activePage={activePage}
+                                giftType={giftType}
+                                language={language}
+                                giveToType={destinationType}
+                                noteToRecipient
 							/>
 						) : (
 							<EditMonthlyDepositModal
