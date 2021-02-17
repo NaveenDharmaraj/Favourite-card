@@ -44,7 +44,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     const [validity, setValidity] = useState(intializeValidity);
     const provinceOptions = useSelector(state => state.createGivingGroup.provinceOptions || []);
     const provincesListLoader = useSelector(state => state.createGivingGroup.provincesListLoader || false);
-    const uniqueCities = useSelector(state => state.createGivingGroup.uniqueCities);
+    const uniqueCities = useSelector(state => state.createGivingGroup.uniqueCities || []);
     const uniqueCitiesLoader = useSelector(state => state.createGivingGroup.uniqueCitiesLoader || false);
     const [showCitiesDropdown, setShowCitiesDropdown] = useState(false);
     const [disableContinue, setDisableContinue] = useState(_isEmpty(createGivingGroupObject.attributes.name));
@@ -71,20 +71,35 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
             value,
             checked,
         } = data || event.target;
-        if (name === 'prefersInviteOnly') {
-            value = value === 'Public' ? "0" : "1"
-        } else if (name === 'prefersRecurringEnabled') {
-            value = checked ? "1" : "0";
-        } else if (name === 'name') {
-            setDisableContinue(false);
-        } else if (name === 'province') {
-            dispatch({
-                type: actionTypes.GET_UNIQUE_CITIES,
-                payload: [],
-            });
-            dispatch(getUniqueCities(1, 50, value));
-        } else if (name === 'city') {
-            setShowCitiesDropdown(false);
+        switch (name) {
+            case 'prefersInviteOnly':
+                value = value === 'Public' ? "0" : "1";
+                break;
+            case 'prefersRecurringEnabled':
+                value = checked ? "1" : "0";
+                break;
+            case 'name':
+                setDisableContinue(false);
+                break;
+            case 'province':
+                dispatch({
+                    type: actionTypes.GET_UNIQUE_CITIES,
+                    payload: [],
+                });
+                if (value === "defaultProvince") {
+                    value = ""
+                    createGivingGroupObject.attributes.city = '';
+                } else {
+                    dispatch(getUniqueCities(1, 50, value));
+                }
+                break;
+            case 'city':
+                setShowCitiesDropdown(false);
+                if (value === "defaultCity") {
+                    value = ""
+                }
+                break;
+            default: break;
         }
         setCreateGivingGroupObject({
             ...createGivingGroupObject,
@@ -141,10 +156,14 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                 </div>
                                 <Form.Group widths='equal'>
                                     <Form.Field
-                                        className='dropdownWithArrowParent'
+                                        className={provincesListLoader ? '' : 'dropdownWithArrowParent'}
                                         control={Select}
                                         loading={provincesListLoader}
-                                        options={provinceOptions}
+                                        options={provinceOptions.length > 1 ? [{
+                                            key: formatMessage('createGivingGroupBasic.provincePlaceholder'),
+                                            text: formatMessage('createGivingGroupBasic.provincePlaceholder'),
+                                            value: "defaultProvince",
+                                        }].concat(provinceOptions) : []}
                                         name='province'
                                         label={{ children: `${formatMessage('createGivingGroupBasic.provinveLabel')}`, htmlFor: 'form-select-control-province' }}
                                         placeholder={formatMessage('createGivingGroupBasic.provincePlaceholder')}
@@ -153,18 +172,23 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                         value={province}
                                     />
                                     <Form.Field
-                                        open={showCitiesDropdown}
-                                        className='dropdownWithArrowParent'
+                                        open={showCitiesDropdown && !_isEmpty(uniqueCities)}
+                                        className={uniqueCitiesLoader ? '' : 'dropdownWithArrowParent'}
                                         name='city'
                                         loading={uniqueCitiesLoader}
                                         control={Select}
-                                        search
-                                        options={uniqueCities}
+                                        search={!_isEmpty(uniqueCities)}
+                                        options={uniqueCities.length > 1 ? [{
+                                            key: formatMessage('createGivingGroupBasic.cityPlaceholder'),
+                                            text: formatMessage('createGivingGroupBasic.cityPlaceholder'),
+                                            value: "defaultCity",
+                                        }].concat(uniqueCities) : []}
                                         label={{ children: `${formatMessage('createGivingGroupBasic.cityLabel')}`, htmlFor: 'form-select-control-city' }}
                                         placeholder={formatMessage('createGivingGroupBasic.cityPlaceholder')}
                                         value={city}
                                         onChange={handleOnChange}
                                         selectOnBlur={false}
+                                        selectOnNavigation={false}
                                         onClick={() => setShowCitiesDropdown(true)}
                                         onBlur={() => setShowCitiesDropdown(false)}
                                     />

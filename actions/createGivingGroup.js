@@ -42,31 +42,24 @@ export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => as
         type: actionTypes.GET_UNIQUE_CITIES_LOADER,
         payload: true
     });
-    const getUniqueCitiesPromise = getPaginatedCitiesCalls(pageNumber, pageSize, value, false)
+    const getUniqueCitiesPromise = getPaginatedCitiesCalls(pageNumber, pageSize, value, false);
+    let citiesOption = []
+    let citiesOptionsPromisesData = [];
     getUniqueCitiesPromise
-        .then((data) => {
-            dispatch({
-                type: actionTypes.GET_UNIQUE_CITIES_LOADER,
-                payload: false
-            });
-            const citiesOption = data.data.map(({ attributes }) => {
+        .then(async (data) => {
+            citiesOption = data.data.map(({ attributes }) => {
                 return {
                     key: attributes.city + attributes.province_name,
                     text: attributes.city,
                     value: attributes.city,
                 }
             });
-            dispatch({
-                type: actionTypes.GET_UNIQUE_CITIES,
-                payload: citiesOption,
-            });
             if (data.meta.pageCount > 1) {
                 const citiesPromise = [];
                 for (let i = 2; i <= data.meta.pageCount; i++) {
                     citiesPromise.push(getPaginatedCitiesCalls(i, 50, value, false));
                 }
-                Promise.all(citiesPromise).then((data) => {
-                    const citiesOptionsPromisesData = [];
+                await Promise.all(citiesPromise).then((data) => {
                     data.map(({ data }) => {
                         data.map(({ attributes }) => {
                             citiesOptionsPromisesData.push({
@@ -76,18 +69,20 @@ export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => as
                             });
                         })
                     });
-                    dispatch({
-                        type: actionTypes.GET_UNIQUE_CITIES,
-                        payload: citiesOption.concat(citiesOptionsPromisesData),
-                    });
                 });
             }
         })
         .catch(() => {
             // handle error
+        })
+        .finally(() => {
             dispatch({
                 type: actionTypes.GET_UNIQUE_CITIES_LOADER,
                 payload: false
+            });
+            dispatch({
+                type: actionTypes.GET_UNIQUE_CITIES,
+                payload: citiesOption.concat(citiesOptionsPromisesData),
             });
         });
     return getUniqueCitiesPromise;
