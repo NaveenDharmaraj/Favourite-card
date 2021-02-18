@@ -236,6 +236,9 @@ h4{
               }
               >.content{
                 padding: 30px 35px 1rem !important;
+                &.Modal_monthly_deposit{
+                  padding: 30px 19.4px 1rem !important;
+                }
               }
             }
           }
@@ -346,7 +349,7 @@ h4{
           .ui.form {
             .addNewCard{
               .field{
-                margin-bottom: 18px;
+                margin-bottom: 18px;  
                 label{
                   margin-bottom: 10px ;
                 }
@@ -360,6 +363,11 @@ h4{
               }
               .fields{
                 margin-bottom: 10px;
+              }
+              .Expiry_full{
+                .field{
+                  margin-bottom:7px;
+                }
               }
             }
           }
@@ -1674,6 +1682,7 @@ h4{
               color:#263238;
               position: relative;
               border-top: 1px solid #E7E7F0;
+              background-color: #FAFAFA;
               &:after{
                 content: '';
                 background-image: url("@{img_url}/images/icons/icon-arrow-down.svg");
@@ -1749,6 +1758,9 @@ h4{
                   height: 30px !important;
                   width: 65px !important;
                   padding: 7px 10px 6px !important;
+                  @media only screen and (max-width:390px) {
+                    width: 58px !important;
+                  }
               }
               +.button{
                   margin-left: 10px;
@@ -1844,6 +1856,8 @@ h4{
                   }
                   .menu{
                       .item{
+                        display: flex;
+                        align-items: center ;
                           &.selected{
                               background-color: #055CE5;
                               color: #fff;
@@ -2631,6 +2645,9 @@ h4{
   }
 }
 @media only screen and (max-width:991px) and (min-width:767px) {
+  td.Credit_Name{
+    width: 24%;
+  }
   body{
     .loginPageBg .left-bg > div{
       left: 0px;
@@ -9111,5 +9128,6 @@ body{
 .isDisabled {
   pointer-events: none;
 }
-
-
+.monthly_deposit_heading{
+  font-family: 'ProximaNova-Semibold' !important;
+}

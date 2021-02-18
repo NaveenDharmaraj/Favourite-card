@@ -26,7 +26,7 @@ class TransactionTableRow extends React.Component {
         super(props);
         this.state = {
             showDeleteModal: false,
-            activeIndexs: []
+            activeIndexs: props.activeIndexs || []
         }
     }
 
@@ -102,7 +102,7 @@ class TransactionTableRow extends React.Component {
                 <Modal.Header>{modalHeader}</Modal.Header>
                 <Modal.Content>
                     <span>
-                        Are you sure you want to delete the transaction?
+                    If you delete this transaction, it won't be processed each month.
                     </span>
                     <div className="pt-2 pb-1 text-right">
                         <Button
@@ -127,8 +127,8 @@ class TransactionTableRow extends React.Component {
 
                 {/* Desktop transaction details row start */}
                 <Responsive minWidth={768} as={'tr'}>
-                    {(firstColoumn) && (<Table.Cell>{firstColoumn}</Table.Cell>)}
-                    {(secondColoumn) && (<Table.Cell className="text-right">{secondColoumn}</Table.Cell>)}
+                    {(firstColoumn) && (<Table.Cell className="Credit_Name">{firstColoumn}</Table.Cell>)}
+                    {(secondColoumn) && (<Table.Cell className="text-right ">{secondColoumn}</Table.Cell>)}
                     {(thirdColoumn) && (<Table.Cell>{thirdColoumn}</Table.Cell>)}
                     {(fourthColoumn) && (<Table.Cell>{fourthColoumn}</Table.Cell>)}
                     {(fifthColoumn) && (<Table.Cell>{fifthColoumn}</Table.Cell>)}
@@ -197,6 +197,7 @@ class TransactionTableRow extends React.Component {
                                         {showEditButton && <EditMonthlyDepositModal
                                             currentMonthlyDepositAmount={secondColoumn}
                                             paymentInstrumentId={paymentInstrumentId}
+                                            transactionId={transactionId}
                                             activePage={activePage}
                                         /> }
                                         {deleteModal}
