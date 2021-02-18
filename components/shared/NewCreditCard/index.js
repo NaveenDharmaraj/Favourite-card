@@ -238,7 +238,7 @@ class NewCreditCard extends React.Component {
                             <Form.Field
                                 checked={isDefaultCard}
                                 control={Checkbox}
-                                className="ui checkbox chkMarginBtm checkboxToRadio mt-2"
+                                className="ui checkbox chkMarginBtm checkboxToRadio"
                                 disabled={!paymentInstrumenOptions}
                                 id="isDefaultCard"
                                 label="Set as primary card"
