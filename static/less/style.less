@@ -9131,3 +9131,14 @@ body{
 .monthly_deposit_heading{
   font-family: 'ProximaNova-Semibold' !important;
 }
+body{
+  .ui.inverted.dimmer.modals{
+    background-color: rgba(216, 216, 216, 0.71);
+    ~.ui.inverted.dimmer.modals{
+      background-color: transparent;
+      .ui.scrolling.modal{
+        margin-top: 0px;
+      }
+    }
+  }
+}
