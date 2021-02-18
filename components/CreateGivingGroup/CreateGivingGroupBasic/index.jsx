@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useDispatch } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -12,7 +12,7 @@ import {
     Icon,
     Checkbox,
 } from 'semantic-ui-react';
-import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, generateFormatMessage, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
 import {
     PropTypes,
 } from 'prop-types';
@@ -20,12 +20,8 @@ import { useSelector } from 'react-redux'
 
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
-import { getUniqueCities, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
-import { canadaProvinceOptions } from '../../../helpers/constants';
-import {withTranslation} from '../../../i18n';
-
-const provinceOptions = canadaProvinceOptions;
-
+import { actionTypes, getProvincesList, getUniqueCities, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import { withTranslation } from '../../../i18n';
 
 const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     const formatMessage = t;
@@ -46,9 +42,13 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     const dispatch = useDispatch();
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(createGivingGroupStoreFlowObject);
     const [validity, setValidity] = useState(intializeValidity);
-    const uniqueCities = useSelector(state => state.createGivingGroup.uniqueCities);
+    const provinceOptions = useSelector(state => state.createGivingGroup.provinceOptions || []);
+    const provincesListLoader = useSelector(state => state.createGivingGroup.provincesListLoader || false);
+    const uniqueCities = useSelector(state => state.createGivingGroup.uniqueCities || []);
     const uniqueCitiesLoader = useSelector(state => state.createGivingGroup.uniqueCitiesLoader || false);
+    const [showCitiesDropdown, setShowCitiesDropdown] = useState(false);
     const [disableContinue, setDisableContinue] = useState(_isEmpty(createGivingGroupObject.attributes.name));
+    const [enableCitySearchOption, setEnableCitySearchOption] = useState(false);
     const {
         attributes: {
             city,
@@ -60,7 +60,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     } = createGivingGroupObject;
     useEffect(() => {
         scrollTo(0, 0);
-        _isEmpty(uniqueCities) && dispatch(getUniqueCities(1, 50));
+        _isEmpty(provinceOptions) && dispatch(getProvincesList(1, 50));
         return () => {
             !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
                 dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
@@ -72,12 +72,36 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
             value,
             checked,
         } = data || event.target;
-        if (name === 'prefersInviteOnly') {
-            value = value === 'Public' ? "0" : "1"
-        } else if (name === 'prefersRecurringEnabled') {
-            value = checked ? "1" : "0";
-        } else if (name === 'name') {
-            setDisableContinue(false);
+        switch (name) {
+            case 'prefersInviteOnly':
+                value = value === 'Public' ? "0" : "1";
+                break;
+            case 'prefersRecurringEnabled':
+                value = checked ? "1" : "0";
+                break;
+            case 'name':
+                setDisableContinue(false);
+                break;
+            case 'province':
+                dispatch({
+                    type: actionTypes.GET_UNIQUE_CITIES,
+                    payload: [],
+                });
+                if (value === "defaultProvince") {
+                    value = ""
+                    createGivingGroupObject.attributes.city = '';
+                } else {
+                    dispatch(getUniqueCities(1, 50, value));
+                }
+                break;
+            case 'city':
+                setShowCitiesDropdown(false);
+                setEnableCitySearchOption(false);
+                if (value === "defaultCity") {
+                    value = ""
+                }
+                break;
+            default: break;
         }
         setCreateGivingGroupObject({
             ...createGivingGroupObject,
@@ -134,9 +158,14 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                 </div>
                                 <Form.Group widths='equal'>
                                     <Form.Field
-                                        className='dropdownWithArrowParent'
+                                        className={provincesListLoader ? '' : 'dropdownWithArrowParent'}
                                         control={Select}
-                                        options={provinceOptions}
+                                        loading={provincesListLoader}
+                                        options={provinceOptions.length > 1 ? [{
+                                            key: formatMessage('createGivingGroupBasic.provincePlaceholder'),
+                                            text: formatMessage('createGivingGroupBasic.provincePlaceholder'),
+                                            value: "defaultProvince",
+                                        }].concat(provinceOptions) : []}
                                         name='province'
                                         label={{ children: `${formatMessage('createGivingGroupBasic.provinveLabel')}`, htmlFor: 'form-select-control-province' }}
                                         placeholder={formatMessage('createGivingGroupBasic.provincePlaceholder')}
@@ -145,17 +174,28 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                         value={province}
                                     />
                                     <Form.Field
-                                        className='dropdownWithArrowParent'
+                                        open={showCitiesDropdown && !_isEmpty(uniqueCities)}
+                                        className={uniqueCitiesLoader ? '' : 'dropdownWithArrowParent'}
                                         name='city'
+                                        loading={uniqueCitiesLoader}
                                         control={Select}
-                                        loading={true}
-                                        options={uniqueCities}
+                                        search={enableCitySearchOption && !_isEmpty(uniqueCities)}
+                                        options={uniqueCities.length > 1 ? [{
+                                            key: formatMessage('createGivingGroupBasic.cityPlaceholder'),
+                                            text: formatMessage('createGivingGroupBasic.cityPlaceholder'),
+                                            value: "defaultCity",
+                                        }].concat(uniqueCities) : []}
                                         label={{ children: `${formatMessage('createGivingGroupBasic.cityLabel')}`, htmlFor: 'form-select-control-city' }}
                                         placeholder={formatMessage('createGivingGroupBasic.cityPlaceholder')}
-                                        searchInput={{ id: 'form-select-control-city' }}
                                         value={city}
                                         onChange={handleOnChange}
-                                        loading={uniqueCitiesLoader}
+                                        selectOnBlur={false}
+                                        selectOnNavigation={false}
+                                        onClick={() => {
+                                            setEnableCitySearchOption(true)
+                                            setShowCitiesDropdown(true)
+                                        }}
+                                        onBlur={() => setShowCitiesDropdown(false)}
                                     />
                                 </Form.Group>
                                 <div className='field'>
@@ -191,7 +231,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                 disabled={disableContinue || !validity.doesNameExist}
                                 onClick={handleContinue}
                             >
-                               {formatMessage('continueButton')}
+                                {formatMessage('continueButton')}
                             </Button>
                         </div>
                     </div>

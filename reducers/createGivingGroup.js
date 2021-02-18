@@ -11,6 +11,18 @@ const createGivingGroup = (state = {}, action) => {
                 createGivingGroupStoreFlowObject: action.payload,
             };
             break;
+        case actionTypes.GET_PROVINCE_LIST:
+            newState = {
+                ...state,
+                provinceOptions: action.payload,
+            };
+            break;
+        case actionTypes.GET_PROVINCES_LIST_LOADER:
+            newState = {
+                ...state,
+                provincesListLoader: action.payload,
+            };
+            break;
         case actionTypes.GET_UNIQUE_CITIES:
             newState = {
                 ...state,
