@@ -37,6 +37,7 @@ const EditMonthlyAllocationModal = ({
 	language,
 	giveToType,
 	notetoRecipient,
+    privacyShareAmount,
 }) => {
 	const formatMessage = t;
 
@@ -63,44 +64,32 @@ const EditMonthlyAllocationModal = ({
 		attributes: { displayName, email, firstName, lastName, preferences },
 		id,
 	} = currentUser;
-    const infoOptions = useSelector((state) => state.userProfile.infoOptions);
-    const [infoToShareList, setInfoToShareList] = useState([])
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [groupCampaignAdminShareInfoOptions, setGroupCampaignAdminShareInfoOptions] = useState([]);
-    useEffect(()=>{
-        debugger
-        if(_isEmpty(infoOptions)){
-            debugger
-            dispatch(getGroupCampaignAdminInfoToShare(id, false))
-        } else{
-            let {
-                groupMemberInfoToShare,
-                groupCampaignAdminShareInfoOptions,
-            } = infoOptions;
-            const { infoToShareList } = populateDropdownInfoToShare(
-                groupMemberInfoToShare
-            );
-            setInfoToShareList(infoToShareList);
-            setGroupCampaignAdminShareInfoOptions(groupCampaignAdminShareInfoOptions)
-        }
-    },[])
-	
-    useEffect(()=>{
-        debugger
-        if(!_isEmpty(infoOptions)){
-            let {
-                groupMemberInfoToShare,
-                groupCampaignAdminShareInfoOptions,
-            } = infoOptions;
-            const { infoToShareList } = populateDropdownInfoToShare(
-                groupMemberInfoToShare
-            );
-            setInfoToShareList(infoToShareList);
-            setGroupCampaignAdminShareInfoOptions(groupCampaignAdminShareInfoOptions)
-        }
-    },[infoOptions])
-	// boolean for showing edit monthly modal
-
+	const infoOptions = useSelector((state) => state.userProfile.infoOptions);
+	const [infoToShareList, setInfoToShareList] = useState([]);
+	const [showEditModal, setShowEditModal] = useState(false);
+	const [
+		groupCampaignAdminShareInfoOptions,
+		setGroupCampaignAdminShareInfoOptions,
+	] = useState([]);
+    const [giftFreq, setGiftFreq] = useState(giftType);
+	useEffect(() => {
+		if (_isEmpty(infoOptions)) {
+			dispatch(getGroupCampaignAdminInfoToShare(id, false));
+		} else {
+			let {
+				groupMemberInfoToShare,
+				groupCampaignAdminShareInfoOptions,
+			} = infoOptions;
+			const { infoToShareList } = populateDropdownInfoToShare(
+				groupMemberInfoToShare
+			);
+			setInfoToShareList(infoToShareList);
+			setGroupCampaignAdminShareInfoOptions(
+				groupCampaignAdminShareInfoOptions
+			);
+		}
+	}, []);
+	const [defaultInfoToShare, setDefaultInfoToShare] = useState();
 	const prefernceName =
 		giveToType === 'Campaign'
 			? 'campaign_admins_info_to_share'
@@ -110,13 +99,38 @@ const EditMonthlyAllocationModal = ({
 				preferences[`${prefernceName}_address`]
 		  }`
 		: preferences[prefernceName];
-	const defaultInfoToShare = infoToShareList.find(
-		(opt) => opt.value === preference
-	);
-    const defaultNameToShare = infoToShareList.find(opt => (
-        opt.value === preferences['giving_group_members_info_to_share']
-    )) || {};
-    const privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
+	const [defaultNameToShare, setDefaultNameToShare] = useState();
+
+	useEffect(() => {
+		if (!_isEmpty(infoOptions)) {
+			let {
+				groupMemberInfoToShare,
+				groupCampaignAdminShareInfoOptions,
+			} = infoOptions;
+			const { infoToShareList } = populateDropdownInfoToShare(
+				groupMemberInfoToShare
+			);
+			setInfoToShareList(infoToShareList);
+			setGroupCampaignAdminShareInfoOptions(
+				groupCampaignAdminShareInfoOptions
+			);
+            debugger
+			setDefaultInfoToShare(
+				infoToShareList.find((opt) => opt.value === preference)
+			);
+
+			setDefaultNameToShare(
+				infoToShareList.find(
+					(opt) =>
+						opt.value ===
+						preferences['giving_group_members_info_to_share']
+				) || {}
+			);
+		}
+	}, [infoOptions]);
+
+	// const privacyShareAmount =
+	// 	preferences['giving_group_members_share_my_giftamount'];
 	// state for amount value in edit modal
 	const [amount, setAmount] = useState(formatedCurrentMonthlyAllocAmount);
 
@@ -155,10 +169,32 @@ const EditMonthlyAllocationModal = ({
 	const handleInputChange = (event, data) => {
 		const { name, options, value } = data;
 		let newValue = !_isEmpty(options) ? _find(options, { value }) : value;
+		debugger;
 		switch (name) {
 			case 'donationAmount':
 				setAmount(value);
 				break;
+			case 'nameToShare':
+				setDefaultNameToShare(newValue);
+				if (
+					newValue.value !== 'anonymous' &&
+					infoToShare.value === 'anonymous'
+				) {
+					setDefaultInfoToShare(
+						infoToShareList.find((opt) => opt.value === 'name')
+					);
+				} else {
+					setDefaultInfoToShare(
+						infoToShareList.find((opt) => opt.value === 'name')
+					);
+				}
+				break;
+			case 'infoToShare':
+				setDefaultInfoToShare(newValue);
+                // debugger
+				break;
+			case 'noteToCharity':
+				setNoteToCharity(newValue);
 		}
 		setDisableButton(false);
 	};
@@ -252,8 +288,8 @@ const EditMonthlyAllocationModal = ({
 		}
 	};
 
-	const handlegiftTypeButtonClick = () => {
-		debugger;
+	const handlegiftTypeButtonClick = (e, { value }) => {
+        setGiftFreq({value})
 	};
 
 	// Privacy section
@@ -285,10 +321,11 @@ const EditMonthlyAllocationModal = ({
 			<DonationFrequency
 				isGiveFlow={true}
 				formatMessage={formatMessage}
-				giftType={giftType}
+				giftType={giftFreq}
 				handlegiftTypeButtonClick={handlegiftTypeButtonClick}
 				handleInputChange={handleInputChange}
 				language={language}
+				isEditModal={true}
 				// isCampaign={recipientName.incl}
 			/>
 		);
@@ -341,6 +378,7 @@ const EditMonthlyAllocationModal = ({
 										handleInputOnBlur={handleInputOnBlur}
 										noteToSelf={noteToSelf}
 										validity={validity}
+										isEditModal={true}
 									/>
 								</Grid.Column>
 							</Grid.Row>

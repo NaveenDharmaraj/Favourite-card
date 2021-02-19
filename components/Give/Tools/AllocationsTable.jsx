@@ -27,6 +27,7 @@ function AllocationsTable(props) {
 		if (!_.isEmpty(upcomingTransactions)) {
 			upcomingTransactions.forEach((transaction) => {
 				const { attributes, id } = transaction;
+                debugger
 				const transactionDate = attributes.transactionDate.includes(15)
 					? '15th'
 					: '1st';
@@ -62,6 +63,7 @@ function AllocationsTable(props) {
                         language={language}
                         destinationType={attributes.destinationAccount}
                         noteToRecipient={attributes.noteToRecipient}
+                        privacyShareAmount={attributes.metaInfo.amount_with_group}
 					/>
 				);
 			});

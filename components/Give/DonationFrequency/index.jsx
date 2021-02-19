@@ -1,4 +1,4 @@
-import React, {
+import React, { Fragment
 } from 'react';
 import {
     Form,
@@ -22,7 +22,9 @@ function DonationFrequency(props) {
         isGiveFlow,
         recurringDisabled,
         isCampaign,
+        isEditModal,
     } = props;
+    console.log(giftType, 'giftType');
     return (
         <>
             <div className="give_flow_field Frequencybottom">
@@ -40,7 +42,7 @@ function DonationFrequency(props) {
                         )}
                     />
                 </Form.Field>
-                <Form.Field>
+                {!!!isEditModal && (<Fragment><Form.Field>
                     <Radio
                         className="chimpRadio font-w-n"
                         label={isGiveFlow ? 'Send once' : 'Add once'}
@@ -60,7 +62,7 @@ function DonationFrequency(props) {
                         checked={!!giftType.value}
                         onChange={handlegiftTypeButtonClick}
                     />
-                </Form.Field>
+                </Form.Field></Fragment>)}
                 {
                     (recurringDisabled && (
                         <span data-test="Give_DonationFrequency_givingInfoText"  className="givingInfoText">This {(isCampaign ? 'Campaign': 'Giving Group' )} does not accept monthly gifts.</span>
