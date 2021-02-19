@@ -213,7 +213,7 @@ class NewCreditCard extends React.Component {
                 onClose={this.handleCCAddClose}
             >
                 <Modal.Header>Add new card</Modal.Header>
-                <Modal.Content>
+                <Modal.Content className="Modal_monthly_deposit">
                     <Modal.Description className="font-s-16">
                         <Form>
                             <StripeProvider apiKey={STRIPE_KEY}>
