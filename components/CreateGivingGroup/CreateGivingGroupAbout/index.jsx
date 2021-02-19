@@ -37,13 +37,6 @@ class CreateGivingGroupAbout extends React.Component {
         }
         breakCrumArray = createGivingGroupBreadCrum(props.t);
     }
-    componentWillUnmount() {
-        const {
-            dispatch
-        } = this.props;
-        !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
-            dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
-    }
     onSortEnd = ({ oldIndex, newIndex }) => {
         this.setState(({ createGivingGroupObjectState }) => ({
             createGivingGroupObjectState: {

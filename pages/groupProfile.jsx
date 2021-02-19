@@ -18,6 +18,7 @@ import getConfig from 'next/config';
 
 import { withTranslation } from '../i18n';
 import {
+    actionTypes,
     getGroupFromSlug,
     getImageGallery,
     getMatchingHistory,
@@ -36,10 +37,6 @@ import {
     resetFlowObject,
 } from '../actions/give';
 import '../static/less/charityProfile.less';
-
-const actionTypes = {
-    RESET_GROUP_STATES: 'RESET_GROUP_STATES',
-};
 
 class GroupProfile extends React.Component {
     static async getInitialProps({

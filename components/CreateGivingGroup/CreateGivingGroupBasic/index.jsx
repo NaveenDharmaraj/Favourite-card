@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Container,
@@ -22,12 +21,12 @@ import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import { getUniqueCities, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
 import { canadaProvinceOptions } from '../../../helpers/constants';
-import {withTranslation} from '../../../i18n';
+import { withTranslation } from '../../../i18n';
 
 const provinceOptions = canadaProvinceOptions;
 
 
-const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
+const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, dispatch, t }) => {
     const formatMessage = t;
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
     const currentActiveStepCompleted = [1];
@@ -43,7 +42,6 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
             value: 'Private',
         },
     ];
-    const dispatch = useDispatch();
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(createGivingGroupStoreFlowObject);
     const [validity, setValidity] = useState(intializeValidity);
     const uniqueCities = useSelector(state => state.createGivingGroup.uniqueCities);
@@ -61,10 +59,6 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     useEffect(() => {
         scrollTo(0, 0);
         _isEmpty(uniqueCities) && dispatch(getUniqueCities(1, 50));
-        return () => {
-            !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
-                dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
-        }
     }, []);
     const handleOnChange = (event, data) => {
         let {
@@ -191,7 +185,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                 disabled={disableContinue || !validity.doesNameExist}
                                 onClick={handleContinue}
                             >
-                               {formatMessage('continueButton')}
+                                {formatMessage('continueButton')}
                             </Button>
                         </div>
                     </div>

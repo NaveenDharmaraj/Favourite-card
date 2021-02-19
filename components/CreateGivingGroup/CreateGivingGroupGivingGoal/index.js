@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     Container,
     Header,
@@ -15,7 +15,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _replace from 'lodash/replace';
 import _every from 'lodash/every';
 import _find from 'lodash/find';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { withTranslation } from '../../../i18n';
 import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, intializeCreateGivingGroup, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
@@ -39,25 +39,19 @@ const intializeValidity = {
     isEndDateGreaterThanStartDate: true,
 };
 let timeout = ''
-const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, t }) => {
+const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, dispatch, t }) => {
     const initalizeObject = _isEmpty(createGivingGroupStoreFlowObject) ? intializeCreateGivingGroup : createGivingGroupStoreFlowObject;
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(initalizeObject);
     const formatMessage = t;
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
     const [validity, setValidity] = useState(intializeValidity);
-    const dispatch = useDispatch();
 
     const [charitySearchQuery, setCharitySearchQuery] = useState('');
     const charitiesQueryBasedOptions = useSelector(state => state.createGivingGroup.charitiesQueryBasedOptions || []);
     const charitiesSearchQueryBasedLoader = useSelector(state => state.createGivingGroup.charitiesSearchQueryBasedLoader || null);
     const [showCharityDropdown, setShowCharityDropdown] = useState(false);
     const [disableContinueButton, setDisableContinueButton] = useState(false);
-    useEffect(() => {
-        return () => {
-            !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
-                dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
-        }
-    }, [])
+
     let {
         attributes: {
             fundraisingGoal,
@@ -310,9 +304,9 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, t }) =>
                                     <span className='optional'>&nbsp;{formatMessage('optional')}</span>
                                 </Header>
                                 <p>
-                                {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc1')}
+                                    {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc1')}
                                     <span>
-                                    {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
+                                        {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
                                     </span>
                                 </p>
                                 <div className="searchBox charitysearch">
@@ -356,7 +350,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, t }) =>
                                 disabled={disableContinueButton}
                             >
                                 {formatMessage('backButton')}
-                                </Button>
+                            </Button>
                             <Button
                                 className='blue-btn-rounded-def'
                                 onClick={handleCreateGroup}

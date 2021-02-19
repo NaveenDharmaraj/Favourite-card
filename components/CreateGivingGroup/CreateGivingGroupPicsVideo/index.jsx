@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, Fragment } from 'react';
+import React, { useState, useRef, Fragment } from 'react';
 import {
     Container,
     Header,
@@ -42,12 +42,6 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
         galleryImages,
     } = createGivingGroupObject;
     const [videoUrlState, setVidoeUrlState] = useState(videoUrl);
-    useEffect(() => {
-        return () => {
-            !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
-                dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
-        }
-    }, [])
     const handleOnChange = (event, data) => {
         let {
             name,
