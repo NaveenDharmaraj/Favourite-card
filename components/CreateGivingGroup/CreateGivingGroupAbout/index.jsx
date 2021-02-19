@@ -10,6 +10,7 @@ import {
 import _isEmpty from 'lodash/isEmpty';
 import arrayMove from 'array-move';
 import dynamic from 'next/dynamic';
+import { connect } from 'react-redux';
 
 import { aboutDescriptionLimit, createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, initializeAddSectionModalObject, intializeCreateGivingGroup } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
@@ -276,4 +277,4 @@ CreateGivingGroupAbout.defaultProps = {
     createGivingGroupStoreFlowObject: { ...intializeCreateGivingGroup },
     dispatch: () => { }
 };
-export default React.memo(withTranslation('givingGroup')(CreateGivingGroupAbout));
+export default React.memo(withTranslation('givingGroup')(connect(null)(CreateGivingGroupAbout)));

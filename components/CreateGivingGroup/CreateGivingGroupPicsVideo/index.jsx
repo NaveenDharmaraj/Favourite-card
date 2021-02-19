@@ -20,11 +20,12 @@ import { withTranslation } from '../../../i18n';
 import '../../../static/less/create_manage_group.less';
 import groupImg from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import { updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import { useDispatch } from 'react-redux';
 const ImageGallery = dynamic(() => import('../../../components/shared/ImageGallery'), {
     ssr: false
 });
 
-const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch, t }) => {
+const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, t }) => {
     const currentActiveStepCompleted = [1, 2, 3];
     const formatMessage = t;
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
@@ -32,6 +33,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(initalizeObject);
     const uploadLogoImageRef = useRef(null);
     const uploadGalleryImageRef = useRef(null);
+    const dispatch = useDispatch();
 
     const [validateVideoUrl, setValidateVideoUrl] = useState(false);
     const {

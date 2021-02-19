@@ -12,8 +12,11 @@ import dynamic from 'next/dynamic';
 // const InviteFriends = dynamic(() => import('../basic'));
 
 import { useState } from "react";
+import _isEmpty from 'lodash/isEmpty';
 import { Accordion, Grid, Icon, Menu } from "semantic-ui-react";
+
 import { Router } from '../../../routes';
+import CreateGivingGroupBasic from '../../CreateGivingGroup/CreateGivingGroupBasic';
 
 const manageGivingGroupAccordianMenuOptions = {
     basic: {
@@ -21,7 +24,7 @@ const manageGivingGroupAccordianMenuOptions = {
         route: 'basic',
         text: 'Basic Settings',
         value: 0,
-        // component: <BasicSetting />
+        component: <CreateGivingGroupBasic />
     },
     about: {
         key: 'about',
@@ -65,13 +68,14 @@ const manageGivingGroupAccordianOptions = {
         route: 'edit',
         text: 'Edit',
         value: 0,
-        // component: <BasicSetting />
+        component: <CreateGivingGroupBasic />
     },
     members: {
         key: 'members',
         route: 'members',
         text: 'Members',
         value: 1,
+        componentValue: 7,
         // component: <BasicSetting />
     },
     manage: {
@@ -116,20 +120,29 @@ const ManageGivingGroupAccordian = ({ step, substep, slug }) => {
     const [stepState, setStepState] = useState(step);
     const [activeAccordionIndex, setActiveAccordionIndex] = useState(activeAccordionIndexValue);
     const [activeMenuIndex, setActiveMenuIndex] = useState(activeMenuIndexValue);
+    const [currentComponentSelectedState, setCurrentComponentSelectedState] = useState({});
+    if (_isEmpty(currentComponentSelectedState) && activeMenuIndexValue !== null) {
+        setCurrentComponentSelectedState(manageGivingGroupAccordianMenuOptions[substep]);
+    } else if (_isEmpty(currentComponentSelectedState) && activeAccordionIndexValue !== null) {
+        setCurrentComponentSelectedState(manageGivingGroupAccordianOptions[step]);
+    }
     const handleAccordionClick = (e, titleProps) => {
         const { accordionIndex, stepValue } = titleProps
         const newAccordionIndex = activeAccordionIndex === accordionIndex ? -1 : accordionIndex
         setActiveAccordionIndex(newAccordionIndex);
         setStepState(stepValue);
+        setCurrentComponentSelectedState(manageGivingGroupAccordianOptions[stepValue]);
         Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions[stepValue].route}`, { shallow: true });
     }
 
     const handleMenuItemClick = (e, titleProps) => {
+        e.stopPropagation();
         const { menuIndex, subStepValue } = titleProps
         const newMenuIndex = activeMenuIndex === menuIndex ? -1 : menuIndex;
         setActiveMenuIndex(newMenuIndex);
+        setCurrentComponentSelectedState(manageGivingGroupAccordianMenuOptions[subStepValue]);
         Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions[stepState].route}/${manageGivingGroupAccordianMenuOptions[subStepValue].route}`, { shallow: true })
-    }
+    };
     return (
         <Grid className='menuContentWrap'>
             <Grid.Column computer={5} tablet={5} mobile={16}>
@@ -255,6 +268,9 @@ const ManageGivingGroupAccordian = ({ step, substep, slug }) => {
             <Grid.Column computer={11} tablet={11} mobile={16} className='active'>
                 <div className='createNewGroupWrap manageGroupWrap'>
                     <div className='mainContent'>
+                        {!_isEmpty(currentComponentSelectedState) &&
+                            currentComponentSelectedState.component
+                        }
                         {/* <BasicSetting/> */}
                         {/* <AboutGroup/> */}
                         {/* <PicsVideo/> */}

@@ -15,7 +15,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _replace from 'lodash/replace';
 import _every from 'lodash/every';
 import _find from 'lodash/find';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { withTranslation } from '../../../i18n';
 import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, intializeCreateGivingGroup, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
@@ -39,12 +39,13 @@ const intializeValidity = {
     isEndDateGreaterThanStartDate: true,
 };
 let timeout = ''
-const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, dispatch, t }) => {
+const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, t }) => {
     const initalizeObject = _isEmpty(createGivingGroupStoreFlowObject) ? intializeCreateGivingGroup : createGivingGroupStoreFlowObject;
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(initalizeObject);
     const formatMessage = t;
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
     const [validity, setValidity] = useState(intializeValidity);
+    const dispatch = useDispatch();
 
     const [charitySearchQuery, setCharitySearchQuery] = useState('');
     const charitiesQueryBasedOptions = useSelector(state => state.createGivingGroup.charitiesQueryBasedOptions || []);

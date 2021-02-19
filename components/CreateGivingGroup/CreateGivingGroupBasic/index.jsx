@@ -15,7 +15,7 @@ import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCr
 import {
     PropTypes,
 } from 'prop-types';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
@@ -26,7 +26,7 @@ import { withTranslation } from '../../../i18n';
 const provinceOptions = canadaProvinceOptions;
 
 
-const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, dispatch, t }) => {
+const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     const formatMessage = t;
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
     const currentActiveStepCompleted = [1];
@@ -42,6 +42,7 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, dispatch, t 
             value: 'Private',
         },
     ];
+    const dispatch = useDispatch();
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(createGivingGroupStoreFlowObject);
     const [validity, setValidity] = useState(intializeValidity);
     const uniqueCities = useSelector(state => state.createGivingGroup.uniqueCities);
