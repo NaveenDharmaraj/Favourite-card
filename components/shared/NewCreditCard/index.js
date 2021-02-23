@@ -212,7 +212,7 @@ class NewCreditCard extends React.Component {
                 open={isCreditCardModalOpen}
                 onClose={this.handleCCAddClose}
             >
-                <Modal.Header>Add new card</Modal.Header>
+                <Modal.Header className="monthly_deposit_heading">Add new card</Modal.Header>
                 <Modal.Content className="Modal_monthly_deposit">
                     <Modal.Description className="font-s-16">
                         <Form>
