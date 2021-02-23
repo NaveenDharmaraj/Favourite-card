@@ -31,7 +31,7 @@ import {
 import { withTranslation } from '../../../i18n';
 import {
     acceptFriendRequest,
-    rejectFriendInvite,
+    ingnoreFriendRequest,
     sendFriendRequest,
 } from '../../../actions/userProfile';
 import friendAvatarPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
@@ -75,7 +75,7 @@ class FriendListCard extends React.Component {
             },
             dispatch,
         } = this.props;
-        dispatch(rejectFriendInvite(currentUserId, friendUserId, email, type)).then(() => {
+        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, type)).then(() => {
             this.setState({
                 updatedStatus: '',
             });

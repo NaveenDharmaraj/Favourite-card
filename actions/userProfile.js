@@ -470,6 +470,7 @@ const getFriendsInvitations = (email, pageNumber) => (dispatch) => {
             direction: 'in',
             'page[number]': pageNumber,
             'page[size]': 10,
+            state: '',
             status: 'pending',
             userid: email,
         },
@@ -1607,37 +1608,32 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
     }).catch().finally();
 };
 
-const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => (dispatch) => {
+const ingnoreFriendRequest = (currentUserId, friendUserId, email, type = '', rejectType = 'ignore') => (dispatch) => {
     const fsa = {
         payload: {},
         type: actionTypes.USER_PROFILE_FIND_DROPDOWN_FRIENDS,
     };
     const payloadObj = {
-        relationship: 'IS_CHIMP_FRIEND_OF',
-        source: {
-            entity: 'user',
-            filters: {
-                user_id: Number(currentUserId),
-            },
-        },
-        target: {
-            entity: 'user',
-            filters: {
-                user_id: Number(friendUserId),
-            },
-        },
+        fromChimpId: currentUserId,
+        state: 'ignored',
+        toChimpId: friendUserId,
     };
-    const rejectFriendInvitePromise = graphApi.post(`/users/deleterelationship`, payloadObj, {
+    let urlType = 'ignoreFriendRequest';
+    if (rejectType !== 'ignore') {
+        urlType = 'removeFriendRequest';
+        payloadObj.state = undefined;
+    }
+    const ingnoreFriendRequestPromise = graphApi.post(`/users/${urlType}`, payloadObj, {
         params: {
             dispatch,
             ignore401: true,
         },
     });
-    rejectFriendInvitePromise.then((result) => {
+    ingnoreFriendRequestPromise.then((result) => {
         if (type === 'invitation') {
             dispatch(getFriendsInvitations(email, 1));
             dispatch(getMyFriendsList(email, 1, currentUserId));
-            //dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
+            // dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
         } else if (type === 'friendSearch') {
             fsa.payload.userId = friendUserId;
             fsa.payload.status = '';
@@ -1645,11 +1641,53 @@ const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => (d
         } else if (type === 'myProfile') {
             dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
         }
-    }).catch(err => {
-        // hanlde error message
-    });
-    return rejectFriendInvitePromise;
+    }).catch();
+    return ingnoreFriendRequestPromise;
 };
+
+// const rejectFriendInvite = (currentUserId, friendUserId, email, type = '') => (dispatch) => {
+//     const fsa = {
+//         payload: {},
+//         type: actionTypes.USER_PROFILE_FIND_DROPDOWN_FRIENDS,
+//     };
+//     const payloadObj = {
+//         relationship: 'IS_CHIMP_FRIEND_OF',
+//         source: {
+//             entity: 'user',
+//             filters: {
+//                 user_id: Number(currentUserId),
+//             },
+//         },
+//         target: {
+//             entity: 'user',
+//             filters: {
+//                 user_id: Number(friendUserId),
+//             },
+//         },
+//     };
+//     const rejectFriendInvitePromise = graphApi.post(`/users/deleterelationship`, payloadObj, {
+//         params: {
+//             dispatch,
+//             ignore401: true,
+//         },
+//     });
+//     rejectFriendInvitePromise.then((result) => {
+//         if (type === 'invitation') {
+//             dispatch(getFriendsInvitations(email, 1));
+//             dispatch(getMyFriendsList(email, 1, currentUserId));
+//             //dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
+//         } else if (type === 'friendSearch') {
+//             fsa.payload.userId = friendUserId;
+//             fsa.payload.status = '';
+//             dispatch(fsa);
+//         } else if (type === 'myProfile') {
+//             dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
+//         }
+//     }).catch(err => {
+//         // hanlde error message
+//     });
+//     return rejectFriendInvitePromise;
+// };
 
 const searchMyfriend = (userId, queryText) => (dispatch) => {
     const fsa = {
@@ -1899,9 +1937,10 @@ export {
     setPrimaryUserEmailAddress,
     resendUserVerifyEmail,
     searchLocationByUserInput,
-    rejectFriendInvite,
+    // rejectFriendInvite,
     searchMyfriend,
     searchFriendByUserInput,
     updateInfoUserPreferences,
     updateUserProfileToastMsg,
+    ingnoreFriendRequest,
 };

@@ -17,7 +17,7 @@ import {
     List,
 } from 'semantic-ui-react'
 import {
-    rejectFriendInvite,
+    ingnoreFriendRequest,
     updateUserPreferences,
 } from '../../actions/userProfile';
 import _ from 'lodash';
@@ -201,13 +201,13 @@ class NotificationWrapper extends React.Component {
             },
             dispatch,
         } = this.props;
-        dispatch(rejectFriendInvite(currentUserId, friendUserId, email, type))
-            .then(() => {
-                this.onNotificationMsgAction('delete', msg, false)
-            })
-            .catch(() => {
+        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, type));
+            // .then(() => {
+            //     this.onNotificationMsgAction('delete', msg, false)
+            // })
+            // .catch(() => {
 
-            })
+            // })
     }
 
     listItems(messages, newClass = "") {

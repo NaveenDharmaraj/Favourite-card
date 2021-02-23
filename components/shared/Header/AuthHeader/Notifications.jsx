@@ -16,7 +16,7 @@ import placeholderUser from '../../../../static/images/no-data-avatar-user-profi
 import { distanceOfTimeInWords } from '../../../../helpers/utils';
 import eventApi from '../../../../services/eventApi';
 import {
-    rejectFriendInvite,
+    ingnoreFriendRequest,
     updateUserPreferences,
 } from '../../../../actions/userProfile';
 import { getParamStoreConfig } from '../../../../actions/user';
@@ -120,13 +120,13 @@ class Notifications extends React.Component {
             },
             dispatch,
         } = this.props;
-        dispatch(rejectFriendInvite(currentUserId, friendUserId, email, type))
-            .then(() => {
-                this.onNotificationMsgAction('delete', msg, false)
-            })
-            .catch(() => {
+        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, type));
+        // .then(() => {
+        //     this.onNotificationMsgAction('delete', msg, false);
+        // })
+        // .catch(() => {
 
-            })
+        // });
     }
     // eslint-disable-next-line class-methods-use-this
     splitNotifications(messages = []) {
