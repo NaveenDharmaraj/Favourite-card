@@ -33,7 +33,7 @@ import {
     removeFriend,
     generateDeeplinkUserProfile,
     acceptFriend,
-    rejectFriendInvite,
+    ingnoreFriendRequest,
     updateUserProfileToastMsg,
 } from '../../../actions/userProfile';
 import {
@@ -251,7 +251,7 @@ class UserBasicProfile extends React.Component {
         }
     }
 
-    handleRejectRequest() {
+    handleRejectRequest(type) {
         const {
             currentUser: {
                 attributes: {
@@ -266,7 +266,7 @@ class UserBasicProfile extends React.Component {
                 },
             },
         } = this.props;
-        dispatch(rejectFriendInvite(currentUserId, friendUserId, email, 'myProfile'));
+        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, 'myProfile', type));
     }
     renderFriendsPage() {
         const {
@@ -302,6 +302,7 @@ class UserBasicProfile extends React.Component {
                     friends_visibility,
                     user_id,
                     email_hash,
+                    state,
                 },
             },
             handlePreviewPage,
@@ -328,10 +329,11 @@ class UserBasicProfile extends React.Component {
         const isBlocked = (profile_type.substring(0, 7) === 'blocked') ? true : false;
         const isBlockedIn = (profile_type.includes('blocked_profile_in')) ? true : false
         const isFriendPending = (profile_type.substring(0, 7) === 'pending') ? true : false;
+        const isIgnored = (profile_type === 'pending_profile_in' && state === 'IGNORED') ? true: false;
         const isFriend = (profile_type === 'friends_profile') ? true : false;
         const isLimited = (profile_type === 'limited_profile') ? true : false;
         const isProfileOut = (profile_type === 'pending_profile_out') ? true : false;
-        const isProfileIn = (profile_type === 'pending_profile_in') ? true : false;
+        const isProfileIn = (profile_type === 'pending_profile_in' && state !== 'IGNORED') ? true : false;
         let email = ((!_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : ''));
         return (
             <Fragment>
@@ -476,7 +478,7 @@ class UserBasicProfile extends React.Component {
                                     </Dropdown>
                                 </Fragment>
                             )}
-                        {((!isMyProfile || (isPreviewMode && previewValue === 0)) && !isFriendPending && !isFriend && !isBlocked)
+                        {((!isMyProfile || (isPreviewMode && previewValue === 0)) && (!isFriendPending || isIgnored) && !isFriend && !isBlocked)
                             && (
                                 <Button
                                     className="blue-btn-rounded"
@@ -504,7 +506,7 @@ class UserBasicProfile extends React.Component {
                                     )}
                                 >
                                     <Dropdown.Menu >
-                                        <Dropdown.Item onClick={this.handleRejectRequest}>
+                                        <Dropdown.Item onClick={() =>this.handleRejectRequest('cancel')}>
                                             Cancel<span className='mob-hide'> friend</span> request
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
@@ -531,7 +533,7 @@ class UserBasicProfile extends React.Component {
                                             text='Accept'
                                         />
                                         <Dropdown.Item
-                                            onClick={this.handleRejectRequest}
+                                            onClick={() => this.handleRejectRequest('ignore')}
                                             text='Ignore'
                                         />
                                     </Dropdown.Menu>
