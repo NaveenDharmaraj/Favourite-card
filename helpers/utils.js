@@ -277,8 +277,13 @@ const createCustomAmzTraceId = ()=>{
     return `${AMZ_TRACE_ID_VERSION}-${(Date.now()).toString(16)}-${randHex(24)}`
 }
 
+const createReqId = () =>{
+    return `${randHex(8)}-${randHex(4)}-${randHex(4)}-${randHex(4)}-${randHex(11)}`
+}
+
 export {
     createCustomAmzTraceId,
+    createReqId,
     getMainNavItems,
     isFalsy,
     distanceOfTimeInWords,

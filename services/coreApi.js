@@ -12,7 +12,7 @@ import {
 } from '../actions/error';
 import { softLogout } from '../actions/auth';
 import logger from '../helpers/logger';
-import { createCustomAmzTraceId } from '../helpers/utils';
+import { createCustomAmzTraceId, createReqId } from '../helpers/utils';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -21,14 +21,15 @@ const {
     CORE_API_DOMAIN,
     CORE_API_VERSION,
 } = publicRuntimeConfig;
-let reqId = createCustomAmzTraceId();
+let amzTraceId = createCustomAmzTraceId();
+let reqId = createReqId();
 
 const instance = axios.create({
     baseURL: `${CORE_API_DOMAIN}/${CORE_API_BASE}/${CORE_API_VERSION}`,
     headers: {
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
-        'request-header-attrs': `request_id:${reqId}|custom_x_amz_trace_id:${reqId}`,
+        'request-header-attrs': `request_id:${reqId}|custom_x_amz_trace_id:${amzTraceId}`,
     },
 });
 instance.interceptors.request.use(function (config) {

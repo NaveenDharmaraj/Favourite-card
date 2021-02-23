@@ -4,7 +4,7 @@ import getConfig from 'next/config';
 
 import auth0 from '../services/auth';
 import logger from '../helpers/logger';
-import { createCustomAmzTraceId } from '../helpers/utils';
+import { createCustomAmzTraceId, createReqId } from '../helpers/utils';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -13,14 +13,15 @@ const {
     ROR_AUTH_API_DOMAIN,
     ROR_AUTH_API_VERSION,
 } = publicRuntimeConfig;
-let reqId = createCustomAmzTraceId();
+let amzTraceId = createCustomAmzTraceId();
+let reqId = createReqId();
 
 const instance = axios.create({
     baseURL: `${ROR_AUTH_API_DOMAIN}/${ROR_AUTH_API_BASE}/${ROR_AUTH_API_VERSION}`,
     headers: {
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
-        'request-header-attrs': `request_id:${reqId}|custom_x_amz_trace_id:${reqId}`,
+        'request-header-attrs': `request_id:${reqId}|custom_x_amz_trace_id:${amzTraceId}`,
     },
 });
 instance.interceptors.request.use(function (config) {
