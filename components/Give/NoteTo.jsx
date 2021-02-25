@@ -43,7 +43,6 @@ const NoteTo = (props) => {
         noteToCharity,
         noteToSelf,
         validity,
-        isEditModal,
     } = props;
     const currentCountNoteToSelf = (!_isEmpty(noteToSelf)) ? Math.max(0, (1000 - Number(noteToSelf.length))) : 1000;
     const infoNoteToSelf = `${currentCountNoteToSelf} of 1000 characters left`;
@@ -95,7 +94,7 @@ const NoteTo = (props) => {
                 errorMessage={formatMessage('giveCommon:errorMessages.invalidNoteTextError')}
             />
             {/* PM-585 Remove note to self for company and campaigns */}
-            {!!!isEditModal && (giveFromType === 'groups' || giveFromType === 'user') && (
+            {(giveFromType === 'groups' || giveFromType === 'user') && (
                 <Fragment>
                     <Form.Field className="give_flow_field">
                         <label htmlFor="noteToSelf" id="noteToSelfLabel">

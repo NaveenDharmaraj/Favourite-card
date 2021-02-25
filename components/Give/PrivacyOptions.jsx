@@ -28,9 +28,6 @@ const PrivacyOptions = (props) => {
         infoToShare,
         groupCampaignAdminShareInfoOptions,
     } = props;
-    console.log(nameToShare, 'nameToShare');
-    console.log(infoToShare, 'infoToShare');
-    console.log(privacyShareAmount, 'privacyShareAmount');
     const privacyShareAmountLabel = formatMessage(`privacyOptions:sharePrivacyGiftAmount`);
     const [
         infoToShareAdminOption,

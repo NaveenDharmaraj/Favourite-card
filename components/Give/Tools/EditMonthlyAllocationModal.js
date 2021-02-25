@@ -17,15 +17,17 @@ import {
 	isValidGiftAmount,
 	populatePaymentInstrument,
 	validateDonationForm,
+    validateGiveForm,
 } from '../../../helpers/give/utils';
 import { getAllActivePaymentInstruments } from '../../../actions/give';
 import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
 import { editUpcommingDeposit } from '../../../actions/user';
 import { getGroupCampaignAdminInfoToShare } from '../../../actions/userProfile';
 
-const NewCreditCard = dynamic(() => import('../../shared/NewCreditCard'), {
+const DedicateType = dynamic(() => import('../DedicateGift'), {
 	ssr: false,
 });
+
 const EditMonthlyAllocationModal = ({
 	currentMonthlyAllocAmount,
 	t,
@@ -37,7 +39,6 @@ const EditMonthlyAllocationModal = ({
 	language,
 	giveToType,
 	notetoRecipient,
-    privacyShareAmount,
 }) => {
 	const formatMessage = t;
 
@@ -53,6 +54,7 @@ const EditMonthlyAllocationModal = ({
 		isValidNoteToSelf: true,
 		isNoteToCharityInLimit: true,
 		isNoteToSelfInLimit: true,
+		isDedicateGiftEmpty: true,
 	};
 	const formatedCurrentMonthlyAllocAmount = currentMonthlyAllocAmount.replace(
 		'$',
@@ -61,7 +63,7 @@ const EditMonthlyAllocationModal = ({
 	const dispatch = useDispatch();
 	const currentUser = useSelector((state) => state.user.info);
 	let {
-		attributes: { displayName, email, firstName, lastName, preferences },
+		attributes: { preferences },
 		id,
 	} = currentUser;
 	const infoOptions = useSelector((state) => state.userProfile.infoOptions);
@@ -71,38 +73,31 @@ const EditMonthlyAllocationModal = ({
 		groupCampaignAdminShareInfoOptions,
 		setGroupCampaignAdminShareInfoOptions,
 	] = useState([]);
-    const [giftFreq, setGiftFreq] = useState(giftType);
+	const [giftFreq, setGiftFreq] = useState(giftType);
 	useEffect(() => {
-		if (_isEmpty(infoOptions)) {
-			dispatch(getGroupCampaignAdminInfoToShare(id, false));
-		} else {
-			let {
-				groupMemberInfoToShare,
-				groupCampaignAdminShareInfoOptions,
-			} = infoOptions;
-			const { infoToShareList } = populateDropdownInfoToShare(
-				groupMemberInfoToShare
-			);
-			setInfoToShareList(infoToShareList);
-			setGroupCampaignAdminShareInfoOptions(
-				groupCampaignAdminShareInfoOptions
-			);
+		if (showEditModal) {
+			if (_isEmpty(infoOptions)) {
+				dispatch(getGroupCampaignAdminInfoToShare(id, false));
+			} else {
+				let {
+					groupMemberInfoToShare,
+					groupCampaignAdminShareInfoOptions,
+				} = infoOptions;
+				const { infoToShareList } = populateDropdownInfoToShare(
+					groupMemberInfoToShare
+				);
+				setInfoToShareList(infoToShareList);
+				setGroupCampaignAdminShareInfoOptions(
+					groupCampaignAdminShareInfoOptions
+				);
+			}
 		}
-	}, []);
+	}, [showEditModal]);
 	const [defaultInfoToShare, setDefaultInfoToShare] = useState();
-	const prefernceName =
-		giveToType === 'Campaign'
-			? 'campaign_admins_info_to_share'
-			: 'giving_group_admins_info_to_share';
-	const preference = preferences[prefernceName].includes('address')
-		? `${preferences[prefernceName]}-${
-				preferences[`${prefernceName}_address`]
-		  }`
-		: preferences[prefernceName];
 	const [defaultNameToShare, setDefaultNameToShare] = useState();
-
+	const [privacyShareAmount, setPrivacyShareAmount] = useState();
 	useEffect(() => {
-		if (!_isEmpty(infoOptions)) {
+		if (!_isEmpty(infoOptions) && !_isEmpty(currentUser)) {
 			let {
 				groupMemberInfoToShare,
 				groupCampaignAdminShareInfoOptions,
@@ -114,11 +109,29 @@ const EditMonthlyAllocationModal = ({
 			setGroupCampaignAdminShareInfoOptions(
 				groupCampaignAdminShareInfoOptions
 			);
-            debugger
-			setDefaultInfoToShare(
-				infoToShareList.find((opt) => opt.value === preference)
+			const prefernceName =
+				giveToType === 'Campaign'
+					? 'campaign_admins_info_to_share'
+					: 'giving_group_admins_info_to_share';
+			const preference = preferences[prefernceName].includes('address')
+				? `${preferences[prefernceName]}-${
+						preferences[`${prefernceName}_address`]
+				  }`
+				: preferences[prefernceName];
+			setPrivacyShareAmount(
+				preferences['giving_group_members_share_my_giftamount']
 			);
-
+			if (
+				!_isEmpty(groupCampaignAdminShareInfoOptions) &&
+				groupCampaignAdminShareInfoOptions.length > 0
+			) {
+				const { infoToShareList } = populateDropdownInfoToShare(
+					groupCampaignAdminShareInfoOptions
+				);
+				setDefaultInfoToShare(
+					infoToShareList.find((opt) => opt.value === preference)
+				);
+			}
 			setDefaultNameToShare(
 				infoToShareList.find(
 					(opt) =>
@@ -129,8 +142,6 @@ const EditMonthlyAllocationModal = ({
 		}
 	}, [infoOptions]);
 
-	// const privacyShareAmount =
-	// 	preferences['giving_group_members_share_my_giftamount'];
 	// state for amount value in edit modal
 	const [amount, setAmount] = useState(formatedCurrentMonthlyAllocAmount);
 
@@ -157,10 +168,16 @@ const EditMonthlyAllocationModal = ({
 	// initializing the flow object for edit flow
 	const flowObject = {
 		giveData: {
-			giveFrom: { type: 'user' },
+			giveFrom: {
+				type: 'user',
+			},
 			giveTo: {
 				id: currentUser.id,
 				type: 'user',
+			},
+			dedicateGift: {
+				dedicateType: '',
+				dedicateValue: '',
 			},
 		},
 		type: 'donations',
@@ -168,8 +185,11 @@ const EditMonthlyAllocationModal = ({
 
 	const handleInputChange = (event, data) => {
 		const { name, options, value } = data;
-		let newValue = !_isEmpty(options) ? _find(options, { value }) : value;
-		debugger;
+		let newValue = !_isEmpty(options)
+			? _find(options, {
+					value,
+			  })
+			: value;
 		switch (name) {
 			case 'donationAmount':
 				setAmount(value);
@@ -191,10 +211,15 @@ const EditMonthlyAllocationModal = ({
 				break;
 			case 'infoToShare':
 				setDefaultInfoToShare(newValue);
-                // debugger
 				break;
 			case 'noteToCharity':
 				setNoteToCharity(newValue);
+			case 'inHonorOf':
+			case 'inMemoryOf':
+				setValidity(
+					validateGiveForm('dedicateType', null, validity, giveData)
+				);
+				break;
 		}
 		setDisableButton(false);
 	};
@@ -211,7 +236,9 @@ const EditMonthlyAllocationModal = ({
 			setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
 		}
 		const validitions = validateDonationForm(name, value, validity);
-		setValidity({ ...validitions });
+		setValidity({
+			...validitions,
+		});
 	};
 
 	const handlePresetAmountClick = (event, data) => {
@@ -221,7 +248,9 @@ const EditMonthlyAllocationModal = ({
 			value,
 			validity
 		);
-		setValidity({ ...validitions });
+		setValidity({
+			...validitions,
+		});
 		setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
 		setDisableButton(false);
 	};
@@ -255,10 +284,14 @@ const EditMonthlyAllocationModal = ({
 		validation = validateDonationForm('donationAmount', amount, validity);
 		validation = validateDonationForm(
 			'creditCard',
-			{ value: currentCardSelected },
+			{
+				value: currentCardSelected,
+			},
 			validity
 		);
-		setValidity({ ...validation });
+		setValidity({
+			...validation,
+		});
 		const validationsResponse = _every(validation);
 		return validationsResponse;
 	};
@@ -289,7 +322,9 @@ const EditMonthlyAllocationModal = ({
 	};
 
 	const handlegiftTypeButtonClick = (e, { value }) => {
-        setGiftFreq({value})
+		setGiftFreq({
+			value,
+		});
 	};
 
 	// Privacy section
@@ -344,11 +379,11 @@ const EditMonthlyAllocationModal = ({
 					className="blue-bordr-btn-round-def c-small"
 					onClick={() => handleEditClick()}
 				>
-					Edit
+					Edit{' '}
 				</Button>
 			}
 		>
-			<Modal.Header>{recipientName}</Modal.Header>
+			<Modal.Header> {recipientName} </Modal.Header>{' '}
 			<Modal.Content>
 				<Modal.Description>
 					<Form>
@@ -359,9 +394,24 @@ const EditMonthlyAllocationModal = ({
 							handleInputOnBlur={handleInputOnBlur}
 							handlePresetAmountClick={handlePresetAmountClick}
 							validity={validity}
-						/>
-						{renderRepeatGift()}
-						{!_isEmpty(infoOptions) && privacyOptionComponent}
+						/>{' '}
+						{renderRepeatGift()}{' '}
+						{!_isEmpty(infoOptions) && privacyOptionComponent}{' '}
+						<Form.Field className="give_flow_field">
+							<DedicateType
+								handleInputChange={handleInputChange}
+								handleInputOnBlur={handleInputOnBlur}
+								dedicateType={
+									flowObject.giveData.dedicateGift
+										.dedicateType
+								}
+								dedicateValue={
+									flowObject.giveData.dedicateGift
+										.dedicateValue
+								}
+								validity={validity}
+							/>{' '}
+						</Form.Field>{' '}
 						<Grid className="to_space">
 							<Grid.Row className="to_space">
 								<Grid.Column
@@ -379,12 +429,12 @@ const EditMonthlyAllocationModal = ({
 										noteToSelf={noteToSelf}
 										validity={validity}
 										isEditModal={true}
-									/>
-								</Grid.Column>
-							</Grid.Row>
-						</Grid>
-					</Form>
-				</Modal.Description>
+									/>{' '}
+								</Grid.Column>{' '}
+							</Grid.Row>{' '}
+						</Grid>{' '}
+					</Form>{' '}
+				</Modal.Description>{' '}
 				<div className="btn-wraper text-right">
 					<Modal.Actions>
 						<Button
@@ -394,11 +444,11 @@ const EditMonthlyAllocationModal = ({
 								disableButton || !isValidGiftAmount(validity)
 							}
 						>
-							Save
-						</Button>
-					</Modal.Actions>
-				</div>
-			</Modal.Content>
+							Save{' '}
+						</Button>{' '}
+					</Modal.Actions>{' '}
+				</div>{' '}
+			</Modal.Content>{' '}
 		</Modal>
 	);
 };

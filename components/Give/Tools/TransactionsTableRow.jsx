@@ -79,9 +79,7 @@ class TransactionTableRow extends React.Component {
             language,
             giftType,
             destinationType,
-            privacyShareAmount,
 		} = this.props;
-
 		const { showDeleteModal, activeIndexs } = this.state;
 
 		const deleteModal = (
@@ -150,7 +148,6 @@ class TransactionTableRow extends React.Component {
                                 giftType={giftType}
                                 language={language}
                                 giveToType={destinationType}
-                                privacyShareAmount={privacyShareAmount}
 							/>
 						) : (
 							<EditMonthlyDepositModal

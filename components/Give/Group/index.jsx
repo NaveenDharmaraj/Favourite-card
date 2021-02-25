@@ -770,7 +770,6 @@ class Group extends React.Component {
         if (name !== 'inHonorOf' && name !== 'inMemoryOf') {
             giveData[name] = newValue;
             giveData.userInteracted = true;
-            debugger
             switch (name) {
                 case 'giveFrom':
                     const {
