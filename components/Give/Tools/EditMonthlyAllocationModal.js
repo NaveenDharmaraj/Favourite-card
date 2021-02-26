@@ -17,12 +17,13 @@ import {
 	isValidGiftAmount,
 	populatePaymentInstrument,
 	validateDonationForm,
-    validateGiveForm,
+	validateGiveForm,
 } from '../../../helpers/give/utils';
 import { getAllActivePaymentInstruments } from '../../../actions/give';
 import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
 import { editUpcommingDeposit } from '../../../actions/user';
 import { getGroupCampaignAdminInfoToShare } from '../../../actions/userProfile';
+import { flow } from 'lodash';
 
 const DedicateType = dynamic(() => import('../DedicateGift'), {
 	ssr: false,
@@ -184,58 +185,91 @@ const EditMonthlyAllocationModal = ({
 	};
 
 	const handleInputChange = (event, data) => {
-		const { name, options, value } = data;
+		const { name, options, value, newIndex } = data;
 		let newValue = !_isEmpty(options)
 			? _find(options, {
 					value,
 			  })
 			: value;
-		switch (name) {
-			case 'donationAmount':
-				setAmount(value);
-				break;
-			case 'nameToShare':
-				setDefaultNameToShare(newValue);
-				if (
-					newValue.value !== 'anonymous' &&
-					infoToShare.value === 'anonymous'
-				) {
-					setDefaultInfoToShare(
-						infoToShareList.find((opt) => opt.value === 'name')
-					);
-				} else {
-					setDefaultInfoToShare(
-						infoToShareList.find((opt) => opt.value === 'name')
-					);
-				}
-				break;
-			case 'infoToShare':
-				setDefaultInfoToShare(newValue);
-				break;
-			case 'noteToCharity':
-				setNoteToCharity(newValue);
-			case 'inHonorOf':
-			case 'inMemoryOf':
-				setValidity(
-					validateGiveForm('dedicateType', null, validity, giveData)
-				);
-				break;
+		if (name === 'inHonorOf' || name === 'inMemoryOf') {
+			if (newIndex === -1) {
+				giveData.dedicateGift.dedicateType = '';
+				giveData.dedicateGift.dedicateValue = '';
+			} else {
+				giveData.dedicateGift.dedicateType = name;
+				giveData.dedicateGift.dedicateValue = value;
+			}
+			setValidity({ ...validity, isDedicateGiftEmpty: true });
 		}
-		setDisableButton(false);
+		if (name !== 'inHonorOf' && name !== 'inMemoryOf') {
+			switch (name) {
+				case 'donationAmount':
+					setAmount(value);
+					break;
+				case 'nameToShare':
+					setDefaultNameToShare(newValue);
+					if (
+						newValue.value !== 'anonymous' &&
+						infoToShare.value === 'anonymous'
+					) {
+						setDefaultInfoToShare(
+							infoToShareList.find((opt) => opt.value === 'name')
+						);
+					} else {
+						setDefaultInfoToShare(
+							infoToShareList.find((opt) => opt.value === 'name')
+						);
+					}
+					break;
+				case 'infoToShare':
+					setDefaultInfoToShare(newValue);
+					break;
+				case 'noteToCharity':
+					setNoteToCharity(newValue);
+					break;
+				case 'noteToSelf':
+					setNoteToSelf(newValue);
+					break;
+			}
+			setDisableButton(false);
+		}
 	};
 
 	const handleInputOnBlur = (event, data) => {
 		event.preventDefault();
 		const { name, value } = !_isEmpty(data) ? data : event.target;
 		const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
-		if (
-			name === 'donationAmount' &&
-			!_isEmpty(value) &&
-			value.match(isValidNumber)
-		) {
-			setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
+
+		switch (name) {
+			case 'donationAmount':
+				if (_isEmpty(value) && value.match(isValidNumber)) {
+					setAmount(
+						formatAmount(parseFloat(value.replace(/,/g, '')))
+					);
+				}
+			case 'noteToCharity':
+				setNoteToCharity(value.trim());
+				break;
+			case 'noteToSelf':
+				setNoteToSelf(value.trim());
+			case 'inHonorOf':
+			case 'inMemoryOf':
+				setValidity(
+					validateGiveForm(
+						'dedicateType',
+						null,
+						validity,
+						flowObject.giveData
+					)
+				);
+				break;
 		}
-		const validitions = validateDonationForm(name, value, validity);
+		const validitions = validateGiveForm(
+			name,
+			value,
+			validity,
+			flowObject.giveData
+		);
 		setValidity({
 			...validitions,
 		});
