@@ -24,7 +24,6 @@ function DonationFrequency(props) {
         isCampaign,
         isEditModal,
     } = props;
-    console.log(giftType, 'giftType');
     return (
         <>
             <div className="give_flow_field Frequencybottom">
