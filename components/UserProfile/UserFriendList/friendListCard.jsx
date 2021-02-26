@@ -23,6 +23,8 @@ import {
     array,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
+import _indexOf from 'lodash/indexOf';
+import _toNumber from 'lodash/toNumber';
 
 import { Link } from '../../../routes';
 import {
@@ -42,8 +44,12 @@ class FriendListCard extends React.Component {
         this.handleAcceptRequest = this.handleAcceptRequest.bind(this);
         this.rejectInvite = this.rejectInvite.bind(this);
         this.handleAddFriendClick = this.handleAddFriendClick.bind(this);
+        let updatedStatus = (_isEmpty(props.data.status) && !_isEmpty(props.data.friend_status)) ? props.data.friend_status : props.data.status;
+        if (_indexOf(props.data.ignored_by_users, _toNumber(props.currentUser.id)) !== -1) {
+            updatedStatus = undefined;
+        }
         this.state = {
-            updatedStatus: (_isEmpty(props.data.status) && !_isEmpty(props.data.friend_status)) ? props.data.friend_status : props.data.status,
+            updatedStatus,
         };
     }
 
@@ -238,10 +244,11 @@ FriendListCard.defaultProps = {
         avatar: '',
         city: '',
         first_name: '',
+        friend_status: '',
+        ignored_by_users: [],
         last_name: '',
         province: '',
         status: '',
-        friend_status: '',
     },
     type: '',
     hideFriendPage: () => {},
@@ -266,10 +273,11 @@ FriendListCard.propTypes = {
         avatar: string,
         city: string,
         first_name: string,
+        friend_status: string,
+        ignored_by_users: array,
         last_name: string,
         province: string,
         status: string,
-        friend_status: string,
     }),
     type: string,
     isMyProfile: bool,
