@@ -191,16 +191,18 @@ const EditMonthlyAllocationModal = ({
 					value,
 			  })
 			: value;
+            debugger
 		if (name === 'inHonorOf' || name === 'inMemoryOf') {
 			if (newIndex === -1) {
-				giveData.dedicateGift.dedicateType = '';
-				giveData.dedicateGift.dedicateValue = '';
+				flowObject.giveData.dedicateGift.dedicateType = '';
+				flowObject.giveData.dedicateGift.dedicateValue = '';
 			} else {
-				giveData.dedicateGift.dedicateType = name;
-				giveData.dedicateGift.dedicateValue = value;
+				flowObject.giveData.dedicateGift.dedicateType = name;
+				flowObject.giveData.dedicateGift.dedicateValue = value;
 			}
 			setValidity({ ...validity, isDedicateGiftEmpty: true });
 		}
+        debugger
 		if (name !== 'inHonorOf' && name !== 'inMemoryOf') {
 			switch (name) {
 				case 'donationAmount':
@@ -316,13 +318,7 @@ const EditMonthlyAllocationModal = ({
 	const validateForm = () => {
 		let validation;
 		validation = validateDonationForm('donationAmount', amount, validity);
-		validation = validateDonationForm(
-			'creditCard',
-			{
-				value: currentCardSelected,
-			},
-			validity
-		);
+		
 		setValidity({
 			...validation,
 		});
@@ -344,10 +340,7 @@ const EditMonthlyAllocationModal = ({
 			)
 				.then(() => {
 					setShowEditModal(false);
-					setAmount(
-						formatAmount(parseFloat(amount.replace(/,/g, '')))
-					);
-					setCurrentCardSelected(currentCardSelected);
+					
 				})
 				.catch(() => {
 					setShowEditModal(true);

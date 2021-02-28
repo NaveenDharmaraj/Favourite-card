@@ -423,8 +423,8 @@ const _handleLockSuccess = async ({
     } = returnProps;
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
-   // chimpLogin(accessToken, returnProps).then(async ({ currentUser, beneficiarySlug }) => {
-        const userId = 888000 //parseInt(currentUser, 10);
+    chimpLogin(accessToken, returnProps).then(async ({ currentUser, beneficiarySlug }) => {
+        const userId = parseInt(currentUser, 10);
         if (document) {
             // console.log('setting wp access token');
             await (auth0.wpAccessToken = accessToken);
@@ -450,22 +450,22 @@ const _handleLockSuccess = async ({
             dataLayerName: 'dataLayer',
         };
         addToDataLayer(tagManagerArgs);
-        // if (beneficiarySlug) {
-        //     await (storage.unset('claimToken','local'));
-        //     await (storage.unset('signup_source_id','local'));
-        //     await (storage.unset('signup_source','local'));
-        //     // Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug}`);
-        // } else {
+        if (beneficiarySlug) {
+            await (storage.unset('claimToken','local'));
+            await (storage.unset('signup_source_id','local'));
+            await (storage.unset('signup_source','local'));
+            Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug}`);
+        } else {
             Router.pushRoute(returnTo);
-        //}
-   // })
-        // .catch(() => {
-        //     let route = '/users/login';
-        //     if (!_isEmpty(returnTo)) {
-        //         route += `?returnTo=${returnTo}`;
-        //     }
-        //     Router.pushRoute(route);
-        // });
+        }
+    })
+        .catch(() => {
+            let route = '/users/login';
+            if (!_isEmpty(returnTo)) {
+                route += `?returnTo=${returnTo}`;
+            }
+            Router.pushRoute(route);
+        });
     // After successfull login redirecting to home
     return null;
 };
