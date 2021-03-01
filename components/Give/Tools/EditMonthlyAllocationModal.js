@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Button, Grid, Form, Input, Modal } from 'semantic-ui-react';
+import {
+	Button,
+	Grid,
+	Form,
+	Input,
+	Modal,
+	Popup,
+	Icon,
+	Select,
+} from 'semantic-ui-react';
 import { withTranslation } from '../../../i18n';
 import _isEmpty from 'lodash/isEmpty';
 import _find from 'lodash/find';
+import _includes from 'lodash/includes';
 import _every from 'lodash/every';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -15,15 +25,16 @@ import NoteTo from '../NoteTo';
 import {
 	formatAmount,
 	isValidGiftAmount,
-	populatePaymentInstrument,
 	validateDonationForm,
 	validateGiveForm,
 } from '../../../helpers/give/utils';
-import { getAllActivePaymentInstruments } from '../../../actions/give';
 import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
-import { editUpcommingDeposit } from '../../../actions/user';
-import { getGroupCampaignAdminInfoToShare } from '../../../actions/userProfile';
-import { flow } from 'lodash';
+import { editUpcomingAllocation } from '../../../actions/user';
+import {
+	getGroupCampaignAdminInfoToShare,
+	getCharityInfoToShare,
+} from '../../../actions/userProfile';
+const SpecialInstruction = dynamic(() => import('../SpecialInstruction'));
 
 const DedicateType = dynamic(() => import('../DedicateGift'), {
 	ssr: false,
@@ -32,7 +43,6 @@ const DedicateType = dynamic(() => import('../DedicateGift'), {
 const EditMonthlyAllocationModal = ({
 	currentMonthlyAllocAmount,
 	t,
-	paymentInstrumentId,
 	transactionId,
 	activePage,
 	recipientName,
@@ -68,35 +78,67 @@ const EditMonthlyAllocationModal = ({
 		id,
 	} = currentUser;
 	const infoOptions = useSelector((state) => state.userProfile.infoOptions);
+	const charityShareInfoOptions = useSelector(
+		(state) => state.userProfile.charityShareInfoOptions
+	);
+
 	const [infoToShareList, setInfoToShareList] = useState([]);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [
 		groupCampaignAdminShareInfoOptions,
 		setGroupCampaignAdminShareInfoOptions,
 	] = useState([]);
+	const [defautlDropDownValue, setDefaultDropDownValue] = useState();
+	const [options, setOptions] = useState([
+		{
+			text: 'Give anonymously',
+			value: 'anonymous',
+		},
+	]);
 	const [giftFreq, setGiftFreq] = useState(giftType);
 	useEffect(() => {
 		if (showEditModal) {
-			if (_isEmpty(infoOptions)) {
-				dispatch(getGroupCampaignAdminInfoToShare(id, false));
+			if (giveToType === 'Beneficiary') {
+				if (_isEmpty(charityShareInfoOptions)) {
+					dispatch(getCharityInfoToShare(id));
+				} else {
+					const { infoToShareList } = populateDropdownInfoToShare(
+						charityShareInfoOptions
+					);
+					const name = 'charities_info_to_share';
+					const preference = preferences[name].includes('address')
+						? `${preferences[name]}-${
+								preferences[`${name}_address`]
+						  }`
+						: preferences[name];
+					setOptions(infoToShareList);
+					setDefaultDropDownValue(
+						infoToShareList.find((opt) => opt.value === preference)
+					);
+				}
 			} else {
-				let {
-					groupMemberInfoToShare,
-					groupCampaignAdminShareInfoOptions,
-				} = infoOptions;
-				const { infoToShareList } = populateDropdownInfoToShare(
-					groupMemberInfoToShare
-				);
-				setInfoToShareList(infoToShareList);
-				setGroupCampaignAdminShareInfoOptions(
-					groupCampaignAdminShareInfoOptions
-				);
+				if (_isEmpty(infoOptions)) {
+					dispatch(getGroupCampaignAdminInfoToShare(id, false));
+				} else {
+					let {
+						groupMemberInfoToShare,
+						groupCampaignAdminShareInfoOptions,
+					} = infoOptions;
+					const { infoToShareList } = populateDropdownInfoToShare(
+						groupMemberInfoToShare
+					);
+					setInfoToShareList(infoToShareList);
+					setGroupCampaignAdminShareInfoOptions(
+						groupCampaignAdminShareInfoOptions
+					);
+				}
 			}
 		}
 	}, [showEditModal]);
 	const [defaultInfoToShare, setDefaultInfoToShare] = useState();
 	const [defaultNameToShare, setDefaultNameToShare] = useState();
 	const [privacyShareAmount, setPrivacyShareAmount] = useState();
+	const [trpId, setTrpId] = useState();
 	useEffect(() => {
 		if (!_isEmpty(infoOptions) && !_isEmpty(currentUser)) {
 			let {
@@ -142,23 +184,32 @@ const EditMonthlyAllocationModal = ({
 			);
 		}
 	}, [infoOptions]);
-
+	useEffect(() => {
+		if (
+			giveToType === 'Beneficiary' &&
+			!_isEmpty(charityShareInfoOptions)
+		) {
+			const { infoToShareList } = populateDropdownInfoToShare(
+				charityShareInfoOptions
+			);
+			setOptions(infoToShareList);
+			const name = 'charities_info_to_share';
+			const preference = preferences[name].includes('address')
+				? `${preferences[name]}-${preferences[`${name}_address`]}`
+				: preferences[name];
+			setDefaultDropDownValue(
+				infoToShareList.find((opt) => opt.value === preference)
+			);
+		}
+	}, [charityShareInfoOptions]);
 	// state for amount value in edit modal
 	const [amount, setAmount] = useState(formatedCurrentMonthlyAllocAmount);
-
-	// initializing payment options with empty array
-	const [paymentInstrumenOptions, setPaymentInstrumenOptions] = useState([]);
 
 	// intializing validity for amount and payment
 	const [validity, setValidity] = useState(intializeValidations);
 
 	// state for payment option
 	const [loader, setLoader] = useState(true);
-
-	// state for current card select
-	const [currentCardSelected, setCurrentCardSelected] = useState(
-		paymentInstrumentId
-	);
 
 	const [noteToCharity, setNoteToCharity] = useState(notetoRecipient);
 	const [noteToSelf, setNoteToSelf] = useState('');
@@ -180,6 +231,7 @@ const EditMonthlyAllocationModal = ({
 				dedicateType: '',
 				dedicateValue: '',
 			},
+			giftType: giftType,
 		},
 		type: 'donations',
 	};
@@ -191,6 +243,17 @@ const EditMonthlyAllocationModal = ({
 					value,
 			  })
 			: value;
+		const privacyCheckbox = [
+			'privacyShareAddress',
+			'privacyShareAmount',
+			'privacyShareEmail',
+			'privacyShareName',
+		];
+		const isValidPrivacyOption = _includes(privacyCheckbox, name);
+		if (isValidPrivacyOption) {
+			const { target } = event;
+			newValue = target.checked;
+		}
 		if (name === 'inHonorOf' || name === 'inMemoryOf') {
 			if (newIndex === -1) {
 				flowObject.giveData.dedicateGift.dedicateType = '';
@@ -223,6 +286,9 @@ const EditMonthlyAllocationModal = ({
 					break;
 				case 'infoToShare':
 					setDefaultInfoToShare(newValue);
+					break;
+				case 'privacyShareAmount':
+					setPrivacyShareAmount(newValue);
 					break;
 				case 'noteToCharity':
 					setNoteToCharity(newValue);
@@ -292,17 +358,6 @@ const EditMonthlyAllocationModal = ({
 	const handleEditClick = () => {
 		setShowEditModal(true);
 		setLoader(true);
-		getAllActivePaymentInstruments(currentUser.id, dispatch, 'user')
-			.then(({ data }) => {
-				setPaymentInstrumenOptions(
-					populatePaymentInstrument(data, formatMessage)
-				);
-				setLoader(false);
-			})
-			.catch(() => {
-				// handle Error
-				setLoader(false);
-			});
 	};
 
 	// handle close of edit monthly deposit modal
@@ -326,20 +381,52 @@ const EditMonthlyAllocationModal = ({
 	//handling save button
 	const handleEditSave = () => {
 		setDisableButton(true);
+		let privacyShareAdminName = false;
+		let privacyShareEmail = false;
+		let privacyShareAddress = false;
+		let privacyShareName = true;
+		if (defaultInfoToShare.value !== 'anonymous') {
+			if (defaultInfoToShare.value === 'name') {
+				privacyShareAdminName = true;
+			} else if (defaultInfoToShare.value === 'name_email') {
+				privacyShareAdminName = true;
+				privacyShareEmail = true;
+			} else if (
+				defaultInfoToShare.value.includes('name_address_email')
+			) {
+				privacyShareAdminName = true;
+				privacyShareEmail = true;
+				privacyShareAddress = true;
+			}
+		}
+		if (!giveToType === 'Campaign' && nameToShare.value !== 'anonymous') {
+			privacyShareName = true;
+			privacyShareAdminName = true;
+		} else {
+			privacyShareName = false;
+		}
 		if (validateForm()) {
-			return dispatch(
-				editUpcommingDeposit(
+			dispatch(
+				editUpcomingAllocation(
 					transactionId,
+					giveToType,
 					amount,
-					currentCardSelected,
-					activePage,
-					currentUser.id
+					giftFreq,
+					defaultInfoToShare,
+					defaultNameToShare,
+					{
+						privacyShareAdminName,
+						privacyShareEmail,
+						privacyShareAddress,
+						privacyShareName,
+						privacyShareAmount,
+					}
 				)
 			)
-				.then(() => {
+				.then((result) => {
 					setShowEditModal(false);
 				})
-				.catch(() => {
+				.catch((error) => {
 					setShowEditModal(true);
 				});
 		}
@@ -350,7 +437,11 @@ const EditMonthlyAllocationModal = ({
 			value,
 		});
 	};
-
+	const handleSpecialInstructionInputChange = (event, data) => {
+		const { value } = data;
+		setDefaultDropDownValue(value);
+		handleInputChange(event, data);
+	};
 	// Privacy section
 	const privacyOptionComponent = (
 		<PrivacyOptions
@@ -419,17 +510,53 @@ const EditMonthlyAllocationModal = ({
 							handlePresetAmountClick={handlePresetAmountClick}
 							validity={validity}
 						/>{' '}
-						{/* <Form.Field
+						<Form.Field
 							control={Input}
 							id={'giveFrom'}
 							name={'giveFrom'}
 							maxLength="8"
 							size="large"
-							// value={amount}
+							value={`${currentUser.attributes.displayName}'s Impact account: ${currentUser.attributes.balance}`}
+							disabled
 							// className={`give_field ${amount ? 'give_amount' : ''} amountField`}
-						/> */}
+						/>
 						{renderRepeatGift()}{' '}
-						{!_isEmpty(infoOptions) && privacyOptionComponent}{' '}
+						{!_isEmpty(infoOptions) &&
+							giveToType !== 'Beneficiary' &&
+							privacyOptionComponent}
+						{giveToType === 'Beneficiary' && !_isEmpty(options) && (
+							<Form.Field className="give_flow_field">
+								<label htmlFor="infoToShare">
+									{formatMessage(
+										'specialInstruction:infoToShareLabel'
+									)}
+								</label>
+								<Popup
+									content={formatMessage(
+										'specialInstruction:infotoSharePopup'
+									)}
+									position="top center"
+									trigger={
+										<Icon
+											color="blue"
+											name="question circle"
+											size="large"
+										/>
+									}
+								/>
+								<Form.Field
+									control={Select}
+									className="infoToShareDropdown dropdownWithArrowParent icon"
+									id="infoToShare"
+									name="infoToShare"
+									options={options}
+									onChange={
+										handleSpecialInstructionInputChange
+									}
+									value={defautlDropDownValue}
+								/>
+							</Form.Field>
+						)}
 						<Form.Field className="give_flow_field">
 							<DedicateType
 								handleInputChange={handleInputChange}
@@ -490,7 +617,6 @@ EditMonthlyAllocationModal.defaultProps = {
 	currentMonthlyAllocAmount: '',
 	activePage: '',
 	t: () => {},
-	paymentInstrumentId: '',
 	transactionId: '',
 };
 
