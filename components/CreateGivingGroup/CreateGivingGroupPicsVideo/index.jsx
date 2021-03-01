@@ -47,7 +47,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
             !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
                 dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
         }
-    }, [])
+    }, []);
     const handleOnChange = (event, data) => {
         let {
             name,
@@ -269,6 +269,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
                                             imagesArray={galleryImages}
                                             enableImageSelection={false}
                                             rowHeight={80}
+                                            renderSingleImage = {false}
                                         />
                                         <p> You can still add {10 - galleryImages.length} more photos.</p>
                                     </Fragment>
