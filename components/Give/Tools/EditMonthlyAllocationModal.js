@@ -419,7 +419,7 @@ const EditMonthlyAllocationModal = ({
 							handlePresetAmountClick={handlePresetAmountClick}
 							validity={validity}
 						/>{' '}
-						<Form.Field
+						{/* <Form.Field
 							control={Input}
 							id={'giveFrom'}
 							name={'giveFrom'}
@@ -427,7 +427,7 @@ const EditMonthlyAllocationModal = ({
 							size="large"
 							// value={amount}
 							// className={`give_field ${amount ? 'give_amount' : ''} amountField`}
-						/>
+						/> */}
 						{renderRepeatGift()}{' '}
 						{!_isEmpty(infoOptions) && privacyOptionComponent}{' '}
 						<Form.Field className="give_flow_field">
