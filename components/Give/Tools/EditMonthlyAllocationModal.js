@@ -191,7 +191,6 @@ const EditMonthlyAllocationModal = ({
 					value,
 			  })
 			: value;
-            debugger
 		if (name === 'inHonorOf' || name === 'inMemoryOf') {
 			if (newIndex === -1) {
 				flowObject.giveData.dedicateGift.dedicateType = '';
@@ -202,7 +201,6 @@ const EditMonthlyAllocationModal = ({
 			}
 			setValidity({ ...validity, isDedicateGiftEmpty: true });
 		}
-        debugger
 		if (name !== 'inHonorOf' && name !== 'inMemoryOf') {
 			switch (name) {
 				case 'donationAmount':
@@ -318,7 +316,7 @@ const EditMonthlyAllocationModal = ({
 	const validateForm = () => {
 		let validation;
 		validation = validateDonationForm('donationAmount', amount, validity);
-		
+
 		setValidity({
 			...validation,
 		});
@@ -340,7 +338,6 @@ const EditMonthlyAllocationModal = ({
 			)
 				.then(() => {
 					setShowEditModal(false);
-					
 				})
 				.catch(() => {
 					setShowEditModal(true);
@@ -422,6 +419,15 @@ const EditMonthlyAllocationModal = ({
 							handlePresetAmountClick={handlePresetAmountClick}
 							validity={validity}
 						/>{' '}
+						<Form.Field
+							control={Input}
+							id={'giveFrom'}
+							name={'giveFrom'}
+							maxLength="8"
+							size="large"
+							// value={amount}
+							// className={`give_field ${amount ? 'give_amount' : ''} amountField`}
+						/>
 						{renderRepeatGift()}{' '}
 						{!_isEmpty(infoOptions) && privacyOptionComponent}{' '}
 						<Form.Field className="give_flow_field">
