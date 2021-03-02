@@ -15,6 +15,7 @@ import {
     Select,
     Container,
     Grid,
+    Radio,
 } from 'semantic-ui-react';
 import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
@@ -25,6 +26,9 @@ import _replace from 'lodash/replace';
 import _cloneDeep from 'lodash/cloneDeep';
 import ReactHtmlParser from 'react-html-parser';
 import _ from 'lodash';
+import ChimpDatePicker from './p2pDatePicker';
+import P2pReasons from './p2pReasons';
+import P2pFrequency from './p2pFrequency';
 
 import {
     formatCurrency,
@@ -64,6 +68,11 @@ const actionTypes = {
 class Friend extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            goalStartDate: null,
+            goalEndDate: null,
+        };
+        this.handleCreateGroup = this.handleCreateGroup.bind(this);
         const {
             campaignId,
             companyDetails,
@@ -144,7 +153,10 @@ class Friend extends React.Component {
         this.renderReloadAddAmount = this.renderReloadAddAmount.bind(this);
         this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
     }
-
+    handleCreateGroup(){
+        console.log(this.state.goalStartDate); 
+        console.log(this.state.goalEndDate);
+    }
     // static constructPaymentInstruments(props, companyDetails, paymentInstrumentsData) {
     //     return (
     //         (!_.isEmpty(props.flowObject.giveData.giveFrom) &&
@@ -984,6 +996,41 @@ class Friend extends React.Component {
                                                         <p className="multipleFriendAmountFieldText">
                                                             {formatMessage('friends:multipleFriendAmountFieldText')}
                                                         </p>
+                                                        
+                                                        <div className="p2pCalenderWrapper">
+                                                            <div className="p2p_gift">
+                                                                    <label className="label_gift">When would you like to send this gift?</label>
+                                                               
+                                                                <Form.Field className="radio_btn">
+                                                                    <Radio
+                                                                        label='Send now'
+                                                                        name='radioGroup'
+                                                                        className='checkbox chimpRadio'
+                                                                        value='Now'
+                                                                    />
+                                                                </Form.Field>
+                                                                <Form.Field className="radio_btn">
+                                                                    <Radio
+                                                                        label='Schedule gift'
+                                                                        name='radioGroup'
+                                                                        className='checkbox chimpRadio'
+                                                                        value='Schedule'
+                                                                    />
+                                                                </Form.Field>
+                                                             
+                                                            </div>
+                                                            <div className="Send_date">
+                                                            <label className="label_gift">Send date</label>
+                                                                <ChimpDatePicker dateValue={this.state.goalStartDate} onChangeValue={date => this.setState({goalStartDate:date})}/>
+                                                            </div>
+                                                            <div>
+                                                                <P2pFrequency/>
+                                                            </div> 
+                                                                <div>
+                                                                    <P2pReasons/>
+                                                                </div>
+                                                        </div>
+                                                        
                                                         <div className="give_flow_field">
                                                             <DropDownAccountOptions
                                                                 type={type}

@@ -1704,6 +1704,7 @@ span.attributes {
             transition: all 0.3s ease-out;
             z-index: 2;
             top:35%;
+            filter: invert(79%) sepia(0%) saturate(1%) hue-rotate(277deg) brightness(97%) contrast(87%);
         }
     }
     .ui.multiple.dropdown{
@@ -2899,6 +2900,86 @@ body{
             margin-right: 0px !important;
             +.button{
                 margin-left: 10px !important;
+            }
+        }
+    }
+}
+.p2pCalenderWrapper{
+    .p2p_gift{
+        margin-top:40px;
+        label{
+         &.label_gift{
+             margin-bottom: 10px !important;
+             font-size: 14px;
+             color: #263238;
+             letter-spacing: -0.1px;
+             line-height: 17px;
+             font-family: 'ProximaNova-semibold';
+         }
+        }
+        .radio_btn{
+            margin: 0px;
+           .ui{
+              &.radio{
+                 &.checkbox{
+                    label{
+                        font-family: 'ProximaNova-Regular';
+                        color: #263238;
+                        letter-spacing: -0.1px;
+                        line-height: 17px;
+                        margin-bottom: 13px !important;
+                    }
+                 }
+              }
+            }
+        }
+    }
+    .Send_date{
+        margin-top: 28px;
+    }
+    .Frequency_Reason{
+        .Frequency_Wrapper{
+            margin-top: 38px;
+        }
+    }
+    .Wrapper_Reason{
+        margin-top: 38px;
+    }
+    .giving_optional{
+        width: 70%;
+        margin-top: 30px;
+    }
+    .react-datepicker-wrapper{
+        .react-datepicker__input-container{
+            .field{
+                .ui{
+                    &.icon{
+                        &.input{
+                            i{
+                                &.calendar{
+                                    cursor: pointer;
+                                    &.icon{
+                                        pointer-events: unset;
+                                        &::before{
+                                            content: '';
+                                            width: 24px;
+                                            height: 24px;
+                                            top: 0;
+                                            bottom: 0;
+                                            left: 0;
+                                            right: 0;
+                                            margin: auto;
+                                            background-image: url("@{img_url}/images/icons/calendar.svg") !important;
+                                            background-position: center !important;
+                                            background-size: contain !important;
+                                            background-repeat: no-repeat !important;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
