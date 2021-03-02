@@ -897,7 +897,7 @@ export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, 
         () => {
             
             const statusMessageProps = {
-                message: 'Your monthly deposit has been updated.',
+                message: 'Your monthly gift has been updated.',
                 type: 'success',
             };
             dispatch({
