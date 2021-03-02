@@ -5,30 +5,28 @@ import {
     connect,
 } from 'react-redux';
 import {
-    Divider,
     Form,
     Header,
     Icon,
     Input,
     Placeholder,
     Popup,
-    Select,
     Container,
     Grid,
     Radio,
 } from 'semantic-ui-react';
 import dynamic from 'next/dynamic';
-import getConfig from 'next/config';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 import _replace from 'lodash/replace';
 import _cloneDeep from 'lodash/cloneDeep';
-import ReactHtmlParser from 'react-html-parser';
-import _ from 'lodash';
-import ChimpDatePicker from './p2pDatePicker';
-import P2pReasons from './p2pReasons';
-import P2pFrequency from './p2pFrequency';
+import _findIndex from 'lodash/findIndex';
+import _find from 'lodash/find';
+import _trim from 'lodash/trim';
+import _split from 'lodash/split';
+import _remove from 'lodash/remove';
+import _every from 'lodash/every';
 
 import {
     formatCurrency,
@@ -42,6 +40,8 @@ import {
     validateForReload,
     calculateP2pTotalGiveAmount,
     findingErrorElement,
+    fullMonthNames,
+    getDayName,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { getEmailList } from '../../../actions/userProfile';
@@ -59,7 +59,11 @@ import '../../shared/style/styles.less';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import DonationAmountField from '../DonationAmountField';
 import FriendsDropDown from '../../shared/FriendsDropDown';
-import ReloadAddAmount from '../ReloadAddAmount';
+
+const ReloadAddAmount = dynamic(() => import('../ReloadAddAmount'), { ssr: false });
+const ChimpDatePicker = dynamic(() => import('./p2pDatePicker.js'), { ssr: false });
+const P2pReasons = dynamic(() => import('./p2pReasons.js'), { ssr: false });
+const P2pFrequency = dynamic(() => import('./p2pFrequency.js'), { ssr: false });
 
 const actionTypes = {
     SHOW_FRIENDS_DROPDOWN: 'SHOW_FRIENDS_DROPDOWN',
@@ -68,11 +72,6 @@ const actionTypes = {
 class Friend extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            goalStartDate: null,
-            goalEndDate: null,
-        };
-        this.handleCreateGroup = this.handleCreateGroup.bind(this);
         const {
             campaignId,
             companyDetails,
@@ -153,10 +152,7 @@ class Friend extends React.Component {
         this.renderReloadAddAmount = this.renderReloadAddAmount.bind(this);
         this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
     }
-    handleCreateGroup(){
-        console.log(this.state.goalStartDate); 
-        console.log(this.state.goalEndDate);
-    }
+
     // static constructPaymentInstruments(props, companyDetails, paymentInstrumentsData) {
     //     return (
     //         (!_.isEmpty(props.flowObject.giveData.giveFrom) &&
@@ -273,7 +269,7 @@ class Friend extends React.Component {
             //let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
-                const companyIndex = _.findIndex(companiesAccountsData, { 'id': giveData.giveFrom.id });
+                const companyIndex = _findIndex(companiesAccountsData, { 'id': giveData.giveFrom.id });
                 giveData.giveFrom.balance = companiesAccountsData[companyIndex].attributes.balance;
                 giveData.giveFrom.text = `${companiesAccountsData[companyIndex].attributes.companyFundName}: ${formatCurrency(companiesAccountsData[companyIndex].attributes.balance, language, currency)}`;
                 if (_isEmpty(prevProps.companyDetails)
@@ -428,7 +424,7 @@ class Friend extends React.Component {
         const {
             name,
             value,
-        } = !_.isEmpty(data) ? data : event.target;
+        } = !_isEmpty(data) ? data : event.target;
         const {
             flowObject: {
                 giveData,
@@ -446,10 +442,10 @@ class Friend extends React.Component {
             });
         }
         const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
-        if ((name === 'giveAmount') && !_.isEmpty(value) && value.match(isNumber)) {
+        if ((name === 'giveAmount') && !_isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             giveData[name] = inputValue;
-            giveData['formatedP2PAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            giveData['formatedP2PAmount'] = _replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         }
         const coverFeesAmount = 0;
         if (name !== 'coverFees' && name !== 'giftType' && name !== 'friendsList' && name !== 'giveFrom' && name !== 'recipients') {
@@ -496,8 +492,8 @@ class Friend extends React.Component {
      * @return {array} An array of emails
      */
     static parseRecipients(recipients) {
-        return _.trim(recipients).length > 0
-            ? _.split(recipients, ',')
+        return _trim(recipients).length > 0
+            ? _split(recipients, ',')
             : [];
     }
 
@@ -530,7 +526,7 @@ class Friend extends React.Component {
             dispatch,
         } = this.props;
         const coverFeesAmount = 0;
-        const newValue = (name !== 'friendsList' && !_.isEmpty(options)) ? _.find(options, { value }) : value;
+        const newValue = (name !== 'friendsList' && !_isEmpty(options)) ? _find(options, { value }) : value;
         if (giveData[name] !== newValue) {
             giveData[name] = newValue;
             giveData.userInteracted = true;
@@ -610,11 +606,11 @@ class Friend extends React.Component {
             },
         } = flowObject;
         if (this.validateForm()) {
-            flowObject.giveData.selectedFriendsList = (!_.isEmpty(friendsList))
+            flowObject.giveData.selectedFriendsList = (!_isEmpty(friendsList))
                 ? getSelectedFriendList(friendsListData, friendsList)
                 : [];
             flowObject.giveData.selectedFriendsList.map((friendData) => {
-                _.remove(flowObject.giveData.recipients, (recepientData) => {
+                _remove(flowObject.giveData.recipients, (recepientData) => {
                     return recepientData == friendData.email;
                 });
             })
@@ -660,7 +656,7 @@ class Friend extends React.Component {
             validity,
             reviewBtnFlag: !validity.isReloadRequired,
         });
-        const validationsResponse = _.every(validity);
+        const validationsResponse = _every(validity);
         if (!validationsResponse) {
             const errorNode = findingErrorElement(validity, 'allocation');
             !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({ behavior: "smooth", block: "center" });
@@ -686,7 +682,7 @@ class Friend extends React.Component {
             reviewBtnFlag,
         } = this.state;
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
-        const formatedP2PAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+        const formatedP2PAmount = _replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         giveData.giveAmount = inputValue;
         giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), inputValue);
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
@@ -704,7 +700,73 @@ class Friend extends React.Component {
             reviewBtnFlag,
         });
     }
+    populateFrequenyOptions(date) {
+        const months = fullMonthNames(this.props.t);
+        return [
+            {
+                text: 'Send once',
+                value: 'once',
+            },
+            {
+                text: `Repeat weekly on ${getDayName(date)}`,
+                value: 'weekly',
+            },
+            {
+                text: `Repeat monthly on the ${date.getDate()}`,
+                value: 'monthly',
+            },
+            {
+                text: `Repeat annually on ${months[date.getMonth()]} ${date.getDate()}`,
+                value: 'yearly',
+            },
+        ]
+    }
+    handleDateChange = (date) => {
+        const frequencyOptions = this.populateFrequenyOptions(date);
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                frequencyObject: {
+                    ...this.state.flowObject.frequencyObject,
+                    options: frequencyOptions,
+                },
+                sendDate: date,
+            }
+        })
+    }
 
+    handleSendMoneyInputChange = (event, data) => {
+        const {
+            name,
+            value,
+        } = data || event.target;
+        let {
+            sendGift,
+            frequencyObject,
+            reason,
+            reasonOther
+        } = this.state.flowObject;
+        if (name === 'sendGift') {
+            sendGift = value;
+        } else if (name === 'frequency') {
+            frequencyObject = {
+                ...this.state.flowObject.frequencyObject,
+                value,
+            }
+        } else if (name === 'reason' || name === 'reasonOther') {
+            reason = name === 'reason' ? value : 'Other';
+            reasonOther = name === 'reason' ? null : value;
+        }
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                sendGift,
+                frequencyObject,
+                reason,
+                reasonOther,
+            }
+        });
+    }
     renderReloadAddAmount = () => {
         let {
             defaultTaxReceiptProfile,
@@ -738,7 +800,7 @@ class Friend extends React.Component {
                 let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
                 let paymentInstruments = paymentInstrumentsData;
                 if (giveFrom.type === 'companies' && companyDetails) {
-                    taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
+                    taxReceiptList = !_isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
                     defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
                     paymentInstruments = companyDetails.companyPaymentInstrumentsData;
                 }
@@ -796,6 +858,7 @@ class Friend extends React.Component {
         const {
             flowObject: {
                 currency,
+                frequencyObject,
                 giveData: {
                     emailMasked,
                     formatedP2PAmount,
@@ -809,6 +872,10 @@ class Friend extends React.Component {
                     recipientName,
                     totalP2pGiveAmount,
                 },
+                reason,
+                reasonOther,
+                sendGift,
+                sendDate,
                 type,
             },
             dropDownOptions: {
@@ -939,7 +1006,7 @@ class Friend extends React.Component {
                                                                         </p>
                                                                     )
                                                                 }
-                                                                {(showGiveToEmail || !_.isEmpty(recipients) || (typeof showDropDown !== 'undefined' && !showDropDown))
+                                                                {(showGiveToEmail || !_isEmpty(recipients) || (typeof showDropDown !== 'undefined' && !showDropDown))
                                                                     && (
                                                                         <Note
                                                                             enableCharacterCount={false}
@@ -996,41 +1063,58 @@ class Friend extends React.Component {
                                                         <p className="multipleFriendAmountFieldText">
                                                             {formatMessage('friends:multipleFriendAmountFieldText')}
                                                         </p>
-                                                        
+
                                                         <div className="p2pCalenderWrapper">
                                                             <div className="p2p_gift">
-                                                                    <label className="label_gift">When would you like to send this gift?</label>
-                                                               
+                                                                <label className="label_gift">When would you like to send this gift?</label>
+
                                                                 <Form.Field className="radio_btn">
                                                                     <Radio
                                                                         label='Send now'
-                                                                        name='radioGroup'
+                                                                        name='sendGift'
                                                                         className='checkbox chimpRadio'
-                                                                        value='Now'
+                                                                        value='now'
+                                                                        onChange={this.handleSendMoneyInputChange}
+                                                                        checked={sendGift === 'now'}
                                                                     />
                                                                 </Form.Field>
                                                                 <Form.Field className="radio_btn">
                                                                     <Radio
                                                                         label='Schedule gift'
-                                                                        name='radioGroup'
+                                                                        name='sendGift'
                                                                         className='checkbox chimpRadio'
-                                                                        value='Schedule'
+                                                                        value='schedule'
+                                                                        onChange={this.handleSendMoneyInputChange}
+                                                                        checked={sendGift === 'schedule'}
                                                                     />
                                                                 </Form.Field>
-                                                             
+
                                                             </div>
-                                                            <div className="Send_date">
-                                                            <label className="label_gift">Send date</label>
-                                                                <ChimpDatePicker dateValue={this.state.goalStartDate} onChangeValue={date => this.setState({goalStartDate:date})}/>
-                                                            </div>
-                                                            <div>
-                                                                <P2pFrequency/>
-                                                            </div> 
-                                                                <div>
-                                                                    <P2pReasons/>
+                                                            {sendGift === 'schedule' && <>
+                                                                <div className="Send_date">
+                                                                    <label className="label_gift">Send date</label>
+                                                                    <ChimpDatePicker
+                                                                        dateValue={sendDate}
+                                                                        onChangeValue={date => this.handleDateChange(date)}
+                                                                    />
                                                                 </div>
+                                                                <div>
+                                                                    <P2pFrequency
+                                                                        frequencyObject={frequencyObject}
+                                                                        handleSendMoneyInputChange={this.handleSendMoneyInputChange}
+                                                                    />
+                                                                </div>
+                                                            </>
+                                                            }
+                                                            <div>
+                                                                <P2pReasons
+                                                                    reason={reason}
+                                                                    reasonOther={reasonOther}
+                                                                    handleSendMoneyInputChange={this.handleSendMoneyInputChange}
+                                                                />
+                                                            </div>
                                                         </div>
-                                                        
+
                                                         <div className="give_flow_field">
                                                             <DropDownAccountOptions
                                                                 type={type}

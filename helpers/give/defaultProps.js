@@ -160,6 +160,15 @@ export const groupDefaultProps = {
 export const p2pDefaultProps = {
     flowObject: {
         currency: 'USD',
+        frequencyObject: {
+            options: [
+                {
+                    text: 'Send once',
+                    value: 'once',
+                },
+            ],
+            value: 'once'
+        },
         giveData: {
             formatedP2PAmount: '',
             friendsList: [],
@@ -187,7 +196,11 @@ export const p2pDefaultProps = {
             recipientImage: '',
             selectedFriendsList: [],
         },
+        reason: 'Birthday',
+        reasonOther:'',
         nextSteptoProceed: {},
+        sendGift: 'now',
+        sendDate: null,
         stepsCompleted: false,
         type: 'give/to/friend',
     },
