@@ -861,7 +861,7 @@ export const editUpcommingDeposit = (donationId, donationAmount, paymentInstruem
 
 };
 
-export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, infoToShare, nameToShare, privacyOpts = {}) => (dispatch) => {
+export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, infoToShare, nameToShare, privacyOpts = {}, noteToSelf, noteToCharity, dedicateType, dedicateValue,activePage) => (dispatch) => {
     let allocationData = {};
     if (giveToType === 'Group' || giveToType === 'Campaign') {
         allocationData = {
@@ -878,7 +878,6 @@ export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, 
             type: 'recurringGroupAllocations',
         }
     } else {
-        debugger
         allocationData = {
             type: "recurringAllocations",
             id: id,
@@ -886,15 +885,17 @@ export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, 
                 amount: allocAmount,
                 dayOfMonth: dayOfMonth.value,
                 privacySetting: infoToShare.privacySetting,
-                privacyData: infoToShare.privacyData
+                privacyData: infoToShare.privacyData,
             }
         }
     }
+    if (notetoSelf) allocationData.attributes.reason = noteToSelf;
     return coreApi.patch(`${allocationData.type}/${id}`, {
         data: allocationData,
     }).then(
         () => {
-
+            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=RecurringDonation`;
+            getUpcomingTransactions(dispatch, activepageUrl);
             const statusMessageProps = {
                 message: 'Your monthly gift has been updated.',
                 type: 'success',

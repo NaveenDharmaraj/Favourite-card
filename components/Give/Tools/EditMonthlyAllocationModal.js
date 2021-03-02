@@ -213,7 +213,8 @@ const EditMonthlyAllocationModal = ({
 
 	const [noteToCharity, setNoteToCharity] = useState(notetoRecipient);
 	const [noteToSelf, setNoteToSelf] = useState('');
-
+	const [dedicateValue, setDedicateValue] = useState('');
+	const [dedicateType, setDedicateType] = useState('');
 	//state for disable button
 	const [disableButton, setDisableButton] = useState(true);
 
@@ -227,13 +228,9 @@ const EditMonthlyAllocationModal = ({
 				id: currentUser.id,
 				type: 'user',
 			},
-			dedicateGift: {
-				dedicateType: '',
-				dedicateValue: '',
-			},
 			giftType: giftType,
 		},
-		type: 'donations',
+		type: 'allocations',
 	};
 
 	const handleInputChange = (event, data) => {
@@ -256,11 +253,11 @@ const EditMonthlyAllocationModal = ({
 		}
 		if (name === 'inHonorOf' || name === 'inMemoryOf') {
 			if (newIndex === -1) {
-				flowObject.giveData.dedicateGift.dedicateType = '';
-				flowObject.giveData.dedicateGift.dedicateValue = '';
+				setDedicateType('');
+				setDedicateValue('');
 			} else {
-				flowObject.giveData.dedicateGift.dedicateType = name;
-				flowObject.giveData.dedicateGift.dedicateValue = value;
+				setDedicateType(name);
+				setDedicateValue(value);
 			}
 			setValidity({ ...validity, isDedicateGiftEmpty: true });
 		}
@@ -320,14 +317,14 @@ const EditMonthlyAllocationModal = ({
 				setNoteToSelf(value.trim());
 			case 'inHonorOf':
 			case 'inMemoryOf':
-				setValidity(
-					validateGiveForm(
-						'dedicateType',
-						null,
-						validity,
-						flowObject.giveData
-					)
-				);
+				// setValidity(
+				// 	validateGiveForm(
+				// 		'dedicateType',
+				// 		null,
+				// 		validity,
+				// 		flowObject.giveData
+				// 	)
+				// );
 				break;
 		}
 		const validitions = validateGiveForm(
@@ -412,14 +409,15 @@ const EditMonthlyAllocationModal = ({
 			privacyShareName = false;
 		}
 		if (validateForm()) {
-            debugger
 			dispatch(
 				editUpcomingAllocation(
 					transactionId,
 					giveToType,
 					amount,
 					giftFreq,
-					giveToType ==='Beneficiary'?   defautlDropDownValue :defaultInfoToShare,
+					giveToType === 'Beneficiary'
+						? defautlDropDownValue
+						: defaultInfoToShare,
 					defaultNameToShare,
 					{
 						privacyShareAdminName,
@@ -427,7 +425,12 @@ const EditMonthlyAllocationModal = ({
 						privacyShareAddress,
 						privacyShareName,
 						privacyShareAmount,
-					}
+					},
+					noteToSelf,
+					noteToCharity,
+					dedicateType,
+					dedicateValue,
+                    activePage
 				)
 			)
 				.then((result) => {
@@ -519,8 +522,6 @@ const EditMonthlyAllocationModal = ({
 			</Form.Field>
 		);
 	};
-
-	console.log(defautlDropDownValue, 'defautlDropDownValue');
 	return (
 		<Modal
 			size="tiny"
@@ -577,14 +578,8 @@ const EditMonthlyAllocationModal = ({
 							<DedicateType
 								handleInputChange={handleInputChange}
 								handleInputOnBlur={handleInputOnBlur}
-								dedicateType={
-									flowObject.giveData.dedicateGift
-										.dedicateType
-								}
-								dedicateValue={
-									flowObject.giveData.dedicateGift
-										.dedicateValue
-								}
+								dedicateType={dedicateType}
+								dedicateValue={dedicateValue}
 								validity={validity}
 							/>{' '}
 						</Form.Field>{' '}
