@@ -861,7 +861,7 @@ export const editUpcommingDeposit = (donationId, donationAmount, paymentInstruem
 
 };
 
-export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, infoToShare, nameToShare, privacyOpts ={}) => (dispatch) => {
+export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, infoToShare, nameToShare, privacyOpts = {}) => (dispatch) => {
     let allocationData = {};
     if (giveToType === 'Group' || giveToType === 'Campaign') {
         allocationData = {
@@ -871,23 +871,22 @@ export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, 
                 dayOfMonth: dayOfMonth.value,
                 privacyShareName: privacyOpts.privacyShareName,
                 privacyShareAmount: privacyOpts.privacyShareAmount,
-                privacyShareEmail:privacyOpts.privacyShareEmail,
-                privacyShareAddress:privacyOpts.privacyShareEmail,
-                privacyTrpId:infoToShare.privacyData,
+                privacyShareEmail: privacyOpts.privacyShareEmail,
+                privacyShareAddress: privacyOpts.privacyShareEmail,
+                privacyTrpId: infoToShare.privacyData,
             },
             type: 'recurringGroupAllocations',
         }
-    } else{
-        allocationData={
-            data: {
-                type: "recurringAllocations",
-                id: id,
-                attributes: {
-                    amount: allocAmount,
-                    dayOfMonth: dayOfMonth.value,
-                    privacySetting: infoToShare.privacySetting,
-                    privacyData: infoToShare.privacyData
-                }
+    } else {
+        debugger
+        allocationData = {
+            type: "recurringAllocations",
+            id: id,
+            attributes: {
+                amount: allocAmount,
+                dayOfMonth: dayOfMonth.value,
+                privacySetting: infoToShare.privacySetting,
+                privacyData: infoToShare.privacyData
             }
         }
     }
@@ -895,7 +894,7 @@ export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, 
         data: allocationData,
     }).then(
         () => {
-            
+
             const statusMessageProps = {
                 message: 'Your monthly gift has been updated.',
                 type: 'success',
@@ -963,15 +962,14 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
     graphApi.post(`/users/deleterelationship`, params).then(
         async () => {
             const removedItem = (type === 'charity') ? {
-                    attributes: {
-                        charity_id: favId
-                    }
-                } :
-                {
-                    attributes: {
-                        group_id: favId
-                    }
-                };
+                attributes: {
+                    charity_id: favId
+                }
+            } : {
+                attributes: {
+                    group_id: favId
+                }
+            };
             _.remove(dataArray, removedItem);
             let pageNumber = currentPageNumber;
             const url = `user/favourites?userid=${Number(userId)}&page[number]=${currentPageNumber}&page[size]=${pageSize}`;

@@ -412,13 +412,14 @@ const EditMonthlyAllocationModal = ({
 			privacyShareName = false;
 		}
 		if (validateForm()) {
+            debugger
 			dispatch(
 				editUpcomingAllocation(
 					transactionId,
 					giveToType,
 					amount,
 					giftFreq,
-					defaultInfoToShare,
+					giveToType ==='Beneficiary'?   defautlDropDownValue :defaultInfoToShare,
 					defaultNameToShare,
 					{
 						privacyShareAdminName,
