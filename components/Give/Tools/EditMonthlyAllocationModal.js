@@ -385,21 +385,27 @@ const EditMonthlyAllocationModal = ({
 		let privacyShareEmail = false;
 		let privacyShareAddress = false;
 		let privacyShareName = true;
-		if (defaultInfoToShare.value !== 'anonymous') {
-			if (defaultInfoToShare.value === 'name') {
-				privacyShareAdminName = true;
-			} else if (defaultInfoToShare.value === 'name_email') {
-				privacyShareAdminName = true;
-				privacyShareEmail = true;
-			} else if (
-				defaultInfoToShare.value.includes('name_address_email')
-			) {
-				privacyShareAdminName = true;
-				privacyShareEmail = true;
-				privacyShareAddress = true;
+		if (giveToType !== 'Beneficiary') {
+			if (defaultInfoToShare.value !== 'anonymous') {
+				if (defaultInfoToShare.value === 'name') {
+					privacyShareAdminName = true;
+				} else if (defaultInfoToShare.value === 'name_email') {
+					privacyShareAdminName = true;
+					privacyShareEmail = true;
+				} else if (
+					defaultInfoToShare.value.includes('name_address_email')
+				) {
+					privacyShareAdminName = true;
+					privacyShareEmail = true;
+					privacyShareAddress = true;
+				}
 			}
 		}
-		if (!giveToType === 'Campaign' && nameToShare.value !== 'anonymous') {
+
+		if (
+			!giveToType === 'Beneficiary' &&
+			defautlDropDownValue.value !== 'anonymous'
+		) {
 			privacyShareName = true;
 			privacyShareAdminName = true;
 		} else {
@@ -481,6 +487,39 @@ const EditMonthlyAllocationModal = ({
 		);
 		return repeatGift;
 	};
+	const charityPrivacyComponent = () => {
+		return (
+			<Form.Field className="give_flow_field">
+				<label htmlFor="infoToShare">
+					{formatMessage('specialInstruction:infoToShareLabel')}
+				</label>
+				<Popup
+					content={formatMessage(
+						'specialInstruction:infotoSharePopup'
+					)}
+					position="top center"
+					trigger={
+						<Icon
+							color="blue"
+							name="question circle"
+							size="large"
+						/>
+					}
+				/>
+				<Form.Field
+					control={Select}
+					className="infoToShareDropdown dropdownWithArrowParent icon"
+					id="infoToShare"
+					name="infoToShare"
+					options={options}
+					onChange={handleSpecialInstructionInputChange}
+					value={defautlDropDownValue.value}
+				/>
+			</Form.Field>
+		);
+	};
+
+	console.log(defautlDropDownValue, 'defautlDropDownValue');
 	return (
 		<Modal
 			size="tiny"
@@ -510,53 +549,29 @@ const EditMonthlyAllocationModal = ({
 							handlePresetAmountClick={handlePresetAmountClick}
 							validity={validity}
 						/>{' '}
-						<Form.Field
-							control={Input}
-							id={'giveFrom'}
-							name={'giveFrom'}
-							maxLength="8"
-							size="large"
-							value={`${currentUser.attributes.displayName}'s Impact account: ${currentUser.attributes.balance}`}
-							disabled
-							// className={`give_field ${amount ? 'give_amount' : ''} amountField`}
-						/>
+						<Form.Field>
+							<label htmlFor="giveFrom">
+								{formatMessage('giveFromLabel')}
+							</label>
+							<Form.Field
+								control={Input}
+								id={'giveFrom'}
+								name={'giveFrom'}
+								maxLength="8"
+								size="large"
+								value={`${currentUser.attributes.displayName}'s Impact account: ${currentUser.attributes.balance}`}
+								disabled
+								className={`amountField`}
+							/>
+						</Form.Field>
 						{renderRepeatGift()}{' '}
 						{!_isEmpty(infoOptions) &&
 							giveToType !== 'Beneficiary' &&
 							privacyOptionComponent}
-						{giveToType === 'Beneficiary' && !_isEmpty(options) && (
-							<Form.Field className="give_flow_field">
-								<label htmlFor="infoToShare">
-									{formatMessage(
-										'specialInstruction:infoToShareLabel'
-									)}
-								</label>
-								<Popup
-									content={formatMessage(
-										'specialInstruction:infotoSharePopup'
-									)}
-									position="top center"
-									trigger={
-										<Icon
-											color="blue"
-											name="question circle"
-											size="large"
-										/>
-									}
-								/>
-								<Form.Field
-									control={Select}
-									className="infoToShareDropdown dropdownWithArrowParent icon"
-									id="infoToShare"
-									name="infoToShare"
-									options={options}
-									onChange={
-										handleSpecialInstructionInputChange
-									}
-									value={defautlDropDownValue}
-								/>
-							</Form.Field>
-						)}
+						{giveToType === 'Beneficiary' &&
+							!_isEmpty(options) &&
+							!_isEmpty(defautlDropDownValue) &&
+							charityPrivacyComponent()}
 						<Form.Field className="give_flow_field">
 							<DedicateType
 								handleInputChange={handleInputChange}
@@ -580,7 +595,11 @@ const EditMonthlyAllocationModal = ({
 									computer={16}
 								>
 									<NoteTo
-										allocationType={giveToType}
+										allocationType={
+											giveToType === ' Beneficiary'
+												? 'Charity'
+												: giveToType
+										}
 										formatMessage={formatMessage}
 										giveFrom={flowObject.giveData.giveFrom}
 										noteToCharity={noteToCharity}
@@ -620,6 +639,6 @@ EditMonthlyAllocationModal.defaultProps = {
 	transactionId: '',
 };
 
-export default withTranslation(['donation', 'giveCommon'])(
+export default withTranslation(['group', 'giveCommon'])(
 	EditMonthlyAllocationModal
 );
