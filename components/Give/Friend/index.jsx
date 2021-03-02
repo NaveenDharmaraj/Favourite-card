@@ -1090,21 +1090,22 @@ class Friend extends React.Component {
                                                                 </Form.Field>
 
                                                             </div>
-                                                            {sendGift === 'schedule' && <>
-                                                                <div className="Send_date">
-                                                                    <label className="label_gift">Send date</label>
-                                                                    <ChimpDatePicker
-                                                                        dateValue={sendDate}
-                                                                        onChangeValue={date => this.handleDateChange(date)}
-                                                                    />
-                                                                </div>
-                                                                <div>
-                                                                    <P2pFrequency
-                                                                        frequencyObject={frequencyObject}
-                                                                        handleSendMoneyInputChange={this.handleSendMoneyInputChange}
-                                                                    />
-                                                                </div>
-                                                            </>
+                                                            {sendGift === 'schedule' &&
+                                                                <>
+                                                                    <div className="Send_date">
+                                                                        <label className="label_gift">Send date</label>
+                                                                        <ChimpDatePicker
+                                                                            dateValue={sendDate}
+                                                                            onChangeValue={date => this.handleDateChange(date)}
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <P2pFrequency
+                                                                            frequencyObject={frequencyObject}
+                                                                            handleSendMoneyInputChange={this.handleSendMoneyInputChange}
+                                                                        />
+                                                                    </div>
+                                                                </>
                                                             }
                                                             <div>
                                                                 <P2pReasons
