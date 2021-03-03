@@ -23,13 +23,13 @@ const EditMonthlyDepositModal = dynamic(
 );
 
 class TransactionTableRow extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			showDeleteModal: false,
-			activeIndexs: [],
-		};
-	}
+    constructor(props) {
+        super(props);
+        this.state = {
+            showDeleteModal: false,
+            activeIndexs: props.activeIndexs || []
+        }
+    }
 
 	closeModal = () => {
 		this.setState({
@@ -83,48 +83,46 @@ class TransactionTableRow extends React.Component {
             noteToSelfSaved,
 		} = this.props;
 		const { showDeleteModal, activeIndexs } = this.state;
-		const deleteModal = (
-			<Modal
-				size="tiny"
-				dimmer="inverted"
-				className="chimp-modal"
-				closeIcon
-				onClose={this.closeModal}
-				open={showDeleteModal}
-				trigger={
-					<a
-						className="deleteLink"
-						onClick={() => this.setState({ showDeleteModal: true })}
-					>
-						Delete
-					</a>
-				}
-			>
-				<Modal.Header>{modalHeader}</Modal.Header>
-				<Modal.Content>
-					<span>
-						Are you sure you want to delete the transaction?
-					</span>
-					<div className="pt-2 pb-1 text-right">
-						<Button
-							className="danger-btn-rounded-def c-small"
-							color="red"
-							onClick={this.closeModalAndDelete}
-						>
-							Delete
-						</Button>
-						<Button
-							className="blue-bordr-btn-round-def c-small"
-							onClick={() =>
-								this.setState({ showDeleteModal: false })
-							}
-						>
-							Cancel
-						</Button>
-					</div>
-				</Modal.Content>
-			</Modal>
-		);
+        const deleteModal = (
+            <Modal
+                size="tiny"
+                dimmer="inverted"
+                className="chimp-modal"
+                closeIcon
+                onClose={this.closeModal}
+                open={showDeleteModal}
+                trigger={
+                    <a
+                        className='deleteLink'
+                        onClick={() => this.setState({ showDeleteModal: true })}
+                    >
+                        Delete
+                    </a>
+                }
+            >
+                <Modal.Header>{modalHeader}</Modal.Header>
+                <Modal.Content>
+                    <span>
+                    If you delete this transaction, it won't be processed each month.
+                    </span>
+                    <div className="pt-2 pb-1 text-right">
+                        <Button
+                            className="danger-btn-rounded-def c-small"
+                            color='red'
+                            onClick={this.closeModalAndDelete}
+                        >
+                            Delete
+                        </Button>
+                        <Button
+                            className="blue-bordr-btn-round-def c-small"
+                            onClick={() => this.setState({ showDeleteModal: false })}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </Modal.Content>
+            </Modal>
+        );
 		return (
 			<Fragment>
 				{/* Desktop transaction details row start */}

@@ -211,8 +211,8 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
                     </Button>
             }
         >
-            <Modal.Header>Edit monthly deposit</Modal.Header>
-            <Modal.Content>
+            <Modal.Header className="monthly_deposit_heading">Edit monthly deposit    </Modal.Header>
+            <Modal.Content className="Modal_monthly_deposit">
                 <Modal.Description>
                     <Form>
                         <DonationAmountField
