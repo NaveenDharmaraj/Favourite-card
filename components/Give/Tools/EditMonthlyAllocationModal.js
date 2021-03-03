@@ -160,7 +160,6 @@ const EditMonthlyAllocationModal = ({
 				const { infoToShareList } = populateDropdownInfoToShare(
 					groupCampaignAdminShareInfoOptions
 				);
-                let dq = infoToShareList.find((opt) => opt.value === preference);
 				setDefaultInfoToShare(
 					infoToShareList.find((opt) => opt.value === preference)
 				);
