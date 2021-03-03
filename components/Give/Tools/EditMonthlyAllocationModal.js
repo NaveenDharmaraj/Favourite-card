@@ -315,6 +315,7 @@ const EditMonthlyAllocationModal = ({
 				break;
 			case 'noteToSelf':
 				setNoteToSelf(value.trim());
+                break;
 			case 'inHonorOf':
 			case 'inMemoryOf':
 				// setValidity(
