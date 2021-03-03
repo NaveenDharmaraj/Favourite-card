@@ -861,9 +861,9 @@ export const editUpcommingDeposit = (donationId, donationAmount, paymentInstruem
 
 };
 
-export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, infoToShare, nameToShare, privacyOpts = {}, noteToSelf, noteToCharity, dedicateType, dedicateValue,activePage) => (dispatch) => {
+export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, infoToShare, nameToShare, privacyOpts = {}, noteToSelf, noteToCharity, dedicateType, dedicateValue,activePage, userId) => (dispatch) => {
     let allocationData = {};
-    if (giveToType === 'Group' || giveToType === 'Campaign') {
+    if (giveToType !== 'Beneficiary') {
         allocationData = {
             id: id,
             attributes: {
@@ -874,6 +874,9 @@ export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, 
                 privacyShareEmail: privacyOpts.privacyShareEmail,
                 privacyShareAddress: privacyOpts.privacyShareEmail,
                 privacyTrpId: infoToShare.privacyData,
+                noteToGroup:noteToCharity,
+                noteToSelf,
+
             },
             type: 'recurringGroupAllocations',
         }
@@ -886,15 +889,22 @@ export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, 
                 dayOfMonth: dayOfMonth.value,
                 privacySetting: infoToShare.privacySetting,
                 privacyData: infoToShare.privacyData,
+                noteToSelf,
+                noteToCharity:noteToCharity,
             }
         }
     }
-    if (notetoSelf) allocationData.attributes.reason = noteToSelf;
+    if (!_.isEmpty(dedicateType)) {
+        allocationData.attributes = {
+            ...allocationData.attributes,
+            [dedicateType]: dedicateValue,
+        };
+    }
     return coreApi.patch(`${allocationData.type}/${id}`, {
         data: allocationData,
     }).then(
         () => {
-            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=RecurringDonation`;
+            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=RecurringAllocation,RecurringFundAllocation`;
             getUpcomingTransactions(dispatch, activepageUrl);
             const statusMessageProps = {
                 message: 'Your monthly gift has been updated.',

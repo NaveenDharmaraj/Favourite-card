@@ -18,6 +18,7 @@ function AllocationsTable(props) {
 		upcomingTransactions,
 		deleteTransaction,
 		monthlyTransactionApiCall,
+        activePage
 	} = props;
 	const {
 		i18n: { language },
@@ -48,6 +49,7 @@ function AllocationsTable(props) {
 				};
 				tableBody.push(
 					<TransactionTableRow
+                    activePage={activePage}
 						isAllocation={true}
 						modalHeader="Delete monthly gift?"
 						firstColoumn={recipientAccount}
@@ -60,7 +62,8 @@ function AllocationsTable(props) {
 						giftType={giftType}
                         language={language}
                         destinationType={attributes.destinationAccount}
-                        noteToRecipient={attributes.noteToRecipient}
+                        noteToRecipientSaved={attributes.noteToRecipient}
+                        noteToSelfSaved={attributes.noteToSelf}
 					/>
 				);
 			});

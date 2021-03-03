@@ -33,6 +33,7 @@ function AllocationsTab(props) {
                 upcomingTransactions={upcomingTransactions}
                 deleteTransaction={deleteTransaction}
                 monthlyTransactionApiCall={monthlyTransactionApiCall}
+                activePage={activePage}
             />
             <Grid.Column textAlign="right">
                 <div className="db-pagination  pt-2">

@@ -49,10 +49,10 @@ const EditMonthlyAllocationModal = ({
 	giftType,
 	language,
 	giveToType,
-	notetoRecipient,
+	noteToRecipientSaved,
+    noteToSelfSaved,
 }) => {
 	const formatMessage = t;
-
 	const intializeValidations = {
 		doesAmountExist: true,
 		isAmountLessThanOneBillion: true,
@@ -211,7 +211,7 @@ const EditMonthlyAllocationModal = ({
 	// state for payment option
 	const [loader, setLoader] = useState(true);
 
-	const [noteToCharity, setNoteToCharity] = useState(notetoRecipient);
+	const [noteToCharity, setNoteToCharity] = useState('');
 	const [noteToSelf, setNoteToSelf] = useState('');
 	const [dedicateValue, setDedicateValue] = useState('');
 	const [dedicateType, setDedicateType] = useState('');
@@ -426,11 +426,12 @@ const EditMonthlyAllocationModal = ({
 						privacyShareName,
 						privacyShareAmount,
 					},
-					noteToSelf,
-					noteToCharity,
+					noteToSelf ? noteToSelf:noteToSelfSaved,
+					noteToCharity? noteToCharity : noteToRecipientSaved,
 					dedicateType,
 					dedicateValue,
-                    activePage
+                    activePage,
+                    currentUser.id
 				)
 			)
 				.then((result) => {
@@ -592,7 +593,7 @@ const EditMonthlyAllocationModal = ({
 								>
 									<NoteTo
 										allocationType={
-											giveToType === ' Beneficiary'
+											giveToType === 'Beneficiary'
 												? 'Charity'
 												: giveToType
 										}

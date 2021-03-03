@@ -79,9 +79,10 @@ class TransactionTableRow extends React.Component {
             language,
             giftType,
             destinationType,
+            noteToRecipientSaved,
+            noteToSelfSaved,
 		} = this.props;
 		const { showDeleteModal, activeIndexs } = this.state;
-
 		const deleteModal = (
 			<Modal
 				size="tiny"
@@ -148,6 +149,8 @@ class TransactionTableRow extends React.Component {
                                 giftType={giftType}
                                 language={language}
                                 giveToType={destinationType}
+                                noteToSelfSaved={noteToSelfSaved}
+                                noteToRecipientSaved={noteToRecipientSaved}
 							/>
 						) : (
 							<EditMonthlyDepositModal
