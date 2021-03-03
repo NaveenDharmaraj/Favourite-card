@@ -310,6 +310,7 @@ const EditMonthlyAllocationModal = ({
 						formatAmount(parseFloat(value.replace(/,/g, '')))
 					);
 				}
+                break;
 			case 'noteToCharity':
 				setNoteToCharity(value.trim());
 				break;
