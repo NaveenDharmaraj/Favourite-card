@@ -141,15 +141,15 @@ const EditMonthlyAllocationModal = ({
 			setGroupCampaignAdminShareInfoOptions(
 				groupCampaignAdminShareInfoOptions
 			);
-			const prefernceName =
+			const preferenceName =
 				giveToType === 'Campaign'
 					? 'campaign_admins_info_to_share'
 					: 'giving_group_admins_info_to_share';
-			const preference = preferences[prefernceName].includes('address')
-				? `${preferences[prefernceName]}-${
-						preferences[`${prefernceName}_address`]
+			const preference = preferences[preferenceName].includes('address')
+				? `${preferences[preferenceName]}-${
+						preferences[`${preferenceName}_address`]
 				  }`
-				: preferences[prefernceName];
+				: preferences[preferenceName];
 			setPrivacyShareAmount(
 				preferences['giving_group_members_share_my_giftamount']
 			);
