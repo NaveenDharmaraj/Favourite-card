@@ -215,15 +215,17 @@ class TransactionTableRow extends React.Component {
 									<Table.Cell colSpan="2">
 										{isAllocation ? (
 											<EditMonthlyAllocationModal
-												currentMonthlyAllocAmount={
-													secondColoumn
-												}
-												paymentInstrumentId={
-													paymentInstrumentId
-												}
-												transactionId={transactionId}
-												activePage={activePage}
-											/>
+                                                recipientName={firstColoumn}
+                                                currentMonthlyAllocAmount={secondColoumn}
+                                                paymentInstrumentId={paymentInstrumentId}
+                                                transactionId={transactionId}
+                                                activePage={activePage}
+                                                giftType={giftType}
+                                                language={language}
+                                                giveToType={destinationType}
+                                                noteToSelfSaved={noteToSelfSaved}
+                                                noteToRecipientSaved={noteToRecipientSaved}
+                                            />
 										) : (
 											<EditMonthlyDepositModal
 												currentMonthlyDepositAmount={
