@@ -854,15 +854,15 @@ class MyCreditCards extends React.Component {
                 <div>
                     <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={this.state.isDeleteMessageOpen} onClose={() => { this.setState({ isDeleteMessageOpen: false }) }}>
                         <Modal.Header>Delete card?</Modal.Header>
-                        <Modal.Content>
+                        <Modal.Content className="all_body_pd">
                             {this.props.deleteMsgPopUpLoader ?
                                 <Loader size='small' />
                                 :
                                 <Modal.Description className="font-s-14 pad-0">
                                     {deleteCreditCardPopUpMsg}
                                 </Modal.Description>
-                            }
-                            <div className="btn-wraper pt-2 text-right">
+                            }       
+                            <div className="btn-wraper btn-bottom text-right">
                                 <Button
                                     className="danger-btn-rounded-def c-small"
                                     onClick={this.handleDeleteConfirmClick}

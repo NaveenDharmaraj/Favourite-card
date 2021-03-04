@@ -26,7 +26,8 @@ function AllocationsTable(props) {
 	const renderTableData = () => {
 		const tableBody = [];
 		if (!_.isEmpty(upcomingTransactions)) {
-			upcomingTransactions.forEach((transaction) => {
+            const activeIndexs = []
+			upcomingTransactions.forEach((transaction, index) => {
 				const { attributes, id } = transaction;
 				const transactionDate = attributes.transactionDate.includes(15)
 					? '15th'
@@ -47,6 +48,7 @@ function AllocationsTable(props) {
 				const giftType = {
 					value: attributes.transactionDate.includes('15') ? 15 : 1,
 				};
+                activeIndexs.push(index)
 				tableBody.push(
 					<TransactionTableRow
                     activePage={activePage}
@@ -61,9 +63,11 @@ function AllocationsTable(props) {
 						transactionId={id}
 						giftType={giftType}
                         language={language}
+                        index={index}
                         destinationType={attributes.destinationAccount}
                         noteToRecipientSaved={attributes.noteToRecipient}
                         noteToSelfSaved={attributes.noteToSelf}
+                        activeIndexs={activeIndexs}
 					/>
 				);
 			});

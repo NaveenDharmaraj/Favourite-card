@@ -31,12 +31,13 @@ function DonationsTable(props) {
     const renderTableData = () => {
         const tableBody = [];
         if (!_.isEmpty(upcomingTransactions)) {
+            const activeIndexs = []
             upcomingTransactions.forEach((transaction, index) => {
                 const {
                     attributes,
                     id,
                 } = transaction;
-                let donationMatchString = 'None';
+                let donationMatchString = 'None';           
                 if (attributes.donationMatch) {
                     const lastOccuranceOfOpenBrace = attributes.donationMatch.lastIndexOf('(');
                     donationMatchString = attributes.donationMatch.slice(0, lastOccuranceOfOpenBrace);
@@ -44,7 +45,7 @@ function DonationsTable(props) {
                 const transactionDate = (attributes.transactionDate.includes(15)) ? '15th' : '1st';
                 const formattedDate = formatDateForGivingTools(attributes.createdAt);
                 const formattedAmount = formatCurrency(attributes.amount, language, 'USD');
-
+                activeIndexs.push(index)
                 tableBody.push(<TransactionTableRow
                     isAllocation={false}
                     modalHeader="Delete monthly deposit?"
@@ -59,6 +60,7 @@ function DonationsTable(props) {
                     activePage={activePage}
                     index={index}
                     paymentInstrumentId={attributes.paymentInstrumentId || ''}
+                    activeIndexs={activeIndexs}
                 />);
             });
         }
@@ -72,7 +74,7 @@ function DonationsTable(props) {
                         <Table padded unstackable className="no-border-table">
                             <Table.Header>
                                 <Table.Row>
-                                    <Table.HeaderCell>Credit card </Table.HeaderCell>
+                                    <Table.HeaderCell className="Credit_Name">Credit card </Table.HeaderCell>
                                     <Table.HeaderCell className="text-right">Amount</Table.HeaderCell>
                                     <Table.HeaderCell>Day of month</Table.HeaderCell>
                                     <Table.HeaderCell>Matched by</Table.HeaderCell>
@@ -92,7 +94,7 @@ function DonationsTable(props) {
                 </Responsive>
                 <Responsive maxWidth={767}>
                     <div className="mbleAccordionTable">
-                        {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Accordion fluid exclusive={false}>
+                        {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Accordion fluid exclusive={false}    >
                             {
                                 renderTableData()
                             }
