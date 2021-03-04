@@ -528,7 +528,9 @@ const EditMonthlyAllocationModal = ({
 							handlePresetAmountClick={handlePresetAmountClick}
 							validity={validity}
 						/>{' '}
-						<Form.Field>
+						
+						{renderRepeatGift()}{' '}
+                        <Form.Field>
 							<label htmlFor="giveFrom">
 								{formatMessage('giveFromLabel')}
 							</label>
@@ -543,7 +545,6 @@ const EditMonthlyAllocationModal = ({
 								className={`amountField`}
 							/>
 						</Form.Field>
-						{renderRepeatGift()}{' '}
 						{!_isEmpty(infoOptions) &&
 							giveToType !== 'Beneficiary' &&
 							privacyOptionComponent}
