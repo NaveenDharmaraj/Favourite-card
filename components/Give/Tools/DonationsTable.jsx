@@ -47,7 +47,7 @@ function DonationsTable(props) {
                 const formattedAmount = formatCurrency(attributes.amount, language, 'USD');
                 activeIndexs.push(index)
                 tableBody.push(<TransactionTableRow
-                    showEditButton={true}
+                    isAllocation={false}
                     modalHeader="Delete monthly deposit?"
                     firstColoumn={attributes.paymentInformation}
                     secondColoumn={formattedAmount}
