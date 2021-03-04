@@ -52,7 +52,8 @@ const EditMonthlyAllocationModal = ({
 	giveToType,
 	noteToRecipientSaved,
     noteToSelfSaved,
-	
+    isCampaign,
+    hasCampaign
 }) => {
 	const formatMessage = t;
 	const intializeValidations = {
@@ -144,7 +145,7 @@ const EditMonthlyAllocationModal = ({
 				groupCampaignAdminShareInfoOptions
 			);
 			const preferenceName =
-				giveToType === 'Campaign'
+				isCampaign
 					? 'campaign_admins_info_to_share'
 					: 'giving_group_admins_info_to_share';
 			const preference = preferences[preferenceName].includes('address')
@@ -436,8 +437,8 @@ const EditMonthlyAllocationModal = ({
 			displayName={currentUser.attributes.displayName}
 			formatMessage={formatMessage}
 			handleInputChange={handleInputChange}
-			hasCampaign={false} // change later
-			isCampaign={giveToType === 'Campaign'}
+			hasCampaign={hasCampaign}
+			isCampaign={isCampaign}
 			giveFrom={flowObject.giveData.giveFrom}
 			giveToType={giveToType}
 			infoToShare={defaultInfoToShare}

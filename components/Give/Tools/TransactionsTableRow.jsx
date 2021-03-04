@@ -81,6 +81,8 @@ class TransactionTableRow extends React.Component {
             destinationType,
             noteToRecipientSaved,
             noteToSelfSaved,
+            isCampaign,
+            hasCampaign
 		} = this.props;
 		const { showDeleteModal, activeIndexs } = this.state;
         const deleteModal = (
@@ -149,6 +151,8 @@ class TransactionTableRow extends React.Component {
                                 giveToType={destinationType}
                                 noteToSelfSaved={noteToSelfSaved}
                                 noteToRecipientSaved={noteToRecipientSaved}
+                                isCampaign={isCampaign}
+                                hasCampaign={hasCampaign}
 							/>
 						) : (
 							<EditMonthlyDepositModal
@@ -225,6 +229,8 @@ class TransactionTableRow extends React.Component {
                                                 giveToType={destinationType}
                                                 noteToSelfSaved={noteToSelfSaved}
                                                 noteToRecipientSaved={noteToRecipientSaved}
+                                                isCampaign={isCampaign}
+                                                hasCampaign={hasCampaign}
                                             />
 										) : (
 											<EditMonthlyDepositModal
