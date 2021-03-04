@@ -52,6 +52,7 @@ const EditMonthlyAllocationModal = ({
 	giveToType,
 	noteToRecipientSaved,
     noteToSelfSaved,
+	
 }) => {
 	const formatMessage = t;
 	const intializeValidations = {
@@ -519,6 +520,7 @@ const EditMonthlyAllocationModal = ({
 			<Modal.Header> {recipientName} </Modal.Header>{' '}
 			<Modal.Content>
 				<Modal.Description>
+					<div className="flowFirst recurring_edit_modal">
 					<Form>
 						<DonationAmountField
 							amount={amount}
@@ -552,13 +554,14 @@ const EditMonthlyAllocationModal = ({
 							!_isEmpty(options) &&
 							!_isEmpty(defautlDropDownValue) &&
 							charityPrivacyComponent()}
-						<Form.Field className="give_flow_field">
+						<Form.Field className="give_flow_field recurring_edit_gift ">
 							<DedicateType
 								handleInputChange={handleInputChange}
 								handleInputOnBlur={handleInputOnBlur}
 								dedicateType={dedicateType}
 								dedicateValue={dedicateValue}
 								validity={validity}
+								isEditAlloc={true}
 							/>{' '}
 						</Form.Field>{' '}
 						<Grid className="to_space">
@@ -587,6 +590,7 @@ const EditMonthlyAllocationModal = ({
 							</Grid.Row>{' '}
 						</Grid>{' '}
 					</Form>{' '}
+					</div>
 				</Modal.Description>{' '}
 				<div className="btn-wraper text-right">
 					<Modal.Actions>
