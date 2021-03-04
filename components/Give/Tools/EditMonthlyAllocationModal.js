@@ -18,6 +18,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import dynamic from 'next/dynamic';
 
+import '../../../static/less/giveFlows.less';
 import DonationFrequency from '../DonationFrequency';
 import DonationAmountField from '../DonationAmountField';
 import PrivacyOptions from '../PrivacyOptions';
