@@ -18,6 +18,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import dynamic from 'next/dynamic';
 
+import '../../../static/less/giveFlows.less';
 import DonationFrequency from '../DonationFrequency';
 import DonationAmountField from '../DonationAmountField';
 import PrivacyOptions from '../PrivacyOptions';
@@ -51,6 +52,8 @@ const EditMonthlyAllocationModal = ({
 	giveToType,
 	noteToRecipientSaved,
     noteToSelfSaved,
+    isCampaign,
+    hasCampaign
 }) => {
 	const formatMessage = t;
 	const intializeValidations = {
@@ -142,7 +145,7 @@ const EditMonthlyAllocationModal = ({
 				groupCampaignAdminShareInfoOptions
 			);
 			const preferenceName =
-				giveToType === 'Campaign'
+				isCampaign
 					? 'campaign_admins_info_to_share'
 					: 'giving_group_admins_info_to_share';
 			const preference = preferences[preferenceName].includes('address')
@@ -434,8 +437,8 @@ const EditMonthlyAllocationModal = ({
 			displayName={currentUser.attributes.displayName}
 			formatMessage={formatMessage}
 			handleInputChange={handleInputChange}
-			hasCampaign={false} // change later
-			isCampaign={giveToType === 'Campaign'}
+			hasCampaign={hasCampaign}
+			isCampaign={isCampaign}
 			giveFrom={flowObject.giveData.giveFrom}
 			giveToType={giveToType}
 			infoToShare={defaultInfoToShare}
@@ -518,6 +521,7 @@ const EditMonthlyAllocationModal = ({
 			<Modal.Header> {recipientName} </Modal.Header>{' '}
 			<Modal.Content>
 				<Modal.Description>
+					<div className="flowFirst recurring_edit_modal">
 					<Form>
 						<DonationAmountField
 							amount={amount}
@@ -527,7 +531,9 @@ const EditMonthlyAllocationModal = ({
 							handlePresetAmountClick={handlePresetAmountClick}
 							validity={validity}
 						/>{' '}
-						<Form.Field>
+						
+						{renderRepeatGift()}{' '}
+                        <Form.Field>
 							<label htmlFor="giveFrom">
 								{formatMessage('giveFromLabel')}
 							</label>
@@ -542,7 +548,6 @@ const EditMonthlyAllocationModal = ({
 								className={`amountField`}
 							/>
 						</Form.Field>
-						{renderRepeatGift()}{' '}
 						{!_isEmpty(infoOptions) &&
 							giveToType !== 'Beneficiary' &&
 							privacyOptionComponent}
@@ -550,13 +555,14 @@ const EditMonthlyAllocationModal = ({
 							!_isEmpty(options) &&
 							!_isEmpty(defautlDropDownValue) &&
 							charityPrivacyComponent()}
-						<Form.Field className="give_flow_field">
+						<Form.Field className="give_flow_field recurring_edit_gift ">
 							<DedicateType
 								handleInputChange={handleInputChange}
 								handleInputOnBlur={handleInputOnBlur}
 								dedicateType={dedicateType}
 								dedicateValue={dedicateValue}
 								validity={validity}
+								isEditAlloc={true}
 							/>{' '}
 						</Form.Field>{' '}
 						<Grid className="to_space">
@@ -585,6 +591,7 @@ const EditMonthlyAllocationModal = ({
 							</Grid.Row>{' '}
 						</Grid>{' '}
 					</Form>{' '}
+					</div>
 				</Modal.Description>{' '}
 				<div className="btn-wraper text-right">
 					<Modal.Actions>

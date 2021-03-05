@@ -51,7 +51,7 @@ function AllocationsTable(props) {
                 activeIndexs.push(index)
 				tableBody.push(
 					<TransactionTableRow
-                    activePage={activePage}
+                        activePage={activePage}
 						isAllocation={true}
 						modalHeader="Delete monthly gift?"
 						firstColoumn={recipientAccount}
@@ -68,6 +68,8 @@ function AllocationsTable(props) {
                         noteToRecipientSaved={attributes.noteToRecipient}
                         noteToSelfSaved={attributes.noteToSelf}
                         activeIndexs={activeIndexs}
+                        isCampaign={attributes.campaign}
+                        hasCampaign={attributes.hasCampaign}
 					/>
 				);
 			});

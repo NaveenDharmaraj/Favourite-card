@@ -63,12 +63,13 @@ class DedicateGift extends Component {
             handleInputChange,
             handleInputOnBlur,
             validity,
+            isEditAlloc,
         } = this.props;
         return (
             <Fragment>
                 <div className="give_flow_field dedicate-flow">
                     <label>Dedicate this gift (optional)</label>
-                    <span className="givingInfoText">Only you will see this in your Account Details.</span>
+                    {!!!isEditAlloc && (<span className="givingInfoText">Only you will see this in your Account Details.</span>)}
                     <Accordion>
                         <Accordion.Title
                             data-test="Give_DedicateGift_accordian_inhonor"
