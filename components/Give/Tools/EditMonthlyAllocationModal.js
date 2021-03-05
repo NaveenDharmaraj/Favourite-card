@@ -112,6 +112,7 @@ const EditMonthlyAllocationModal = ({
 	const [noteToSelf, setNoteToSelf] = useState(noteToSelfSaved);
 	const [dedicateValue, setDedicateValue] = useState('');
 	const [dedicateType, setDedicateType] = useState('');
+    const [coverFeeModal , setCoverFeeModel]= useState(false)
 	//state for disable button
 	const [disableButton, setDisableButton] = useState(true);
 
@@ -505,7 +506,7 @@ const EditMonthlyAllocationModal = ({
 		<Modal
 			size="tiny"
 			dimmer="inverted"
-			className="chimp-modal editMonthlyModal"
+			className={coverFeeModal? `chimp-modal-hidden`: `chimp-modal editMonthlyModal`}
 			closeIcon
 			onClose={() => handleCloseModal()}
 			open={showEditModal}
@@ -531,7 +532,34 @@ const EditMonthlyAllocationModal = ({
 							handlePresetAmountClick={handlePresetAmountClick}
 							validity={validity}
 						/>{' '}
-						
+						{giveToType === 'Beneficiary' && (<p className="coverFeeLabel">
+                            { formatMessage('charity:coverFeeLabel')
+                            }
+                            <Modal
+                                size="tiny"
+                                dimmer="inverted"
+                                closeIcon
+                                className={`chimp-modal`}
+                                open={coverFeeModal}
+                                onClose={() => { setCoverFeeModel(false) }}
+                                trigger={
+                                    <a
+                                        onClick={() => setCoverFeeModel(true)}
+                                        className="link border bold"
+                                    >
+                                        &nbsp;{formatMessage('learnMore')}
+                                    </a>
+                                }
+                            >
+                                <Modal.Header>{formatMessage('charity:coverFeeModalHeader')}</Modal.Header>
+                                <Modal.Content className="pb-2">
+                                    {formatMessage('charity:coverFeeModalContentFirst')}
+                                    <br /><br />
+                                    {formatMessage('charity:coverFeeModalContentSecond')}
+                                    <br /><br />
+                                </Modal.Content>
+                            </Modal>
+                        </p>)}
 						{renderRepeatGift()}{' '}
                         <Form.Field>
 							<label htmlFor="giveFrom">
@@ -618,6 +646,6 @@ EditMonthlyAllocationModal.defaultProps = {
 	transactionId: '',
 };
 
-export default withTranslation(['group', 'giveCommon'])(
+export default withTranslation(['group', 'giveCommon', 'charity'])(
 	EditMonthlyAllocationModal
 );
