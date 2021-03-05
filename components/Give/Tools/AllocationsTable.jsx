@@ -83,7 +83,7 @@ function AllocationsTable(props) {
 					<Table padded unstackable className="no-border-table">
 						<Table.Header>
 							<Table.Row>
-								<Table.HeaderCell>Recipient </Table.HeaderCell>
+								<Table.HeaderCell className="edit-trxn-name">Recipient </Table.HeaderCell>
 								<Table.HeaderCell textAlign="right">
 									Amount
 								</Table.HeaderCell>
