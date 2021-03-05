@@ -129,7 +129,7 @@ class TransactionTableRow extends React.Component {
 			<Fragment>
 				{/* Desktop transaction details row start */}
 				<Responsive minWidth={768} as={'tr'}>
-					{firstColoumn && <Table.Cell>{firstColoumn}</Table.Cell>}
+					{firstColoumn && <Table.Cell className="edit-trxn-name">{firstColoumn}</Table.Cell>}
 					{secondColoumn && (
 						<Table.Cell className="text-right">
 							{secondColoumn}

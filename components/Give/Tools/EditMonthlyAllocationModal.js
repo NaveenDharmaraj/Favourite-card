@@ -210,8 +210,7 @@ const EditMonthlyAllocationModal = ({
                 value: !_isEmpty(fund) ?fund.id : undefined,
 			},
 			giveTo: {
-				id: currentUser.id,
-				type: 'user',
+				type: giveToType ==='Beneficiary' ? 'beneficiaries': giveToType,
 			},
 			giftType: giftType,
 		},
@@ -304,10 +303,11 @@ const EditMonthlyAllocationModal = ({
 					setAmount(
 						formatAmount(parseFloat(value.replace(/,/g, '')))
 					);
-                    validitions = validateDonationForm(
-                        name,
+                    validitions = validateGiveForm(
+                        'giveAmount',
                         value,
                         validity,
+                        flowObject.giveData
                         );
 				}
 				break;
@@ -338,10 +338,11 @@ const EditMonthlyAllocationModal = ({
 
 	const handlePresetAmountClick = (event, data) => {
 		const { value } = data;
-		const validitions = validateDonationForm(
-			'donationAmount',
+		const validitions = validateGiveForm(
+			'giveAmount',
 			value,
-			validity
+			validity,
+            flowObject.giveData
 		);
 		setValidity({
 			...validitions,
@@ -362,13 +363,15 @@ const EditMonthlyAllocationModal = ({
 	// handle close of edit monthly deposit modal
 	const handleCloseModal = () => {
 		setAmount(formatedCurrentMonthlyAllocAmount);
+        setNoteToCharity(noteToCharity);
+        setNoteToSelf(noteToSelf)
 		setShowEditModal(false);
 	};
 
 	// validating the form
 	const validateForm = () => {
 		let validation;
-		validation = validateDonationForm('donationAmount', amount, validity);
+		validation = validateGiveForm('giveAmount', amount, validity, flowObject.giveData);
 		setValidity({
 			...validation,
 		});
@@ -661,7 +664,7 @@ const EditMonthlyAllocationModal = ({
 											allocationType={
 												giveToType === 'Beneficiary'
 													? 'Charity'
-													: giveToType
+													: isCampaign? 'Campaign': giveToType
 											}
 											formatMessage={formatMessage}
 											giveFrom={
