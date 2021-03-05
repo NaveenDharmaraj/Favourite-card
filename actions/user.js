@@ -805,7 +805,7 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
     return coreApi.delete(url).then(
         (result) => {
             let activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10`;
-            if (transactionType === 'RecurringAllocation') {
+            if (transactionType === 'RecurringAllocation' || transactionType === 'RecurringFundAllocation') {
                 activepageUrl += '&filter[type]=RecurringAllocation,RecurringFundAllocation';
             } else {
                 activepageUrl += '&filter[type]=RecurringDonation';
@@ -907,7 +907,7 @@ export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, 
             const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=RecurringAllocation,RecurringFundAllocation`;
             getUpcomingTransactions(dispatch, activepageUrl);
             const statusMessageProps = {
-                message: 'Your monthly gift has been updated.',
+                message: 'Your scheduled gift has been updated.',
                 type: 'success',
             };
             dispatch({
