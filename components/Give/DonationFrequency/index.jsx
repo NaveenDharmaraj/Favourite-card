@@ -71,7 +71,7 @@ function DonationFrequency(props) {
             {
                 ((giftType.value > 0) && (
                     <>
-                        <div data-test="Give_DonationFrequency_gifttype" className="mt-1 mb-1">
+                        <div data-test="Give_DonationFrequency_gifttype" className="mt-1 mb-1 margin-edit-modal">
                             <Button
                                 className={(giftType.value ===1 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
                                 size="small"

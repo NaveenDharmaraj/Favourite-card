@@ -24,18 +24,21 @@ import DonationAmountField from '../DonationAmountField';
 import PrivacyOptions from '../PrivacyOptions';
 import NoteTo from '../NoteTo';
 import {
+    formatCurrency,
 	formatAmount,
 	isValidGiftAmount,
 	validateDonationForm,
 	validateGiveForm,
 } from '../../../helpers/give/utils';
+import {
+    getCoverAmount,
+} from '../../../actions/give';
 import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
-import { editUpcomingAllocation } from '../../../actions/user';
+import { editUpcomingAllocation, getUserFund } from '../../../actions/user';
 import {
 	getGroupCampaignAdminInfoToShare,
 	getCharityInfoToShare,
 } from '../../../actions/userProfile';
-const SpecialInstruction = dynamic(() => import('../SpecialInstruction'));
 
 const DedicateType = dynamic(() => import('../DedicateGift'), {
 	ssr: false,
@@ -51,9 +54,9 @@ const EditMonthlyAllocationModal = ({
 	language,
 	giveToType,
 	noteToRecipientSaved,
-    noteToSelfSaved,
-    isCampaign,
-    hasCampaign
+	noteToSelfSaved,
+	isCampaign,
+	hasCampaign,
 }) => {
 	const formatMessage = t;
 	const intializeValidations = {
@@ -80,11 +83,12 @@ const EditMonthlyAllocationModal = ({
 		attributes: { preferences },
 		id,
 	} = currentUser;
-	const infoOptions = useSelector((state) => state.userProfile.infoOptions);
+    const fund = useSelector((state) => state.user.fund) ;
+    const infoOptions = useSelector((state) => state.userProfile.infoOptions);
 	const charityShareInfoOptions = useSelector(
 		(state) => state.userProfile.charityShareInfoOptions
 	);
-
+    const coverAmountDisplay = useSelector((state)=> state.give.coverAmountDisplay);
 	const [infoToShareList, setInfoToShareList] = useState([]);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [
@@ -99,12 +103,12 @@ const EditMonthlyAllocationModal = ({
 		},
 	]);
 	const [giftFreq, setGiftFreq] = useState(giftType);
-    const [defaultInfoToShare, setDefaultInfoToShare] = useState();
+	const [defaultInfoToShare, setDefaultInfoToShare] = useState();
 	const [defaultNameToShare, setDefaultNameToShare] = useState();
 	const [privacyShareAmount, setPrivacyShareAmount] = useState();
-    // state for amount value in edit modal
+	// state for amount value in edit modal
 	const [amount, setAmount] = useState(formatedCurrentMonthlyAllocAmount);
-    
+
 	// intializing validity for amount and payment
 	const [validity, setValidity] = useState(intializeValidations);
 
@@ -112,16 +116,19 @@ const EditMonthlyAllocationModal = ({
 	const [noteToSelf, setNoteToSelf] = useState(noteToSelfSaved);
 	const [dedicateValue, setDedicateValue] = useState('');
 	const [dedicateType, setDedicateType] = useState('');
-    const [coverFeeModal , setCoverFeeModel]= useState(false)
+	const [coverFeeModal, setCoverFeeModel] = useState(false);
 	//state for disable button
 	const [disableButton, setDisableButton] = useState(true);
-
+    const [apiCalled, setApiCalled] = useState(false);
 	useEffect(() => {
 		if (showEditModal) {
-            setAmount(formatedCurrentMonthlyAllocAmount);
+			setAmount(formatedCurrentMonthlyAllocAmount);
 			if (giveToType === 'Beneficiary') {
 				if (_isEmpty(charityShareInfoOptions)) {
 					dispatch(getCharityInfoToShare(id));
+                    if(_isEmpty(fund)){
+                        getUserFund(dispatch, currentUser.id);
+                    }
 				}
 			} else {
 				if (_isEmpty(infoOptions)) {
@@ -130,10 +137,12 @@ const EditMonthlyAllocationModal = ({
 			}
 		}
 	}, [showEditModal]);
-	
-
 	useEffect(() => {
-		if (!_isEmpty(infoOptions) && !_isEmpty(currentUser) && giveToType !== 'Beneficiary') {
+		if (
+			!_isEmpty(infoOptions) &&
+			!_isEmpty(currentUser) &&
+			giveToType !== 'Beneficiary'
+		) {
 			let {
 				groupMemberInfoToShare,
 				groupCampaignAdminShareInfoOptions,
@@ -145,10 +154,9 @@ const EditMonthlyAllocationModal = ({
 			setGroupCampaignAdminShareInfoOptions(
 				groupCampaignAdminShareInfoOptions
 			);
-			const preferenceName =
-				isCampaign
-					? 'campaign_admins_info_to_share'
-					: 'giving_group_admins_info_to_share';
+			const preferenceName = isCampaign
+				? 'campaign_admins_info_to_share'
+				: 'giving_group_admins_info_to_share';
 			const preference = preferences[preferenceName].includes('address')
 				? `${preferences[preferenceName]}-${
 						preferences[`${preferenceName}_address`]
@@ -190,17 +198,16 @@ const EditMonthlyAllocationModal = ({
 			const preference = preferences[name].includes('address')
 				? `${preferences[name]}-${preferences[`${name}_address`]}`
 				: preferences[name];
-            let dD = infoToShareList.find((opt) => opt.value === preference);
-			setDefaultDropDownValue(
-				{...dD}
-			);
+			let dD = infoToShareList.find((opt) => opt.value === preference);
+			setDefaultDropDownValue({ ...dD });
 		}
 	}, [charityShareInfoOptions]);
-		// initializing the flow object for edit flow
+	// initializing the flow object for edit flow
 	const flowObject = {
 		giveData: {
 			giveFrom: {
 				type: 'user',
+                value: !_isEmpty(fund) ?fund.id : undefined,
 			},
 			giveTo: {
 				id: currentUser.id,
@@ -273,28 +280,43 @@ const EditMonthlyAllocationModal = ({
 					break;
 			}
 		}
-        setDisableButton(false);
+		setDisableButton(false);
 	};
 
 	const handleInputOnBlur = (event, data) => {
 		event.preventDefault();
 		const { name, value } = !_isEmpty(data) ? data : event.target;
 		const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
-
+        if (Number(flowObject.giveData.giveFrom.value) > 0 && Number(amount) > 0) {
+            getCoverAmount(flowObject.giveData.giveFrom.value, amount, dispatch);
+        } else {
+            getCoverAmount(flowObject.giveData.giveFrom.value, 0, dispatch);
+        }
+        let validitions = validateGiveForm(
+			name,
+			value,
+			validity,
+			flowObject.giveData
+		);
 		switch (name) {
 			case 'donationAmount':
-				if (_isEmpty(value) && value.match(isValidNumber)) {
+				if (!_isEmpty(value) && value.match(isValidNumber)) {
 					setAmount(
 						formatAmount(parseFloat(value.replace(/,/g, '')))
 					);
+                    validitions = validateDonationForm(
+                        name,
+                        value,
+                        validity,
+                        );
 				}
-                break;
+				break;
 			case 'noteToCharity':
 				setNoteToCharity(value.trim());
 				break;
 			case 'noteToSelf':
 				setNoteToSelf(value.trim());
-                break;
+				break;
 			case 'inHonorOf':
 			case 'inMemoryOf':
 				// setValidity(
@@ -307,12 +329,8 @@ const EditMonthlyAllocationModal = ({
 				// );
 				break;
 		}
-		const validitions = validateGiveForm(
-			name,
-			value,
-			validity,
-			flowObject.giveData
-		);
+		
+        
 		setValidity({
 			...validitions,
 		});
@@ -328,6 +346,11 @@ const EditMonthlyAllocationModal = ({
 		setValidity({
 			...validitions,
 		});
+        if (Number(flowObject.giveData.giveFrom.value) > 0 && Number(amount) > 0) {
+            getCoverAmount(flowObject.giveData.giveFrom.value, value, dispatch);
+        } else {
+            getCoverAmount(flowObject.giveData.giveFrom.value, 0, dispatch);
+        }
 		setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
 		setDisableButton(false);
 	};
@@ -402,12 +425,12 @@ const EditMonthlyAllocationModal = ({
 						privacyShareName,
 						privacyShareAmount,
 					},
-					noteToSelf ? noteToSelf:noteToSelfSaved,
-					noteToCharity? noteToCharity : noteToRecipientSaved,
+					noteToSelf ? noteToSelf : noteToSelfSaved,
+					noteToCharity ? noteToCharity : noteToRecipientSaved,
 					dedicateType,
 					dedicateValue,
-                    activePage,
-                    currentUser.id
+					activePage,
+					currentUser.id
 				)
 			)
 				.then((result) => {
@@ -423,14 +446,12 @@ const EditMonthlyAllocationModal = ({
 		setGiftFreq({
 			value,
 		});
-        setDisableButton(false);
-
+		setDisableButton(false);
 	};
 	const handleSpecialInstructionInputChange = (event, data) => {
 		const { value, options } = data;
-		setDefaultDropDownValue(_find(options, o=>o.value===value));
-        setDisableButton(false);
-
+		setDefaultDropDownValue(_find(options, (o) => o.value === value));
+		setDisableButton(false);
 	};
 	// Privacy section
 	const privacyOptionComponent = (
@@ -506,7 +527,11 @@ const EditMonthlyAllocationModal = ({
 		<Modal
 			size="tiny"
 			dimmer="inverted"
-			className={coverFeeModal? `chimp-modal-hidden`: `chimp-modal editMonthlyModal`}
+			className={
+				coverFeeModal
+					? `chimp-modal-hidden`
+					: `chimp-modal editMonthlyModal`
+			}
 			closeIcon
 			onClose={() => handleCloseModal()}
 			open={showEditModal}
@@ -523,102 +548,140 @@ const EditMonthlyAllocationModal = ({
 			<Modal.Content>
 				<Modal.Description>
 					<div className="flowFirst recurring_edit_modal">
-					<Form>
-						<DonationAmountField
-							amount={amount}
-							formatMessage={formatMessage}
-							handleInputChange={handleInputChange}
-							handleInputOnBlur={handleInputOnBlur}
-							handlePresetAmountClick={handlePresetAmountClick}
-							validity={validity}
-						/>{' '}
-						{giveToType === 'Beneficiary' && (<p className="coverFeeLabel">
-                            { formatMessage('charity:coverFeeLabel')
-                            }
-                            <Modal
-                                size="tiny"
-                                dimmer="inverted"
-                                closeIcon
-                                className={`chimp-modal`}
-                                open={coverFeeModal}
-                                onClose={() => { setCoverFeeModel(false) }}
-                                trigger={
-                                    <a
-                                        onClick={() => setCoverFeeModel(true)}
-                                        className="link border bold"
-                                    >
-                                        &nbsp;{formatMessage('learnMore')}
-                                    </a>
-                                }
-                            >
-                                <Modal.Header>{formatMessage('charity:coverFeeModalHeader')}</Modal.Header>
-                                <Modal.Content className="pb-2">
-                                    {formatMessage('charity:coverFeeModalContentFirst')}
-                                    <br /><br />
-                                    {formatMessage('charity:coverFeeModalContentSecond')}
-                                    <br /><br />
-                                </Modal.Content>
-                            </Modal>
-                        </p>)}
-						{renderRepeatGift()}{' '}
-                        <Form.Field>
-							<label htmlFor="giveFrom">
-								{formatMessage('giveFromLabel')}
-							</label>
-							<Form.Field
-								control={Input}
-								id={'giveFrom'}
-								name={'giveFrom'}
-								maxLength="8"
-								size="large"
-								value={`${currentUser.attributes.displayName}'s Impact account: ${currentUser.attributes.balance}`}
-								disabled
-								className={`amountField`}
-							/>
-						</Form.Field>
-						{!_isEmpty(infoOptions) &&
-							giveToType !== 'Beneficiary' &&
-							privacyOptionComponent}
-						{giveToType === 'Beneficiary' &&
-							!_isEmpty(options) &&
-							!_isEmpty(defautlDropDownValue) &&
-							charityPrivacyComponent()}
-						<Form.Field className="give_flow_field recurring_edit_gift ">
-							<DedicateType
+						<Form>
+							<DonationAmountField
+								amount={amount}
+								formatMessage={formatMessage}
 								handleInputChange={handleInputChange}
 								handleInputOnBlur={handleInputOnBlur}
-								dedicateType={dedicateType}
-								dedicateValue={dedicateValue}
+								handlePresetAmountClick={
+									handlePresetAmountClick
+								}
 								validity={validity}
-								isEditAlloc={true}
 							/>{' '}
-						</Form.Field>{' '}
-						<Grid className="to_space">
-							<Grid.Row className="to_space">
-								<Grid.Column
-									mobile={16}
-									tablet={16}
-									computer={16}
-								>
-									<NoteTo
-										allocationType={
-											giveToType === 'Beneficiary'
-												? 'Charity'
-												: giveToType
+							{giveToType === 'Beneficiary' && (
+								<p className="coverFeeLabel">
+									{!_isEmpty(coverAmountDisplay) &&
+									coverAmountDisplay > 0
+										? formatMessage(
+												'charity:coverFeeLabelWithAmount',
+												{
+													amount: formatCurrency(
+														coverAmountDisplay,
+														language,
+														'USD'
+													),
+												}
+										  )
+										: formatMessage('charity:coverFeeLabel')}
+									<Modal
+										size="tiny"
+										dimmer="inverted"
+										closeIcon
+										className={`chimp-modal`}
+										open={coverFeeModal}
+										onClose={() => {
+											setCoverFeeModel(false);
+										}}
+										trigger={
+											<a
+												onClick={() =>
+													setCoverFeeModel(true)
+												}
+												className="link border bold"
+											>
+												&nbsp;
+												{formatMessage(
+													'charity:learnMore'
+												)}
+											</a>
 										}
-										formatMessage={formatMessage}
-										giveFrom={flowObject.giveData.giveFrom}
-										noteToCharity={noteToCharity}
-										handleInputChange={handleInputChange}
-										handleInputOnBlur={handleInputOnBlur}
-										noteToSelf={noteToSelf}
-										validity={validity}
-										isEditModal={true}
-									/>{' '}
-								</Grid.Column>{' '}
-							</Grid.Row>{' '}
-						</Grid>{' '}
-					</Form>{' '}
+									>
+										<Modal.Header>
+											{formatMessage(
+												'charity:coverFeeModalHeader'
+											)}
+										</Modal.Header>
+										<Modal.Content className="pb-2">
+											{formatMessage(
+												'charity:coverFeeModalContentFirst'
+											)}
+											<br />
+											<br />
+											{formatMessage(
+												'charity:coverFeeModalContentSecond'
+											)}
+											<br />
+											<br />
+										</Modal.Content>
+									</Modal>
+								</p>
+							)}
+							{renderRepeatGift()}{' '}
+							<Form.Field>
+								<label htmlFor="giveFrom">
+									{formatMessage('giveFromLabel')}
+								</label>
+								<Form.Field
+									control={Input}
+									id={'giveFrom'}
+									name={'giveFrom'}
+									maxLength="8"
+									size="large"
+									value={`${currentUser.attributes.displayName}'s Impact account: ${currentUser.attributes.balance}`}
+									disabled
+									className={`amountField`}
+								/>
+							</Form.Field>
+							{!_isEmpty(infoOptions) &&
+								giveToType !== 'Beneficiary' &&
+								privacyOptionComponent}
+							{giveToType === 'Beneficiary' &&
+								!_isEmpty(options) &&
+								!_isEmpty(defautlDropDownValue) &&
+								charityPrivacyComponent()}
+							<Form.Field className="give_flow_field recurring_edit_gift ">
+								<DedicateType
+									handleInputChange={handleInputChange}
+									handleInputOnBlur={handleInputOnBlur}
+									dedicateType={dedicateType}
+									dedicateValue={dedicateValue}
+									validity={validity}
+									isEditAlloc={true}
+								/>{' '}
+							</Form.Field>{' '}
+							<Grid className="to_space">
+								<Grid.Row className="to_space">
+									<Grid.Column
+										mobile={16}
+										tablet={16}
+										computer={16}
+									>
+										<NoteTo
+											allocationType={
+												giveToType === 'Beneficiary'
+													? 'Charity'
+													: giveToType
+											}
+											formatMessage={formatMessage}
+											giveFrom={
+												flowObject.giveData.giveFrom
+											}
+											noteToCharity={noteToCharity}
+											handleInputChange={
+												handleInputChange
+											}
+											handleInputOnBlur={
+												handleInputOnBlur
+											}
+											noteToSelf={noteToSelf}
+											validity={validity}
+											isEditModal={true}
+										/>{' '}
+									</Grid.Column>{' '}
+								</Grid.Row>{' '}
+							</Grid>{' '}
+						</Form>{' '}
 					</div>
 				</Modal.Description>{' '}
 				<div className="btn-wraper text-right">

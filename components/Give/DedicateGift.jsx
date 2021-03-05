@@ -68,7 +68,7 @@ class DedicateGift extends Component {
         return (
             <Fragment>
                 <div className="give_flow_field dedicate-flow">
-                    <label>Dedicate this gift (optional)</label>
+                    <label className="edit-modal-label">Dedicate this gift (optional)</label>
                     {!!!isEditAlloc && (<span className="givingInfoText">Only you will see this in your Account Details.</span>)}
                     <Accordion>
                         <Accordion.Title
