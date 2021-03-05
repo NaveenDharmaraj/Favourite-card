@@ -39,7 +39,7 @@ function AllocationsTable(props) {
 					attributes.destinationAccount === 'Beneficiary'
 						? 'Charity'
 						: attributes.destinationAccount;
-				const recipientAccount = `${attributes.accountName} (${destinationType})`;
+				const recipientAccount = `${attributes.accountName} (${attributes.campaign? 'Campaign':destinationType })`;
 				const formattedAmount = formatCurrency(
 					attributes.amount,
 					language,
