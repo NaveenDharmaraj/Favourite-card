@@ -23,12 +23,11 @@ function AllocationsTab(props) {
     } = props;
     return (
         <Fragment>
-            <Segment>
+            <div className="recurring-allocations-heading">
                 <Header as="h3">
-                    Monthly gifts
+                Scheduled gifts to charities, Giving Groups, and Campaigns
                 </Header>
-                <p>Set up a new monthly gift by searching for a charity, Giving Group, or Campaign and then selecting 'Give' on the page.</p>
-            </Segment>
+            </div>
             <AllocationsTable
                 upcomingTransactions={upcomingTransactions}
                 deleteTransaction={deleteTransaction}
