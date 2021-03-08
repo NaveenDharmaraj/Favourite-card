@@ -1,5 +1,6 @@
 import _isEmpty from 'lodash/isEmpty';
 import Bowser from 'bowser';
+import { monthNamesForGivingTools } from './give/utils';
 
 const isFalsy = (val) => {
     const falsyArray = [
@@ -252,6 +253,15 @@ const validateDate = (dateStr = '') => {
         }
     }
     return isValid;
+};
+
+const formatDateForYearMonthDate = (date) => {
+    const unformattedDate = new Date(date);
+    // Need to use the original function, using this now as we need to integrate translaction for that
+    const day = unformattedDate.getDate();
+    const month = monthNamesForGivingTools(unformattedDate.getMonth() + 1);
+    const year = unformattedDate.getFullYear();
+    return `${month} ${day}, ${year}`;
 };
 
 export {

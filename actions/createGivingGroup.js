@@ -3,7 +3,7 @@ import _isEmpty from 'lodash/isEmpty';
 
 import searchApi from '../services/searchApi';
 import coreApi from '../services/coreApi';
-import { dateFormatConverter, intializeCreateGivingGroup } from '../helpers/createGrouputils';
+import { dateFormatConverter } from '../helpers/createGrouputils';
 
 export const actionTypes = {
     GET_CHARITY_BASED_ON_SERACH_QUERY_LOADER: 'GET_CHARITY_BASED_ON_SERACH_QUERY_LOADER',
@@ -11,8 +11,13 @@ export const actionTypes = {
     GET_UNIQUE_CITIES: 'GET_UNIQUE_CITIES',
     GET_UNIQUE_CITIES_LOADER: 'GET_UNIQUE_CITIES_LOADER',
     UPDATE_CREATE_GIVING_GROUP_OBJECT: 'UPDATE_CREATE_GIVING_GROUP_OBJECT',
+    UPDATE_EDIT_GIVING_GROUP_OBJECT: 'UPDATE_EDIT_GIVING_GROUP_OBJECT'
 };
-
+export const upadateEditGivingGroupObj = (editGivingGroupObject = {}) => dispatch =>
+    dispatch({
+        type: actionTypes.UPDATE_EDIT_GIVING_GROUP_OBJECT,
+        payload: editGivingGroupObject,
+    });
 export const updateCreateGivingGroupObj = (createGivingGroupObject = {}) => dispatch =>
     dispatch({
         type: actionTypes.UPDATE_CREATE_GIVING_GROUP_OBJECT,
@@ -104,20 +109,12 @@ export const createGivingGroupApiCall = (createGivingGroupObj) => dispatch => {
             fundraisingDate
         },
         galleryImages,
-        groupDescriptions,
     } = cloneCreateGivingGroupObject;
     if (fundraisingDate != '') {
         cloneCreateGivingGroupObject.attributes.fundraisingDate = dateFormatConverter(fundraisingDate, '/');
     };
     if (fundraisingCreated != '') {
         cloneCreateGivingGroupObject.attributes.fundraisingCreated = dateFormatConverter(fundraisingCreated, '/')
-    };
-    let newGroupDescriptions = [];
-    if (!_isEmpty(groupDescriptions) && groupDescriptions.length > 0) {
-        groupDescriptions.map(({ name, description }) => {
-            newGroupDescriptions.push({ [name]: description })
-        });
-        cloneCreateGivingGroupObject.groupPurposeDescriptions = [...newGroupDescriptions];
     };
     let newGalleryImage = [];
     if (galleryImages && galleryImages.length > 0) {
@@ -126,8 +123,69 @@ export const createGivingGroupApiCall = (createGivingGroupObj) => dispatch => {
         })
     };
     cloneCreateGivingGroupObject.galleryImages = [...newGalleryImage];
-    delete cloneCreateGivingGroupObject.groupDescriptions;
-    delete cloneCreateGivingGroupObject.beneficiaryItems;
     const bodyData = cloneCreateGivingGroupObject;
     return coreApi.post('/groups', { data: bodyData });
+};
+
+
+export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => dispatch => {
+    const editGroupObject = {
+        type: 'groups',
+        id: groupId,
+        ...editGivingGroupObj
+    };
+    if (editGroupObject.groupPurposeDescriptions) {
+        editGroupObject.groupPurposeDescriptions.map((item) => delete item.id)
+    }
+    const EditGivingGroupApiCallPromise = coreApi.patch(`/groups/${groupId}`, { data: editGroupObject })
+    EditGivingGroupApiCallPromise
+        .then((result) => {
+            delete result.data.links;
+            delete result.data.relationships;
+            const editGivingGroupObjResponse = result.data;
+            if(editGivingGroupObjResponse.attributes.groupPurposeDescriptions){
+                editGivingGroupObjResponse.attribues.groupPurposeDescriptions.map(item=>{
+                    return{
+                        ...item,
+                        id: `${item.purpose}${item.length}`
+                    }
+                })
+            };
+            editGivingGroupObjResponse.attributes = {
+                ...editGivingGroupObjResponse.attributes,
+                fundraisingCreated: editGivingGroupObjResponse.attributes.fundraisingStartDate,
+                fundraisingDate: editGivingGroupObjResponse.attributes.fundraisingEndDate,
+                fundraisingGoal: editGivingGroupObjResponse.attributes.goal,
+                logo: editGivingGroupObjResponse.attributes.avatar,
+                prefersInviteOnly: editGivingGroupObjResponse.attributes.isPrivate ? "1" : "0",
+                prefersRecurringEnabled: editGivingGroupObjResponse.attributes.recurringEnabled ? "1" : "0",
+                short: editGivingGroupObjResponse.attributes.description,
+                videoUrl: editGivingGroupObjResponse.attributes.videoDirectLink
+            };
+            editGivingGroupObjResponse.beneficiaryIds = editGivingGroupObjResponse.attributes.beneficiaryIds
+            editGivingGroupObjResponse.groupPurposeDescriptions = editGivingGroupObjResponse.attributes.groupPurposeDescriptions;
+            editGivingGroupObjResponse.galleryImages = editGivingGroupObjResponse.attributes.gallerySlides[0];
+            dispatch(upadateEditGivingGroupObj({ ...editGivingGroupObjResponse }));
+        })
+        .catch(() => {
+            //handle error
+        });
+    return EditGivingGroupApiCallPromise;
+};
+
+export const deleteGroupLogo = (editGivingGroupObj, groupId = '') => dispatch => {
+    coreApi.delete(`/groups/${groupId}/delete_logo`)
+        .then(() => {
+            dispatch(upadateEditGivingGroupObj({
+                ...editGivingGroupObj,
+                attributes: {
+                    ...editGivingGroupObj.attributes,
+                    logo: '',
+                    avatar: '',
+                }
+            }));
+        })
+        .catch(() => {
+            //handle error
+        })
 };

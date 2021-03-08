@@ -46,7 +46,7 @@ const CreateGivingGroupAddSectionModal = ({
             doesNameExist: true,
             doesDescriptionNotExist: true,
         });
-        setAddModalObj({ name: '', description: '' });
+        setAddModalObj({ purpose: '', description: '' });
         setDisableContinue(true);
         handleParentModalClick(modalState, buttonClicked === 'add' ? addModalObj : {});
     }
@@ -77,8 +77,8 @@ const CreateGivingGroupAddSectionModal = ({
                             control={Input}
                             label={formatMessage('createGivingGroupAbout.addSectionModalTile')}
                             placeholder={formatMessage('createGivingGroupAbout.addSectionModalSectionTitlePlaceholder')}
-                            value={addModalObj.name}
-                            name='name'
+                            value={addModalObj.purpose}
+                            name='purpose'
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
                             error={!validity.doesNameExist}
@@ -120,8 +120,8 @@ const CreateGivingGroupAddSectionModal = ({
                             className='blue-btn-rounded-def'
                             disabled={
                                 disableContinue || !validity.doesNameExist || !validity.doesDescriptionNotExist
-                                || (addModalObj.name !== '' && addModalObj.description === '')
-                                || (addModalObj.name === '' && addModalObj.description !== '')
+                                || (addModalObj.purpose !== '' && addModalObj.description === '')
+                                || (addModalObj.purpose === '' && addModalObj.description !== '')
                             }
                             onClick={() => handleOnModalClick(false, 'add')}
                         >

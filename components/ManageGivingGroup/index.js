@@ -13,13 +13,18 @@ import '../../static/less/charityProfile.less';
 import '../../static/less/create_manage_group.less';
 import groupImg from '../../static/images/no-data-avatar-giving-group-profile.png';
 import ManageGivingGroupAccordian from './ManageGivingGroupAccordian';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRef } from 'react';
+import { intializeCreateGivingGroup } from '../../helpers/createGrouputils';
+import { deleteGroupLogo, editGivingGroupApiCall } from '../../actions/createGivingGroup';
+import { getBase64 } from '../../helpers/chat/utils';
 
-const ManageGivingGroup = ({ groupDetails, step, substep }) => {
+const ManageGivingGroup = ({ step, substep }) => {
     const handleReturnToProfile = (slug) => {
         Router.pushRoute(`/groups/${slug}`)
         return;
-    }
-
+    };
+    const editGivingGroupStoreFlowObject = useSelector(state => state.createGivingGroup.editGivingGroupStoreFlowObject || intializeCreateGivingGroup);
     const {
         attributes: {
             avatar,
@@ -28,8 +33,32 @@ const ManageGivingGroup = ({ groupDetails, step, substep }) => {
             name,
             slug
         },
-    } = groupDetails;
+        id: groupId,
+    } = editGivingGroupStoreFlowObject;
+    const uploadLogoImageRef = useRef(null);
     const groupDisplayImage = avatar || groupImg;
+    const dispatch = useDispatch();
+
+    const handleUpload = (event, mode = '') => {
+        try {
+            if (mode === 'remove') {
+                dispatch(deleteGroupLogo(editGivingGroupStoreFlowObject, groupId));
+                return
+            }
+            getBase64(event.target.files[0], (result) => {
+                const editObject = {
+                    'attributes': {
+                        'logo': result
+                    },
+                };
+                dispatch(editGivingGroupApiCall(editObject, groupId));
+            });
+        }
+        catch (err) {
+            //handle error
+        }
+
+    }
     return (
         <Layout authRequired>
             <Container>
@@ -45,10 +74,24 @@ const ManageGivingGroup = ({ groupDetails, step, substep }) => {
                                                 <div className="ch_profileImage">
                                                     <Image src={groupDisplayImage} />
                                                 </div>
+                                                <input
+                                                    id="myInput"
+                                                    accept="image/png, image/jpeg, image/jpg"
+                                                    type="file"
+                                                    ref={uploadLogoImageRef}
+                                                    style={{ display: 'none' }}
+                                                    onChange={(event) => handleUpload(event, 'add')}
+                                                />
                                                 <Dropdown className='' icon='camera' direction='right'>
                                                     <Dropdown.Menu >
-                                                        <Dropdown.Item text='Delete photo' />
-                                                        <Dropdown.Item text='Change photo' />
+                                                        <Dropdown.Item
+                                                            onClick={(event) => handleUpload(event, 'remove')}
+                                                            text='Delete photo'
+                                                        />
+                                                        <Dropdown.Item
+                                                            text='Change photo'
+                                                            onClick={() => uploadLogoImageRef.current.click()}
+                                                        />
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                                 {/* <Icon name='camera'/> */}
@@ -95,6 +138,8 @@ const ManageGivingGroup = ({ groupDetails, step, substep }) => {
                             step={step}
                             substep={substep}
                             slug={slug}
+                            groupId={groupId}
+                            editGivingGroupStoreFlowObject={editGivingGroupStoreFlowObject}
                         />
                     </Grid.Row>
                 </div>
@@ -104,15 +149,6 @@ const ManageGivingGroup = ({ groupDetails, step, substep }) => {
 };
 ManageGivingGroup.defaultProps = {
     dispatch: () => { },
-    groupDetails: {
-        attributes: {
-            avatar: '',
-            causes: [],
-            location: '',
-            name: '',
-            slug: ''
-        },
-    },
     step: '',
     substep: '',
     t: () => { },

@@ -9,6 +9,7 @@ import {
     Router,
 } from '../routes';
 import ManageGivingGroup from '../components/ManageGivingGroup';
+import { manageGivingGroupAccordianMenuOptions, manageGivingGroupAccordianOptions } from '../helpers/createGrouputils';
 
 
 const GroupProfileEdit = (props) => {
@@ -16,26 +17,35 @@ const GroupProfileEdit = (props) => {
         slug,
         groupDetails: {
             attributes: {
+                isAdmin,
                 isCampaign,
             },
         },
         redirectToPrivateGroupErrorPage,
         redirectToDashboard,
+        step,
+        substep,
     } = props;
     useEffect(() => {
         if (isCampaign) {
             Router.pushRoute(`/campaigns/${slug}`);
-        }
-        if (redirectToDashboard) {
+        } else if (redirectToDashboard) {
             Router.push('/search');
-        }
-        if (redirectToPrivateGroupErrorPage) {
+        } else if (redirectToPrivateGroupErrorPage) {
             Router.pushRoute('/group/error');
+            return;
+        } else if (_isEmpty(manageGivingGroupAccordianOptions[step]) && _isEmpty(substep)) {
+            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions['edit'].route}`);
+            return;
+        } else if (substep && _isEmpty(manageGivingGroupAccordianMenuOptions[substep])) {
+            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions['edit'].route}/${manageGivingGroupAccordianMenuOptions['basic'].route}`)
+        } else if (!isAdmin) {
+            Router.pushRoute(`/groups/${slug}`);
         }
     }, []);
     return (
         <Fragment>
-            {(!isCampaign && !redirectToDashboard && !redirectToPrivateGroupErrorPage) &&
+            {(isAdmin && !isCampaign && !redirectToDashboard && !redirectToPrivateGroupErrorPage) &&
                 <ManageGivingGroup {...props} />
             }
         </Fragment>
@@ -47,19 +57,25 @@ GroupProfileEdit.getInitialProps = async ({
     req,
     query,
 }) => {
-    let auth0AccessToken = null;
-    if (typeof window === 'undefined') {
-        auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
+    try {
+        let auth0AccessToken = null;
+        if (typeof window === 'undefined') {
+            auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
+        }
+        await reduxStore.dispatch(getGroupFromSlug(query.slug, auth0AccessToken, true));
+        return {
+            namespacesRequired: [
+                'common',
+            ],
+            slug: query.slug,
+            step: query.step,
+            substep: query.substep,
+        };
     }
-    await reduxStore.dispatch(getGroupFromSlug(query.slug, auth0AccessToken));
-    return {
-        namespacesRequired: [
-            'common',
-        ],
-        slug: query.slug,
-        step: query.step,
-        substep: query.substep,
-    };
+    catch (err) {
+        //handle error
+    }
+    return {}
 }
 
 const mapStateToProps = (state) => {

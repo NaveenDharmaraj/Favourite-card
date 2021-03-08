@@ -34,19 +34,27 @@ const GroupProfileCreate = ({ createGivingGroupStoreFlowObject, dispatch, slug }
                 return <CreateGivingGroupBasic
                     createGivingGroupStoreFlowObject={!_isEmpty(createGivingGroupStoreFlowObject) ?
                         createGivingGroupStoreFlowObject : intializeCreateGivingGroup}
+                    showBasic={true}
+                    showButton={true}
+                    fromCreate={true}
+                    showMonthly={true}
                 />
             case 'two':
                 return <CreateGivingGroupAbout
                     createGivingGroupStoreFlowObject={!_isEmpty(createGivingGroupStoreFlowObject) ? createGivingGroupStoreFlowObject : intializeCreateGivingGroup}
+                    fromCreate={true}
                 />
             case 'three':
                 return <CreateGivingGroupPicsVideo
                     createGivingGroupStoreFlowObject={!_isEmpty(createGivingGroupStoreFlowObject) ? createGivingGroupStoreFlowObject : intializeCreateGivingGroup}
+                    fromCreate={true}
                 />
             case 'four':
                 return <CreateGivingGroupGivingGoal
                     createGivingGroupStoreFlowObject={!_isEmpty(createGivingGroupStoreFlowObject) ? createGivingGroupStoreFlowObject : intializeCreateGivingGroup}
-                    dispatch={dispatch}
+                    fromCreate={true}
+                    showCharity={true}
+                    showGivingGoal={true}
                 />
             default:
                 break;

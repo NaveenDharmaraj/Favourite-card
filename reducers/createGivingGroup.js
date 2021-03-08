@@ -5,6 +5,12 @@ const createGivingGroup = (state = {}, action) => {
         ...state,
     };
     switch (action.type) {
+        case actionTypes.UPDATE_EDIT_GIVING_GROUP_OBJECT:
+            newState = {
+                ...state,
+                editGivingGroupStoreFlowObject: action.payload,
+            };
+            break;
         case actionTypes.UPDATE_CREATE_GIVING_GROUP_OBJECT:
             newState = {
                 ...state,

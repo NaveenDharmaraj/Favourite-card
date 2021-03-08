@@ -1,120 +1,13 @@
-import dynamic from 'next/dynamic';
-
-// const BasicSetting = dynamic(() => import('../basic'));
-// const AboutGroup = dynamic(() => import('../about'));
-// const PicsVideo = dynamic(() => import('../pics-video'));
-// const monthlygifts = dynamic(() => import('../basic'));
-// const GivingGoal = dynamic(() => import('../basic'));
-// const DownloadTransaction = dynamic(() => import('../downloadTransaction'));
-// const AddDonation = dynamic(() => import('../addDonation'));
-// const Manage = dynamic(() => import('../basic'));
-// const Invite = dynamic(() => import('../basic'));
-// const InviteFriends = dynamic(() => import('../basic'));
 
 import { useState } from "react";
 import _isEmpty from 'lodash/isEmpty';
 import { Accordion, Grid, Icon, Menu } from "semantic-ui-react";
 
 import { Router } from '../../../routes';
-import CreateGivingGroupBasic from '../../CreateGivingGroup/CreateGivingGroupBasic';
+import { intializeCreateGivingGroup, manageGivingGroupAccordianMenuOptions, manageGivingGroupAccordianOptions } from '../../../helpers/createGrouputils';
 
-const manageGivingGroupAccordianMenuOptions = {
-    basic: {
-        key: 'basic',
-        route: 'basic',
-        text: 'Basic Settings',
-        value: 0,
-        component: <CreateGivingGroupBasic />
-    },
-    about: {
-        key: 'about',
-        route: 'about',
-        text: 'About the group',
-        value: 1,
-        // component: <AboutGroup />
-    },
-    picsvideos: {
-        key: 'picsvideos',
-        route: 'picsvideos',
-        text: 'Pics & video',
-        value: 2,
-        // component: <PicsVideo />
-    },
-    givinggoals: {
-        key: 'givinggoals',
-        route: 'givinggoals',
-        text: 'Giving goal',
-        value: 3,
-        // component: <GivingGoal />
-    },
-    monthlygifts: {
-        key: 'monthlygifts',
-        route: 'monthlygifts',
-        text: 'Monthly gifts',
-        value: 4,
-        // component: <monthlygifts />
-    },
-    charitysupport: {
-        key: 'charitysupport',
-        route: 'charitysupport',
-        text: 'Charities to support',
-        value: 5,
-        // component: <BasicSetting />
-    },
-};
-const manageGivingGroupAccordianOptions = {
-    edit: {
-        key: 'edit',
-        route: 'edit',
-        text: 'Edit',
-        value: 0,
-        component: <CreateGivingGroupBasic />
-    },
-    members: {
-        key: 'members',
-        route: 'members',
-        text: 'Members',
-        value: 1,
-        componentValue: 7,
-        // component: <BasicSetting />
-    },
-    manage: {
-        key: 'manage',
-        route: 'manage',
-        text: 'Manage',
-        value: 2,
-        // component: <Manage />
-    },
-    invites: {
-        key: 'invites',
-        route: 'invites',
-        text: 'Invite',
-        value: 3,
-        // component: <InviteFriends />
-    },
-    ['email_members']: {
-        key: 'email_members',
-        route: 'email_members',
-        text: 'Email members',
-        value: 4,
-        // component: <Invite />
-    },
-    downloaddoantion: {
-        key: 'downloaddoantion',
-        route: 'downloaddoantion',
-        text: 'Download transaction data',
-        value: 5,
-        // component: <DownloadTransaction />
-    },
-    widget: {
-        key: 'widget',
-        route: 'widget',
-        text: 'Add donation button',
-        value: 6,
-        // component: <AddDonation />
-    },
-};
-const ManageGivingGroupAccordian = ({ step, substep, slug }) => {
+
+const ManageGivingGroupAccordian = ({ editGivingGroupStoreFlowObject, groupId, step, substep, slug }) => {
     const activeAccordionIndexValue = manageGivingGroupAccordianOptions[step] ? manageGivingGroupAccordianOptions[step].value : null;
     const activeMenuIndexValue = manageGivingGroupAccordianMenuOptions[substep] ? manageGivingGroupAccordianMenuOptions[substep].value : null;
     const [stepState, setStepState] = useState(step);
@@ -160,7 +53,8 @@ const ManageGivingGroupAccordian = ({ step, substep, slug }) => {
                             <Menu.Item
                                 menuIndex={0}
                                 subStepValue={manageGivingGroupAccordianMenuOptions.basic.key}
-                                active={activeMenuIndex === manageGivingGroupAccordianMenuOptions.basic.value}
+                                active={(activeMenuIndex === manageGivingGroupAccordianMenuOptions.basic.value)
+                                    || (activeMenuIndex === null && activeAccordionIndex === 0)}
                                 onClick={handleMenuItemClick}
                             >
                                 {manageGivingGroupAccordianMenuOptions.basic.text}
@@ -264,25 +158,12 @@ const ManageGivingGroupAccordian = ({ step, substep, slug }) => {
                     </Menu.Item>
                 </Accordion>
             </Grid.Column>
-
             <Grid.Column computer={11} tablet={11} mobile={16} className='active'>
                 <div className='createNewGroupWrap manageGroupWrap'>
                     <div className='mainContent'>
                         {!_isEmpty(currentComponentSelectedState) &&
-                            currentComponentSelectedState.component
+                            React.cloneElement(currentComponentSelectedState.component, { editGivingGroupStoreFlowObject, fromCreate: false, groupId })
                         }
-                        {/* <BasicSetting/> */}
-                        {/* <AboutGroup/> */}
-                        {/* <PicsVideo/> */}
-                        {/* <monthlygifts/> */}
-                        {/* <CharitiesToSupport/> */}
-                        {/* <GivingGoal/> */}
-                        {/* {<DownloadTransaction/>} */}
-                        {/* {<AddDonation/>} */}
-                        {/* {<EmailMembers/>} */}
-                        {/* {<Manage/>} */}
-                        {/* {<Invite/>} */}
-                        {/* { <InviteFriends/>} */}
                     </div>
                 </div>
             </Grid.Column>
@@ -291,9 +172,11 @@ const ManageGivingGroupAccordian = ({ step, substep, slug }) => {
 };
 
 ManageGivingGroupAccordian.defaultProps = {
+    editGivingGroupStoreFlowObject: { ...intializeCreateGivingGroup },
+    groupId: '',
     step: '',
     substep: '',
-    slug: ''
+    slug: '',
 };
 
 export default ManageGivingGroupAccordian;

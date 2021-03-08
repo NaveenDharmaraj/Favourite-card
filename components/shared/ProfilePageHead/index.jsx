@@ -88,7 +88,7 @@ class ProfilePageHead extends React.Component {
             profileType = 'charity';
         } else if (type === 'groups') {
             profileType = 'group';
-            linkAddress = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
+            linkAddress = `/groups/${slug}/edit`;
             profileButtonText = formatMessage('campaignProfile:groupButtonText');
             profileTooltipText = formatMessage('campaignProfile:givingGroupText');
         } else if (type === 'campaigns') {
