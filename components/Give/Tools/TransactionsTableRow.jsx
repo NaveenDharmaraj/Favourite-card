@@ -138,7 +138,7 @@ class TransactionTableRow extends React.Component {
 					{thirdColoumn && <Table.Cell>{thirdColoumn}</Table.Cell>}
 					{fourthColoumn && <Table.Cell>{fourthColoumn}</Table.Cell>}
 					{fifthColoumn && <Table.Cell>{fifthColoumn}</Table.Cell>}
-					<Table.Cell>
+					<Table.Cell className="tbl-action">
 						{isAllocation ? (
 							<EditMonthlyAllocationModal
 								recipientName={firstColoumn}
