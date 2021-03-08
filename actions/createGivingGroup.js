@@ -6,6 +6,8 @@ import coreApi from '../services/coreApi';
 import { dateFormatConverter } from '../helpers/createGrouputils';
 
 export const actionTypes = {
+    GET_PROVINCE_LIST: 'GET_PROVINCE_LIST',
+    GET_PROVINCES_LIST_LOADER: 'GET_PROVINCES_LIST_LOADER',
     GET_CHARITY_BASED_ON_SERACH_QUERY_LOADER: 'GET_CHARITY_BASED_ON_SERACH_QUERY_LOADER',
     GET_CHARITY_BASED_ON_SERACH_QUERY: 'GET_CHARITY_BASED_ON_SERACH_QUERY',
     GET_UNIQUE_CITIES: 'GET_UNIQUE_CITIES',
@@ -24,39 +26,68 @@ export const updateCreateGivingGroupObj = (createGivingGroupObject = {}) => disp
         payload: createGivingGroupObject,
     });
 
-export const getUniqueCities = (pageNumber = 1, pageSize = 50) => dispatch => {
-    dispatch({
-        type: actionTypes.GET_UNIQUE_CITIES_LOADER,
-        payload: true
-    });
+const getPaginatedCitiesCalls = (pageNumber = 1, pageSize = 50, value = '') => {
     const params = {
         'page[number]': pageNumber,
         'page[size]': pageSize,
     };
-    const getUniqueCitiesPromise = searchApi.get('/autocomplete/uniquecities', { params });
+    const bodyData = {
+        "text": "",
+        "filter": [
+            {
+                "field": "province_name",
+                "value": [value]
+            }
+        ]
+    };
+    return searchApi.post('/uniquecities', { ...bodyData }, { params });
+}
+export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => async (dispatch) => {
+    dispatch({
+        type: actionTypes.GET_UNIQUE_CITIES_LOADER,
+        payload: true
+    });
+    const getUniqueCitiesPromise = getPaginatedCitiesCalls(pageNumber, pageSize, value, false);
+    let citiesOption = []
+    let citiesOptionsPromisesData = [];
     getUniqueCitiesPromise
-        .then(({ data }) => {
-            const citiesOption = data.map(({ attributes }) => {
+        .then(async (data) => {
+            citiesOption = data.data.map(({ attributes }) => {
                 return {
                     key: attributes.city + attributes.province_name,
                     text: attributes.city,
                     value: attributes.city,
                 }
             });
-            dispatch({
-                type: actionTypes.GET_UNIQUE_CITIES,
-                payload: citiesOption,
-            });
-            dispatch({
-                type: actionTypes.GET_UNIQUE_CITIES_LOADER,
-                payload: false
-            });
+            if (data.meta.pageCount > 1) {
+                const citiesPromise = [];
+                for (let i = 2; i <= data.meta.pageCount; i++) {
+                    citiesPromise.push(getPaginatedCitiesCalls(i, 50, value, false));
+                }
+                await Promise.all(citiesPromise).then((data) => {
+                    data.map(({ data }) => {
+                        data.map(({ attributes }) => {
+                            citiesOptionsPromisesData.push({
+                                key: attributes.city + attributes.province_name,
+                                text: attributes.city,
+                                value: attributes.city,
+                            });
+                        })
+                    });
+                });
+            }
         })
         .catch(() => {
             // handle error
+        })
+        .finally(() => {
             dispatch({
                 type: actionTypes.GET_UNIQUE_CITIES_LOADER,
                 payload: false
+            });
+            dispatch({
+                type: actionTypes.GET_UNIQUE_CITIES,
+                payload: citiesOption.concat(citiesOptionsPromisesData),
             });
         });
     return getUniqueCitiesPromise;

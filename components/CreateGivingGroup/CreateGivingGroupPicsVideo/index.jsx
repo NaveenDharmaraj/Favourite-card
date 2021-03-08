@@ -337,6 +337,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                             imagesArray={galleryImages}
                                             enableImageSelection={false}
                                             rowHeight={80}
+                                            renderSingleImage = {false}
                                         />
                                         <p> You can still add {10 - galleryImages.length} more photos.</p>
                                     </Fragment>
