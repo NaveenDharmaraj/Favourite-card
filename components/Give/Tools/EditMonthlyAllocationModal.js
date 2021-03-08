@@ -72,6 +72,7 @@ const EditMonthlyAllocationModal = ({
 		isNoteToCharityInLimit: true,
 		isNoteToSelfInLimit: true,
 		isDedicateGiftEmpty: true,
+        isAmountCoverGive:true,
 	};
 	const formatedCurrentMonthlyAllocAmount = currentMonthlyAllocAmount.replace(
 		'$',
@@ -119,7 +120,6 @@ const EditMonthlyAllocationModal = ({
 	const [coverFeeModal, setCoverFeeModel] = useState(false);
 	//state for disable button
 	const [disableButton, setDisableButton] = useState(true);
-    const [apiCalled, setApiCalled] = useState(false);
 	useEffect(() => {
 		if (showEditModal) {
 			setAmount(formatedCurrentMonthlyAllocAmount);
@@ -249,7 +249,7 @@ const EditMonthlyAllocationModal = ({
 		}
 		if (name !== 'inHonorOf' && name !== 'inMemoryOf') {
 			switch (name) {
-				case 'donationAmount':
+				case 'giveAmount':
 					setAmount(value);
 					break;
 				case 'nameToShare':
@@ -300,7 +300,7 @@ const EditMonthlyAllocationModal = ({
 			flowObject.giveData
 		);
 		switch (name) {
-			case 'donationAmount':
+			case 'giveAmount':
 				if (!_isEmpty(value) && value.match(isValidNumber)) {
 					setAmount(
 						formatAmount(parseFloat(value.replace(/,/g, '')))
@@ -566,6 +566,7 @@ const EditMonthlyAllocationModal = ({
 									handlePresetAmountClick
 								}
 								validity={validity}
+                                isGiveFlow={true}
 							/>{' '}
 							{giveToType === 'Beneficiary' && (
 								<p className="coverFeeLabel">
