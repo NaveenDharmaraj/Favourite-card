@@ -567,6 +567,7 @@ const EditMonthlyAllocationModal = ({
 								}
 								validity={validity}
                                 isGiveFlow={true}
+                                fromCharity={giveToType==='Beneficiary'}
 							/>{' '}
 							{giveToType === 'Beneficiary' && (
 								<p className="coverFeeLabel">
