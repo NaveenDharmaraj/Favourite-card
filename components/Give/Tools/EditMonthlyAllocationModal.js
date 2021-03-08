@@ -123,6 +123,8 @@ const EditMonthlyAllocationModal = ({
 	useEffect(() => {
 		if (showEditModal) {
 			setAmount(formatedCurrentMonthlyAllocAmount);
+            setNoteToCharity(noteToRecipientSaved);
+	        setNoteToSelf(noteToSelfSaved);
 			if (giveToType === 'Beneficiary') {
 				if (_isEmpty(charityShareInfoOptions)) {
 					dispatch(getCharityInfoToShare(id));
@@ -437,6 +439,9 @@ const EditMonthlyAllocationModal = ({
 				)
 			)
 				.then((result) => {
+                    setAmount(formatedCurrentMonthlyAllocAmount);
+                    setNoteToCharity(noteToCharity);
+                    setNoteToSelf(noteToSelf)
 					setShowEditModal(false);
 				})
 				.catch((error) => {
