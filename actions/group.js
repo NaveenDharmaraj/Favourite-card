@@ -101,7 +101,7 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
                                 videoUrl: result.data.attributes.videoPlayerLink,
                             },
                             beneficiaryIds: result.data.attributes.beneficiaryIds,
-                            groupPurposeDescriptions: result.data.attributes.groupPurposeDescriptions,
+                            groupPurposeDescriptions: result.data.attributes.groupDescriptionsValues,
                             galleryImages: result.data.attributes.gallerySlides[0],
                             id: result.data.id,
                         }))

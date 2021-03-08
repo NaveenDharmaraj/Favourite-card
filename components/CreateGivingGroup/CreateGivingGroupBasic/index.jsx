@@ -1,5 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Container,
@@ -20,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
-import { editGivingGroupApiCall, getUniqueCities, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import { actionTypes, editGivingGroupApiCall, getUniqueCities, getProvincesList, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
 import { withTranslation } from '../../../i18n';
 import CreateGivingGroupHeader from '../CreateGivingGroupHeader';
 
@@ -74,7 +73,18 @@ const CreateGivingGroupBasic = ({
     useEffect(() => {
         scrollTo(0, 0);
         _isEmpty(provinceOptions) && dispatch(getProvincesList(1, 50));
+        if (city !== '') {
+            dispatch({
+                type: actionTypes.GET_UNIQUE_CITIES,
+                payload: [{
+                    key: city,
+                    value: city,
+                    text: city,
+                }],
+            });
+        }
     }, []);
+
     const handleOnChange = (event, data) => {
         let {
             name,
@@ -92,23 +102,17 @@ const CreateGivingGroupBasic = ({
                 setDisableContinue(false);
                 break;
             case 'province':
-                dispatch({
-                    type: actionTypes.GET_UNIQUE_CITIES,
-                    payload: [],
-                });
                 if (value === "defaultProvince") {
                     value = ""
                     createGivingGroupObject.attributes.city = '';
                 } else {
                     dispatch(getUniqueCities(1, 50, value));
                 }
+                createGivingGroupObject.attributes.city = ''
                 break;
             case 'city':
                 setShowCitiesDropdown(false);
                 setEnableCitySearchOption(false);
-                if (value === "defaultCity") {
-                    value = ""
-                }
                 break;
             default: break;
         }
@@ -216,9 +220,14 @@ const CreateGivingGroupBasic = ({
                                     </div>
                                     <Form.Group widths='equal'>
                                         <Form.Field
-                                            className='dropdownWithArrowParent'
+                                            className={provincesListLoader ? '' : 'dropdownWithArrowParent'}
                                             control={Select}
-                                            options={provinceOptions}
+                                            loading={provincesListLoader}
+                                            options={provinceOptions.length > 1 ? [{
+                                                key: formatMessage('createGivingGroupBasic.provincePlaceholder'),
+                                                text: formatMessage('createGivingGroupBasic.provincePlaceholder'),
+                                                value: "defaultProvince",
+                                            }].concat(provinceOptions) : []}
                                             name='province'
                                             label={{ children: `${formatMessage('createGivingGroupBasic.provinveLabel')}`, htmlFor: 'form-select-control-province' }}
                                             placeholder={formatMessage('createGivingGroupBasic.provincePlaceholder')}
@@ -227,17 +236,30 @@ const CreateGivingGroupBasic = ({
                                             value={province}
                                         />
                                         <Form.Field
-                                            className='dropdownWithArrowParent'
+                                            open={showCitiesDropdown && !_isEmpty(uniqueCities)}
+                                            className={uniqueCitiesLoader ? '' : 'dropdownWithArrowParent'}
                                             name='city'
+                                            loading={uniqueCitiesLoader}
                                             control={Select}
-                                            loading={true}
-                                            options={uniqueCities}
+                                            search={enableCitySearchOption && !_isEmpty(uniqueCities)}
                                             label={{ children: `${formatMessage('createGivingGroupBasic.cityLabel')}`, htmlFor: 'form-select-control-city' }}
                                             placeholder={formatMessage('createGivingGroupBasic.cityPlaceholder')}
-                                            searchInput={{ id: 'form-select-control-city' }}
+                                            {...(uniqueCities.length > 0 && {
+                                                options: [{
+                                                    key: formatMessage('createGivingGroupBasic.cityPlaceholder'),
+                                                    text: formatMessage('createGivingGroupBasic.cityPlaceholder'),
+                                                    value: "",
+                                                }].concat(uniqueCities)
+                                            })}
                                             value={city}
                                             onChange={handleOnChange}
-                                            loading={uniqueCitiesLoader}
+                                            selectOnBlur={false}
+                                            selectOnNavigation={false}
+                                            onClick={() => {
+                                                setEnableCitySearchOption(true)
+                                                setShowCitiesDropdown(true)
+                                            }}
+                                            onBlur={() => setShowCitiesDropdown(false)}
                                         />
                                     </Form.Group>
                                     <div className='field'>
@@ -254,62 +276,6 @@ const CreateGivingGroupBasic = ({
                                     </div>
                                 </div>
                             }
-                            <Form.Group widths='equal'>
-                                <Form.Field
-                                    className={provincesListLoader ? '' : 'dropdownWithArrowParent'}
-                                    control={Select}
-                                    loading={provincesListLoader}
-                                    options={provinceOptions.length > 1 ? [{
-                                        key: formatMessage('createGivingGroupBasic.provincePlaceholder'),
-                                        text: formatMessage('createGivingGroupBasic.provincePlaceholder'),
-                                        value: "defaultProvince",
-                                    }].concat(provinceOptions) : []}
-                                    name='province'
-                                    label={{ children: `${formatMessage('createGivingGroupBasic.provinveLabel')}`, htmlFor: 'form-select-control-province' }}
-                                    placeholder={formatMessage('createGivingGroupBasic.provincePlaceholder')}
-                                    searchInput={{ id: 'form-select-control-province' }}
-                                    onChange={handleOnChange}
-                                    value={province}
-                                />
-                                <Form.Field
-                                    open={showCitiesDropdown && !_isEmpty(uniqueCities)}
-                                    className={uniqueCitiesLoader ? '' : 'dropdownWithArrowParent'}
-                                    name='city'
-                                    loading={uniqueCitiesLoader}
-                                    control={Select}
-                                    search={enableCitySearchOption && !_isEmpty(uniqueCities)}
-                                    options={uniqueCities.length > 1 ? [{
-                                        key: formatMessage('createGivingGroupBasic.cityPlaceholder'),
-                                        text: formatMessage('createGivingGroupBasic.cityPlaceholder'),
-                                        value: "defaultCity",
-                                    }].concat(uniqueCities) : []}
-                                    label={{ children: `${formatMessage('createGivingGroupBasic.cityLabel')}`, htmlFor: 'form-select-control-city' }}
-                                    placeholder={formatMessage('createGivingGroupBasic.cityPlaceholder')}
-                                    value={city}
-                                    onChange={handleOnChange}
-                                    selectOnBlur={false}
-                                    selectOnNavigation={false}
-                                    onClick={() => {
-                                        setEnableCitySearchOption(true)
-                                        setShowCitiesDropdown(true)
-                                    }}
-                                    onBlur={() => setShowCitiesDropdown(false)}
-                                />
-                            </Form.Group>
-                            <div className='createnewSec'>
-                                <div className='field'>
-                                    <label>{formatMessage('createGivingGroupBasic.whoCanSeeHeader')}</label>
-                                    <Dropdown
-                                        inline
-                                        options={whoCanSeeOptions}
-                                        value={whoCanSeeOptions[prefersInviteOnly].value}
-                                        icon='chevron down'
-                                        className='whocanseeDropdown'
-                                        name='prefersInviteOnly'
-                                        onChange={handleOnChange}
-                                    />
-                                </div>
-                            </div>
                             {showMonthly && <div className='createnewSec'>
                                 <Header className='sectionHeader'>{formatMessage('createGivingGroupBasic.monthlyGiftsHeader')}</Header>
                                 <p>{formatMessage('createGivingGroupBasic.monthlyGiftsDescription')}</p>

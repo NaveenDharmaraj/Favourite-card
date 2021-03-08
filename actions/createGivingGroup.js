@@ -92,7 +92,45 @@ export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => as
         });
     return getUniqueCitiesPromise;
 };
-
+export const getProvincesList = (pageNumber = 1, pageSize = 50) => dispatch => {
+    dispatch({
+        type: actionTypes.GET_PROVINCES_LIST_LOADER,
+        payload: true
+    });
+    const params = {
+        'page[number]': pageNumber,
+        'page[size]': pageSize,
+    };
+    const getProvincesListPromise = searchApi.post('/province', {
+        'text': '',
+    }, { params });
+    getProvincesListPromise
+        .then(({ data }) => {
+            const provinceOption = data.map(({ attributes }) => {
+                return {
+                    key: attributes.province_name + attributes.province_code,
+                    text: attributes.province_name,
+                    value: attributes.province_code,
+                }
+            });
+            dispatch({
+                type: actionTypes.GET_PROVINCE_LIST,
+                payload: provinceOption,
+            });
+            dispatch({
+                type: actionTypes.GET_PROVINCES_LIST_LOADER,
+                payload: false
+            });
+        })
+        .catch(() => {
+            // handle error
+            dispatch({
+                type: actionTypes.GET_PROVINCES_LIST_LOADER,
+                payload: false
+            });
+        });
+    return getProvincesListPromise;
+};
 export const getCharityBasedOnSearchQuery = (query = '', pageNumber = '', pageSize = '') => dispatch => {
     dispatch({
         type: actionTypes.GET_CHARITY_BASED_ON_SERACH_QUERY_LOADER,
@@ -174,8 +212,8 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => disp
             delete result.data.links;
             delete result.data.relationships;
             const editGivingGroupObjResponse = result.data;
-            if(editGivingGroupObjResponse.attributes.groupPurposeDescriptions){
-                editGivingGroupObjResponse.attribues.groupPurposeDescriptions.map(item=>{
+            if(editGivingGroupObjResponse.attributes.groupDescriptionsValues){
+                editGivingGroupObjResponse.attribues.groupDescriptionsValues.map(item=>{
                     return{
                         ...item,
                         id: `${item.purpose}${item.length}`
@@ -194,7 +232,7 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => disp
                 videoUrl: editGivingGroupObjResponse.attributes.videoDirectLink
             };
             editGivingGroupObjResponse.beneficiaryIds = editGivingGroupObjResponse.attributes.beneficiaryIds
-            editGivingGroupObjResponse.groupPurposeDescriptions = editGivingGroupObjResponse.attributes.groupPurposeDescriptions;
+            editGivingGroupObjResponse.groupPurposeDescriptions = editGivingGroupObjResponse.attributes.groupDescriptionsValues;
             editGivingGroupObjResponse.galleryImages = editGivingGroupObjResponse.attributes.gallerySlides[0];
             dispatch(upadateEditGivingGroupObj({ ...editGivingGroupObjResponse }));
         })
