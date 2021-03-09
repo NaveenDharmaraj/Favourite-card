@@ -164,6 +164,17 @@ const monthNamesForGivingTools = (monthValue) => {
     ];
     return shortMonths[monthValue - 1];
 };
+const getDayName = (date) => {
+    const weekdays = [];
+    weekdays[0] = "Sunday";
+    weekdays[1] = "Monday";
+    weekdays[2] = "Tuesday";
+    weekdays[3] = "Wednesday";
+    weekdays[4] = "Thursday";
+    weekdays[5] = "Friday";
+    weekdays[6] = "Saturday";
+    return weekdays[date.getDay()];
+}
 const isValidGiftAmount = (validity) => {
     const giftAmountValidity = _.pick(validity, [
         'doesAmountExist',
@@ -1508,6 +1519,11 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
 const populateP2pReviewPage = (giveData, data, currency, formatMessage, language) => {
     const {
         toURL,
+        sendDate,
+        sendGift,
+        frequencyObject,
+        reason,
+        reasonOther,
     } = data;
     const {
         emailMasked,
@@ -1569,7 +1585,28 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
             });
         }
     }
+    if (sendGift === 'schedule' && sendDate) {
+        const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() : `0${sendDate.getMonth()}`;
+        const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
+        listingData.push({
+            name: 'reviewP2pSendDate',
+            value: `${sendDate.getFullYear()} - ${month} - ${day}`,
+        });
+    }
+    if (sendGift === 'schedule' && frequencyObject) {
+        const selectedFrequency = frequencyObject.options.find(item => item.value === frequencyObject.value);
+        listingData.push({
+            name: 'reviewP2pFrequency',
+            value: selectedFrequency.text,
+        });
+    }
 
+    if (reason !== 'Other' || (reason === 'Other' && reasonOther)) {
+        listingData.push({
+            name: 'reviewP2pReasonToGive',
+            value: reason !== 'Other' ? reason : reasonOther,
+        });
+    }
     listingData.push({
         name: 'reviewP2pMessage',
         value: (!_.isEmpty(noteToRecipients)) ? noteToRecipients : formatMessage('reviewDefaultMessage'),
@@ -1883,4 +1920,5 @@ export {
     validateForReload,
     validateForMinReload,
     getSelectedFriendList,
+    getDayName,
 };
