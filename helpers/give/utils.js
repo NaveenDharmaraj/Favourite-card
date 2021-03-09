@@ -1601,11 +1601,12 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         });
     }
 
-    reason &&
+    if (reason !== 'Other' || (reason === 'Other' && reasonOther)) {
         listingData.push({
             name: 'reviewP2pReasonToGive',
             value: reason !== 'Other' ? reason : reasonOther,
         });
+    }
     listingData.push({
         name: 'reviewP2pMessage',
         value: (!_.isEmpty(noteToRecipients)) ? noteToRecipients : formatMessage('reviewDefaultMessage'),
@@ -1782,11 +1783,11 @@ const checkMatchPolicyExpiry = (date, day, name, formatMessage, expiry) => {
         matchingPolicyExpiry: expiry,
         matchPolicyTitle: `${name} will match your gift.`,
     } : {
-            hasMatchingPolicy: true,
-            isValidMatchPolicy: false,
-            matchingPolicyExpiry: expiry,
-            matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
-        };
+        hasMatchingPolicy: true,
+        isValidMatchPolicy: false,
+        matchingPolicyExpiry: expiry,
+        matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
+    };
 };
 
 

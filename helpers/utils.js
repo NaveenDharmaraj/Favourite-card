@@ -253,7 +253,9 @@ const validateDate = (dateStr = '') => {
     }
     return isValid;
 };
-
+const dateFormatConverter = (date, typeOfSeprator = '/') => (
+    `${date.getFullYear()}${typeOfSeprator}${date.getMonth() + 1}${typeOfSeprator}${date.getDate()}`
+);
 export {
     getMainNavItems,
     isFalsy,
@@ -263,4 +265,5 @@ export {
     redirectIfNotUSer,
     isValidBrowser,
     validateDate,
+    dateFormatConverter,
 };

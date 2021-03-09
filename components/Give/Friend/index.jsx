@@ -59,6 +59,7 @@ import '../../shared/style/styles.less';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import DonationAmountField from '../DonationAmountField';
 import FriendsDropDown from '../../shared/FriendsDropDown';
+import { dateFormatConverter } from '../../../helpers/utils';
 
 const ReloadAddAmount = dynamic(() => import('../ReloadAddAmount'), { ssr: false });
 const ChimpDatePicker = dynamic(() => import('./p2pDatePicker.js'), { ssr: false });
@@ -407,6 +408,7 @@ class Friend extends React.Component {
             isValidPositiveNumber: true,
             isReloadRequired: true,
             isRecepientSelected: true,
+            isValidDate: true
         };
         return this.validity;
     }
@@ -702,6 +704,14 @@ class Friend extends React.Component {
     }
     populateFrequenyOptions(date) {
         const months = fullMonthNames(this.props.t);
+        let dateText = date.getDate() + 'th';
+        if (Number(date.getDate()) === 1) {
+            dateText = '1st'
+        } else if (Number(date.getDate()) === 2) {
+            dateText = '2nd'
+        } else if (Number(date.getDate()) === 3) {
+            dateText = '3rd'
+        }
         return [
             {
                 text: 'Send once',
@@ -712,7 +722,7 @@ class Friend extends React.Component {
                 value: 'weekly',
             },
             {
-                text: `Repeat monthly on the ${date.getDate()}`,
+                text: `Repeat monthly on the ${dateText}`,
                 value: 'monthly',
             },
             {
@@ -722,17 +732,38 @@ class Friend extends React.Component {
         ]
     }
     handleDateChange = (date) => {
-        const frequencyOptions = this.populateFrequenyOptions(date);
-        this.setState({
-            flowObject: {
-                ...this.state.flowObject,
-                frequencyObject: {
-                    ...this.state.flowObject.frequencyObject,
-                    options: frequencyOptions,
-                },
-                sendDate: date,
+        try {
+            const convertIncomingDate = new Date(date) && dateFormatConverter(new Date(date), '-');
+            const currentDate = dateFormatConverter(new Date(), '-');
+            const checkCurrentDate = new Date(convertIncomingDate) >= new Date(currentDate);
+            if (checkCurrentDate) {
+                const frequencyOptions = this.populateFrequenyOptions(new Date(date));
+                this.setState({
+                    flowObject: {
+                        ...this.state.flowObject,
+                        frequencyObject: {
+                            ...this.state.flowObject.frequencyObject,
+                            options: frequencyOptions,
+                        },
+                        sendDate: new Date(date),
+                    },
+                    validity: {
+                        ...this.state.validity,
+                        isValidDate: true,
+                    }
+                })
+            } else {
+                this.setState({
+                    validity: {
+                        ...this.state.validity,
+                        isValidDate: false,
+                    }
+                })
             }
-        })
+        }
+        catch (err) {
+            // handle error
+        }
     }
 
     handleSendMoneyInputChange = (event, data) => {
@@ -741,13 +772,27 @@ class Friend extends React.Component {
             value,
         } = data || event.target;
         let {
-            sendGift,
-            frequencyObject,
-            reason,
-            reasonOther
-        } = this.state.flowObject;
+            flowObject: { sendDate,
+                sendGift,
+                frequencyObject,
+                reason,
+                reasonOther
+            },
+            validity,
+        } = this.state;
         if (name === 'sendGift') {
             sendGift = value;
+            if (sendGift === 'now') {
+                frequencyObject = {};
+                sendDate = null;
+                validity.isValidDate = true;
+            } else {
+                sendDate = new Date();
+                frequencyObject = {
+                    options: this.populateFrequenyOptions(new Date()),
+                    value: 'once'
+                }
+            }
         } else if (name === 'frequency') {
             frequencyObject = {
                 ...this.state.flowObject.frequencyObject,
@@ -760,11 +805,13 @@ class Friend extends React.Component {
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
+                sendDate,
                 sendGift,
                 frequencyObject,
                 reason,
                 reasonOther,
-            }
+            },
+            validity,
         });
     }
     renderReloadAddAmount = () => {
@@ -901,7 +948,7 @@ class Friend extends React.Component {
                 primary
                 className="blue-btn-rounded btn_right rivewbtnp2p"
                 content={formatMessage('giveCommon:reviewButton')}
-                disabled={!this.props.userAccountsFetched}
+                disabled={!this.props.userAccountsFetched || !_every(validity)}
                 type="submit"
             />)
         const giveFromType = (!_isEmpty(giveFrom.type)) ? giveFrom.type : 'user';
@@ -1099,6 +1146,11 @@ class Friend extends React.Component {
                                                                             onChangeValue={date => this.handleDateChange(date)}
                                                                         />
                                                                     </div>
+                                                                    {!validity.isValidDate && <FormValidationErrorMessage
+                                                                        condition={!validity.isValidDate}
+                                                                        errorMessage={'Enter a proper date'}
+                                                                    />
+                                                                    }
                                                                     <div>
                                                                         <P2pFrequency
                                                                             frequencyObject={frequencyObject}

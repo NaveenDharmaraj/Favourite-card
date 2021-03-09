@@ -2,25 +2,28 @@ import DatePicker from 'react-datepicker';
 import {
     Input,
     Form,
+    Icon
 } from 'semantic-ui-react';
 import '../../../static/less/datePicker.less';
 function ChimpDatePicker(props) {
     const currentDate = new Date();
     const minDateFormat = `${currentDate.getMonth() + 1}-${currentDate.getDate()}-${currentDate.getFullYear()}`
-    const DatePickerCustomInput = ({onChange, value, onClick}) => (
-        <Form.Field
-            control={Input}
-            placeholder='yyyy-mm-dd'
-            onChange={onChange}
-            value={value}
-            icon={<i aria-hidden="true" class="calendar icon" onClick={onClick}></i>}
-        />
-      );
+    const DatePickerCustomInput = ({ value, onChange, onClick }) => (
+        <Form.Field>
+            <Input placeholder='yyyy-mm-dd' onChange={onChange} value={value} onBlur={(e) => props.onChangeValue(e.target.value)} />
+            <Icon
+                class="calendar icon"
+                name="calendar icon"
+                onClick={onClick}
+                aria-hidden="true"
+            />
+        </Form.Field>
+    );
 
     return (
-        <DatePicker 
-            selected={props.dateValue} 
-            onChange={props.onChangeValue}
+        <DatePicker
+            selected={props.dateValue}
+            onChange={(date) => props.onChangeValue(date)}
             customInput={<DatePickerCustomInput />}
             showPopperArrow={false}
             dateFormat="yyyy-MM-dd"
@@ -31,4 +34,4 @@ function ChimpDatePicker(props) {
     )
 }
 
-export default ChimpDatePicker; 
+export default ChimpDatePicker;
