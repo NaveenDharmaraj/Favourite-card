@@ -9,7 +9,10 @@ import auth0 from '../services/auth';
 import { triggerUxCritialErrors } from '../actions/error';
 import { softLogout } from '../actions/auth';
 import logger from '../helpers/logger';
-import { createCustomAmzTraceId, createReqId } from '../helpers/utils';
+import {
+    createCustomAmzTraceId,
+    createReqId,
+} from '../helpers/utils';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -18,18 +21,19 @@ const {
     SOCIAL_API_DOMAIN,
     SOCIAL_API_VERSION,
 } = publicRuntimeConfig;
-let amzTraceId = createCustomAmzTraceId();
-let reqId = createReqId();
+
 
 const instance = axios.create({
     baseURL: `${SOCIAL_API_DOMAIN}/${GRAPH_API_BASE}/${SOCIAL_API_VERSION}`,
     headers: {
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
-        'request-header-attrs': `request_id:${reqId}|custom_x_amz_trace_id:${amzTraceId}`,
     },
 });
 instance.interceptors.request.use(function (config) {
+    const amzTraceId = createCustomAmzTraceId();
+    const reqId = createReqId();
+    config.headers['request-header-attrs'] = `request_id:${reqId}|custom_x_amz_trace_id:${amzTraceId}`;
     if (_isEmpty(config.headers.Authorization)) {
         let token = '';
         if (!_isEmpty(auth0) && !_isEmpty(auth0.accessToken)) {
