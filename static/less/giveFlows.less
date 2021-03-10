@@ -2936,6 +2936,13 @@ body{
     }
     .Send_date{
         margin-top: 28px;
+        .react-datepicker__tab-loop{
+            .react-datepicker-popper{
+                .react-datepicker{
+                    margin-top: -20px !important;
+                }
+            }
+        }
     }
     .Frequency_Reason{
         .Frequency_Wrapper{
@@ -2952,6 +2959,27 @@ body{
     .react-datepicker-wrapper{
         .react-datepicker__input-container{
             .field{
+                i{
+                    &.calendar{
+                        cursor: pointer;
+                        &.icon{
+                            pointer-events: unset;
+                            &::before{
+                                content: '';
+                                width: 24px;
+                                height: 24px;
+                                top: 8px;
+                                right:12px;
+                                margin: auto;
+                                background-image: url("@{img_url}/images/icons/calendar.svg") !important;
+                                background-position: center !important;
+                                background-size: contain !important;
+                                background-repeat: no-repeat !important;
+                                position: absolute;
+                            }
+                        }
+                    }
+                }
                 .ui{
                     &.icon{
                         &.input{
