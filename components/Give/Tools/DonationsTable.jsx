@@ -71,7 +71,7 @@ function DonationsTable(props) {
             <Fragment>
                 <Responsive minWidth={768}>
                     <div className="responsiveTable mt-2">
-                        <Table padded unstackable className="no-border-table">
+                        <Table padded unstackable className="no-border-table btn_border_bottom">
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell className="Credit_Name">Credit card </Table.HeaderCell>
