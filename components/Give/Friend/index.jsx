@@ -741,11 +741,14 @@ class Friend extends React.Component {
                 this.setState({
                     flowObject: {
                         ...this.state.flowObject,
-                        frequencyObject: {
-                            ...this.state.flowObject.frequencyObject,
-                            options: frequencyOptions,
+                        giveData: {
+                            ...this.state.flowObject.giveData,
+                            frequencyObject: {
+                                ...this.state.flowObject.giveData.frequencyObject,
+                                options: frequencyOptions,
+                            },
+                            sendDate: new Date(date),
                         },
-                        sendDate: new Date(date),
                     },
                     validity: {
                         ...this.state.validity,
@@ -772,11 +775,14 @@ class Friend extends React.Component {
             value,
         } = data || event.target;
         let {
-            flowObject: { sendDate,
-                sendGift,
-                frequencyObject,
-                reason,
-                reasonOther
+            flowObject: {
+                giveData: {
+                    frequencyObject,
+                    reason,
+                    reasonOther,
+                    sendDate,
+                    sendGift,
+                },
             },
             validity,
         } = this.state;
@@ -795,7 +801,7 @@ class Friend extends React.Component {
             }
         } else if (name === 'frequency') {
             frequencyObject = {
-                ...this.state.flowObject.frequencyObject,
+                ...this.state.flowObject.giveData.frequencyObject,
                 value,
             }
         } else if (name === 'reason' || name === 'reasonOther') {
@@ -805,11 +811,14 @@ class Friend extends React.Component {
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
-                sendDate,
-                sendGift,
-                frequencyObject,
-                reason,
-                reasonOther,
+                giveData: {
+                    ...this.state.flowObject.giveData,
+                    frequencyObject,
+                    reason,
+                    reasonOther,
+                    sendDate,
+                    sendGift,
+                },
             },
             validity,
         });
@@ -905,24 +914,24 @@ class Friend extends React.Component {
         const {
             flowObject: {
                 currency,
-                frequencyObject,
                 giveData: {
                     emailMasked,
                     formatedP2PAmount,
                     friendsList,
+                    frequencyObject,
                     giftType,
                     giveAmount,
                     giveFrom,
                     noteToRecipients,
                     noteToSelf,
+                    reason,
+                    reasonOther,
                     recipients,
                     recipientName,
+                    sendGift,
+                    sendDate,
                     totalP2pGiveAmount,
                 },
-                reason,
-                reasonOther,
-                sendGift,
-                sendDate,
                 type,
             },
             dropDownOptions: {

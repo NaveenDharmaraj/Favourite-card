@@ -180,11 +180,6 @@ class Review extends React.Component {
                 reviewData = populateP2pReviewPage(giveData, {
                         toURL,
                         type,
-                        sendDate,
-                        sendGift,
-                        frequencyObject,
-                        reason,
-                        reasonOther,
                     },
                     currency,
                     formatMessage,
