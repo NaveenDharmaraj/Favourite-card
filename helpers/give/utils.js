@@ -1519,20 +1519,20 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
 const populateP2pReviewPage = (giveData, data, currency, formatMessage, language) => {
     const {
         toURL,
-        sendDate,
-        sendGift,
-        frequencyObject,
-        reason,
-        reasonOther,
     } = data;
     const {
         emailMasked,
+        frequencyObject,
         giveAmount,
         giveFrom,
         noteToRecipients,
         noteToSelf,
+        reason,
+        reasonOther,    
         recipientImage,
         recipientName,
+        sendDate,
+        sendGift,
         selectedFriendsList,
         totalP2pGiveAmount,
     } = giveData;
