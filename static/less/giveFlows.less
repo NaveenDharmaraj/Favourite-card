@@ -927,6 +927,17 @@ body{
         font-size: 12px;
     }
     &.recurring_edit_modal{
+        .ui{
+            &.form{
+                .field{
+                    &.recurring_edit_noteToSelf{
+                        >label {
+                            display: inline-block !important;
+                        }
+                    }
+                }
+            }
+        }
         .give_flow_field{
             &.Frequencybottom{
                 margin-top: 28px !important;
@@ -935,7 +946,7 @@ body{
                     margin-bottom: 10px !important;
                     label{
                         margin-bottom: 6px;
-                    } 
+                    }
                 }
             }
         }
@@ -990,7 +1001,6 @@ body{
         .margin-edit-modal{
             margin-top: -0px !important;
         }
-
     }
 }
 
@@ -1592,7 +1602,6 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
 .to_space{
     margin-top: 0px !important;
     padding-top: 0px !important;
-    
 }
 .give_flow_field{
     .field {
