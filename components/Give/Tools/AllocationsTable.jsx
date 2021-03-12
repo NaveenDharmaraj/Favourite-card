@@ -80,7 +80,7 @@ function AllocationsTable(props) {
 		<Fragment>
 			<Responsive minWidth={768}>
 				<div className="responsiveTable mt-2">
-					<Table padded unstackable className="no-border-table btn_border_bottom">
+					<Table padded unstackable className="no-border-table tbl_border_bottom">
 						<Table.Header>
 							<Table.Row>
 								<Table.HeaderCell className="edit-trxn-name">Recipient </Table.HeaderCell>
