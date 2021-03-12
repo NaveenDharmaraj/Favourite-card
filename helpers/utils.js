@@ -96,7 +96,7 @@ const getMainNavItems = (accountType, slug) => {
             isExternal: true,
         });
         menuLinks.push({
-            location: `/admin/beneficiaries/${slug}/tool`,
+            location: `/admin/beneficiaries/${slug}/tools`,
             name: 'Take Donations Online',
             isExternal: true,
         });
