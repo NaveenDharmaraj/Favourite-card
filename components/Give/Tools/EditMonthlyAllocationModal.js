@@ -14,6 +14,9 @@ import _isEmpty from 'lodash/isEmpty';
 import _find from 'lodash/find';
 import _includes from 'lodash/includes';
 import _every from 'lodash/every';
+import _head from 'lodash/head';
+import _camelCase from 'lodash/camelCase';
+
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import dynamic from 'next/dynamic';
@@ -57,6 +60,7 @@ const EditMonthlyAllocationModal = ({
 	noteToSelfSaved,
 	isCampaign,
 	hasCampaign,
+    dedicate
 }) => {
 	const formatMessage = t;
 	const intializeValidations = {
@@ -115,8 +119,8 @@ const EditMonthlyAllocationModal = ({
 
 	const [noteToCharity, setNoteToCharity] = useState(noteToRecipientSaved);
 	const [noteToSelf, setNoteToSelf] = useState(noteToSelfSaved);
-	const [dedicateValue, setDedicateValue] = useState('');
-	const [dedicateType, setDedicateType] = useState('');
+	const [dedicateValue, setDedicateValue] = useState(_head(Object.values(dedicate)));
+	const [dedicateType, setDedicateType] = useState(_camelCase(_head(Object.keys(dedicate))));
 	const [coverFeeModal, setCoverFeeModel] = useState(false);
 	//state for disable button
 	const [disableButton, setDisableButton] = useState(true);
@@ -367,6 +371,8 @@ const EditMonthlyAllocationModal = ({
 		setAmount(formatedCurrentMonthlyAllocAmount);
         setNoteToCharity(noteToCharity);
         setNoteToSelf(noteToSelf)
+        setDedicateType(dedicateType);
+        setDedicateValue(dedicateValue);
 		setShowEditModal(false);
 	};
 
@@ -442,6 +448,8 @@ const EditMonthlyAllocationModal = ({
                     setAmount(formatedCurrentMonthlyAllocAmount);
                     setNoteToCharity(noteToCharity);
                     setNoteToSelf(noteToSelf)
+                    setDedicateType(dedicateType);
+                    setDedicateValue(dedicateValue);
 					setShowEditModal(false);
 				})
 				.catch((error) => {
