@@ -70,7 +70,7 @@ function AllocationsTable(props) {
                         activeIndexs={activeIndexs}
                         isCampaign={attributes.campaign}
                         hasCampaign={attributes.hasCampaign}
-                        dedicate={attributes.metaInfo.dedicate}
+                        dedicate={attributes.metaInfo ? attributes.metaInfo.dedicate :{} }
 					/>
 				);
 			});
