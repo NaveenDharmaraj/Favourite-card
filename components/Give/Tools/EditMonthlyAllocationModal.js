@@ -16,6 +16,7 @@ import _includes from 'lodash/includes';
 import _every from 'lodash/every';
 import _head from 'lodash/head';
 import _camelCase from 'lodash/camelCase';
+import _replace from 'lodash/replace';
 
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -27,14 +28,14 @@ import DonationAmountField from '../DonationAmountField';
 import PrivacyOptions from '../PrivacyOptions';
 import NoteTo from '../NoteTo';
 import {
-    formatCurrency,
+	formatCurrency,
 	formatAmount,
 	isValidGiftAmount,
 	validateDonationForm,
 	validateGiveForm,
 } from '../../../helpers/give/utils';
 import {
-    getCoverAmount,
+	getCoverAmount,
 } from '../../../actions/give';
 import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
 import { editUpcomingAllocation, getUserFund } from '../../../actions/user';
@@ -60,7 +61,7 @@ const EditMonthlyAllocationModal = ({
 	noteToSelfSaved,
 	isCampaign,
 	hasCampaign,
-    dedicate
+	dedicate
 }) => {
 	const formatMessage = t;
 	const intializeValidations = {
@@ -76,24 +77,25 @@ const EditMonthlyAllocationModal = ({
 		isNoteToCharityInLimit: true,
 		isNoteToSelfInLimit: true,
 		isDedicateGiftEmpty: true,
-        isAmountCoverGive:true,
+		isAmountCoverGive: true,
 	};
 	const formatedCurrentMonthlyAllocAmount = currentMonthlyAllocAmount.replace(
 		'$',
 		''
 	);
+	const commaFormattedAmount = formatAmount(parseFloat(formatedCurrentMonthlyAllocAmount.replace(/,/g, '')));
 	const dispatch = useDispatch();
 	const currentUser = useSelector((state) => state.user.info);
 	let {
 		attributes: { preferences },
 		id,
 	} = currentUser;
-    const fund = useSelector((state) => state.user.fund) ;
-    const infoOptions = useSelector((state) => state.userProfile.infoOptions);
+	const fund = useSelector((state) => state.user.fund);
+	const infoOptions = useSelector((state) => state.userProfile.infoOptions);
 	const charityShareInfoOptions = useSelector(
 		(state) => state.userProfile.charityShareInfoOptions
 	);
-    const coverAmountDisplay = useSelector((state)=> state.give.coverAmountDisplay);
+	const coverAmountDisplay = useSelector((state) => state.give.coverAmountDisplay);
 	const [infoToShareList, setInfoToShareList] = useState([]);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [
@@ -112,8 +114,10 @@ const EditMonthlyAllocationModal = ({
 	const [defaultNameToShare, setDefaultNameToShare] = useState();
 	const [privacyShareAmount, setPrivacyShareAmount] = useState();
 	// state for amount value in edit modal
-	const [amount, setAmount] = useState(formatedCurrentMonthlyAllocAmount);
+	const [amount, setAmount] = useState(commaFormattedAmount);
 
+	//state for format amount
+	const [formattedAmount, setFormattedAmount] = useState(formatedCurrentMonthlyAllocAmount);
 	// intializing validity for amount and payment
 	const [validity, setValidity] = useState(intializeValidations);
 
@@ -126,15 +130,18 @@ const EditMonthlyAllocationModal = ({
 	const [disableButton, setDisableButton] = useState(true);
 	useEffect(() => {
 		if (showEditModal) {
-			setAmount(formatedCurrentMonthlyAllocAmount);
-            setNoteToCharity(noteToRecipientSaved);
-	        setNoteToSelf(noteToSelfSaved);
+			const commaFormattedAmount = formatAmount(parseFloat(formatedCurrentMonthlyAllocAmount.replace(/,/g, '')));
+			const formatedAmount = _replace(formatCurrency(commaFormattedAmount, 'en', 'USD'), '$', '');
+			setAmount(commaFormattedAmount);
+			setFormattedAmount(formatedAmount);
+			setNoteToCharity(noteToRecipientSaved);
+			setNoteToSelf(noteToSelfSaved);
 			if (giveToType === 'Beneficiary') {
 				if (_isEmpty(charityShareInfoOptions)) {
 					dispatch(getCharityInfoToShare(id));
-                    if(_isEmpty(fund)){
-                        getUserFund(dispatch, currentUser.id);
-                    }
+					if (_isEmpty(fund)) {
+						getUserFund(dispatch, currentUser.id);
+					}
 				}
 			} else {
 				if (_isEmpty(infoOptions)) {
@@ -164,9 +171,8 @@ const EditMonthlyAllocationModal = ({
 				? 'campaign_admins_info_to_share'
 				: 'giving_group_admins_info_to_share';
 			const preference = preferences[preferenceName].includes('address')
-				? `${preferences[preferenceName]}-${
-						preferences[`${preferenceName}_address`]
-				  }`
+				? `${preferences[preferenceName]}-${preferences[`${preferenceName}_address`]
+				}`
 				: preferences[preferenceName];
 			setPrivacyShareAmount(
 				preferences['giving_group_members_share_my_giftamount']
@@ -213,10 +219,10 @@ const EditMonthlyAllocationModal = ({
 		giveData: {
 			giveFrom: {
 				type: 'user',
-                value: !_isEmpty(fund) ?fund.id : undefined,
+				value: !_isEmpty(fund) ? fund.id : undefined,
 			},
 			giveTo: {
-				type: giveToType ==='Beneficiary' ? 'beneficiaries': giveToType,
+				type: giveToType === 'Beneficiary' ? 'beneficiaries' : giveToType,
 			},
 			giftType: giftType,
 		},
@@ -227,8 +233,8 @@ const EditMonthlyAllocationModal = ({
 		const { name, options, value, newIndex } = data;
 		let newValue = !_isEmpty(options)
 			? _find(options, {
-					value,
-			  })
+				value,
+			})
 			: value;
 		const privacyCheckbox = [
 			'privacyShareAddress',
@@ -255,6 +261,7 @@ const EditMonthlyAllocationModal = ({
 			switch (name) {
 				case 'giveAmount':
 					setAmount(value);
+					setFormattedAmount(value);
 					break;
 				case 'nameToShare':
 					setDefaultNameToShare(newValue);
@@ -292,12 +299,12 @@ const EditMonthlyAllocationModal = ({
 		event.preventDefault();
 		const { name, value } = !_isEmpty(data) ? data : event.target;
 		const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
-        if (Number(flowObject.giveData.giveFrom.value) > 0 && Number(amount) > 0) {
-            getCoverAmount(flowObject.giveData.giveFrom.value, amount, dispatch);
-        } else {
-            getCoverAmount(flowObject.giveData.giveFrom.value, 0, dispatch);
-        }
-        let validitions = validateGiveForm(
+		if (Number(flowObject.giveData.giveFrom.value) > 0 && Number(amount) > 0) {
+			getCoverAmount(flowObject.giveData.giveFrom.value, amount, dispatch);
+		} else {
+			getCoverAmount(flowObject.giveData.giveFrom.value, 0, dispatch);
+		}
+		let validitions = validateGiveForm(
 			name,
 			value,
 			validity,
@@ -306,15 +313,15 @@ const EditMonthlyAllocationModal = ({
 		switch (name) {
 			case 'giveAmount':
 				if (!_isEmpty(value) && value.match(isValidNumber)) {
-					setAmount(
-						formatAmount(parseFloat(value.replace(/,/g, '')))
+					const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')))
+					setFormattedAmount(_replace(formatCurrency(inputValue, 'en', 'USD'), '$', ''));
+					setAmount(value);
+					validitions = validateGiveForm(
+						'giveAmount',
+						inputValue,
+						validity,
+						flowObject.giveData
 					);
-                    validitions = validateGiveForm(
-                        'giveAmount',
-                        value,
-                        validity,
-                        flowObject.giveData
-                        );
 				}
 				break;
 			case 'noteToCharity':
@@ -335,8 +342,8 @@ const EditMonthlyAllocationModal = ({
 				// );
 				break;
 		}
-		
-        
+
+
 		setValidity({
 			...validitions,
 		});
@@ -348,17 +355,18 @@ const EditMonthlyAllocationModal = ({
 			'giveAmount',
 			value,
 			validity,
-            flowObject.giveData
+			flowObject.giveData
 		);
 		setValidity({
 			...validitions,
 		});
-        if (Number(flowObject.giveData.giveFrom.value) > 0 && Number(amount) > 0) {
-            getCoverAmount(flowObject.giveData.giveFrom.value, value, dispatch);
-        } else {
-            getCoverAmount(flowObject.giveData.giveFrom.value, 0, dispatch);
-        }
-		setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
+		if (Number(flowObject.giveData.giveFrom.value) > 0 && Number(amount) > 0) {
+			getCoverAmount(flowObject.giveData.giveFrom.value, value, dispatch);
+		} else {
+			getCoverAmount(flowObject.giveData.giveFrom.value, 0, dispatch);
+		}
+		setAmount(value);
+        setFormattedAmount(_replace(formatCurrency(value, 'en', 'USD'), '$', ''));
 		setDisableButton(false);
 	};
 
@@ -368,12 +376,13 @@ const EditMonthlyAllocationModal = ({
 
 	// handle close of edit monthly deposit modal
 	const handleCloseModal = () => {
-		setAmount(formatedCurrentMonthlyAllocAmount);
-        setNoteToCharity(noteToCharity);
-        setNoteToSelf(noteToSelf)
-        setDedicateType(dedicateType);
-        setDedicateValue(dedicateValue);
+		//setAmount(formatedCurrentMonthlyAllocAmount);
+		setNoteToCharity(noteToCharity);
+		setNoteToSelf(noteToSelf)
+		setDedicateType(dedicateType);
+		setDedicateValue(dedicateValue);
 		setShowEditModal(false);
+		setValidity(intializeValidations);
 	};
 
 	// validating the form
@@ -445,11 +454,11 @@ const EditMonthlyAllocationModal = ({
 				)
 			)
 				.then((result) => {
-                    setAmount(formatedCurrentMonthlyAllocAmount);
-                    setNoteToCharity(noteToCharity);
-                    setNoteToSelf(noteToSelf)
-                    setDedicateType(dedicateType);
-                    setDedicateValue(dedicateValue);
+					//setAmount(formatedCurrentMonthlyAllocAmount);
+					setNoteToCharity(noteToCharity);
+					setNoteToSelf(noteToSelf)
+					setDedicateType(dedicateType);
+					setDedicateValue(dedicateValue);
 					setShowEditModal(false);
 				})
 				.catch((error) => {
@@ -503,7 +512,7 @@ const EditMonthlyAllocationModal = ({
 				handleInputChange={handleInputChange}
 				language={language}
 				isEditModal={true}
-				// isCampaign={recipientName.incl}
+			// isCampaign={recipientName.incl}
 			/>
 		);
 		return repeatGift;
@@ -566,7 +575,7 @@ const EditMonthlyAllocationModal = ({
 					<div className="flowFirst recurring_edit_modal">
 						<Form>
 							<DonationAmountField
-								amount={amount}
+								amount={formattedAmount}
 								formatMessage={formatMessage}
 								handleInputChange={handleInputChange}
 								handleInputOnBlur={handleInputOnBlur}
@@ -574,23 +583,23 @@ const EditMonthlyAllocationModal = ({
 									handlePresetAmountClick
 								}
 								validity={validity}
-                                isGiveFlow={true}
-                                fromCharity={giveToType==='Beneficiary'}
+								isGiveFlow={true}
+								fromCharity={giveToType === 'Beneficiary'}
 							/>{' '}
 							{giveToType === 'Beneficiary' && (
 								<p className="coverFeeLabel">
 									{!_isEmpty(coverAmountDisplay) &&
-									coverAmountDisplay > 0
+										coverAmountDisplay > 0
 										? formatMessage(
-												'charity:coverFeeLabelWithAmount',
-												{
-													amount: formatCurrency(
-														coverAmountDisplay,
-														language,
-														'USD'
-													),
-												}
-										  )
+											'charity:coverFeeLabelWithAmount',
+											{
+												amount: formatCurrency(
+													coverAmountDisplay,
+													language,
+													'USD'
+												),
+											}
+										)
 										: formatMessage('charity:coverFeeLabel')}
 									<Modal
 										size="tiny"
@@ -610,8 +619,8 @@ const EditMonthlyAllocationModal = ({
 											>
 												&nbsp;
 												{formatMessage(
-													'charity:learnMore'
-												)}
+												'charity:learnMore'
+											)}
 											</a>
 										}
 									>
@@ -679,7 +688,7 @@ const EditMonthlyAllocationModal = ({
 											allocationType={
 												giveToType === 'Beneficiary'
 													? 'Charity'
-													: isCampaign? 'Campaign': giveToType
+													: isCampaign ? 'Campaign' : giveToType
 											}
 											formatMessage={formatMessage}
 											giveFrom={
@@ -723,7 +732,7 @@ const EditMonthlyAllocationModal = ({
 EditMonthlyAllocationModal.defaultProps = {
 	currentMonthlyAllocAmount: '',
 	activePage: '',
-	t: () => {},
+	t: () => { },
 	transactionId: '',
 };
 

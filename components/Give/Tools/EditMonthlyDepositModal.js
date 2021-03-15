@@ -4,13 +4,14 @@ import { withTranslation } from '../../../i18n';
 import _isEmpty from 'lodash/isEmpty';
 import _find from 'lodash/find';
 import _every from 'lodash/every';
+import _replace from 'lodash/replace';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic';
 
 import DonationAmountField from "../DonationAmountField";
 import PaymentOptions from '../../shared/PaymentInstruments';
-import { formatAmount, isValidGiftAmount, populatePaymentInstrument, validateDonationForm } from "../../../helpers/give/utils";
+import { formatAmount, formatCurrency, isValidGiftAmount, populatePaymentInstrument, validateDonationForm } from "../../../helpers/give/utils";
 import { getAllActivePaymentInstruments } from '../../../actions/give';
 import { findItemBasedOnId } from "../../../helpers/utils";
 import { editUpcommingDeposit } from '../../../actions/user';
@@ -28,6 +29,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         isCreditCardSelected: true,
     };
     const formatedCurrentMonthlyDepositAmount = currentMonthlyDepositAmount.replace('$', '');
+    const commaFormattedAmount = formatAmount(parseFloat(formatedCurrentMonthlyDepositAmount.replace(/,/g, '')));
     const dispatch = useDispatch();
     const currentUser = useSelector(state => state.user.info);
 
@@ -35,8 +37,10 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
     const [showEditModal, setShowEditModal] = useState(false);
 
     // state for amount value in edit modal
-    const [amount, setAmount] = useState(formatedCurrentMonthlyDepositAmount);
+    const [amount, setAmount] = useState(commaFormattedAmount);
 
+    //state for formatting currency
+    const [formattedAmount, setFormattedAmount] = useState(formatedCurrentMonthlyDepositAmount)
     // initializing payment options with empty array
     const [paymentInstrumenOptions, setPaymentInstrumenOptions] = useState([]);
 
@@ -67,19 +71,23 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         type: 'donations'
     };
     useEffect(() => {
-
         // manually calling the stripe since we are not using layout component 
         const script = document.createElement('script');
         script.src = 'https://js.stripe.com/v3/';
         script.async = true;
         document.body.appendChild(script);
-        const formatedCurrentMonthlyDepositAmount = currentMonthlyDepositAmount.replace('$', '');
-        setAmount(formatedCurrentMonthlyDepositAmount);
-        setCurrentCardSelected(paymentInstrumentId);
-
+        setValidity(intializeValidations);
         return () => {
             document.body.removeChild(script);
         }
+    }, []);
+
+    useEffect(() => {
+        const commaFormattedAmount = formatAmount(parseFloat(formatedCurrentMonthlyDepositAmount.replace(/,/g, '')));
+        const formatedAmount = _replace(formatCurrency(commaFormattedAmount, 'en', 'USD'), '$', '');
+        setAmount(commaFormattedAmount);
+        setFormattedAmount(formatedAmount);
+        setCurrentCardSelected(paymentInstrumentId);
     }, [currentMonthlyDepositAmount, paymentInstrumentId]);
     const handleInputChange = (event, data) => {
         const {
@@ -91,6 +99,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         switch (name) {
             case 'donationAmount':
                 setAmount(value);
+                setFormattedAmount(value);
                 break;
             case 'creditCard':
                 setCurrentCardSelected(value);
@@ -108,10 +117,13 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
             value,
         } = !_isEmpty(data) ? data : event.target;
         const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
-        if ((name === 'donationAmount') && !_isEmpty(value) && value.match(isValidNumber)) {
-            setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
+        let inputValue = value;
+        if (!_isEmpty(value) && value.match(isValidNumber)) {
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')))
+            setFormattedAmount(_replace(formatCurrency(inputValue, 'en', 'USD'), '$', ''));
+            setAmount(value);
         }
-        const validitions = validateDonationForm(name, value, validity)
+        const validitions = validateDonationForm(name, inputValue, validity)
         setValidity({ ...validitions });
     };
 
@@ -121,7 +133,8 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         } = data;
         const validitions = validateDonationForm('donationAmount', value, validity)
         setValidity({ ...validitions });
-        setAmount(formatAmount(parseFloat(value.replace(/,/g, ''))));
+        setAmount(value);
+        setFormattedAmount(_replace(formatCurrency(value, 'en', 'USD'), '$', ''));
         setDisableButton(false);
     }
 
@@ -144,6 +157,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
         setAmount(formatedCurrentMonthlyDepositAmount);
         setShowEditModal(false);
         setLoader(false);
+        setValidity(intializeValidations);
     }
 
     // validating the form
@@ -162,8 +176,8 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
             return dispatch(editUpcommingDeposit(transactionId, amount, currentCardSelected, activePage, currentUser.id))
                 .then(() => {
                     setShowEditModal(false);
-                    setAmount(formatAmount(parseFloat(amount.replace(/,/g, ''))));
-                    setCurrentCardSelected(currentCardSelected);
+                    //setAmount(formatAmount(parseFloat(amount.replace(/,/g, ''))));
+                    //setCurrentCardSelected(currentCardSelected);
                 }).catch(() => {
                     setShowEditModal(true);
                 })
@@ -216,7 +230,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
                 <Modal.Description>
                     <Form>
                         <DonationAmountField
-                            amount={amount}
+                            amount={formattedAmount}
                             formatMessage={formatMessage}
                             handleInputChange={handleInputChange}
                             handleInputOnBlur={handleInputOnBlur}
