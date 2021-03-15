@@ -8,6 +8,8 @@ import {
     Icon,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
+import _cloneDeep from 'lodash/cloneDeep';
 import arrayMove from 'array-move';
 import dynamic from 'next/dynamic';
 import { connect } from 'react-redux';
@@ -29,13 +31,14 @@ const currentActiveStepCompleted = [1, 2];
 class CreateGivingGroupAbout extends React.Component {
     constructor(props) {
         super(props);
+        const cloneEditGivingGroupObject = _cloneDeep(props.editGivingGroupStoreFlowObject);
         this.state = {
             addModalSectionObject: initializeAddSectionModalObject,
             disableContinue: !_isEmpty((props.createGivingGroupStoreFlowObject)
                 && props.createGivingGroupStoreFlowObject.attributes
                 && props.createGivingGroupStoreFlowObject.attributes.short) ? false : true,
             showModal: false,
-            createGivingGroupObjectState: props.fromCreate ? props.createGivingGroupStoreFlowObject : props.editGivingGroupStoreFlowObject,
+            createGivingGroupObjectState: props.fromCreate ? props.createGivingGroupStoreFlowObject : cloneEditGivingGroupObject,
             doesDescriptionPresent: true,
         }
         breakCrumArray = createGivingGroupBreadCrum(props.t);
@@ -118,6 +121,13 @@ class CreateGivingGroupAbout extends React.Component {
                 groupPurposeDescriptions.push(
                     { ...addSectionObject, id: `${addSectionObject.purpose}${groupPurposeDescriptions.length}` }
                 );
+            this.setState({
+                createGivingGroupObjectState: {
+                    ...this.state.createGivingGroupObjectState,
+                    groupPurposeDescriptions: [...groupPurposeDescriptions],
+                },
+                showModal: modalState
+            });
             if (!fromCreate) {
                 const editObject = {
                     attributes: {},
@@ -132,14 +142,6 @@ class CreateGivingGroupAbout extends React.Component {
                     .catch(() => {
                         //handle error
                     })
-            } else {
-                this.setState({
-                    createGivingGroupObjectState: {
-                        ...this.state.createGivingGroupObjectState,
-                        groupPurposeDescriptions: [...groupPurposeDescriptions],
-                    },
-                    showModal: modalState
-                });
             }
         } else {
             this.setState({
@@ -169,12 +171,12 @@ class CreateGivingGroupAbout extends React.Component {
         if (!_isEmpty(addSectionObject)) {
             let index;
             groupPurposeDescriptions.find((item, i) => {
-                if (item.id === addSectionObject.id) {
+                if (item.id && (item.id === addSectionObject.id)) {
                     index = i;
                     return;
                 }
             });
-            Number(index) >= 0 && groupPurposeDescriptions.splice(index, 1);
+            if (Number(index) >= 0) { groupPurposeDescriptions.splice(index, 1) }
             this.setState({
                 createGivingGroupObjectState: {
                     ...this.state.createGivingGroupObjectState,

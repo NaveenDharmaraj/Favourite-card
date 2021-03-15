@@ -203,21 +203,25 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => disp
         id: groupId,
         ...editGivingGroupObj
     };
-    if (editGroupObject.groupPurposeDescriptions) {
-        editGroupObject.groupPurposeDescriptions.map((item) => delete item.id)
-    }
-    const EditGivingGroupApiCallPromise = coreApi.patch(`/groups/${groupId}`, { data: editGroupObject })
+    const EditGivingGroupApiCallPromise = coreApi.patch(`/groups/${groupId}`, { data: editGroupObject });
     EditGivingGroupApiCallPromise
         .then((result) => {
             delete result.data.links;
             delete result.data.relationships;
             const editGivingGroupObjResponse = result.data;
-            if(editGivingGroupObjResponse.attributes.groupDescriptionsValues){
-                editGivingGroupObjResponse.attribues.groupDescriptionsValues.map(item=>{
-                    return{
+            let galleryImages = [];
+            if (editGivingGroupObjResponse.attributes.galleryImagesList) {
+                editGivingGroupObjResponse.attributes.galleryImagesList.map(({ display }) => {
+                    galleryImages.push(display)
+                })
+            }
+            let groupDescriptions = [];
+            if (editGivingGroupObjResponse.attributes.groupDescriptionsValues) {
+                editGivingGroupObjResponse.attributes.groupDescriptionsValues.map(item => {
+                    groupDescriptions.push({
                         ...item,
-                        id: `${item.purpose}${item.length}`
-                    }
+                        id: `${item.purpose}${editGivingGroupObjResponse.attributes.groupDescriptionsValues.length}`
+                    });
                 })
             };
             editGivingGroupObjResponse.attributes = {
@@ -229,11 +233,11 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => disp
                 prefersInviteOnly: editGivingGroupObjResponse.attributes.isPrivate ? "1" : "0",
                 prefersRecurringEnabled: editGivingGroupObjResponse.attributes.recurringEnabled ? "1" : "0",
                 short: editGivingGroupObjResponse.attributes.description,
-                videoUrl: editGivingGroupObjResponse.attributes.videoDirectLink
+                videoUrl: editGivingGroupObjResponse.attributes.videoPlayerLink
             };
-            editGivingGroupObjResponse.beneficiaryIds = editGivingGroupObjResponse.attributes.beneficiaryIds
-            editGivingGroupObjResponse.groupPurposeDescriptions = editGivingGroupObjResponse.attributes.groupDescriptionsValues;
-            editGivingGroupObjResponse.galleryImages = editGivingGroupObjResponse.attributes.gallerySlides[0];
+            editGivingGroupObjResponse.beneficiaryItems = editGivingGroupObjResponse.attributes.groupCharities
+            editGivingGroupObjResponse.groupPurposeDescriptions = [...groupDescriptions];
+            editGivingGroupObjResponse.galleryImages = [...galleryImages];
             dispatch(upadateEditGivingGroupObj({ ...editGivingGroupObjResponse }));
         })
         .catch(() => {

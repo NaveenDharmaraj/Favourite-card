@@ -30,8 +30,6 @@ import { isFalsy } from '../../../helpers/utils';
 import GivingGoal from '../../shared/GivingGoal';
 import EditGivingGoal from '../EditGivingGoal';
 import CreateGivingGroupHeader from '../CreateGivingGroupHeader';
-import { getDetails } from '../../../actions/group';
-import PlaceholderGrid from '../../shared/PlaceHolder';
 
 const currentActiveStepCompleted = [1, 2, 3, 4];
 const intializeValidity = {
@@ -43,6 +41,7 @@ const intializeValidity = {
     isEndDateGreaterThanStartDate: true,
 };
 let timeout = '';
+let loadOnce = true;
 const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGivingGroupStoreFlowObject, fromCreate, groupId, showCharity, showGivingGoal, t }) => {
     const editGivingGroupStoreFlowObjectClone = _cloneDeep(editGivingGroupStoreFlowObject);
     const initalizeObject = _isEmpty(createGivingGroupStoreFlowObject) ? intializeCreateGivingGroup : createGivingGroupStoreFlowObject;
@@ -56,30 +55,18 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     const [showCharityDropdown, setShowCharityDropdown] = useState(false);
     const [disableContinueButton, setDisableContinueButton] = useState(disableValue);
     const [createGivingButtonLoader, setCreateGivingButtonLoader] = useState(false);
-    const [beneficiaryItems, setBeneficiaryItems] = useState([]);
 
     const dispatch = useDispatch();
 
     const [charitySearchQuery, setCharitySearchQuery] = useState('');
     const charitiesQueryBasedOptions = useSelector(state => state.createGivingGroup.charitiesQueryBasedOptions || []);
     const charitiesSearchQueryBasedLoader = useSelector(state => state.createGivingGroup.charitiesSearchQueryBasedLoader || null);
-    const [charityLoader, setCharityLoader] = useState(true);
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-        if (!fromCreate) {
-            dispatch(getDetails(groupId, 'charitySupport'))
-                .then((result) => {
-                    setBeneficiaryItems([...result.data])
-                    setCharityLoader(false)
-                })
-                .catch(() => {
-                    //handle error
-                    setCharityLoader(false)
-                })
+        if (loadOnce) {
+            window.scrollTo(0, 0);
+            loadOnce = false;
         }
-    }, [])
-    useEffect(() => {
         if (!fromCreate) {
             editGivingGroupStoreFlowObject && setCreateGivingGroupObject(editGivingGroupStoreFlowObjectClone)
         }
@@ -95,7 +82,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             name,
             short,
         },
-        beneficiaryIds,
+        beneficiaryItems,
     } = createGivingGroupObject;
 
     const validationCreateGivingGroup = () => {
@@ -221,13 +208,10 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         } = data;
         if (beneficiaryItems.length < 5) {
             const newvalue = _find(options, { value }) || {};
-            const uniqueBeneficiaryIds = new Set([...beneficiaryIds, newvalue.id]);
             const beneficiaryItem = {
-                attributes: {
                     avatar: newvalue.avatar,
-                    beneficiaryId: newvalue.id,
+                    id: newvalue.id,
                     name: newvalue.text,
-                }
             };
             const uniqueBeneficiaryCharity = new Set([...beneficiaryItems, beneficiaryItem]);
             setShowCharityDropdown(true);
@@ -235,20 +219,18 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             if (fromCreate) {
                 setCreateGivingGroupObject({
                     ...createGivingGroupObject,
-                    beneficiaryIds: [...uniqueBeneficiaryIds],
+                    beneficiaryItem: [...uniqueBeneficiaryCharity]
                 });
-                setBeneficiaryItems([...uniqueBeneficiaryCharity]);
             } else {
+                let beneficiaryIds = [];
+                const uniqueBeneficiaryCharityArr= [...uniqueBeneficiaryCharity]
+                uniqueBeneficiaryCharityArr && uniqueBeneficiaryCharityArr.map(({id})=>{
+                    beneficiaryIds.push(id);
+                });
                 dispatch(editGivingGroupApiCall({
                     attributes: {},
-                    beneficiaryIds: [...uniqueBeneficiaryIds],
-                }, groupId))
-                    .then(() => {
-                        setBeneficiaryItems([...uniqueBeneficiaryCharity])
-                    })
-                    .catch(() => {
-                        //handle error
-                    })
+                    beneficiaryIds: [...beneficiaryIds],
+                }, groupId));
             }
         }
     };
@@ -287,41 +269,35 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     const handleRemoveCharity = (selectedId) => {
         let index;
         beneficiaryItems.find((item, i) => {
-            if (selectedId === Number(item.attributes.beneficiaryId)) {
+            if (selectedId === Number(item.id)) {
                 index = i;
                 return;
             }
         });
         setDisableContinueButton(false);
+        beneficiaryItems.splice(index, 1);
         if (fromCreate) {
-            beneficiaryItems.splice(index, 1);
-            beneficiaryIds.splice(index, 1);
-            setBeneficiaryItems([...uniqueBeneficiaryCharity]);
             setCreateGivingGroupObject({
                 ...createGivingGroupObject,
-                beneficiaryIds: [...new Set(beneficiaryIds)],
+                beneficiaryItems: [...beneficiaryItems],
             });
         } else {
-            beneficiaryItems.splice(index, 1);
-            beneficiaryIds.splice(index, 1);
+            let beneficiaryIds = [];
+            beneficiaryItems && beneficiaryItems.map(({id})=>{
+                beneficiaryIds.push(id);
+            });
             dispatch(editGivingGroupApiCall({
                 attributes: {},
-                beneficiaryIds: [...new Set(beneficiaryIds)],
-            }, groupId))
-                .then(() => {
-                    setBeneficiaryItems([...uniqueBeneficiaryCharity])
-                })
-                .catch(() => {
-                    //handle error
-                })
+                beneficiaryIds:[...beneficiaryIds]
+            }, groupId));
         }
     };
-    const renderSelectedCharities = () => beneficiaryItems.map(({ attributes }) => {
+    const renderSelectedCharities = () => beneficiaryItems.map((item) => {
         return (
             <div className="charity">
-                <Icon className='remove' onClick={() => handleRemoveCharity(attributes.beneficiaryId)} />
-                <Image src={attributes.avatar || groupImg} />
-                <Header>{attributes.name}</Header>
+                <Icon className='remove' onClick={() => handleRemoveCharity(item.id)} />
+                <Image src={item.avatar || groupImg} />
+                <Header>{item.name}</Header>
             </div>
         )
     });
@@ -404,8 +380,8 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                         open={showCharityDropdown}
                                         className="searchInput"
                                         style={{ minHeight: 'auto' }}
-                                        id="beneficiaryIds"
-                                        name="beneficiaryIds"
+                                        id="beneficiaryItems"
+                                        name="beneficiaryItems"
                                         onChange={handleCharityChange}
                                         onSearchChange={handleCharitySearchWordChange}
                                         options={charitiesQueryBasedOptions}
@@ -421,10 +397,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                         onClose={() => { setShowCharityDropdown(false) }}
                                     />
                                 </div>
-                                {(charityLoader && !fromCreate) ?
-                                    <PlaceholderGrid row={1} column={2} placeholderType="singleCard" />
-                                    :
-                                    (beneficiaryItems && beneficiaryItems.length > 0) &&
+                                {(beneficiaryItems && beneficiaryItems.length > 0) &&
                                     <div className='charityWrap'>
                                         {renderSelectedCharities()}
                                     </div>
@@ -492,8 +465,7 @@ CreateGivingGroupGivingGoal.prototype = {
             videoUrl: PropTypes.string,
         }),
         groupPurposeDescriptions: PropTypes.array,
-        beneficiaryIds: PropTypes.array,
-        beneficiaryIds: PropTypes.array,
+        beneficiaryItems: PropTypes.array,
         galleryImages: PropTypes.array,
     }),
     dispatch: PropTypes.func,

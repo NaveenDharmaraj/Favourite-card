@@ -51,7 +51,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
         galleryImages,
     } = createGivingGroupObject;
 
-    const [videoUrlState, setVidoeUrlState] = useState(videoUrl);
+    const [videoUrlState, setVideoUrlState] = useState(videoUrl);
     const [validateVideoUrl, setValidateVideoUrl] = useState(false);
     const handleOnChange = (event, data) => {
         let {
@@ -59,7 +59,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             value,
         } = data || event.target;
         if (name === 'videoUrl') {
-            setVidoeUrlState(value);
+            setVideoUrlState(value);
             setValidateVideoUrl(false);
         }
     };
@@ -69,28 +69,10 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             loadOnce = false;
         }
         if (!fromCreate && editGivingGroupStoreFlowObject) {
-            const newGalleryImages = [];
-            editGivingGroupStoreFlowObject.galleryImages && editGivingGroupStoreFlowObject.galleryImages.map((url) => {
-                const id = `${Math.floor(Math.random() * 100)}` + `${galleryImages.length}`;
-                const galleryImageObject = {
-                    id,
-                    src: url,
-                    thumbnail: url,
-                    nano: url,
-                    thumbnailWidth: 80,
-                    thumbnailHeight: 80,
-                    customOverlay: <Icon
-                        className='remove'
-                        onClick={(event) => handleRemoveImage(event, 'gallery', id)}
-                    />,
-                }
-                newGalleryImages.push(galleryImageObject);
-            });
             setCreateGivingGroupObject({
                 ...editGivingGroupStoreFlowObjectClone,
-                galleryImages: [...newGalleryImages]
             });
-            setVidoeUrlState(editGivingGroupStoreFlowObjectClone.attributes.videoUrl);
+            setVideoUrlState(editGivingGroupStoreFlowObjectClone.attributes.videoUrl);
         }
     }, [editGivingGroupStoreFlowObject])
     /**
@@ -111,6 +93,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             },
         });
         if (!fromCreate) {
+            debugger
             const editObject = {
                 'attributes': {
                     'videoUrl': mode === 'add' ? videoUrlState : ''
@@ -119,16 +102,18 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             dispatch(editGivingGroupApiCall(editObject, groupId));
         }
     }
-    const handleRemoveImage = (event, type = '', id = '') => {
+    const handleRemoveImage = (event, type = '', id = '', url = '') => {
         event.stopPropagation();
+        let index;
         if (type === 'gallery') {
-            let index;
             galleryImages.find((item, i) => {
-                if (item.id === id) {
+                if (item === url) {
                     index = i;
                 }
             });
-            galleryImages.splice(index, 1);
+            if (index) {
+                galleryImages.splice(index, 1)
+            }
         }
         fromCreate && setCreateGivingGroupObject({
             ...createGivingGroupObject,
@@ -138,14 +123,8 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             },
             ...(type === 'gallery') && { galleryImages: [...galleryImages] },
         });
-        if (!fromCreate && type === 'gallery') {
-            let newGalleryImage = [];
-            if (galleryImages && galleryImages.length > 0) {
-                galleryImages.map((item) => {
-                    newGalleryImage.push(item.src)
-                })
-            };
-            dispatch(editGivingGroupApiCall({ attributes: {}, galleryImages: [...newGalleryImage] }, groupId));
+        if (!fromCreate && type === 'gallery' && index >= 0) {
+            dispatch(editGivingGroupApiCall({ attributes: {}, galleryImages: [...galleryImages] }, groupId));
         }
     }
     const handleUpload = async (event, type = '') => {
@@ -177,7 +156,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                     thumbnailHeight: 80,
                                     customOverlay: <Icon
                                         className='remove'
-                                        onClick={(event) => handleRemoveImage(event, 'gallery', id)}
+                                        onClick={(event) => handleRemoveImage(event, 'gallery', id, url)}
                                     />,
                                 }
                                 galleryImages.push(galleryImageObject);
@@ -185,14 +164,17 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                             }
                             //this condition make sure that only once the api call happens
                             if (i === length - 1) {
-                                fromCreate ? setCreateGivingGroupObject({
-                                    ...createGivingGroupObject,
-                                    attributes: {
-                                        ...createGivingGroupObject.attributes,
-                                    },
-                                    galleryImages: [...galleryImages],
-                                }) :
+                                if (fromCreate) {
+                                    setCreateGivingGroupObject({
+                                        ...createGivingGroupObject,
+                                        attributes: {
+                                            ...createGivingGroupObject.attributes,
+                                        },
+                                        galleryImages: [...galleryImages],
+                                    })
+                                } else {
                                     dispatch(editGivingGroupApiCall({ attributes: {}, galleryImages: [...imageGalleryArray] }, groupId));
+                                }
                             }
                         });
                     }
@@ -217,7 +199,25 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
         Router.pushRoute(CreateGivingGroupFlowSteps.stepFour);
     }
     const profilePicture = _isEmpty(logo) ? groupImg : logo;
-
+    const newGalleryImages = [];
+    galleryImages && galleryImages.map((url, i) => {
+        if (i < 10) {
+            const id = `${Math.floor(Math.random() * 100)}` + `${galleryImages.length}`;
+            const galleryImageObject = {
+                id,
+                src: url,
+                thumbnail: url,
+                nano: url,
+                thumbnailWidth: 80,
+                thumbnailHeight: 80,
+                customOverlay: <Icon
+                    className='remove'
+                    onClick={(event) => handleRemoveImage(event, 'gallery', id, url)}
+                />,
+            }
+            newGalleryImages.push(galleryImageObject);
+        }
+    });
     return (
         <Container>
             <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
@@ -277,7 +277,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                         <Form.Field
                                             control={Input}
                                             onChange={handleOnChange}
-                                            value={videoUrlState}
+                                            value={videoUrlState || ''}
                                             name='videoUrl'
                                             error={validateVideoUrl}
                                         />
@@ -289,7 +289,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                         </Button>
                                     </div>
                                 </div>
-                                {(videoUrl !== '' && videoUrl === videoUrlState && !validateVideoUrl) &&
+                                {(!_isEmpty(videoUrl) && videoUrl === videoUrlState && !validateVideoUrl) &&
                                     <div className='videoWrap'>
                                         <Icon
                                             className='remove'
@@ -327,19 +327,20 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                 <Button
                                     className='success-btn-rounded-def uploadBtn'
                                     onClick={() => uploadGalleryImageRef.current.click()}
+                                    disabled={newGalleryImages.length > 10}
                                 >
                                     <Icon className='upload' />
                                     {formatMessage('createGivingGroupPicsVideo.photoGalleryUploadButton')}
                                 </Button>
-                                {(galleryImages && galleryImages.length > 0 && galleryImages[0].src) &&
+                                {(newGalleryImages && newGalleryImages.length > 0 && newGalleryImages[0].src) &&
                                     <Fragment>
                                         <ImageGallery
-                                            imagesArray={galleryImages}
+                                            imagesArray={newGalleryImages}
                                             enableImageSelection={false}
                                             rowHeight={80}
-                                            renderSingleImage = {false}
+                                            renderSingleImage={false}
                                         />
-                                        <p> You can still add {10 - galleryImages.length} more photos.</p>
+                                        <p> You can still add {10 - newGalleryImages.length} more photos.</p>
                                     </Fragment>
                                 }
                             </div>
@@ -397,7 +398,7 @@ CreateGivingGroupPicsVideo.prototype = {
             videoUrl: PropTypes.string,
         }),
         groupPurposeDescriptions: PropTypes.array,
-        beneficiaryIds: PropTypes.array,
+        beneficiaryItems: PropTypes.array,
         galleryImages: PropTypes.array,
     }),
     fromCreate: PropTypes.bool,

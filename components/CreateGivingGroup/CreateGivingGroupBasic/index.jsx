@@ -339,7 +339,7 @@ CreateGivingGroupBasic.prototype = {
             videoUrl: PropTypes.string,
         }),
         groupPurposeDescriptions: PropTypes.array,
-        beneficiaryIds: PropTypes.array,
+        beneficiaryItems: PropTypes.array,
         galleryImages: PropTypes.array,
     })
 };

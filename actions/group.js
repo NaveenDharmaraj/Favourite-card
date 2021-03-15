@@ -78,6 +78,21 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
                     fsa.payload.groupDetails = result.data;
                     dispatch(fsa);
                     if (fromEdit) {
+                        let galleryImages = [];
+                        if (result.data.attributes.galleryImagesList) {
+                            result.data.attributes.galleryImagesList.map(({ display }) => {
+                                galleryImages.push(display)
+                            })
+                        };
+                        let groupDescriptions = [];
+                        if (result.data.attributes.groupDescriptionsValues) {
+                            result.data.attributes.groupDescriptionsValues.map(item => {
+                                groupDescriptions.push({
+                                    ...item,
+                                    id: `${item.purpose}${result.data.attributes.groupDescriptionsValues.length}`
+                                });
+                            })
+                        };
                         await dispatch(upadateEditGivingGroupObj({
                             ...intializeCreateGivingGroup,
                             attributes: {
@@ -100,9 +115,9 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
                                 slug: result.data.attributes.slug,
                                 videoUrl: result.data.attributes.videoPlayerLink,
                             },
-                            beneficiaryIds: result.data.attributes.beneficiaryIds,
-                            groupPurposeDescriptions: result.data.attributes.groupDescriptionsValues,
-                            galleryImages: result.data.attributes.gallerySlides[0],
+                            beneficiaryItems: result.data.attributes.groupCharities,
+                            groupPurposeDescriptions: [...groupDescriptions],
+                            galleryImages: [...galleryImages],
                             id: result.data.id,
                         }))
                     }

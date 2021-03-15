@@ -62,7 +62,6 @@ export const intializeCreateGivingGroup = {
         videoUrl: ""
     },
     groupPurposeDescriptions: [],
-    beneficiaryIds: [],
     beneficiaryItems: [],
     galleryImages: []
 };
