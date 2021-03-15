@@ -7,7 +7,9 @@ import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
 import securityApi from '../services/securityApi';
 import wpApi from '../services/wpApi';
-import { Router } from '../routes';
+import {
+    Router
+} from '../routes';
 import getConfig from 'next/config';
 import {
     triggerUxCritialErrors,
@@ -17,7 +19,9 @@ import {
 } from './profile';
 import storage from '../helpers/storage';
 
-const { publicRuntimeConfig } = getConfig();
+const {
+    publicRuntimeConfig
+} = getConfig();
 const {
     BASIC_AUTH_KEY,
     PARAMSTORE_APP_NAME,
@@ -74,10 +78,10 @@ const getAllPaginationData = async (url, params = null) => {
 const checkForOnlyOneAdmin = (error) => {
     if (!_.isEmpty(error) && error.length === 1) {
         const checkForAdminError = error[0];
-        if (!_.isEmpty(checkForAdminError.meta)
-            && !_.isEmpty(checkForAdminError.meta.validationCode)
-            && (checkForAdminError.meta.validationCode === '1329'
-                || checkForAdminError.meta.validationCode === 1329)) {
+        if (!_.isEmpty(checkForAdminError.meta) &&
+            !_.isEmpty(checkForAdminError.meta.validationCode) &&
+            (checkForAdminError.meta.validationCode === '1329' ||
+                checkForAdminError.meta.validationCode === 1329)) {
             return true;
         }
     }
@@ -130,8 +134,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             type: actionTypes.SET_USER_ACCOUNT_FETCHED,
         });
         const fetchData = coreApi.get(
-            `/users/${userId}?include=donationMatchPolicies,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
-            {
+            `/users/${userId}?include=donationMatchPolicies,defaultTaxReceiptProfile,taxReceiptProfiles,fund`, {
                 params: {
                     dispatch,
                     uxCritical: true,
@@ -142,8 +145,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
         let campaignsData = null;
         if (flowType !== 'donations') {
             groupData = callApiAndGetData(
-                `/users/${userId}/administeredGroups?page[size]=50&sort=-id`,
-                {
+                `/users/${userId}/administeredGroups?page[size]=50&sort=-id`, {
                     params: {
                         dispatch,
                         uxCritical: true,
@@ -151,8 +153,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                 },
             );
             campaignsData = callApiAndGetData(
-                `/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`,
-                {
+                `/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`, {
                     params: {
                         dispatch,
                         uxCritical: true,
@@ -161,8 +162,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             );
         }
         const paymentInstruments = coreApi.get(
-            `/users/${userId}/activePaymentInstruments?sort=-default`,
-            {
+            `/users/${userId}/activePaymentInstruments?sort=-default`, {
                 params: {
                     dispatch,
                     uxCritical: true,
@@ -170,8 +170,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             },
         );
         const companiesData = callApiAndGetData(
-            `/users/${userId}/administeredCompanies?page[size]=50&sort=-id`,
-            {
+            `/users/${userId}/administeredCompanies?page[size]=50&sort=-id`, {
                 params: {
                     dispatch,
                     uxCritical: true,
@@ -179,17 +178,19 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             },
         );
         Promise.all([
-            fetchData,
-            groupData,
-            campaignsData,
-            companiesData,
-            paymentInstruments,
-        ])
+                fetchData,
+                groupData,
+                campaignsData,
+                companiesData,
+                paymentInstruments,
+            ])
             .then(
                 (data) => {
                     const userData = data[0];
                     if (!_.isEmpty(userData.included)) {
-                        const { included } = userData;
+                        const {
+                            included
+                        } = userData;
                         const dataMap = {
                             campaigns: 'userCampaigns',
                             companies: 'companiesAccountsData',
@@ -275,7 +276,7 @@ export const wpLogin = (token = null) => {
 
 export const chimpLogin = (token = null, options = null) => {
     let params = null;
-    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken','local');
+    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
     if (!_.isEmpty(token)) {
         params = {
             headers: {
@@ -332,7 +333,9 @@ export const getUser = async (dispatch, userId, token = null) => {
     }
     await coreApi.get(`/users/${userId}?include=activeRole`, params).then((result) => {
         isAuthenticated = true;
-        const { data } = result;
+        const {
+            data
+        } = result;
         const dataMap = {
             BeneficiaryAdminRole: 'charity',
             CompanyAdminRole: 'company',
@@ -392,16 +395,18 @@ export const getUserAllDetails = (dispatch, userId, roles) => {
     const beneficiaryAdminRoles = (_.includes(roles, 'BeneficiaryAdminRole')) ? callApiAndGetData(`/users/${userId}/beneficiaryAdminRoles?page[size]=50&sort=-id`) : null;
     const companyAdminRoles = (_.includes(roles, 'CompanyAdminRole')) ? callApiAndGetData(`/users/${userId}/companyAdminRoles?page[size]=50&sort=-id`) : null;
     return Promise.all([
-        userDetails,
-        administeredCompanies,
-        administeredBeneficiaries,
-        beneficiaryAdminRoles,
-        companyAdminRoles,
-    ])
+            userDetails,
+            administeredCompanies,
+            administeredBeneficiaries,
+            beneficiaryAdminRoles,
+            companyAdminRoles,
+        ])
         .then(
             (allData) => {
                 const userData = allData[0];
-                const { data } = userData;
+                const {
+                    data
+                } = userData;
                 const {
                     activeRoleId,
                     hasAdminAccess,
@@ -448,7 +453,9 @@ export const getUserAllDetails = (dispatch, userId, roles) => {
                             type,
                         } = item;
                         if (type === 'roles') {
-                            const { roleType } = attributes;
+                            const {
+                                roleType
+                            } = attributes;
                             const entityType = _.snakeCase(roleType).split('_')[0];
                             if (entityType.slice(-1) === 'y') {
                                 const typeOfAccount = (entityType === 'beneficiary') ? 'charity' : entityType;
@@ -479,7 +486,9 @@ export const getUserAllDetails = (dispatch, userId, roles) => {
                     // Loading all companies and charities to otherAccounts / currentAccount
                     // based on the activeRoleId.
                     _.map(contexts, (context) => {
-                        const { roleId } = context;
+                        const {
+                            roleId
+                        } = context;
                         const account = accounts[context.entityId];
                         if (!_.isEmpty(account)) {
                             account.location = `/contexts/${roleId}`;
@@ -508,7 +517,9 @@ export const getUserFund = (dispatch, userId) => {
             userInfo: result.data,
         };
         if (!_.isEmpty(result.included)) {
-            const { included } = result;
+            const {
+                included
+            } = result;
             included.map((item) => {
                 const {
                     attributes,
@@ -590,14 +601,13 @@ export const getGroupsForUser = (dispatch, userId) => {
         type: actionTypes.GET_USERS_GROUPS,
     };
     callApiAndGetData(
-        `/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`,
-        {
-            params: {
-                dispatch,
-                uxCritical: true,
+            `/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`, {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
             },
-        },
-    )
+        )
         .then(
             (result) => {
                 if (!_.isEmpty(result)) {
@@ -619,8 +629,7 @@ export const savePaymentInstrument = (cardDetails) => {
 
 export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, previousData = []) => {
     const fsa = {
-        payload: {
-        },
+        payload: {},
         type: actionTypes.GIVING_GROUPS_AND_CAMPAIGNS,
     };
     let dataArray = [];
@@ -628,8 +637,7 @@ export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, pr
         dataArray = previousData;
     }
     coreApi.get(
-        url,
-        {
+        url, {
             params: {
                 dispatch,
                 uxCritical: true,
@@ -657,18 +665,18 @@ export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, pr
 
 export const leaveGroup = (dispatch, group, allData, type) => {
     const fsa = {
-        payload: {
-        },
+        payload: {},
         type: actionTypes.GIVING_GROUPS_AND_CAMPAIGNS,
     };
     const dataArray = _.merge([], allData.data);
     const currentpath = allData.currentLink;
     dispatch({
-        payload: { buttonLoading: true },
+        payload: {
+            buttonLoading: true
+        },
         type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
     });
-    coreApi.patch(`/groups/leave?slug=${group.attributes.slug}`, {
-    }).then(
+    coreApi.patch(`/groups/leave?slug=${group.attributes.slug}`, {}).then(
         async () => {
             _.remove(dataArray, (e) => e.id === group.id);
             const currentData = await coreApi.get(currentpath);
@@ -690,7 +698,9 @@ export const leaveGroup = (dispatch, group, allData, type) => {
         },
     ).catch((error) => {
         dispatch({
-            payload: { buttonLoading: false },
+            payload: {
+                buttonLoading: false
+            },
             type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
         });
         const errorFsa = {
@@ -745,8 +755,7 @@ export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
 
 export const getUpcomingTransactions = (dispatch, url) => {
     dispatch({
-        payload: {
-        },
+        payload: {},
         type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
     });
     return coreApi.get(url).then(
@@ -796,7 +805,7 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
     return coreApi.delete(url).then(
         (result) => {
             let activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10`;
-            if (transactionType === 'RecurringAllocation') {
+            if (transactionType === 'RecurringAllocation' || transactionType === 'RecurringFundAllocation') {
                 activepageUrl += '&filter[type]=RecurringAllocation,RecurringFundAllocation';
             } else {
                 activepageUrl += '&filter[type]=RecurringDonation';
@@ -807,6 +816,115 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
         // console.log(error);
     });
 };
+
+export const editUpcommingDeposit = (donationId, donationAmount, paymentInstruementId, activePage, userId) => (dispatch) => {
+    const donationData = {
+        attributes: {
+            amount: donationAmount,
+        },
+        id: donationId,
+        relationships: {
+            paymentInstrument: {
+                data: {
+                    id: paymentInstruementId,
+                    type: 'paymentInstruments',
+                },
+            },
+        },
+        type: 'recurringDonations',
+    };
+
+    return coreApi.patch(`recurringDonations/${donationId}`, {
+        data: donationData,
+    }).then(
+        () => {
+            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=RecurringDonation`;
+            getUpcomingTransactions(dispatch, activepageUrl);
+            const statusMessageProps = {
+                message: 'Your monthly deposit has been updated.',
+                type: 'success',
+            };
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: 'TRIGGER_UX_CRITICAL_ERROR',
+            });
+        },
+    ).catch((error) => {
+        triggerUxCritialErrors(error.errors || error, dispatch);
+        return Promise.reject(error);
+    });
+
+
+};
+
+export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, infoToShare, nameToShare, privacyOpts = {}, noteToSelf, noteToCharity, dedicateType, dedicateValue,activePage, userId) => (dispatch) => {
+    let allocationData = {};
+    if (giveToType !== 'Beneficiary') {
+        allocationData = {
+            id: id,
+            attributes: {
+                amount: allocAmount,
+                dayOfMonth: dayOfMonth.value,
+                privacyShareName: privacyOpts.privacyShareName,
+                privacyShareAmount: privacyOpts.privacyShareAmount,
+                privacyShareEmail: privacyOpts.privacyShareEmail,
+                privacyShareAddress: privacyOpts.privacyShareAddress,
+                privacyTrpId: infoToShare.privacyData,
+                noteToGroup:noteToCharity,
+                noteToSelf,
+
+            },
+            type: 'recurringGroupAllocations',
+        }
+    } else {
+        allocationData = {
+            type: "recurringAllocations",
+            id: id,
+            attributes: {
+                amount: allocAmount,
+                dayOfMonth: dayOfMonth.value,
+                privacySetting: infoToShare.privacySetting,
+                privacyData: infoToShare.privacyData,
+                noteToSelf,
+                noteToCharity:noteToCharity,
+            }
+        }
+    }
+    if (!_.isEmpty(dedicateType)) {
+        allocationData.attributes = {
+            ...allocationData.attributes,
+            [dedicateType]: dedicateValue,
+        };
+    }
+    return coreApi.patch(`${allocationData.type}/${id}`, {
+        data: allocationData,
+    }).then(
+        () => {
+            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=RecurringAllocation,RecurringFundAllocation`;
+            getUpcomingTransactions(dispatch, activepageUrl);
+            const statusMessageProps = {
+                message: 'Your scheduled gift has been updated.',
+                type: 'success',
+            };
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: 'TRIGGER_UX_CRITICAL_ERROR',
+            });
+        },
+    ).catch((error) => {
+        triggerUxCritialErrors(error.errors || error, dispatch);
+        return Promise.reject(error);
+    });
+
+}
 
 export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
     const fsa = {
@@ -822,8 +940,7 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
     }
     const url = `user/favourites?userid=${Number(userId)}&page[number]=${pageNumber}&page[size]=${pageSize}`;
     return graphApi.get(
-        url,
-        {
+        url, {
             params: {
                 dispatch,
                 uxCritical: true,
@@ -848,16 +965,22 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
 export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCount, pageSize, currentPageNumber, pageCount) => {
 
     const fsa = {
-        payload: {
-        },
+        payload: {},
         type: actionTypes.UPDATE_FAVORITES,
     };
     const dataArray = _.merge([], favorites);
     const params = generatePayloadBodyForFollowAndUnfollow(userId, favId, type);
     graphApi.post(`/users/deleterelationship`, params).then(
         async () => {
-            const removedItem = (type === 'charity') ? { attributes: { charity_id: favId } }
-                : { attributes: { group_id: favId } };
+            const removedItem = (type === 'charity') ? {
+                attributes: {
+                    charity_id: favId
+                }
+            } : {
+                attributes: {
+                    group_id: favId
+                }
+            };
             _.remove(dataArray, removedItem);
             let pageNumber = currentPageNumber;
             const url = `user/favourites?userid=${Number(userId)}&page[number]=${currentPageNumber}&page[size]=${pageSize}`;
@@ -885,8 +1008,7 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
         };
         dispatch(fsa);
         dispatch({
-            payload: {
-            },
+            payload: {},
             type: actionTypes.ENABLE_FAVORITES_BUTTON,
         });
     });
@@ -992,7 +1114,7 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
             // Doing the other accounts API call on componentDidMount of success page. This is to make sure that it will 
             // work fine in login scenario too.
             // getUserAllDetails(dispatch, userId).then(() => {
-                Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
+            Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
             // });
         }
     ).catch(() => {
@@ -1037,9 +1159,9 @@ export const validateClaimCharityAccessCode = (accessCode) => (dispatch) => {
         });
 };
 
-export const claimCharityErrorCondition = (message) => (dispatch) =>{
+export const claimCharityErrorCondition = (message) => (dispatch) => {
     dispatch({
-        payload: { 
+        payload: {
             claimCharityErrorMessage: message
         },
         type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
@@ -1068,5 +1190,5 @@ export const getParamStoreConfig = (params = []) => async (dispatch) => {
             type: 'APPLICATION_ENV_CONFIG_VARIABLES',
         });
         return paramStoreConfigObj;
-    } catch (err) { }
+    } catch (err) {}
 };
