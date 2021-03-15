@@ -244,6 +244,7 @@ class TransactionTableRow extends React.Component {
 													paymentInstrumentId
 												}
 												activePage={activePage}
+												transactionId={transactionId}
 											/>
 										)}
 										{deleteModal}
