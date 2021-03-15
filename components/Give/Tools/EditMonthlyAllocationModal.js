@@ -560,7 +560,7 @@ const EditMonthlyAllocationModal = ({
 				</Button>
 			}
 		>
-			<Modal.Header> {recipientName} </Modal.Header>{' '}
+			<Modal.Header> {`Edit monthly gift to ${recipientName}`} </Modal.Header>{' '}
 			<Modal.Content>
 				<Modal.Description>
 					<div className="flowFirst recurring_edit_modal">
