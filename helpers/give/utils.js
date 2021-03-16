@@ -647,7 +647,7 @@ const populateTaxReceipts = (taxReceiptData, formatMessage) => {
                 null,
                 (item) => item.id,
                 (attributes) => ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
-                                    <span class="attributes"> ${attributes.addressOne} ${!isFalsy(attributes.address_two) ? attributes.address_two : ''} </span>
+                                    <span class="attributes"> ${attributes.addressOne} ${!isFalsy(attributes.addressTwo) ? attributes.addressTwo : ''} </span>
                                     <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`),
                 (attributes) => false,
             ),
