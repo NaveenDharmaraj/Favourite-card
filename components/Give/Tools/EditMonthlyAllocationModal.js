@@ -123,8 +123,8 @@ const EditMonthlyAllocationModal = ({
 
 	const [noteToCharity, setNoteToCharity] = useState(noteToRecipientSaved);
 	const [noteToSelf, setNoteToSelf] = useState(noteToSelfSaved);
-	const [dedicateValue, setDedicateValue] = useState(_head(Object.values(dedicate)));
-	const [dedicateType, setDedicateType] = useState(_camelCase(_head(Object.keys(dedicate))));
+	const [dedicateValue, setDedicateValue] = useState();
+	const [dedicateType, setDedicateType] = useState();
 	const [coverFeeModal, setCoverFeeModel] = useState(false);
 	//state for disable button
 	const [disableButton, setDisableButton] = useState(true);
@@ -134,8 +134,11 @@ const EditMonthlyAllocationModal = ({
 			const formatedAmount = _replace(formatCurrency(commaFormattedAmount, 'en', 'USD'), '$', '');
 			setAmount(commaFormattedAmount);
 			setFormattedAmount(formatedAmount);
-			setNoteToCharity(noteToRecipientSaved);
-			setNoteToSelf(noteToSelfSaved);
+            setNoteToCharity(noteToRecipientSaved);
+	        setNoteToSelf(noteToSelfSaved);
+            setDedicateValue(_head(Object.values(dedicate)));
+            setDedicateType(_camelCase(_head(Object.keys(dedicate))));
+            setGiftFreq(giftType);
 			if (giveToType === 'Beneficiary') {
 				if (_isEmpty(charityShareInfoOptions)) {
 					dispatch(getCharityInfoToShare(id));
@@ -454,11 +457,6 @@ const EditMonthlyAllocationModal = ({
 				)
 			)
 				.then((result) => {
-					//setAmount(formatedCurrentMonthlyAllocAmount);
-					setNoteToCharity(noteToCharity);
-					setNoteToSelf(noteToSelf)
-					setDedicateType(dedicateType);
-					setDedicateValue(dedicateValue);
 					setShowEditModal(false);
 				})
 				.catch((error) => {
@@ -675,7 +673,7 @@ const EditMonthlyAllocationModal = ({
 									dedicateValue={dedicateValue}
 									validity={validity}
 									isEditAlloc={true}
-								/>{' '}
+								/>
 							</Form.Field>{' '}
 							<Grid className="to_space">
 								<Grid.Row className="to_space">
