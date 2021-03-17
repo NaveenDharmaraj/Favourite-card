@@ -228,6 +228,7 @@ const EditMonthlyAllocationModal = ({
 				type: giveToType === 'Beneficiary' ? 'beneficiaries' : giveToType,
 			},
 			giftType: giftType,
+            dedicateGift:{},
 		},
 		type: 'allocations',
 	};
@@ -335,14 +336,16 @@ const EditMonthlyAllocationModal = ({
 				break;
 			case 'inHonorOf':
 			case 'inMemoryOf':
-				// setValidity(
-				// 	validateGiveForm(
-				// 		'dedicateType',
-				// 		null,
-				// 		validity,
-				// 		flowObject.giveData
-				// 	)
-				// );
+                flowObject.giveData.dedicateGift.dedicateType = dedicateType;
+                flowObject.giveData.dedicateGift.dedicateValue = dedicateValue;
+				setValidity(
+					validateGiveForm(
+						'dedicateType',
+						null,
+						validity,
+						flowObject.giveData
+					)
+				);
 				break;
 		}
 
@@ -392,6 +395,9 @@ const EditMonthlyAllocationModal = ({
 	const validateForm = () => {
 		let validation;
 		validation = validateGiveForm('giveAmount', amount, validity, flowObject.giveData);
+        validation = validateGiveForm('dedicateType', null, validity, flowObject.giveData);
+        validation = validateGiveForm('noteToSelf', noteToSelf, validity, flowObject.giveData);
+        validation = validateGiveForm('noteToCharity', noteToCharity, validity, flowObject.giveData);
 		setValidity({
 			...validation,
 		});
