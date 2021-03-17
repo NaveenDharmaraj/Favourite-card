@@ -128,6 +128,59 @@ const EditMonthlyAllocationModal = ({
 	const [coverFeeModal, setCoverFeeModel] = useState(false);
 	//state for disable button
 	const [disableButton, setDisableButton] = useState(true);
+    const initialiseGroupShareOptions = () =>{
+        let {
+            groupMemberInfoToShare,
+            groupCampaignAdminShareInfoOptions,
+        } = infoOptions;
+        const { infoToShareList } = populateDropdownInfoToShare(
+            groupMemberInfoToShare
+        );
+        setInfoToShareList(infoToShareList);
+        setGroupCampaignAdminShareInfoOptions(
+            groupCampaignAdminShareInfoOptions
+        );
+        const preferenceName = isCampaign
+            ? 'campaign_admins_info_to_share'
+            : 'giving_group_admins_info_to_share';
+        const preference = preferences[preferenceName].includes('address')
+            ? `${preferences[preferenceName]}-${preferences[`${preferenceName}_address`]
+            }`
+            : preferences[preferenceName];
+        setPrivacyShareAmount(
+            preferences['giving_group_members_share_my_giftamount']
+        );
+        if (
+            !_isEmpty(groupCampaignAdminShareInfoOptions) &&
+            groupCampaignAdminShareInfoOptions.length > 0
+        ) {
+            const { infoToShareList } = populateDropdownInfoToShare(
+                groupCampaignAdminShareInfoOptions
+            );
+            setDefaultInfoToShare(
+                infoToShareList.find((opt) => opt.value === preference)
+            );
+        }
+        setDefaultNameToShare(
+            infoToShareList.find(
+                (opt) =>
+                    opt.value ===
+                    preferences['giving_group_members_info_to_share']
+            ) || {}
+        );
+    }
+    const initialiseCharityShareOptions = () =>{
+        const { infoToShareList } = populateDropdownInfoToShare(
+            charityShareInfoOptions
+        );
+        setOptions(infoToShareList);
+        const name = 'charities_info_to_share';
+        const preference = preferences[name].includes('address')
+            ? `${preferences[name]}-${preferences[`${name}_address`]}`
+            : preferences[name];
+        let dD = infoToShareList.find((opt) => opt.value === preference);
+        setDefaultDropDownValue({ ...dD });
+    }
 	useEffect(() => {
 		if (showEditModal) {
 			const commaFormattedAmount = formatAmount(parseFloat(formatedCurrentMonthlyAllocAmount.replace(/,/g, '')));
@@ -145,59 +198,28 @@ const EditMonthlyAllocationModal = ({
 					if (_isEmpty(fund)) {
 						getUserFund(dispatch, currentUser.id);
 					}
-				}
+				} else{
+                    initialiseCharityShareOptions();
+                }
 			} else {
 				if (_isEmpty(infoOptions)) {
 					dispatch(getGroupCampaignAdminInfoToShare(id, false));
-				}
+				} else{
+                    initialiseGroupShareOptions();
+
+                }
 			}
 		}
 	}, [showEditModal]);
+   
+
 	useEffect(() => {
 		if (
 			!_isEmpty(infoOptions) &&
 			!_isEmpty(currentUser) &&
-			giveToType !== 'Beneficiary'
+			giveToType !== 'Beneficiary' && showEditModal
 		) {
-			let {
-				groupMemberInfoToShare,
-				groupCampaignAdminShareInfoOptions,
-			} = infoOptions;
-			const { infoToShareList } = populateDropdownInfoToShare(
-				groupMemberInfoToShare
-			);
-			setInfoToShareList(infoToShareList);
-			setGroupCampaignAdminShareInfoOptions(
-				groupCampaignAdminShareInfoOptions
-			);
-			const preferenceName = isCampaign
-				? 'campaign_admins_info_to_share'
-				: 'giving_group_admins_info_to_share';
-			const preference = preferences[preferenceName].includes('address')
-				? `${preferences[preferenceName]}-${preferences[`${preferenceName}_address`]
-				}`
-				: preferences[preferenceName];
-			setPrivacyShareAmount(
-				preferences['giving_group_members_share_my_giftamount']
-			);
-			if (
-				!_isEmpty(groupCampaignAdminShareInfoOptions) &&
-				groupCampaignAdminShareInfoOptions.length > 0
-			) {
-				const { infoToShareList } = populateDropdownInfoToShare(
-					groupCampaignAdminShareInfoOptions
-				);
-				setDefaultInfoToShare(
-					infoToShareList.find((opt) => opt.value === preference)
-				);
-			}
-			setDefaultNameToShare(
-				infoToShareList.find(
-					(opt) =>
-						opt.value ===
-						preferences['giving_group_members_info_to_share']
-				) || {}
-			);
+			initialiseGroupShareOptions()
 		}
 	}, [infoOptions]);
 	useEffect(() => {
@@ -205,16 +227,7 @@ const EditMonthlyAllocationModal = ({
 			giveToType === 'Beneficiary' &&
 			!_isEmpty(charityShareInfoOptions)
 		) {
-			const { infoToShareList } = populateDropdownInfoToShare(
-				charityShareInfoOptions
-			);
-			setOptions(infoToShareList);
-			const name = 'charities_info_to_share';
-			const preference = preferences[name].includes('address')
-				? `${preferences[name]}-${preferences[`${name}_address`]}`
-				: preferences[name];
-			let dD = infoToShareList.find((opt) => opt.value === preference);
-			setDefaultDropDownValue({ ...dD });
+			initialiseCharityShareOptions();
 		}
 	}, [charityShareInfoOptions]);
 	// initializing the flow object for edit flow
