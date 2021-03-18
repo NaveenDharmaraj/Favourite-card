@@ -408,7 +408,7 @@ const EditMonthlyAllocationModal = ({
 	const validateForm = () => {
 		let validation;
         flowObject.giveData.dedicateGift.dedicateType = dedicateType;
-        flowObject.giveData.dedicateGift.dedicateValue = dedicateValue;        
+        flowObject.giveData.dedicateGift.dedicateValue = dedicateValue;
 		validation = validateGiveForm('giveAmount', amount, validity, flowObject.giveData);
         validation = validateGiveForm('dedicateType', null, validity, flowObject.giveData);
         validation = validateGiveForm('noteToSelf', noteToSelf, validity, flowObject.giveData);
@@ -469,8 +469,8 @@ const EditMonthlyAllocationModal = ({
 						privacyShareName,
 						privacyShareAmount,
 					},
-					noteToSelf ? noteToSelf : noteToSelfSaved,
-					noteToCharity ? noteToCharity : noteToRecipientSaved,
+					noteToSelf,
+					noteToCharity,
 					dedicateType,
 					dedicateValue,
 					activePage,
