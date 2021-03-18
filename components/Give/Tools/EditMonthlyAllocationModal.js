@@ -407,6 +407,8 @@ const EditMonthlyAllocationModal = ({
 	// validating the form
 	const validateForm = () => {
 		let validation;
+        flowObject.giveData.dedicateGift.dedicateType = dedicateType;
+        flowObject.giveData.dedicateGift.dedicateValue = dedicateValue;        
 		validation = validateGiveForm('giveAmount', amount, validity, flowObject.giveData);
         validation = validateGiveForm('dedicateType', null, validity, flowObject.giveData);
         validation = validateGiveForm('noteToSelf', noteToSelf, validity, flowObject.giveData);
