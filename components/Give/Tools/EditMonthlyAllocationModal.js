@@ -189,8 +189,13 @@ const EditMonthlyAllocationModal = ({
 			setFormattedAmount(formatedAmount);
             setNoteToCharity(noteToRecipientSaved);
 	        setNoteToSelf(noteToSelfSaved);
-            setDedicateValue(_head(Object.values(dedicate)));
-            setDedicateType(_camelCase(_head(Object.keys(dedicate))));
+            if(!_isEmpty(dedicate)){
+                setDedicateValue(_head(Object.values(dedicate)));
+                setDedicateType(_camelCase(_head(Object.keys(dedicate))));
+            } else{
+                setDedicateValue('');
+                setDedicateType('');
+            }            
             setGiftFreq(giftType);
 			if (giveToType === 'Beneficiary') {
 				if (_isEmpty(charityShareInfoOptions)) {
@@ -398,8 +403,13 @@ const EditMonthlyAllocationModal = ({
 		//setAmount(formatedCurrentMonthlyAllocAmount);
 		setNoteToCharity(noteToCharity);
 		setNoteToSelf(noteToSelf)
-		setDedicateType(dedicateType);
-		setDedicateValue(dedicateValue);
+		if(!_isEmpty(dedicate)){
+            setDedicateValue(_head(Object.values(dedicate)));
+            setDedicateType(_camelCase(_head(Object.keys(dedicate))));
+        } else{
+            setDedicateValue('');
+            setDedicateType('');
+        }
 		setShowEditModal(false);
 		setValidity(intializeValidations);
 	};
