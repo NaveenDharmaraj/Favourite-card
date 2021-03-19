@@ -634,8 +634,8 @@ const saveUserBasicProfile = (userData, userId, email, isMyprofile = false) => d
                 dispatch(getUserFriendProfile(email, userId, userId));
             } else {
                 getUserProfileBasic(dispatch, email, userId, userId);
-                getUser(dispatch, userId, null);
             }
+            getUser(dispatch, userId, null);
         },
     ).catch((error) => {
         fsa.error = error;
