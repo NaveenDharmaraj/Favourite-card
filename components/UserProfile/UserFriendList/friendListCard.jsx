@@ -71,7 +71,7 @@ class FriendListCard extends React.Component {
         }
     }
 
-    rejectInvite(friendUserId, email_hash, type) {
+    rejectInvite(friendUserId, email_hash, type, rejectType= 'ignore') {
         const {
             currentUser: {
                 attributes: {
@@ -81,7 +81,7 @@ class FriendListCard extends React.Component {
             },
             dispatch,
         } = this.props;
-        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, type)).then(() => {
+        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, type, rejectType)).then(() => {
             this.setState({
                 updatedStatus: '',
             });
@@ -208,7 +208,7 @@ class FriendListCard extends React.Component {
                                 )}
                             >
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => this.rejectInvite(user_id, email_hash, 'friendSearch')}>
+                                    <Dropdown.Item onClick={() => this.rejectInvite(user_id, email_hash, 'friendSearch', 'cancel')}>
                                         Cancel<span className='mob-hide'> friend</span> request
                                     </Dropdown.Item>
                                 </Dropdown.Menu>
