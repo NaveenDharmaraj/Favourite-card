@@ -1528,7 +1528,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         noteToRecipients,
         noteToSelf,
         reason,
-        reasonOther,    
+        reasonOther,
         recipientImage,
         recipientName,
         sendDate,
@@ -1542,7 +1542,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         buttonText: formatMessage('reviewP2pGive'),
         editUrl: toURL,
         headingText: formatMessage('reviewP2pText'),
-        isRecurring: false,
+        isRecurring: (sendGift === 'schedule'),
         mainDisplayAmount: formatCurrency(
             Number(totalP2pGiveAmount),
             language,
@@ -1555,7 +1555,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         name: 'reviewGiveFrom',
         value: giveFrom.text,
     });
-
+    state.buttonText = (state.isRecurring) ? formatMessage('reviewP2pSendGiftMonthly') : formatMessage('reviewP2pGive');
     if (emails || selectedFriendsList) {
         if (emails.length === 1 && _.isEmpty(selectedFriendsList)) {
             state.mainDisplayImage = (recipientImage) || placeholderUser;
@@ -1594,7 +1594,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         });
     }
     if (sendGift === 'schedule' && frequencyObject) {
-        const selectedFrequency = frequencyObject.options.find(item => item.value === frequencyObject.value);
+        const selectedFrequency = frequencyObject.options.find((item) => item.value === frequencyObject.value);
         listingData.push({
             name: 'reviewP2pFrequency',
             value: selectedFrequency.text,
