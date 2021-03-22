@@ -321,11 +321,7 @@ const EditMonthlyAllocationModal = ({
 		event.preventDefault();
 		const { name, value } = !_isEmpty(data) ? data : event.target;
 		const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
-		if (Number(flowObject.giveData.giveFrom.value) > 0 && Number(amount) > 0) {
-			getCoverAmount(flowObject.giveData.giveFrom.value, amount, dispatch);
-		} else {
-			getCoverAmount(flowObject.giveData.giveFrom.value, 0, dispatch);
-		}
+		
 		let validitions = validateGiveForm(
 			name,
 			value,
@@ -344,6 +340,11 @@ const EditMonthlyAllocationModal = ({
 						validity,
 						flowObject.giveData
 					);
+                    if (Number(flowObject.giveData.giveFrom.value) > 0 && Number(amount) > 0) {
+                        getCoverAmount(flowObject.giveData.giveFrom.value, amount, dispatch);
+                    } else {
+                        getCoverAmount(flowObject.giveData.giveFrom.value, 0, dispatch);
+                    }
 				}
 				break;
 			case 'noteToCharity':
