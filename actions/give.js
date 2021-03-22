@@ -482,7 +482,7 @@ const transformStripeErrorToJsonApi = (err) => {
     };
 };
 
-const getAllActivePaymentInstruments = (id, dispatch, type = 'user') => {
+export const getAllActivePaymentInstruments = (id, dispatch, type = 'user') => {
     const url = (type === 'companies')
         ? `/companies/${id}/activePaymentInstruments?&sort=-default`
         : `/users/${id}/activePaymentInstruments?sort=-default`;
