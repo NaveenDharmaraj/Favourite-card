@@ -110,7 +110,6 @@ class UserFriendList extends React.Component {
             userFriendProfileData: {
                 attributes: {
                     email_hash,
-                    user_id,
                 },
             },
             updatedFriendId,
@@ -129,7 +128,28 @@ class UserFriendList extends React.Component {
         const {
             userProfileSignUpDeeplink,
             friendTypeAheadData,
+            userFriendProfileData,
         } = this.props;
+        if (!_isEqual(userFriendProfileData, prevProps.userFriendProfileData)) {
+            const {
+                currentUser: {
+                    attributes: {
+                        email,
+                    },
+                    id: userId,
+                },
+                dispatch,
+                userFriendProfileData: {
+                    attributes: {
+                        email_hash,
+                    },
+                },
+                updatedFriendId,
+            } = this.props;
+            const isMyprofile = Number(updatedFriendId) === Number(userId);
+            const currentEmail = isMyprofile ? email : !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
+            dispatch(getMyFriendsList(currentEmail, 1, isMyprofile ? null : userId));
+        };
         if (!_isEqual(userProfileSignUpDeeplink, prevProps.userProfileSignUpDeeplink) && !_isEmpty(userProfileSignUpDeeplink)) {
             this.setState({
                 signUpDeeplink: userProfileSignUpDeeplink.data.attributes['short-link'],
