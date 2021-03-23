@@ -12,6 +12,10 @@ import {
 } from '../actions/error';
 import { softLogout } from '../actions/auth';
 import logger from '../helpers/logger';
+import {
+    createCustomAmzTraceId,
+    createReqId,
+} from '../helpers/utils';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -29,6 +33,9 @@ const instance = axios.create({
     },
 });
 instance.interceptors.request.use(function (config) {
+    const amzTraceId = createCustomAmzTraceId();
+    const reqId = createReqId();
+    config.headers['request-header-attrs'] = `request_id:${reqId}|custom_x_amz_trace_id:${amzTraceId}`;
     if (_isEmpty(config.headers.Authorization)) {
         let token = '';
         if (!_isEmpty(auth0) && !_isEmpty(auth0.accessToken)) {

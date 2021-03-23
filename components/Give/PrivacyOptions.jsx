@@ -62,7 +62,7 @@ const PrivacyOptions = (props) => {
     return (
         <Fragment>
             {!isCampaign && (
-                <Form.Field className="give_flow_field">
+                <Form.Field className="give_flow_field recurring_edit_members">
                     <label
                         className="privacy-header"
                         htmlFor="privacyShareName"
@@ -91,7 +91,7 @@ const PrivacyOptions = (props) => {
                     />
                 </Form.Field>
             )}
-            <Form.Field className="give_flow_field">
+            <Form.Field className="give_flow_field recurring_edit_admins">
                 <label htmlFor="infoToShare">
                     {formatMessage(`privacyOptions:${isCampaign ? 'forGivingCampaignLabel' : `${hasCampaign ? 'selectNameAndAddressLabelWithCampaign' : 'selectNameAndAddressLabel'}`}`)}
                 </label>
