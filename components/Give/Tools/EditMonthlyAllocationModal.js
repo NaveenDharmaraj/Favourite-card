@@ -123,78 +123,108 @@ const EditMonthlyAllocationModal = ({
 
 	const [noteToCharity, setNoteToCharity] = useState(noteToRecipientSaved);
 	const [noteToSelf, setNoteToSelf] = useState(noteToSelfSaved);
-	const [dedicateValue, setDedicateValue] = useState(_head(Object.values(dedicate)));
-	const [dedicateType, setDedicateType] = useState(_camelCase(_head(Object.keys(dedicate))));
+	const [dedicateValue, setDedicateValue] = useState();
+	const [dedicateType, setDedicateType] = useState();
 	const [coverFeeModal, setCoverFeeModel] = useState(false);
 	//state for disable button
 	const [disableButton, setDisableButton] = useState(true);
+    const initialiseGroupShareOptions = () =>{
+        let {
+            groupMemberInfoToShare,
+            groupCampaignAdminShareInfoOptions,
+        } = infoOptions;
+        const { infoToShareList } = populateDropdownInfoToShare(
+            groupMemberInfoToShare
+        );
+        setInfoToShareList(infoToShareList);
+        setGroupCampaignAdminShareInfoOptions(
+            groupCampaignAdminShareInfoOptions
+        );
+        const preferenceName = isCampaign
+            ? 'campaign_admins_info_to_share'
+            : 'giving_group_admins_info_to_share';
+        const preference = preferences[preferenceName].includes('address')
+            ? `${preferences[preferenceName]}-${preferences[`${preferenceName}_address`]
+            }`
+            : preferences[preferenceName];
+        setPrivacyShareAmount(
+            preferences['giving_group_members_share_my_giftamount']
+        );
+        if (
+            !_isEmpty(groupCampaignAdminShareInfoOptions) &&
+            groupCampaignAdminShareInfoOptions.length > 0
+        ) {
+            const { infoToShareList } = populateDropdownInfoToShare(
+                groupCampaignAdminShareInfoOptions
+            );
+            setDefaultInfoToShare(
+                infoToShareList.find((opt) => opt.value === preference)
+            );
+        }
+        setDefaultNameToShare(
+            infoToShareList.find(
+                (opt) =>
+                    opt.value ===
+                    preferences['giving_group_members_info_to_share']
+            ) || {}
+        );
+    }
+    const initialiseCharityShareOptions = () =>{
+        const { infoToShareList } = populateDropdownInfoToShare(
+            charityShareInfoOptions
+        );
+        setOptions(infoToShareList);
+        const name = 'charities_info_to_share';
+        const preference = preferences[name].includes('address')
+            ? `${preferences[name]}-${preferences[`${name}_address`]}`
+            : preferences[name];
+        let dD = infoToShareList.find((opt) => opt.value === preference);
+        setDefaultDropDownValue({ ...dD });
+    }
 	useEffect(() => {
 		if (showEditModal) {
 			const commaFormattedAmount = formatAmount(parseFloat(formatedCurrentMonthlyAllocAmount.replace(/,/g, '')));
 			const formatedAmount = _replace(formatCurrency(commaFormattedAmount, 'en', 'USD'), '$', '');
 			setAmount(commaFormattedAmount);
 			setFormattedAmount(formatedAmount);
-			setNoteToCharity(noteToRecipientSaved);
-			setNoteToSelf(noteToSelfSaved);
+            setNoteToCharity(noteToRecipientSaved);
+	        setNoteToSelf(noteToSelfSaved);
+            if(!_isEmpty(dedicate)){
+                setDedicateValue(_head(Object.values(dedicate)));
+                setDedicateType(_camelCase(_head(Object.keys(dedicate))));
+            } else{
+                setDedicateValue('');
+                setDedicateType('');
+            }            
+            setGiftFreq(giftType);
 			if (giveToType === 'Beneficiary') {
 				if (_isEmpty(charityShareInfoOptions)) {
 					dispatch(getCharityInfoToShare(id));
 					if (_isEmpty(fund)) {
 						getUserFund(dispatch, currentUser.id);
 					}
-				}
+				} else{
+                    initialiseCharityShareOptions();
+                }
 			} else {
 				if (_isEmpty(infoOptions)) {
 					dispatch(getGroupCampaignAdminInfoToShare(id, false));
-				}
+				} else{
+                    initialiseGroupShareOptions();
+
+                }
 			}
 		}
 	}, [showEditModal]);
+   
+
 	useEffect(() => {
 		if (
 			!_isEmpty(infoOptions) &&
 			!_isEmpty(currentUser) &&
-			giveToType !== 'Beneficiary'
+			giveToType !== 'Beneficiary' && showEditModal
 		) {
-			let {
-				groupMemberInfoToShare,
-				groupCampaignAdminShareInfoOptions,
-			} = infoOptions;
-			const { infoToShareList } = populateDropdownInfoToShare(
-				groupMemberInfoToShare
-			);
-			setInfoToShareList(infoToShareList);
-			setGroupCampaignAdminShareInfoOptions(
-				groupCampaignAdminShareInfoOptions
-			);
-			const preferenceName = isCampaign
-				? 'campaign_admins_info_to_share'
-				: 'giving_group_admins_info_to_share';
-			const preference = preferences[preferenceName].includes('address')
-				? `${preferences[preferenceName]}-${preferences[`${preferenceName}_address`]
-				}`
-				: preferences[preferenceName];
-			setPrivacyShareAmount(
-				preferences['giving_group_members_share_my_giftamount']
-			);
-			if (
-				!_isEmpty(groupCampaignAdminShareInfoOptions) &&
-				groupCampaignAdminShareInfoOptions.length > 0
-			) {
-				const { infoToShareList } = populateDropdownInfoToShare(
-					groupCampaignAdminShareInfoOptions
-				);
-				setDefaultInfoToShare(
-					infoToShareList.find((opt) => opt.value === preference)
-				);
-			}
-			setDefaultNameToShare(
-				infoToShareList.find(
-					(opt) =>
-						opt.value ===
-						preferences['giving_group_members_info_to_share']
-				) || {}
-			);
+			initialiseGroupShareOptions()
 		}
 	}, [infoOptions]);
 	useEffect(() => {
@@ -202,16 +232,7 @@ const EditMonthlyAllocationModal = ({
 			giveToType === 'Beneficiary' &&
 			!_isEmpty(charityShareInfoOptions)
 		) {
-			const { infoToShareList } = populateDropdownInfoToShare(
-				charityShareInfoOptions
-			);
-			setOptions(infoToShareList);
-			const name = 'charities_info_to_share';
-			const preference = preferences[name].includes('address')
-				? `${preferences[name]}-${preferences[`${name}_address`]}`
-				: preferences[name];
-			let dD = infoToShareList.find((opt) => opt.value === preference);
-			setDefaultDropDownValue({ ...dD });
+			initialiseCharityShareOptions();
 		}
 	}, [charityShareInfoOptions]);
 	// initializing the flow object for edit flow
@@ -225,6 +246,7 @@ const EditMonthlyAllocationModal = ({
 				type: giveToType === 'Beneficiary' ? 'beneficiaries' : giveToType,
 			},
 			giftType: giftType,
+            dedicateGift:{},
 		},
 		type: 'allocations',
 	};
@@ -299,11 +321,7 @@ const EditMonthlyAllocationModal = ({
 		event.preventDefault();
 		const { name, value } = !_isEmpty(data) ? data : event.target;
 		const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
-		if (Number(flowObject.giveData.giveFrom.value) > 0 && Number(amount) > 0) {
-			getCoverAmount(flowObject.giveData.giveFrom.value, amount, dispatch);
-		} else {
-			getCoverAmount(flowObject.giveData.giveFrom.value, 0, dispatch);
-		}
+		
 		let validitions = validateGiveForm(
 			name,
 			value,
@@ -322,6 +340,11 @@ const EditMonthlyAllocationModal = ({
 						validity,
 						flowObject.giveData
 					);
+                    if (Number(flowObject.giveData.giveFrom.value) > 0 && Number(amount) > 0) {
+                        getCoverAmount(flowObject.giveData.giveFrom.value, amount, dispatch);
+                    } else {
+                        getCoverAmount(flowObject.giveData.giveFrom.value, 0, dispatch);
+                    }
 				}
 				break;
 			case 'noteToCharity':
@@ -332,14 +355,16 @@ const EditMonthlyAllocationModal = ({
 				break;
 			case 'inHonorOf':
 			case 'inMemoryOf':
-				// setValidity(
-				// 	validateGiveForm(
-				// 		'dedicateType',
-				// 		null,
-				// 		validity,
-				// 		flowObject.giveData
-				// 	)
-				// );
+                flowObject.giveData.dedicateGift.dedicateType = dedicateType;
+                flowObject.giveData.dedicateGift.dedicateValue = dedicateValue;
+				setValidity(
+					validateGiveForm(
+						'dedicateType',
+						null,
+						validity,
+						flowObject.giveData
+					)
+				);
 				break;
 		}
 
@@ -379,8 +404,13 @@ const EditMonthlyAllocationModal = ({
 		//setAmount(formatedCurrentMonthlyAllocAmount);
 		setNoteToCharity(noteToCharity);
 		setNoteToSelf(noteToSelf)
-		setDedicateType(dedicateType);
-		setDedicateValue(dedicateValue);
+		if(!_isEmpty(dedicate)){
+            setDedicateValue(_head(Object.values(dedicate)));
+            setDedicateType(_camelCase(_head(Object.keys(dedicate))));
+        } else{
+            setDedicateValue('');
+            setDedicateType('');
+        }
 		setShowEditModal(false);
 		setValidity(intializeValidations);
 	};
@@ -388,7 +418,12 @@ const EditMonthlyAllocationModal = ({
 	// validating the form
 	const validateForm = () => {
 		let validation;
+        flowObject.giveData.dedicateGift.dedicateType = dedicateType;
+        flowObject.giveData.dedicateGift.dedicateValue = dedicateValue;
 		validation = validateGiveForm('giveAmount', amount, validity, flowObject.giveData);
+        validation = validateGiveForm('dedicateType', null, validity, flowObject.giveData);
+        validation = validateGiveForm('noteToSelf', noteToSelf, validity, flowObject.giveData);
+        validation = validateGiveForm('noteToCharity', noteToCharity, validity, flowObject.giveData);
 		setValidity({
 			...validation,
 		});
@@ -445,8 +480,8 @@ const EditMonthlyAllocationModal = ({
 						privacyShareName,
 						privacyShareAmount,
 					},
-					noteToSelf ? noteToSelf : noteToSelfSaved,
-					noteToCharity ? noteToCharity : noteToRecipientSaved,
+					noteToSelf,
+					noteToCharity,
 					dedicateType,
 					dedicateValue,
 					activePage,
@@ -454,11 +489,6 @@ const EditMonthlyAllocationModal = ({
 				)
 			)
 				.then((result) => {
-					//setAmount(formatedCurrentMonthlyAllocAmount);
-					setNoteToCharity(noteToCharity);
-					setNoteToSelf(noteToSelf)
-					setDedicateType(dedicateType);
-					setDedicateValue(dedicateValue);
 					setShowEditModal(false);
 				})
 				.catch((error) => {
@@ -675,7 +705,7 @@ const EditMonthlyAllocationModal = ({
 									dedicateValue={dedicateValue}
 									validity={validity}
 									isEditAlloc={true}
-								/>{' '}
+								/>
 							</Form.Field>{' '}
 							<Grid className="to_space">
 								<Grid.Row className="to_space">

@@ -26,6 +26,27 @@ class DedicateGift extends Component {
         }
     }
 
+    componentDidUpdate(prevProps){
+        if (!_isEqual(this.props, prevProps)) {
+            let{
+                currentName,
+                activeIndex
+            } = this.state;
+            if(!_isEqual(this.props.dedicateType, prevProps.dedicateType)){
+                currentName =  !_isEmpty(this.props.dedicateType) ? this.props.dedicateType : '';
+                if (this.props.dedicateType === 'inHonorOf') {
+                    activeIndex = 0;
+                } else if (this.props.dedicateType === 'inMemoryOf') {
+                   activeIndex = 1;
+                }
+                this.setState({
+                    activeIndex,
+                    currentName,
+                });
+            }
+        }
+    }
+    
     handleOnInputChangeWrapper(event, titleProps) {
         const {
             index, value,

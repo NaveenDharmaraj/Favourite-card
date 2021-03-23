@@ -28,6 +28,7 @@ import {
     groupDefaultProps,
     // p2pDefaultProps,
 } from '../../helpers/give/defaultProps';
+import { isFalsy } from '../utils';
 import visaIcon from '../../static/images/icons/icon-cc-visa-colour.png';
 import mastercardIcon from '../../static/images/icons/icon-cc-mastercard-colour.png';
 import expressCard from '../../static/images/icons/icon-cc-american-express-colour.png';
@@ -646,7 +647,7 @@ const populateTaxReceipts = (taxReceiptData, formatMessage) => {
                 null,
                 (item) => item.id,
                 (attributes) => ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
-                                    <span class="attributes"> ${attributes.addressOne} ${attributes.addressTwo} </span>
+                                    <span class="attributes"> ${attributes.addressOne} ${!isFalsy(attributes.addressTwo) ? attributes.addressTwo : ''} </span>
                                     <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`),
                 (attributes) => false,
             ),

@@ -65,8 +65,8 @@ function AllocationsTable(props) {
                         language={language}
                         index={index}
                         destinationType={attributes.destinationAccount}
-                        noteToRecipientSaved={attributes.noteToRecipient}
-                        noteToSelfSaved={attributes.noteToSelf}
+                        noteToRecipientSaved={attributes.noteToRecipient || ''}
+                        noteToSelfSaved={attributes.noteToSelf || ''}
                         activeIndexs={activeIndexs}
                         isCampaign={attributes.campaign}
                         hasCampaign={attributes.hasCampaign}
