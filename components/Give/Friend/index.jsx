@@ -616,8 +616,9 @@ class Friend extends React.Component {
                     return recepientData == friendData.email;
                 });
             })
+
             flowObject.giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount(
-                (flowObject.giveData.selectedFriendsList.length + flowObject.giveData.recipients.length),
+                (flowObject.giveData.selectedFriendsList.length + _.compact(flowObject.giveData.recipients).length),
                 flowObject.giveData.giveAmount);
             // Emails need to be prepared for API call
             flowObject.giveData.recipients = parseEmails(
