@@ -1082,7 +1082,7 @@ class ReloadAddAmount extends React.Component {
                         <div className="text-right">
                         <Button
                             primary
-                            className="blue-btn-rounded  mb-3"
+                            className="blue-btn-rounded mb-3"
                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                             content="Add money"
                             disabled={this.state.reloadButtonClicked}
