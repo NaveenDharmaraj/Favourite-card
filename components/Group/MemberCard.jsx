@@ -15,6 +15,7 @@ import {
 } from 'prop-types';
 
 import imagePlaceholder from '../../static/images/no-data-avatar-user-profile.png';
+import { Link } from '../../routes';
 import { withTranslation } from '../../i18n';
 import {
     getLocation,
@@ -92,6 +93,7 @@ class MemberCard extends React.Component {
             buttonState,
         } = this.state;
         const statusMapping = {
+            ACCEPTED: formatMessage('groupProfile:messageText'),
             BLOCKED_OUT: formatMessage('groupProfile:blocked'),
             default: formatMessage('groupProfile:addFriend'),
             PENDING_IN: formatMessage('groupProfile:pending'),
@@ -105,7 +107,7 @@ class MemberCard extends React.Component {
         const isCurrentUser = (currentUserId === memberUserId);
         const userDisplayName = isUserBlocked ? formatMessage('groupProfile:anonymousUser') : displayName;
         const disableButton = (isRequestPending | isBlockedMember);
-        const hideButton = (isCurrentUser || isFriend || isUserBlocked);
+        const hideButton = (isCurrentUser || isUserBlocked);
 
         if (!hideButton) {
             friendStatusText = (_isEmpty(friendStatus)
@@ -139,7 +141,7 @@ class MemberCard extends React.Component {
                         </List>
                     </Table.Cell>
                     <Table.Cell className="amount">
-                        {!hideButton
+                        {(!hideButton && !isFriend)
                                 && (
                                     <Button
                                         className={`btnFrinend ${(disableButton) ? 'blue-btn-rounded-def' : 'blue-bordr-btn-round-def'}`}
@@ -149,6 +151,18 @@ class MemberCard extends React.Component {
                                         {friendStatusText}
                                     </Button>
                                 )}
+                        {(!hideButton && isFriend)
+                            && (
+                                <Link route={`/chats/${memberUserId}`}>
+                                    <Button
+                                        className="blue-btn-rounded-def c-small"
+                                    >
+                                        {friendStatusText}
+                                    </Button>
+                                </Link>
+                            )
+
+                        }
                     </Table.Cell>
                 </Table.Row>
             </Table.Body>
