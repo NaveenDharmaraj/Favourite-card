@@ -1079,9 +1079,10 @@ class ReloadAddAmount extends React.Component {
                             placeholderText={formatMessage('accountTopUp:noteToSelfPlaceHolder')}
                             text={giveData.noteToSelf}
                         />
+                        <div className="text-right">
                         <Button
                             primary
-                            className="blue-btn-rounded btn_right mb-3"
+                            className="blue-btn-rounded  mb-3"
                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                             content="Add money"
                             disabled={this.state.reloadButtonClicked}
@@ -1089,6 +1090,7 @@ class ReloadAddAmount extends React.Component {
                             onClick={this.handleReloadSubmit}
                             type="button"
                         />
+                        </div>
                     </Form>
                 </>
             );
