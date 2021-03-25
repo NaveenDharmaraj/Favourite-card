@@ -536,6 +536,7 @@ class UserFriendList extends React.Component {
             userFriendProfileData: {
                 attributes: {
                     email_hash,
+                    user_id,
                 },
             },
         } = this.props;
