@@ -219,7 +219,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             if (fromCreate) {
                 setCreateGivingGroupObject({
                     ...createGivingGroupObject,
-                    beneficiaryItem: [...uniqueBeneficiaryCharity]
+                    beneficiaryItems: [...uniqueBeneficiaryCharity]
                 });
             } else {
                 let beneficiaryIds = [];

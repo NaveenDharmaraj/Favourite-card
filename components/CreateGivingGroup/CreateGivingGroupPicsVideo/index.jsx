@@ -93,7 +93,6 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             },
         });
         if (!fromCreate) {
-            debugger
             const editObject = {
                 'attributes': {
                     'videoUrl': mode === 'add' ? videoUrlState : ''
@@ -102,18 +101,14 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             dispatch(editGivingGroupApiCall(editObject, groupId));
         }
     }
-    const handleRemoveImage = (event, type = '', id = '', url = '') => {
+    const handleRemoveImage = (event, type = '', url = '') => {
         event.stopPropagation();
-        let index;
         if (type === 'gallery') {
             galleryImages.find((item, i) => {
                 if (item === url) {
-                    index = i;
+                    galleryImages.splice(i, 1)
                 }
             });
-            if (index) {
-                galleryImages.splice(index, 1)
-            }
         }
         fromCreate && setCreateGivingGroupObject({
             ...createGivingGroupObject,
@@ -123,7 +118,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             },
             ...(type === 'gallery') && { galleryImages: [...galleryImages] },
         });
-        if (!fromCreate && type === 'gallery' && index >= 0) {
+        if (!fromCreate && type === 'gallery') {
             dispatch(editGivingGroupApiCall({ attributes: {}, galleryImages: [...galleryImages] }, groupId));
         }
     }
@@ -141,26 +136,11 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                 });
             } else if (type === 'gallery') {
                 try {
-                    let imageGalleryArray = [];
                     const length = event.target.files.length;
                     for (let i = 0; i < length; i++) {
                         getBase64(event.target.files[i], (result) => {
                             if (galleryImages.length < 10) {
-                                const id = `${Math.floor(Math.random() * 100)}` + `${galleryImages.length}`;
-                                const galleryImageObject = {
-                                    id,
-                                    src: result,
-                                    thumbnail: result,
-                                    nano: result,
-                                    thumbnailWidth: 80,
-                                    thumbnailHeight: 80,
-                                    customOverlay: <Icon
-                                        className='remove'
-                                        onClick={(event) => handleRemoveImage(event, 'gallery', id, url)}
-                                    />,
-                                }
-                                galleryImages.push(galleryImageObject);
-                                imageGalleryArray.push(galleryImageObject.src)
+                                galleryImages.push(result);
                             }
                             //this condition make sure that only once the api call happens
                             if (i === length - 1) {
@@ -173,7 +153,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                         galleryImages: [...galleryImages],
                                     })
                                 } else {
-                                    dispatch(editGivingGroupApiCall({ attributes: {}, galleryImages: [...imageGalleryArray] }, groupId));
+                                    dispatch(editGivingGroupApiCall({ attributes: {}, galleryImages: [...galleryImages] }, groupId));
                                 }
                             }
                         });
@@ -202,9 +182,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     const newGalleryImages = [];
     galleryImages && galleryImages.map((url, i) => {
         if (i < 10) {
-            const id = `${Math.floor(Math.random() * 100)}` + `${galleryImages.length}`;
             const galleryImageObject = {
-                id,
                 src: url,
                 thumbnail: url,
                 nano: url,
@@ -212,7 +190,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                 thumbnailHeight: 80,
                 customOverlay: <Icon
                     className='remove'
-                    onClick={(event) => handleRemoveImage(event, 'gallery', id, url)}
+                    onClick={(event) => handleRemoveImage(event, 'gallery', url)}
                 />,
             }
             newGalleryImages.push(galleryImageObject);

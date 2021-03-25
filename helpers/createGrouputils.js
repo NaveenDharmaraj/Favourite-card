@@ -124,8 +124,7 @@ export const ValidateCreateGivingGroup = (validity, name, value) => {
 
 export const getStore = (reduxStore, reducerName = '') => reduxStore.getState() && reduxStore.getState()[reducerName];
 
-export const youTubeVimeoValidator = (url) => /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/.test(url);
-
+export const youTubeVimeoValidator = (url) => /^(http(s)?:\/\/)?((w){3}.)?(vimeo\.com|youtu\.be|www\.youtube\.com)?\/.+/.test(url);
 /**
  * convert a data to a string based on a seprator
  * @param {date} date date that need to be formatted

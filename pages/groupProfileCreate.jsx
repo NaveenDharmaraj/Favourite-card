@@ -17,10 +17,10 @@ const GroupProfileCreate = ({ createGivingGroupStoreFlowObject, dispatch, slug }
             if ((window !== 'undefined' && _isEmpty(createGivingGroupStoreFlowObject))) {
                 Router.pushRoute(CreateGivingGroupFlowSteps.stepOne);
             } else if (!_isEmpty(createGivingGroupStoreFlowObject.attributes)) {
-                if (_isEmpty(createGivingGroupStoreFlowObject.attributes.short) && slug !== 'two') {
-                    Router.pushRoute(CreateGivingGroupFlowSteps.stepTwo)
-                } else if (_isEmpty(createGivingGroupStoreFlowObject.attributes.name)) {
+                if (_isEmpty(createGivingGroupStoreFlowObject.attributes.name)) {
                     Router.pushRoute(CreateGivingGroupFlowSteps.stepOne);
+                } else if (_isEmpty(createGivingGroupStoreFlowObject.attributes.short) && slug !== 'two') {
+                    Router.pushRoute(CreateGivingGroupFlowSteps.stepTwo)
                 }
             }
         }
