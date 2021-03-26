@@ -977,6 +977,17 @@ class UserFriendList extends React.Component {
                                                                     </p>
                                                                 )
                                                         }
+                                                        {(!_isEmpty(friendData) && friendDataPageCount > 1) &&
+                                                            <div className="paginationWraper">
+                                                                <div className="db-pagination right-align pt-2">
+                                                                <Pagination
+                                                                    activePage={currentActivePage}
+                                                                    totalPages={friendDataPageCount}
+                                                                    onPageChanged={this.onPageChanged}
+                                                                />
+                                                                </div>
+                                                            </div>
+                                                        }
                                                     </List>
                                                 </Fragment>
                                             )}
