@@ -1680,7 +1680,7 @@ const ingnoreFriendRequest = (currentUserId, friendUserId, email, type = '', rej
         } else if (type === 'myProfile') {
             dispatch(getUserFriendProfile(email, friendUserId, currentUserId));
         }
-        dispatch(updateUserProfileToastMsg({
+        rejectType === 'ignore' && dispatch(updateUserProfileToastMsg({
             message: 'Friend request ignored',
             type: 'success',
         }));
