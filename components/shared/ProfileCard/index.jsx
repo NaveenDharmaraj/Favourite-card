@@ -29,6 +29,8 @@ import {
 } from '../../../helpers/give/utils';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import { removeFavorite } from '../../../actions/user';
+import { default as charityAvatar } from '../../../static/images/no-data-avatar-charity-profile.png';
+import { default as groupAvatar } from '../../../static/images/no-data-avatar-giving-group-profile.png';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -52,6 +54,10 @@ const ProfileCard = (props) => {
         totalMoneyRaised,
         isFavourite,
     } = props;
+    let displayAvatar = avatar;
+    if (_isEmpty(displayAvatar)) {
+        displayAvatar = Profiletype === 'charity' ? charityAvatar : groupAvatar;
+    }
     let route = 'charities';
     const currency = 'USD';
     const language = 'en';
@@ -88,7 +94,7 @@ const ProfileCard = (props) => {
                 <Card.Content>
                     <Fragment>
                         <div className="cardPrflImg">
-                            <Image src={avatar} />
+                            <Image src={displayAvatar} />
                         </div>
                         <div className="cardcontentWrap">
                             <Header as="h6" className={`${(Profiletype === 'group' ? 'groupClr' : 'charityClr')}`}>
