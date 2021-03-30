@@ -81,6 +81,7 @@
     "reviewAddMoney": "Add money",
     "reviewConfirmMontlyMoney": "Confirm monthly deposit",
     "reviewP2pGive": "Send gift",
+    "reviewP2pSendGiftMonthly":"Confirm scheduled gift",
     "privacyShareOrganizersCampaignLabel": "Info to share with Campaign admins",
     "privacyShareOrganizersGroupLabel": "Info to share with Giving Group admins",
     "privacyShareOrganizersGroupCampaignLabel": "Info to share with Giving Group and Campaign admins",

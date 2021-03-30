@@ -244,40 +244,36 @@ const saveGroupAllocation = (allocation) => {
     return initializeAndCallAllocation(allocation, attributes, 'group');
 };
 
-const postP2pAllocations = async (allocations) => {
+const postP2pAllocations = async (allocationData) => {
     const results = [];
     let parentAllocationId = null;
-    for (const allocationData of allocations) {
-        let data = {};
-        if (parentAllocationId) {
-            const parent = {
-                relationships: {
-                    parentAllocation: {
-                        data: {
-                            type: 'fundAllocations',
-                            id: parentAllocationId,
-                        },
+    // for (const allocationData of allocations) {
+    let data = {};
+    if (parentAllocationId) {
+        const parent = {
+            relationships: {
+                parentAllocation: {
+                    data: {
+                        type: 'fundAllocations',
+                        id: parentAllocationId,
                     },
                 },
-            };
-            data = _.merge({}, allocationData, parent);
-        } else {
-            data = allocationData;
-        }
-
-        // const params = {
-        //     data: data,
-        // };
-        const result = await coreApi.post(`/${allocationData.type}`, {
-            data: {
-                ...data,
             },
-        });
-        if (result && result.data) {
-            parentAllocationId = result.data.id;
-        }
-        results.push(result);
+        };
+        data = _.merge({}, allocationData, parent);
+    } else {
+        data = allocationData;
     }
+    const result = await coreApi.post(`/${allocationData.type}`, {
+        data: {
+            ...data,
+        },
+    });
+    if (result && result.data) {
+        parentAllocationId = result.data.id;
+    }
+    results.push(result);
+    //}
 
     return results;
 };
@@ -288,6 +284,7 @@ const initializeP2pAllocations = (
     noteToRecipients,
     noteToSelf,
     giveFrom,
+    reason,
 ) => {
     const allocations = [];
     // _.each(recipients, (recipient) => {
@@ -296,8 +293,8 @@ const initializeP2pAllocations = (
             amount: giveAmount,
             noteToRecipient: noteToRecipients,
             noteToSelf,
+            reason,
             recipientEmails: _.replace(recipients, /[\n\r\t ]+/g, ''),
-            suppressEmail: false,
         },
         relationships: {
             sourceFund: {
@@ -308,11 +305,11 @@ const initializeP2pAllocations = (
             },
         },
     };
-    allocationData.type = 'fundAllocations';
+    // allocationData.type = 'fundAllocations';
     allocations.push(allocationData);
     // });
 
-    return allocations;
+    return allocationData;
 };
 
 /**
@@ -322,24 +319,40 @@ const initializeP2pAllocations = (
 const saveP2pAllocations = (allocation) => {
     const {
         giveData: {
+            frequencyObject,
             giveAmount,
             giveFrom,
             noteToRecipients,
             noteToSelf,
             recipients,
+            reason,
             selectedFriendsList,
+            sendDate,
+            sendGift,
         },
     } = allocation;
     const emailArray = _.concat(selectedFriendsList.map((friend) => friend.email), recipients);
-    const allocations = initializeP2pAllocations(
+    const allocationData = initializeP2pAllocations(
         emailArray,
         giveAmount,
         noteToRecipients,
         noteToSelf,
         giveFrom,
+        reason,
         0,
     );
-    return postP2pAllocations(allocations);
+
+    if (!_.isEmpty(sendGift) && sendGift === 'schedule') {
+        allocationData.type = 'scheduledP2pAllocations';
+        allocationData.attributes.frequency = frequencyObject.value;
+        const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() : `0${sendDate.getMonth()}`;
+        const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
+        allocationData.attributes.sendDate = `${sendDate.getFullYear()}-${month}-${day}`;
+    } else {
+        allocationData.type = 'fundAllocations';
+        allocationData.attributes.suppressEmail = false;
+    }
+    return postP2pAllocations(allocationData);
 };
 
 /**
