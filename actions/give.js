@@ -295,7 +295,6 @@ const initializeP2pAllocations = (
             noteToSelf,
             reason,
             recipientEmails: _.replace(recipients, /[\n\r\t ]+/g, ''),
-            suppressEmail: false,
         },
         relationships: {
             sourceFund: {
@@ -318,7 +317,6 @@ const initializeP2pAllocations = (
  * @param {object} allocation The allocation object
  */
 const saveP2pAllocations = (allocation) => {
-    console.log(allocation);
     const {
         giveData: {
             frequencyObject,
@@ -343,13 +341,16 @@ const saveP2pAllocations = (allocation) => {
         reason,
         0,
     );
-    allocationData.type = 'fundAllocations';
+
     if (!_.isEmpty(sendGift) && sendGift === 'schedule') {
         allocationData.type = 'scheduledP2pAllocations';
         allocationData.attributes.frequency = frequencyObject.value;
         const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() : `0${sendDate.getMonth()}`;
         const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
         allocationData.attributes.sendDate = `${sendDate.getFullYear()}-${month}-${day}`;
+    } else {
+        allocationData.type = 'fundAllocations';
+        allocationData.attributes.suppressEmail = false;
     }
     return postP2pAllocations(allocationData);
 };
