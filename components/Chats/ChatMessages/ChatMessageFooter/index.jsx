@@ -80,13 +80,12 @@ class ChatMessageFooter extends React.Component {
             smallerScreenSection,
         } = this.props;
         let params = {};
-        params["groupName"] = newGroupName;
+        params["groupName"] = newGroupName || 'New Group';
         params["groupMemberList"] = newGroupMemberIds,
             params["imageUrl"] = newGroupImageUrl;
         if (!params["imageUrl"] || params["imageUrl"] == "" || params["imageUrl"] == null) {
             params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
         }
-
         createGroup(params).then(response => {
             let groupId = response.response.id;
             dispatch({

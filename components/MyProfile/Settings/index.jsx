@@ -20,7 +20,7 @@ import InfoToShare from './infoToShare';
 const panes1 = [
     {
         menuItem: {
-            content: 'Email',
+            content: 'Email addresses',
             icon: 'user',
             iconPosition: 'left',
             key: 'Email',
@@ -48,7 +48,7 @@ const panes1 = [
     },
     {
         menuItem: {
-            content: 'Information to share',
+            content: 'Info to share',
             icon: 'group',
             iconPosition: 'left',
             key: 'Information to share',
@@ -61,7 +61,7 @@ const panes1 = [
     },
     {
         menuItem: {
-            content: 'Privacy and security',
+            content: 'Privacy & security',
             icon: 'privacy',
             iconPosition: 'left',
             key: 'Privacy and security',
