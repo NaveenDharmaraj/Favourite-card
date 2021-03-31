@@ -48,6 +48,9 @@ class FriendListCard extends React.Component {
         if (_indexOf(props.data.ignored_by_users, _toNumber(props.currentUser.id)) !== -1) {
             updatedStatus = undefined;
         }
+        if (props.data.state === "IGNORED") {
+            updatedStatus = '';
+        }   
         this.state = {
             updatedStatus,
         };
