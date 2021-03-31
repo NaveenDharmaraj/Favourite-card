@@ -1200,6 +1200,17 @@ h4{
       padding: 0;
     }
   }
+  &.toolstab{
+    .ui.secondary.pointing.menu{
+      margin-bottom: 37px;
+      @media only screen and (max-width: 767px){
+        margin-bottom: 25px;
+      }
+    }
+    .ui.segment.tab{
+      padding: 0;
+    }
+  }
 }
 .userSettingsContainer{
   padding: 0rem 0rem 1rem;
@@ -1323,6 +1334,18 @@ h4{
       .userList{
         .item{
           border-top: 1px solid rgba(34, 36, 38, 0.15);
+        }
+      }
+    }
+  }
+  @media only screen and (max-width: 767px){
+    .settingsDetailWraper{
+      &.pMethodHead{
+        .ui.grid{
+          .right-align-btn{
+            float: left;
+            margin-top: 20px;
+          }
         }
       }
     }
@@ -9315,6 +9338,38 @@ body{
       }
     }
   }
+}
+
+.isDisabled {
+  pointer-events: none;
+}
+.monthly_deposit_heading{
+  font-family: 'ProximaNova-Semibold' !important;
+}
+body{
+  .ui.inverted.dimmer.modals{
+    background-color: rgba(216, 216, 216, 0.71);
+    ~.ui.inverted.dimmer.modals{
+      background-color: transparent;
+      .ui.scrolling.modal{
+        margin-top: 0px;
+      }
+    }
+  }
+}
+.chimp-modal .header{
+  font-family: 'ProximaNova-Semibold' !important;
+}
+.btn-bottom{
+  margin-bottom: 15px !important;
+  padding-top: 28px;
+  @media only screen and (max-width:768px) {
+    padding-top: 13px;
+  }
+}
+.visible.transition.chimp-modal-hidden{
+    // opacity: 0 !important;
+    display: none !important;
 }
 
 .isDisabled {
