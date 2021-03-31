@@ -6,10 +6,8 @@ import {
     Header,
     Image,
     Icon,
-    Grid,
     Button,
     Dropdown,
-    Modal,
 } from 'semantic-ui-react';
 import {
     connect,
