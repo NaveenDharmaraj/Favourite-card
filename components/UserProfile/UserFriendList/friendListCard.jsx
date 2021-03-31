@@ -48,9 +48,9 @@ class FriendListCard extends React.Component {
         if (_indexOf(props.data.ignored_by_users, _toNumber(props.currentUser.id)) !== -1) {
             updatedStatus = undefined;
         }
-        if (props.data.state === "IGNORED") {
+        if (props.data.state === "IGNORED" && props.data.status !== "PENDING_OUT") {
             updatedStatus = '';
-        }   
+        }
         this.state = {
             updatedStatus,
         };
@@ -74,7 +74,7 @@ class FriendListCard extends React.Component {
         }
     }
 
-    rejectInvite(friendUserId, email_hash, type, rejectType= 'ignore') {
+    rejectInvite(friendUserId, email_hash, type, rejectType = 'ignore') {
         const {
             currentUser: {
                 attributes: {
@@ -180,53 +180,53 @@ class FriendListCard extends React.Component {
                     {(!_isEmpty(updatedStatus) && updatedStatus === 'ACCEPTED')
                         && (
                             <Link route={`/chats/${user_id}`}>
-                                { buttonElement }
+                                { buttonElement}
                             </Link>
                         )}
                     {(!_isEmpty(updatedStatus) && updatedStatus === 'PENDING_IN')
-                    && (
-                        <Fragment>
+                        && (
+                            <Fragment>
+                                <Button
+                                    className={`${buttonClass} c-small`}
+                                    onClick={() => this.handleAcceptRequest(email_hash, user_id)}
+                                >
+                                    {buttonText}
+                                </Button>
+                                <a className='ignore' onClick={() => this.rejectInvite(user_id, email_hash, type)}>Ignore</a>
+                            </Fragment>
+                        )}
+                    {(!_isEmpty(updatedStatus) && updatedStatus === 'PENDING_OUT')
+                        && (
+                            <Fragment>
+                                <Dropdown
+                                    className='userProfile_drpbtn'
+                                    icon='chevron down'
+                                    direction='left'
+                                    trigger={(
+                                        <Button
+                                            className="blue-bordr-btn-round-def"
+                                        >
+                                            Pending
+                                        </Button>
+                                    )}
+                                >
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={() => this.rejectInvite(user_id, email_hash, 'friendSearch', 'cancel')}>
+                                            Cancel<span className='mob-hide'> friend</span> request
+                                    </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </Fragment>
+                        )}
+                    {(_isEmpty(updatedStatus) || (updatedStatus === 'LIMITED'))
+                        && (
                             <Button
                                 className={`${buttonClass} c-small`}
-                                onClick={() => this.handleAcceptRequest(email_hash, user_id)}
+                                onClick={() => this.handleAddFriendClick(email_hash, user_id)}
                             >
                                 {buttonText}
                             </Button>
-                            <a className='ignore' onClick={() => this.rejectInvite(user_id, email_hash, type)}>Ignore</a>
-                        </Fragment>
-                    )}
-                    {(!_isEmpty(updatedStatus) && updatedStatus === 'PENDING_OUT')
-                    && (
-                        <Fragment>
-                            <Dropdown
-                                className='userProfile_drpbtn'
-                                icon='chevron down'
-                                direction='left'
-                                trigger={(
-                                    <Button
-                                        className="blue-bordr-btn-round-def"
-                                    >
-                                        Pending
-                                    </Button>
-                                )}
-                            >
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => this.rejectInvite(user_id, email_hash, 'friendSearch', 'cancel')}>
-                                        Cancel<span className='mob-hide'> friend</span> request
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </Fragment>
-                    )}
-                    {(_isEmpty(updatedStatus) || (updatedStatus === 'LIMITED'))
-                    && (
-                        <Button
-                            className={`${buttonClass} c-small`}
-                            onClick={() => this.handleAddFriendClick(email_hash, user_id)}
-                        >
-                            {buttonText}
-                        </Button>
-                    )}
+                        )}
                 </List.Content>
             </List.Item>
         );
@@ -252,10 +252,10 @@ FriendListCard.defaultProps = {
         last_name: '',
         province: '',
         status: '',
-        state:'',
+        state: '',
     },
     type: '',
-    hideFriendPage: () => {},
+    hideFriendPage: () => { },
     isMyProfile: false,
     userFindFriendsList: {
         count: null,
@@ -282,7 +282,7 @@ FriendListCard.propTypes = {
         last_name: string,
         province: string,
         status: string,
-        state:string,
+        state: string,
     }),
     type: string,
     isMyProfile: bool,
