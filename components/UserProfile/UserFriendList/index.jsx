@@ -469,7 +469,7 @@ class UserFriendList extends React.Component {
                         <>
                             {!userMyFriendsListLoader &&
                                 <Fragment>
-                                    {(isMyProfile && _isEmpty(invitationData) && _isEmpty(friendData)) ?
+                                    {(isMyProfile && _isEmpty(invitationData) && _isEmpty(friendData) && !searchClicked) ?
                                         <>
                                             <Header as="h4">Friends</Header>
                                             <div className="findFriendswrapper">
