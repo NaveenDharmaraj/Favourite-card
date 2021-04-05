@@ -52,7 +52,7 @@
     "reviewNoteToSelfcampaigns": "Note to campaign (optional)",
     "reviewEmptyNoteToSelf": "No note added",
     "commonNonrefundable" : "This transaction is non-refundable. ",
-    "commonRecurringNonrefundable" : "Completed transactions are non-refundable, but you can cancel scheduled monthly transactions before they occur.",
+    "commonRecurringNonrefundable" : "Completed transactions are non-refundable, but you can cancel scheduled transactions before they occur.",
     "donationHeadingText": "Add money",
     "reviewEdit": "Edit",
     "reviewGiveToText": "Give to",
