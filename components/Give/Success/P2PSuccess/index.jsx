@@ -26,12 +26,13 @@ const P2PSuccess = (props) => {
 			name = `${receipientsArr.join(', ')}, and ${last}`; // added extra coma for bugherd #290
 		}
 		if (!_isEmpty(frequencyObject)) {
-			let date = sendDate.toString();
+            const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() : `0${sendDate.getMonth()}`;
+            const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
 			switch (frequencyObject.value) {
 				case 'once':
 					secondParagraph = formatMessage('fromToRecipientOnce', {
 						name,
-						date,
+                        date:`${sendDate.getFullYear()} - ${month} - ${day}`,
 					});
 					break;
 				case 'weekly':
@@ -40,15 +41,16 @@ const P2PSuccess = (props) => {
                     if(giveData.giveFrom.type === 'user'){
                         secondParagraph =formatMessage('fromToRecipientRecurring', {
                             name,
-                            date,
+                            date:`${sendDate.getFullYear()} - ${month} - ${day}`,
                             frequency: frequencyObject.value,
                       })
                       thirdParagraph = formatMessage('scheduleForP2p');
+                      
                     } else{
                         secondParagraph = formatMessage('fromOtherRecipientRecurring', {
                             fromName: giveData.giveFrom.name,
                             name,
-                            date,
+                            date:`${sendDate.getFullYear()} - ${month} - ${day}`,
                             frequency:frequencyObject.value,
                       });
                     }
