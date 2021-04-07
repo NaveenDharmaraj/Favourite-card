@@ -248,7 +248,7 @@ class MemberCard extends React.Component {
                                                 direction='left'
                                                 trigger={(
                                                     <Button
-                                                        className="blue-bordr-btn-round-def"
+                                                        className="blue-bordr-btn-round-def Members_Pending_icon"
                                                     >
                                                         Pending
                                                     </Button>
