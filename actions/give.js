@@ -10,6 +10,9 @@ import {
     groupDefaultProps,
     p2pDefaultProps,
 } from '../helpers/give/defaultProps';
+import {
+    formatDateForP2p,
+} from '../helpers/give/utils';
 
 import {
     callApiAndGetData,
@@ -345,9 +348,7 @@ const saveP2pAllocations = (allocation) => {
     if (!_.isEmpty(sendGift) && sendGift === 'schedule') {
         allocationData.type = 'scheduledP2pAllocations';
         allocationData.attributes.frequency = frequencyObject.value;
-        const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() : `0${sendDate.getMonth()}`;
-        const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
-        allocationData.attributes.sendDate = `${sendDate.getFullYear()}-${month}-${day}`;
+        allocationData.attributes.sendDate = formatDateForP2p(sendDate);
     } else {
         allocationData.type = 'fundAllocations';
         allocationData.attributes.suppressEmail = false;

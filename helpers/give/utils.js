@@ -1508,6 +1508,15 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     return (state);
 };
 
+const formatDateForP2p = (sendDate) => {
+    if (!_.isEmpty(sendDate)) {
+        const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() + 1 : `0${sendDate.getMonth() + 1}`;
+        const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
+        return `${sendDate.getFullYear()}-${month}-${day}`;
+    }
+    return null;
+};
+
 /**
 * Setup the display parameters for review page
 * @param {object} giveData state object for give page
@@ -1587,11 +1596,9 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         }
     }
     if (sendGift === 'schedule' && sendDate) {
-        const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() : `0${sendDate.getMonth()}`;
-        const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
         listingData.push({
             name: 'reviewP2pSendDate',
-            value: `${sendDate.getFullYear()} - ${month} - ${day}`,
+            value: formatDateForP2p(sendDate),
         });
     }
     if (sendGift === 'schedule' && frequencyObject) {
@@ -1922,4 +1929,5 @@ export {
     validateForMinReload,
     getSelectedFriendList,
     getDayName,
+    formatDateForP2p,
 };

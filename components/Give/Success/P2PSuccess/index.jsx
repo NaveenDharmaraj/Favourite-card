@@ -7,6 +7,7 @@ import _isEmpty from 'lodash/isEmpty';
 import { withTranslation } from '../../../../i18n';
 import '../../../../static/less/giveFlows.less';
 import { Link } from '../../../../routes';
+import { formatDateForP2p } from '../../../../helpers/give/utils';
 
 const P2PSuccess = (props) => {
     const {
@@ -30,12 +31,10 @@ const P2PSuccess = (props) => {
             name = `${receipientsArr.join(', ')}, and ${last}`; // added extra coma for bugherd #290
         }
         if (!_isEmpty(frequencyObject)) {
-            const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() : `0${sendDate.getMonth()}`;
-            const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
             switch (frequencyObject.value) {
                 case 'once':
                     secondParagraph = formatMessage('fromToRecipientOnce', {
-                        date: `${sendDate.getFullYear()} - ${month} - ${day}`,
+                        date: formatDateForP2p(sendDate),
                         name,
                     });
                     break;
@@ -46,7 +45,7 @@ const P2PSuccess = (props) => {
                         secondParagraph = formatMessage(
                             'fromToRecipientRecurring',
                             {
-                                date: `${sendDate.getFullYear()} - ${month} - ${day}`,
+                                date: formatDateForP2p(sendDate),
                                 frequency: frequencyObject.value,
                                 name,
                             },
@@ -56,7 +55,7 @@ const P2PSuccess = (props) => {
                         secondParagraph = formatMessage(
                             'fromOtherRecipientRecurring',
                             {
-                                date: `${sendDate.getFullYear()} - ${month} - ${day}`,
+                                date: formatDateForP2p(sendDate),
                                 frequency: frequencyObject.value,
                                 fromName: giveData.giveFrom.name,
                                 name,
