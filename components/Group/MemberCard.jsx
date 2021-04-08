@@ -194,7 +194,7 @@ class MemberCard extends React.Component {
         );
         return (
             <Table.Body>
-                <Table.Row className="EmilyData">
+                <Table.Row className="EmilyData member-card-table">
                     <Table.Cell className="EmilyGroup">
                         <List verticalAlign="middle">
                             <List.Item>
