@@ -9405,6 +9405,17 @@ body{
 .EmilyData{
   &.member-card-table{
     .amount{
+      .dropdown{
+        &.active{
+          .ui.button{
+            &.Members_Pending_icon{
+              +.icon{
+                top: 12px !important;
+              }
+            }
+          }
+        }
+      }
         .ui.button{
           padding: 7.2px 29.2px !important;
           +.icon{
@@ -9430,9 +9441,16 @@ body{
               color: #FFFFFF;
             }
           }
+          .ui.dropdown.active .ui.button .Members_Pending_icon + .icon{
+            top: 10px;
+          }
         }
         .ignore{
           cursor: pointer;
+        }
+        .menu{
+          min-width:185px;
+          margin-top: -7px;
         }
       }
    }
