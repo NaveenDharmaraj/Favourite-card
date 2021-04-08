@@ -157,41 +157,10 @@ class MemberCard extends React.Component {
             buttonState,
             updatedStatus,
         } = this.state;
-        let buttonText = '';
-        let buttonClass = 'blue-btn-rounded-def';
-        switch (updatedStatus) {
-            case 'ACCEPTED':
-                buttonText = formatMessage('groupProfile:messageText');
-                break;
-            case 'PENDING_IN':
-                buttonText = formatMessage('groupProfile:accept');
-                buttonClass = 'blue-bordr-btn-round-def';
-                break;
-            case 'PENDING_OUT':
-                buttonText = formatMessage('groupProfile:pending');
-                buttonClass = 'blue-bordr-btn-round-def';
-                break;
-            case 'BLOCKED_OUT':
-                buttonText = formatMessage('groupProfile:blocked');
-                buttonClass = 'blue-bordr-btn-round-def';
-                break;
-            default:
-                buttonText = formatMessage('groupProfile:addFriend');
-                buttonClass = 'blue-bordr-btn-round-def';
-                break;
-        }
         const isUserBlocked = (friendStatus && friendStatus === 'BLOCKED_IN');
-        const isBlockedMember = (friendStatus && friendStatus === 'BLOCKED_OUT');
         const isCurrentUser = (currentUserId === memberUserId);
         const userDisplayName = isUserBlocked ? formatMessage('groupProfile:anonymousUser') : displayName;
         const hideButton = (isCurrentUser || isUserBlocked);
-        const buttonElement = (
-            <Button
-                className={`${buttonClass} c-small`}
-            >
-                {buttonText}
-            </Button>
-        );
         return (
             <Table.Body>
                 <Table.Row className="EmilyData member-card-table">
@@ -224,17 +193,21 @@ class MemberCard extends React.Component {
                                 {(!_isEmpty(updatedStatus) && updatedStatus === 'ACCEPTED')
                                     && (
                                         <Link route={`/chats/${memberUserId}`}>
-                                            { buttonElement}
+                                            <Button
+                                                className="blue-btn-rounded-def c-small"
+                                            >
+                                                {formatMessage('groupProfile:messageText')}
+                                            </Button>
                                         </Link>
                                     )}
                                 {(!_isEmpty(updatedStatus) && updatedStatus === 'PENDING_IN')
                                     && (
                                         <Fragment>
                                             <Button
-                                                className={`${buttonClass} c-small`}
+                                                className="blue-bordr-btn-round-def c-small"
                                                 onClick={() => this.handleAcceptRequest()}
                                             >
-                                                {buttonText}
+                                                {formatMessage('groupProfile:accept')}
                                             </Button>
                                             <a className='ignore' onClick={() => this.rejectInvite('friends', 'ignore')}>Ignore</a>
                                         </Fragment>
@@ -250,7 +223,7 @@ class MemberCard extends React.Component {
                                                     <Button
                                                         className="blue-bordr-btn-round-def Members_Pending_icon"
                                                     >
-                                                        Pending
+                                                        {formatMessage('groupProfile:pending')}
                                                     </Button>
                                                 )}
                                             >
@@ -265,11 +238,20 @@ class MemberCard extends React.Component {
                                 {(_isEmpty(updatedStatus) || (updatedStatus === 'LIMITED'))
                                     && (
                                         <Button
-                                            className={`${buttonClass} c-small`}
+                                            className="blue-bordr-btn-round-def c-small"
                                             onClick={() => this.addFriend()}
-                                            disabled={buttonState || isBlockedMember}
+                                            disabled={buttonState}
                                         >
-                                            {buttonText}
+                                            { formatMessage('groupProfile:addFriend')}
+                                        </Button>
+                                    )}
+                                {(!_isEmpty(updatedStatus) && (updatedStatus === 'BLOCKED_OUT'))
+                                    && (
+                                        <Button
+                                            className="blue-btn-rounded-def c-small"
+                                            disabled={true}
+                                        >
+                                            {formatMessage('groupProfile:blocked')}
                                         </Button>
                                     )}
                             </Fragment>
