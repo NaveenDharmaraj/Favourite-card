@@ -9405,11 +9405,19 @@ body{
 .EmilyData{
   &.member-card-table{
     .amount{
-        .ui.button{
-          padding: 8.2px 52.73px 8.2px 30px !important;
-          &.c-small{
-            padding: .5rem 1.5rem !important;
+      .dropdown{
+        &.active{
+          .ui.button{
+            &.Members_Pending_icon{
+              +.icon{
+                top: 12px !important;
+              }
+            }
           }
+        }
+      }
+        .ui.button{
+          padding: 7.2px 29.2px !important;
           +.icon{
             position: absolute;
             right: 30px;
@@ -9418,6 +9426,7 @@ body{
             transition: 0.5s;
           }
           &.Members_Pending_icon{
+            padding: 7.2px 51.39px 7.2px 22px !important;
             +.icon{
               top: 6px;
             }
@@ -9429,12 +9438,19 @@ body{
           }
           &.blue-btn-rounded-def{
             +.icon{
-              color: #ffffff;
+              color: #FFFFFF;
             }
+          }
+          .ui.dropdown.active .ui.button .Members_Pending_icon + .icon{
+            top: 10px;
           }
         }
         .ignore{
           cursor: pointer;
+        }
+        .menu{
+          min-width:185px;
+          margin-top: -7px;
         }
       }
    }
