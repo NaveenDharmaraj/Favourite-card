@@ -9402,3 +9402,34 @@ body{
     display: none !important;
 }
 
+.EmilyData{
+  &.member-card-table{
+    .amount{
+        .ui.button{
+          padding: 8.2px 52.73px 8.2px 30px !important;
+          +.icon{
+            position: absolute;
+            right: 30px;
+            margin: 0;
+            top: 11px;
+            transition: 0.5s;
+          }
+          &.Members_Pending_icon{
+            +.icon{
+              top: 6px;
+            }
+          }
+          &.blue-bordr-btn-round-def{
+            +.icon{
+              color: @blueButton;
+            }
+          }
+          &.blue-btn-rounded-def{
+            +.icon{
+              color: #ffffff;
+            }
+          }
+        }
+      }
+   }
+}
