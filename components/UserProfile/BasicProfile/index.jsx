@@ -233,9 +233,11 @@ class UserBasicProfile extends React.Component {
         try {
             const data = document.getElementById('txtDeeplinkUser');
             data.type = 'text';
+            debugger
             data.select();
             document.execCommand('copy');
             data.type = 'hidden';
+            document.activeElement.blur();
             //e.target.focus();
             const statusMessageProps = {
                 message: 'Link copied to clipboard',
