@@ -21,7 +21,7 @@ class CharitableInterestsList extends React.Component {
             friendUserId,
             dispatch,
         } = this.props;
-        getUserCharitableInterests(dispatch, friendUserId);
+        dispatch(getUserCharitableInterests(friendUserId));
     }
 
     componentWillUnmount() {

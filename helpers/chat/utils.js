@@ -184,7 +184,7 @@ const sortUserDetails = (userDetails) => {
     return userDetails;
 };
 
-const defaultSelectedConversation = (msgId, newMessgaeArr, selectedConversation, userDetails, groupFeeds) => {
+const defaultSelectedConversation = (msgId, newMessgaeArr = [], selectedConversation={}, userDetails={}, groupFeeds={}) => {
     let compose = false;
     // select the conversation based in groupid or contact id
     if (Number(msgId) && newMessgaeArr && newMessgaeArr.length > 0) {

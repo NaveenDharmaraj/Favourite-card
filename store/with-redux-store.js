@@ -66,9 +66,9 @@ export default (App) => {
                 const result = new MobileDetect(appContext.ctx.req.headers['user-agent']);
                 let isMobile = !!result.mobile();
                 if (!_isEmpty(windowSize)) {
-                    if (isMobile && windowSize > 991) {
+                    if (isMobile && windowSize > 1198) {
                         isMobile = false;
-                    } else if (!isMobile && windowSize < 992) {
+                    } else if (!isMobile && windowSize < 1199) {
                         isMobile = true;
                     }
                 }

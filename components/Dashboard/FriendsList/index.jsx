@@ -95,7 +95,11 @@ class FriendsList extends React.Component {
         if (!src) {
             return;
         }
-        img.firstChild.src = src;
+        if(img.firstChild){
+            img.firstChild.src = src;
+            return;
+        };
+        img.src = src;
     };
     giveButtonClick(email, name, image) {
         const {
@@ -122,7 +126,7 @@ class FriendsList extends React.Component {
                                         </Header.Content>
                                     </Header>
                                     <div>
-                                        <Link className="lnkChange" route="/user/profile/friends/findfriends">
+                                        <Link className="lnkChange" route="/user/profile/friends/findFriends">
                                             <Button className="success-btn-rounded-def">Find friends</Button>
                                         </Link>
                                     </div>
@@ -182,7 +186,7 @@ class FriendsList extends React.Component {
                                         <Card.Content>
                                             <Card.Header>Find friends to give to </Card.Header>
                                             <Card.Description>
-                                                <Link className="lnkChange" route="/user/profile/friends/findfriends" passHref>
+                                                <Link className="lnkChange" route="/user/profile/friends/findFriends" passHref>
                                                     <Button className="give-frnds-btn">Find friends</Button>
                                                 </Link>
                                             </Card.Description>
@@ -216,7 +220,7 @@ class FriendsList extends React.Component {
         if (friendsData && friendsData.count > 6) {
             viewAllDiv = (
                 <div className="text-right">
-                    <Link className="lnkChange" route="/user/profile/friends/myfriends">
+                    <Link className="lnkChange" route="/user/profile/friends/myFriends">
                         <a className="viewAll">
                             View all
                             {/* (
