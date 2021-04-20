@@ -103,17 +103,16 @@ const validateUserRegistrationForm = (field, untrimmedValue, validity) => {
     return validity;
 };
 const validateGivingGoal = (givingGoal, validity) => {
-    validity.doesAmountExist = !isInputBlank(givingGoal);
+    //validity.doesAmountExist = !isInputBlank(givingGoal);
     validity.isAmountLessThanOneBillion = (givingGoal > 0)
         ? isAmountLessThanOneBillionDollars(givingGoal) : true;
-    validity.isAmountMoreThanOneDollor = isAmountMoreOrEqualToOneDollor(givingGoal);
-    validity.isValidPositiveNumber = isValidPositiveNumber(givingGoal);
-
+    //validity.isAmountMoreThanOneDollor = isAmountMoreOrEqualToOneDollor(givingGoal);
+    validity.isValidPositiveNumber = (givingGoal >= 0 && !isNaN(givingGoal));
     validity.isValidGiveAmount = _.every(
         _.pick(validity, [
-            'doesAmountExist',
+            //'doesAmountExist',
             'isAmountLessThanOneBillion',
-            'isAmountMoreThanOneDollor',
+            //'isAmountMoreThanOneDollor',
             'isValidPositiveNumber',
         ]),
     );

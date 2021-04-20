@@ -107,7 +107,7 @@ class Favorites extends React.Component {
                 },
                 type: 'DISABLE_FAVORITES_BUTTON',
             });
-            removeFavorite(dispatch, removeId, currentUser.id, data, type, dataCount, this.state.pageSize, currentPageNumber, pageCount);
+            removeFavorite(dispatch, removeId, currentUser.id, data, type, dataCount, this.state.pageSize, currentPageNumber, pageCount, false);
         }
     }
 
