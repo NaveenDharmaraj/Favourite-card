@@ -96,6 +96,11 @@ const getMainNavItems = (accountType, slug) => {
             name: 'Manage Employees',
             isExternal: true,
         });
+        menuLinks.push({
+            location: `/companies/${slug}/tax-receipts`,
+            name: 'Tax Receipts',
+            isExternal: true,
+        });
     } else if (accountType === 'charity') {
         menuLinks.push({
             location: `/admin/beneficiaries/${slug}/eft`,
@@ -119,13 +124,8 @@ const getMainNavItems = (accountType, slug) => {
             isExternal: false,
         });
         menuLinks.push({
-            location: '/user/favourites',
-            name: 'Favourites',
-            isExternal: false,
-        });
-        menuLinks.push({
             location: '/user/recurring-donations',
-            name: 'Tools',
+            name: 'Manage deposits and gifts',
             isExternal: false,
         });
         menuLinks.push({
@@ -263,6 +263,36 @@ const validateDate = (dateStr = '') => {
 const dateFormatConverter = (date, typeOfSeprator = '/') => (
     `${date.getFullYear()}${typeOfSeprator}${date.getMonth() + 1}${typeOfSeprator}${date.getDate()}`
 );
+
+/**
+ * Finding a particular item from a list of objects based on the id
+ * @param {array} options Array of objects
+ * @param {string | number} expectedId The id that needs to be matched and returned.
+ * @return {object} The matched object from the array.
+ */
+const findItemBasedOnId = (options, expectedId) => options.find(({ id }) => id == expectedId);
+
+const randHex = (len) => {
+    const maxlen = 8;
+    const min = Math.pow(16, Math.min(len, maxlen) - 1);
+    const max = Math.pow(16, Math.min(len, maxlen)) - 1;
+    const n = Math.floor(Math.random() * (max - min + 1)) + min;
+    let r = n.toString(16);
+
+    while (r.length < len) {
+        r += randHex(len - maxlen);
+    }
+    return r;
+};
+
+const createCustomAmzTraceId = () => {
+    // eslint-disable-next-line no-new
+    new Date();
+
+    return `${AMZ_TRACE_ID_VERSION}-${(Date.now()).toString(16)}-${randHex(24)}`;
+};
+
+const createReqId = () => `${randHex(8)}-${randHex(4)}-${randHex(4)}-${randHex(4)}-${randHex(11)}`;
 
 /**
  * Finding a particular item from a list of objects based on the id

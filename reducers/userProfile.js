@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import _findIndex from 'lodash/findIndex';
+import _isEmpty from 'lodash/isEmpty';
 
 const userProfile = (state = {}, action) => {
     let newState = {
@@ -14,28 +15,67 @@ const userProfile = (state = {}, action) => {
         case 'USER_PROFILE_BASIC_FRIEND':
             newState = {
                 ...state,
-                userFriendProfileData: Object.assign({}, action.payload),
+                userFriendProfileData: Object.assign({}, action.payload.data),
             };
             break;
         case 'USER_PROFILE_CHARITABLE_INTERESTS':
             newState = {
                 ...state,
-                userProfileCharitableData: Object.assign({}, action.payload),
+                userProfileCausesData: Object.assign({}, action.payload),
             };
             break;
         case 'USER_PROFILE_MEMBER_GROUP':
+            if (!_isEmpty(state.userProfileMemberGroupData)) {
+                action.payload.data = [...state.userProfileMemberGroupData.data, ...action.payload.data];
+                return newState = {
+                    ...state,
+                    userProfileMemberGroupData: Object.assign({}, action.payload),
+                };
+            }
+            newState = {
+                ...state,
+                userProfileMemberGroupData: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_MEMBER_GROUP_CLEAR_DATA':
             newState = {
                 ...state,
                 userProfileMemberGroupData: Object.assign({}, action.payload),
             };
             break;
         case 'USER_PROFILE_ADMIN_GROUP':
+            if (!_isEmpty(state.userProfileAdminGroupData) && action.payload.seeMoreLoader) {
+                action.payload.data = [...state.userProfileAdminGroupData.data, ...action.payload.data];
+                return newState = {
+                    ...state,
+                    userProfileAdminGroupData: Object.assign({}, action.payload),
+                };
+            }
+            newState = {
+                ...state,
+                userProfileAdminGroupData: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_ADMIN_GROUP_CLEAR_DATA':
             newState = {
                 ...state,
                 userProfileAdminGroupData: Object.assign({}, action.payload),
             };
             break;
         case 'USER_PROFILE_FAVOURITES':
+            if (!_isEmpty(state.userProfileFavouritesData) && action.payload.seeMoreLoader) {
+                action.payload.data = [...state.userProfileFavouritesData.data, ...action.payload.data];
+                return newState = {
+                    ...state,
+                    userProfileFavouritesData: Object.assign({}, action.payload),
+                };
+            }
+            newState = {
+                ...state,
+                userProfileFavouritesData: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_FAVOURITES_CLEAR_DATA':
             newState = {
                 ...state,
                 userProfileFavouritesData: Object.assign({}, action.payload),
@@ -77,10 +117,22 @@ const userProfile = (state = {}, action) => {
                 userMyFriendsList: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_MY_FRIENDS_LOADER':
+            newState = {
+                ...state,
+                userMyFriendsListLoader: action.payload,
+            };
+            break;
         case 'USER_PROFILE_FIND_FRIENDS':
             newState = {
                 ...state,
                 userFindFriendsList: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_FIND_FRIENDS_LOADER':
+            newState = {
+                ...state,
+                userProfileFindFriendsLoader: action.payload.userProfileFindFriendsLoader,
             };
             break;
         case 'USER_PROFILE_FIND_TAGS':
@@ -124,9 +176,15 @@ const userProfile = (state = {}, action) => {
             };
             break;
         case 'USER_PROFILE_FRIEND_REQUEST':
+            const friendIndex = _findIndex(state.userFindFriendsList.data, (data) => data.attributes.user_id === action.payload.userId);
+            const friendsArray = state.userFindFriendsList.data;
+            friendsArray[friendIndex].attributes.friend_status = action.payload.status;
             newState = {
                 ...state,
-                userAddFriendRequestData: Object.assign({}, action.payload),
+                userFindFriendsList: {
+                    ...state.userFindFriendsList,
+                    data: friendsArray,
+                },
             };
             break;
         case 'USER_PROFILE_FRIEND_ACCEPT':
@@ -181,6 +239,24 @@ const userProfile = (state = {}, action) => {
             newState = {
                 ...state,
                 userProfileCharitableInterestsLoadStatus: action.payload.userProfileCharitableInterestsLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_MEMBER_GROUP_SEE_MORE_LOADER':
+            newState = {
+                ...state,
+                userProfileMemberGroupsSeeMoreLoader: action.payload.userProfileMemberGroupsSeeMoreLoader,
+            };
+            break;
+        case 'USER_PROFILE_USER_ADMIN_GROUP_SEE_MORE_LOADER':
+            newState = {
+                ...state,
+                userProfileUserAdminGroupSeeMoreLoader: action.payload.userProfileUserAdminGroupSeeMoreLoader,
+            };
+            break;
+        case 'USER_PROFILE_USER_FAVOURITES_SEE_MORE_LOADER':
+            newState = {
+                ...state,
+                userProfileUserFavouritesSeeMoreLoader: action.payload.userProfileUserFavouritesSeeMoreLoader,
             };
             break;
         case 'USER_PROFILE_RESET_TAG_LIST':
@@ -238,6 +314,41 @@ const userProfile = (state = {}, action) => {
             newState = {
                 ...state,
                 activeMonthlyDonations: action.payload.activeMonthlyDonations,
+            };
+            break;
+        case 'USER_PROFILE_PREVIEW_MODE':
+            newState = {
+                ...state,
+                previewMode: action.payload.previewMode,
+            };
+            break;
+        case 'USER_PROFILE_FRIEND_TYPE_AHEAD_SEARCH':
+            newState = {
+                ...state,
+                friendTypeAheadData: action.payload.data,
+            };
+            break;
+        case 'USER_PROFILE_RESET_DATA':
+            newState = {
+                ...state,
+                userFriendProfileData: Object.assign({}, action.payload),
+                userFriendsInvitationsList: Object.assign({}, action.payload),
+                userMyFriendsList: Object.assign({}, action.payload),
+                userProfileAdminGroupData: Object.assign({}, action.payload),
+                userProfileCausesData: Object.assign({}, action.payload),
+                userProfileProfilelink: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_FIND_DROPDOWN_FRIENDS':
+            const selectedFriendIndex = _findIndex(state.userFindFriendsList.data, (data) => data.attributes.user_id === action.payload.userId);
+            const selectedFriendsArray = state.userFindFriendsList.data;
+            selectedFriendsArray[selectedFriendIndex].attributes.friend_status = action.payload.status;
+            newState = {
+                ...state,
+                userFindFriendsList: {
+                    ...state.userFindFriendsList,
+                    data: selectedFriendsArray,
+                },
             };
             break;
         case 'USER_CHARITY_INFO_TO_SHARE_OPTIONS':
