@@ -236,7 +236,8 @@ class UserBasicProfile extends React.Component {
             data.select();
             document.execCommand('copy');
             data.type = 'hidden';
-            e.target.focus();
+            document.activeElement.blur();
+            //e.target.focus();
             const statusMessageProps = {
                 message: 'Link copied to clipboard',
                 type: 'success',

@@ -82,11 +82,7 @@ class FriendListCard extends React.Component {
             },
             dispatch,
         } = this.props;
-        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, type, rejectType)).then(() => {
-            this.setState({
-                updatedStatus: '',
-            });
-        });
+        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, type, rejectType));
     }
 
     handleAddFriendClick(userEmail, userId) {
