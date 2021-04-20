@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, Fragment } from 'react';
+import React, { useState, useRef, Fragment, useEffect } from 'react';
 import {
     Container,
     Header,
@@ -12,28 +12,37 @@ import {
     PropTypes,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
+import _cloneDeep from 'lodash/cloneDeep';
 import dynamic from 'next/dynamic';
 
-import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, getBase64, intializeCreateGivingGroup, youTubeVimeoValidator } from '../../../helpers/createGrouputils';
+import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, intializeCreateGivingGroup, youTubeVimeoValidator } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import { withTranslation } from '../../../i18n';
 import '../../../static/less/create_manage_group.less';
 import groupImg from '../../../static/images/no-data-avatar-giving-group-profile.png';
-import { updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import { editGivingGroupApiCall, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import { useDispatch } from 'react-redux';
+import CreateGivingGroupHeader from '../CreateGivingGroupHeader';
+import { getBase64 } from '../../../helpers/chat/utils';
 const ImageGallery = dynamic(() => import('../../../components/shared/ImageGallery'), {
     ssr: false
 });
 
-const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch, t }) => {
+let loadOnce = true;
+const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivingGroupStoreFlowObject, fromCreate, groupId, t }) => {
     const currentActiveStepCompleted = [1, 2, 3];
     const formatMessage = t;
+    const editGivingGroupStoreFlowObjectClone = _cloneDeep(editGivingGroupStoreFlowObject);
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
     const initalizeObject = _isEmpty(createGivingGroupStoreFlowObject) ? intializeCreateGivingGroup : createGivingGroupStoreFlowObject;
-    const [createGivingGroupObject, setCreateGivingGroupObject] = useState(initalizeObject);
+    const givingGroupObject = fromCreate ? initalizeObject : editGivingGroupStoreFlowObjectClone;
+
     const uploadLogoImageRef = useRef(null);
     const uploadGalleryImageRef = useRef(null);
 
-    const [validateVideoUrl, setValidateVideoUrl] = useState(false);
+    const dispatch = useDispatch();
+
+    const [createGivingGroupObject, setCreateGivingGroupObject] = useState(givingGroupObject);
     const {
         attributes: {
             logo,
@@ -41,24 +50,31 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
         },
         galleryImages,
     } = createGivingGroupObject;
-    const [videoUrlState, setVidoeUrlState] = useState(videoUrl);
-    useEffect(() => {
-        return () => {
-            !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
-                dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
-        }
-    }, []);
+
+    const [videoUrlState, setVideoUrlState] = useState(videoUrl);
+    const [validateVideoUrl, setValidateVideoUrl] = useState(false);
     const handleOnChange = (event, data) => {
         let {
             name,
             value,
         } = data || event.target;
         if (name === 'videoUrl') {
-            setVidoeUrlState(value);
+            setVideoUrlState(value);
             setValidateVideoUrl(false);
         }
     };
-
+    useEffect(() => {
+        if (loadOnce) {
+            window.scrollTo(0, 0);
+            loadOnce = false;
+        }
+        if (!fromCreate && editGivingGroupStoreFlowObject) {
+            setCreateGivingGroupObject({
+                ...editGivingGroupStoreFlowObjectClone,
+            });
+            setVideoUrlState(editGivingGroupStoreFlowObjectClone.attributes.videoUrl);
+        }
+    }, [editGivingGroupStoreFlowObject])
     /**
     * handle saving of video link to createGivingGroupObject
     * @param {stirng} mode mode tells whether adding or removing of video.
@@ -69,33 +85,42 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
             setValidateVideoUrl(true);
             return;
         };
-        setCreateGivingGroupObject({
+        fromCreate && setCreateGivingGroupObject({
             ...createGivingGroupObject,
             attributes: {
                 ...createGivingGroupObject.attributes,
                 'videoUrl': mode === 'add' ? videoUrlState : ''
             },
         });
+        if (!fromCreate) {
+            const editObject = {
+                'attributes': {
+                    'videoUrl': mode === 'add' ? videoUrlState : ''
+                },
+            }
+            dispatch(editGivingGroupApiCall(editObject, groupId));
+        }
     }
-    const handleRemoveImage = (event, type = '', id = '') => {
+    const handleRemoveImage = (event, type = '', url = '') => {
         event.stopPropagation();
         if (type === 'gallery') {
-            let index;
             galleryImages.find((item, i) => {
-                if (item.id === id) {
-                    index = i;
+                if (item === url) {
+                    galleryImages.splice(i, 1)
                 }
             });
-            galleryImages.splice(index, 1);
         }
-        setCreateGivingGroupObject({
+        fromCreate && setCreateGivingGroupObject({
             ...createGivingGroupObject,
             attributes: {
                 ...createGivingGroupObject.attributes,
-                ...(type == 'logo') && { 'logo': '' },
+                ...(type === 'logo') && { 'logo': '' },
             },
-            ...(type == 'gallery') && { galleryImages: [...galleryImages] },
+            ...(type === 'gallery') && { galleryImages: [...galleryImages] },
         });
+        if (!fromCreate && type === 'gallery') {
+            dispatch(editGivingGroupApiCall({ attributes: {}, galleryImages: [...galleryImages] }, groupId));
+        }
     }
     const handleUpload = async (event, type = '') => {
         try {
@@ -110,32 +135,33 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
                     });
                 });
             } else if (type === 'gallery') {
-                for (let i = 0; i < event.target.files.length; i++) {
-                    getBase64(event.target.files[i], (result) => {
-                        if (galleryImages.length < 10) {
-                            const id = `${Math.floor(Math.random() * 100)}` + `${galleryImages.length}`;
-                            const galleryImageObject = {
-                                id,
-                                src: result,
-                                thumbnail: result,
-                                nano: result,
-                                thumbnailWidth: 80,
-                                thumbnailHeight: 80,
-                                customOverlay: <Icon
-                                    className='remove'
-                                    onClick={(event) => handleRemoveImage(event, 'gallery', id)}
-                                />,
+                try {
+                    const length = event.target.files.length;
+                    for (let i = 0; i < length; i++) {
+                        getBase64(event.target.files[i], (result) => {
+                            if (galleryImages.length < 10) {
+                                galleryImages.push(result);
                             }
-                            galleryImages.push(galleryImageObject);
-                            setCreateGivingGroupObject({
-                                ...createGivingGroupObject,
-                                attributes: {
-                                    ...createGivingGroupObject.attributes,
-                                },
-                                galleryImages: [...galleryImages],
-                            });
-                        }
-                    });
+                            //this condition make sure that only once the api call happens
+                            if (i === length - 1) {
+                                if (fromCreate) {
+                                    setCreateGivingGroupObject({
+                                        ...createGivingGroupObject,
+                                        attributes: {
+                                            ...createGivingGroupObject.attributes,
+                                        },
+                                        galleryImages: [...galleryImages],
+                                    })
+                                } else {
+                                    dispatch(editGivingGroupApiCall({ attributes: {}, galleryImages: [...galleryImages] }, groupId));
+                                }
+                            }
+                        });
+                    }
+
+                }
+                catch (err) {
+
                 }
             }
         }
@@ -153,51 +179,71 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
         Router.pushRoute(CreateGivingGroupFlowSteps.stepFour);
     }
     const profilePicture = _isEmpty(logo) ? groupImg : logo;
-
+    const newGalleryImages = [];
+    galleryImages && galleryImages.map((url, i) => {
+        if (i < 10) {
+            const galleryImageObject = {
+                src: url,
+                thumbnail: url,
+                nano: url,
+                thumbnailWidth: 80,
+                thumbnailHeight: 80,
+                customOverlay: <Icon
+                    className='remove'
+                    onClick={(event) => handleRemoveImage(event, 'gallery', url)}
+                />,
+            }
+            newGalleryImages.push(galleryImageObject);
+        }
+    });
     return (
         <Container>
-            <div className='createNewGroupWrap'>
-                <div className='createNewGrpheader'>
-                    <Header as='h2'>{formatMessage('createGivingGroupHeader')}</Header>
-                    {generateBreadCrum(breakCrumArray, currentActiveStepCompleted)}
-                </div>
+            <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
+                {fromCreate && <CreateGivingGroupHeader
+                    breakCrumArray={breakCrumArray}
+                    currentActiveStepCompleted={currentActiveStepCompleted}
+                    header={formatMessage('createGivingGroupHeader')}
+                />
+                }
                 <div className='mainContent'>
                     <div className='pics-video'>
                         <Header className='titleHeader'>{formatMessage('createGivingGroupPicsVideo.header')}</Header>
                         <Form>
-                            <div className='createnewSec'>
-                                <Header className='sectionHeader'>{formatMessage('createGivingGroupPicsVideo.pictureHeader')}
-                                    <span className='optional'>&nbsp;{formatMessage('optional')}</span>
-                                </Header>
-                                <p>{formatMessage('createGivingGroupPicsVideo.pictureDescription')}</p>
-                                <div className='groupPrflWrap'>
-                                    <div className='grpPrflimgWrap'>
-                                        {logo && <Icon
-                                            className='remove'
-                                            onClick={(event) => { handleRemoveImage(event, 'logo', '') }}
-                                        />
-                                        }
-                                        <div className='groupPrflImage'>
-                                            <Image src={profilePicture} />
+                            {fromCreate &&
+                                <div className='createnewSec'>
+                                    <Header className='sectionHeader'>{formatMessage('createGivingGroupPicsVideo.pictureHeader')}
+                                        <span className='optional'>&nbsp;{formatMessage('optional')}</span>
+                                    </Header>
+                                    <p>{formatMessage('createGivingGroupPicsVideo.pictureDescription')}</p>
+                                    <div className='groupPrflWrap'>
+                                        <div className='grpPrflimgWrap'>
+                                            {logo && <Icon
+                                                className='remove'
+                                                onClick={(event) => { handleRemoveImage(event, 'logo', '') }}
+                                            />
+                                            }
+                                            <div className='groupPrflImage'>
+                                                <Image src={profilePicture} />
+                                            </div>
                                         </div>
+                                        <input
+                                            id="myInput"
+                                            accept="image/png, image/jpeg, image/jpg"
+                                            type="file"
+                                            ref={uploadLogoImageRef}
+                                            style={{ display: 'none' }}
+                                            onChange={(event) => handleUpload(event, 'logo')}
+                                        />
+                                        <Button
+                                            className='success-btn-rounded-def uploadBtn'
+                                            onClick={() => uploadLogoImageRef.current.click()}
+                                        >
+                                            <Icon className='upload' />
+                                            {formatMessage('createGivingGroupPicsVideo.uploadPictureButton')}
+                                        </Button>
                                     </div>
-                                    <input
-                                        id="myInput"
-                                        accept="image/png, image/jpeg, image/jpg"
-                                        type="file"
-                                        ref={uploadLogoImageRef}
-                                        style={{ display: 'none' }}
-                                        onChange={(event) => handleUpload(event, 'logo')}
-                                    />
-                                    <Button
-                                        className='success-btn-rounded-def uploadBtn'
-                                        onClick={() => uploadLogoImageRef.current.click()}
-                                    >
-                                        <Icon className='upload' />
-                                        {formatMessage('createGivingGroupPicsVideo.uploadPictureButton')}
-                                    </Button>
                                 </div>
-                            </div>
+                            }
                             <div className='createnewSec'>
                                 <Header className='sectionHeader'>{formatMessage('createGivingGroupPicsVideo.uploadVideo')}
                                     <span className='optional'>&nbsp;{formatMessage('optional')}</span>
@@ -209,7 +255,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
                                         <Form.Field
                                             control={Input}
                                             onChange={handleOnChange}
-                                            value={videoUrlState}
+                                            value={videoUrlState || ''}
                                             name='videoUrl'
                                             error={validateVideoUrl}
                                         />
@@ -221,7 +267,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
                                         </Button>
                                     </div>
                                 </div>
-                                {(videoUrl !== '' && videoUrl === videoUrlState && !validateVideoUrl) &&
+                                {(!_isEmpty(videoUrl) && videoUrl === videoUrlState && !validateVideoUrl) &&
                                     <div className='videoWrap'>
                                         <Icon
                                             className='remove'
@@ -259,41 +305,44 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
                                 <Button
                                     className='success-btn-rounded-def uploadBtn'
                                     onClick={() => uploadGalleryImageRef.current.click()}
+                                    disabled={newGalleryImages.length > 10}
                                 >
                                     <Icon className='upload' />
                                     {formatMessage('createGivingGroupPicsVideo.photoGalleryUploadButton')}
                                 </Button>
-                                {galleryImages.length > 0 && 
+                                {(newGalleryImages && newGalleryImages.length > 0 && newGalleryImages[0].src) &&
                                     <Fragment>
                                         <ImageGallery
-                                            imagesArray={galleryImages}
+                                            imagesArray={newGalleryImages}
                                             enableImageSelection={false}
                                             rowHeight={80}
-                                            renderSingleImage = {false}
+                                            renderSingleImage={false}
                                         />
-                                        <p> You can still add {10 - galleryImages.length} more photos.</p>
+                                        <p> You can still add {10 - newGalleryImages.length} more photos.</p>
                                     </Fragment>
                                 }
                             </div>
                         </Form>
-                        <div className='buttonsWrap'>
-                            <Button
-                                className='blue-bordr-btn-round-def'
-                                onClick={() => {
-                                    dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
-                                    Router.pushRoute(CreateGivingGroupFlowSteps.stepTwo)
-                                }}
-                            >
-                                {formatMessage('backButton')}
-                            </Button>
-                            <Button
-                                className='blue-btn-rounded-def'
-                                disabled={validateVideoUrl}
-                                onClick={handlePicsVideoOnContinue}
-                            >
-                                {formatMessage('continueButton')}
-                            </Button>
-                        </div>
+                        {fromCreate &&
+                            <div className='buttonsWrap'>
+                                <Button
+                                    className='blue-bordr-btn-round-def'
+                                    onClick={() => {
+                                        dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
+                                        Router.pushRoute(CreateGivingGroupFlowSteps.stepTwo)
+                                    }}
+                                >
+                                    {formatMessage('backButton')}
+                                </Button>
+                                <Button
+                                    className='blue-btn-rounded-def'
+                                    disabled={validateVideoUrl}
+                                    onClick={handlePicsVideoOnContinue}
+                                >
+                                    {formatMessage('continueButton')}
+                                </Button>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -304,6 +353,10 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, dispatch
 CreateGivingGroupPicsVideo.defaultProps = {
     createGivingGroupStoreFlowObject: intializeCreateGivingGroup,
     dispatch: () => { },
+    fromCreate: true,
+    editGivingGroupStoreFlowObject: intializeCreateGivingGroup,
+    groupId: ''
+
 };
 
 CreateGivingGroupPicsVideo.prototype = {
@@ -322,10 +375,11 @@ CreateGivingGroupPicsVideo.prototype = {
             logo: PropTypes.string,
             videoUrl: PropTypes.string,
         }),
-        groupDescriptions: PropTypes.array,
-        beneficiaryIds: PropTypes.array,
+        groupPurposeDescriptions: PropTypes.array,
+        beneficiaryItems: PropTypes.array,
         galleryImages: PropTypes.array,
     }),
+    fromCreate: PropTypes.bool,
     dispatch: PropTypes.func
 };
 export default withTranslation('givingGroup')(CreateGivingGroupPicsVideo);

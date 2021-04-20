@@ -1,6 +1,17 @@
 import { Breadcrumb } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import dynamic from 'next/dynamic';
+
 import { validateGivingGoal } from './users/utils';
+const CreateGivingGroupBasic = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupBasic'));
+const CreateGivingGroupAbout = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupAbout'));
+const CreateGivingGroupPicsVideo = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupPicsVideo'));
+const CreateGivingGroupGivingGoal = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupGivingGoal'));
+const Manage = dynamic(() => import('../components/ManageGivingGroup/Manage'));
+const Invite = dynamic(() => import('../components/ManageGivingGroup/Invite'));
+const EmailGroupMembers = dynamic(() => import('../components/ManageGivingGroup/EmailGroupMembers'));
+const DownloadTransaction = dynamic(() => import('../components/ManageGivingGroup/DownloadTransaction'));
+const AddDonationWidget = dynamic(() => import('../components/ManageGivingGroup/AddDonationWidget'));
 
 // intializing breadCrum
 export const createGivingGroupBreadCrum = (formatMessage) => {
@@ -32,7 +43,7 @@ export const CreateGivingGroupFlowSteps = {
 export const initializeAddSectionModalObject = {
     description: '',
     id: '',
-    name: '',
+    purpose: '',
 }
 // initialinzing the flow Object for create giving group
 export const intializeCreateGivingGroup = {
@@ -45,13 +56,12 @@ export const intializeCreateGivingGroup = {
         province: "",
         short: "",
         fundraisingGoal: "",
-        fundraisingDate: new Date(new Date().setDate(new Date().getDate() + 1)),
-        fundraisingCreated: new Date(),
+        fundraisingDate: null,
+        fundraisingCreated: null,
         logo: "",
         videoUrl: ""
     },
-    groupDescriptions: [],
-    beneficiaryIds: [],
+    groupPurposeDescriptions: [],
     beneficiaryItems: [],
     galleryImages: []
 };
@@ -95,6 +105,7 @@ export const generateBreadCrum = (breakCrumArray = [], currentActiveStepArray = 
 export const ValidateCreateGivingGroup = (validity, name, value) => {
     switch (name) {
         case 'name':
+        case 'purpose':
             validity.doesNameExist = !_isEmpty(value) ? true : false
             break
         case 'description':
@@ -113,19 +124,7 @@ export const ValidateCreateGivingGroup = (validity, name, value) => {
 
 export const getStore = (reduxStore, reducerName = '') => reduxStore.getState() && reduxStore.getState()[reducerName];
 
-export const getBase64 = (file, cb) => {
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function () {
-        cb(reader.result)
-    };
-    reader.onerror = function (error) {
-        // console.log('Error: ', error);
-    };
-};
-
-export const youTubeVimeoValidator = (url) => /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/.test(url);
-
+export const youTubeVimeoValidator = (url) => /^(http(s)?:\/\/)?((w){3}.)?(vimeo\.com|youtu\.be|www\.youtube\.com)?\/.+/.test(url);
 /**
  * convert a data to a string based on a seprator
  * @param {date} date date that need to be formatted
@@ -133,5 +132,113 @@ export const youTubeVimeoValidator = (url) => /^(http(s)?:\/\/)?((w){3}.)?youtu(
  * @returns {string} date after appending seperators
  */
 export const dateFormatConverter = (date, typeOfSeprator = '/') => (
-    `${date.getFullYear()}${typeOfSeprator}${date.getMonth() + 1}${typeOfSeprator}${date.getDate()}`
+    date ? `${date.getFullYear()}${typeOfSeprator}${date.getMonth() + 1}${typeOfSeprator}${date.getDate()}` : null
 );
+export const manageGivingGroupAccordianMenuOptions = {
+    basic: {
+        key: 'basic',
+        route: 'basic',
+        text: 'Basic Settings',
+        value: 0,
+        component: <CreateGivingGroupBasic
+            showBasic={true}
+            showButton={true}
+            showMonthly={false}
+        />
+    },
+    about: {
+        key: 'about',
+        route: 'about',
+        text: 'About the group',
+        value: 1,
+        component: <CreateGivingGroupAbout />
+    },
+    picsvideos: {
+        key: 'picsvideos',
+        route: 'picsvideos',
+        text: 'Pics & video',
+        value: 2,
+        component: <CreateGivingGroupPicsVideo />
+    },
+    givinggoals: {
+        key: 'givinggoals',
+        route: 'givinggoals',
+        text: 'Giving goal',
+        value: 3,
+        component: <CreateGivingGroupGivingGoal showCharity={false} showGivingGoal={true} />
+    },
+    monthlygifts: {
+        key: 'monthlygifts',
+        route: 'monthlygifts',
+        text: 'Monthly gifts',
+        value: 4,
+        component: <CreateGivingGroupBasic
+            showBasic={false}
+            showButton={false}
+            showMonthly={true}
+        />
+    },
+    charitysupport: {
+        key: 'charitysupport',
+        route: 'charitysupport',
+        text: 'Charities to support',
+        value: 5,
+        component: <CreateGivingGroupGivingGoal showCharity={true} showGivingGoal={false} />
+    },
+};
+export const manageGivingGroupAccordianOptions = {
+    edit: {
+        key: 'edit',
+        route: 'edit',
+        text: 'Edit',
+        value: 0,
+        component: <CreateGivingGroupBasic
+            showBasic={true}
+            showButton={true}
+            showMonthly={false}
+        />
+    },
+    members: {
+        key: 'members',
+        route: 'members',
+        text: 'Members',
+        value: 1,
+        componentValue: 7,
+        component: <Manage />
+    },
+    manage: {
+        key: 'manage',
+        route: 'manage',
+        text: 'Manage',
+        value: 2,
+        component: <Manage />
+    },
+    invites: {
+        key: 'invites',
+        route: 'invites',
+        text: 'Invite',
+        value: 3,
+        component: <Invite />
+    },
+    ['email_members']: {
+        key: 'email_members',
+        route: 'email_members',
+        text: 'Email members',
+        value: 4,
+        component: <EmailGroupMembers />
+    },
+    downloaddoantion: {
+        key: 'downloaddoantion',
+        route: 'downloaddoantion',
+        text: 'Download transaction data',
+        value: 5,
+        component: <DownloadTransaction />
+    },
+    widget: {
+        key: 'widget',
+        route: 'widget',
+        text: 'Add donation button',
+        value: 6,
+        component: <AddDonationWidget />
+    },
+};

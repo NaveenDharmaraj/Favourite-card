@@ -3,7 +3,7 @@ import _isEmpty from 'lodash/isEmpty';
 
 import searchApi from '../services/searchApi';
 import coreApi from '../services/coreApi';
-import { dateFormatConverter, intializeCreateGivingGroup } from '../helpers/createGrouputils';
+import { dateFormatConverter } from '../helpers/createGrouputils';
 
 export const actionTypes = {
     GET_PROVINCE_LIST: 'GET_PROVINCE_LIST',
@@ -13,8 +13,13 @@ export const actionTypes = {
     GET_UNIQUE_CITIES: 'GET_UNIQUE_CITIES',
     GET_UNIQUE_CITIES_LOADER: 'GET_UNIQUE_CITIES_LOADER',
     UPDATE_CREATE_GIVING_GROUP_OBJECT: 'UPDATE_CREATE_GIVING_GROUP_OBJECT',
+    UPDATE_EDIT_GIVING_GROUP_OBJECT: 'UPDATE_EDIT_GIVING_GROUP_OBJECT'
 };
-
+export const upadateEditGivingGroupObj = (editGivingGroupObject = {}) => dispatch =>
+    dispatch({
+        type: actionTypes.UPDATE_EDIT_GIVING_GROUP_OBJECT,
+        payload: editGivingGroupObject,
+    });
 export const updateCreateGivingGroupObj = (createGivingGroupObject = {}) => dispatch =>
     dispatch({
         type: actionTypes.UPDATE_CREATE_GIVING_GROUP_OBJECT,
@@ -87,7 +92,45 @@ export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => as
         });
     return getUniqueCitiesPromise;
 };
-
+export const getProvincesList = (pageNumber = 1, pageSize = 50) => dispatch => {
+    dispatch({
+        type: actionTypes.GET_PROVINCES_LIST_LOADER,
+        payload: true
+    });
+    const params = {
+        'page[number]': pageNumber,
+        'page[size]': pageSize,
+    };
+    const getProvincesListPromise = searchApi.post('/province', {
+        'text': '',
+    }, { params });
+    getProvincesListPromise
+        .then(({ data }) => {
+            const provinceOption = data.map(({ attributes }) => {
+                return {
+                    key: attributes.province_name + attributes.province_code,
+                    text: attributes.province_name,
+                    value: attributes.province_code,
+                }
+            });
+            dispatch({
+                type: actionTypes.GET_PROVINCE_LIST,
+                payload: provinceOption,
+            });
+            dispatch({
+                type: actionTypes.GET_PROVINCES_LIST_LOADER,
+                payload: false
+            });
+        })
+        .catch(() => {
+            // handle error
+            dispatch({
+                type: actionTypes.GET_PROVINCES_LIST_LOADER,
+                payload: false
+            });
+        });
+    return getProvincesListPromise;
+};
 export const getCharityBasedOnSearchQuery = (query = '', pageNumber = '', pageSize = '') => dispatch => {
     dispatch({
         type: actionTypes.GET_CHARITY_BASED_ON_SERACH_QUERY_LOADER,
@@ -135,20 +178,12 @@ export const createGivingGroupApiCall = (createGivingGroupObj) => dispatch => {
             fundraisingDate
         },
         galleryImages,
-        groupDescriptions,
     } = cloneCreateGivingGroupObject;
     if (fundraisingDate != '') {
         cloneCreateGivingGroupObject.attributes.fundraisingDate = dateFormatConverter(fundraisingDate, '/');
     };
     if (fundraisingCreated != '') {
         cloneCreateGivingGroupObject.attributes.fundraisingCreated = dateFormatConverter(fundraisingCreated, '/')
-    };
-    let newGroupDescriptions = [];
-    if (!_isEmpty(groupDescriptions) && groupDescriptions.length > 0) {
-        groupDescriptions.map(({ name, description }) => {
-            newGroupDescriptions.push({ [name]: description })
-        });
-        cloneCreateGivingGroupObject.groupPurposeDescriptions = [...newGroupDescriptions];
     };
     let newGalleryImage = [];
     if (galleryImages && galleryImages.length > 0) {
@@ -157,48 +192,73 @@ export const createGivingGroupApiCall = (createGivingGroupObj) => dispatch => {
         })
     };
     cloneCreateGivingGroupObject.galleryImages = [...newGalleryImage];
-    delete cloneCreateGivingGroupObject.groupDescriptions;
-    delete cloneCreateGivingGroupObject.beneficiaryItems;
     const bodyData = cloneCreateGivingGroupObject;
     return coreApi.post('/groups', { data: bodyData });
 };
 
-export const getProvincesList = (pageNumber = 1, pageSize = 50) => dispatch => {
-    dispatch({
-        type: actionTypes.GET_PROVINCES_LIST_LOADER,
-        payload: true
-    });
-    const params = {
-        'page[number]': pageNumber,
-        'page[size]': pageSize,
+
+export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => dispatch => {
+    const editGroupObject = {
+        type: 'groups',
+        id: groupId,
+        ...editGivingGroupObj
     };
-    const getProvincesListPromise = searchApi.post('/province', {
-        'text': '',
-    }, { params });
-    getProvincesListPromise
-        .then(({ data }) => {
-            const provinceOption = data.map(({ attributes }) => {
-                return {
-                    key: attributes.province_name + attributes.province_code,
-                    text: attributes.province_name,
-                    value: attributes.province_code,
-                }
-            });
-            dispatch({
-                type: actionTypes.GET_PROVINCE_LIST,
-                payload: provinceOption,
-            });
-            dispatch({
-                type: actionTypes.GET_PROVINCES_LIST_LOADER,
-                payload: false
-            });
+    const EditGivingGroupApiCallPromise = coreApi.patch(`/groups/${groupId}`, { data: editGroupObject });
+    EditGivingGroupApiCallPromise
+        .then((result) => {
+            delete result.data.links;
+            delete result.data.relationships;
+            const editGivingGroupObjResponse = result.data;
+            let galleryImages = [];
+            if (editGivingGroupObjResponse.attributes.galleryImagesList) {
+                editGivingGroupObjResponse.attributes.galleryImagesList.map(({ display }) => {
+                    galleryImages.push(display)
+                })
+            }
+            let groupDescriptions = [];
+            if (editGivingGroupObjResponse.attributes.groupDescriptionsValues) {
+                editGivingGroupObjResponse.attributes.groupDescriptionsValues.map(item => {
+                    groupDescriptions.push({
+                        ...item,
+                        id: `${item.purpose}${editGivingGroupObjResponse.attributes.groupDescriptionsValues.length}`
+                    });
+                })
+            };
+            editGivingGroupObjResponse.attributes = {
+                ...editGivingGroupObjResponse.attributes,
+                fundraisingCreated: editGivingGroupObjResponse.attributes.fundraisingStartDate,
+                fundraisingDate: editGivingGroupObjResponse.attributes.fundraisingEndDate,
+                fundraisingGoal: editGivingGroupObjResponse.attributes.goal,
+                logo: editGivingGroupObjResponse.attributes.avatar,
+                prefersInviteOnly: editGivingGroupObjResponse.attributes.isPrivate ? "1" : "0",
+                prefersRecurringEnabled: editGivingGroupObjResponse.attributes.recurringEnabled ? "1" : "0",
+                short: editGivingGroupObjResponse.attributes.description,
+                videoUrl: editGivingGroupObjResponse.attributes.videoPlayerLink
+            };
+            editGivingGroupObjResponse.beneficiaryItems = editGivingGroupObjResponse.attributes.groupCharities
+            editGivingGroupObjResponse.groupPurposeDescriptions = [...groupDescriptions];
+            editGivingGroupObjResponse.galleryImages = [...galleryImages];
+            dispatch(upadateEditGivingGroupObj({ ...editGivingGroupObjResponse }));
         })
         .catch(() => {
-            // handle error
-            dispatch({
-                type: actionTypes.GET_PROVINCES_LIST_LOADER,
-                payload: false
-            });
+            //handle error
         });
-    return getProvincesListPromise;
+    return EditGivingGroupApiCallPromise;
+};
+
+export const deleteGroupLogo = (editGivingGroupObj, groupId = '') => dispatch => {
+    coreApi.delete(`/groups/${groupId}/delete_logo`)
+        .then(() => {
+            dispatch(upadateEditGivingGroupObj({
+                ...editGivingGroupObj,
+                attributes: {
+                    ...editGivingGroupObj.attributes,
+                    logo: '',
+                    avatar: '',
+                }
+            }));
+        })
+        .catch(() => {
+            //handle error
+        })
 };

@@ -1,5 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Container,
@@ -12,18 +11,30 @@ import {
     Icon,
     Checkbox,
 } from 'semantic-ui-react';
-import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
 import {
     PropTypes,
 } from 'prop-types';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
-import { actionTypes, getProvincesList, getUniqueCities, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import { actionTypes, editGivingGroupApiCall, getUniqueCities, getProvincesList, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
 import { withTranslation } from '../../../i18n';
+import CreateGivingGroupHeader from '../CreateGivingGroupHeader';
 
-const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
+
+
+const CreateGivingGroupBasic = ({
+    createGivingGroupStoreFlowObject,
+    editGivingGroupStoreFlowObject,
+    fromCreate,
+    groupId,
+    showBasic,
+    showButton,
+    showMonthly,
+    t
+}) => {
     const formatMessage = t;
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
     const currentActiveStepCompleted = [1];
@@ -40,7 +51,8 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
         },
     ];
     const dispatch = useDispatch();
-    const [createGivingGroupObject, setCreateGivingGroupObject] = useState(createGivingGroupStoreFlowObject);
+    const createGivingGroupStoreFlowObjectValues = fromCreate ? createGivingGroupStoreFlowObject : editGivingGroupStoreFlowObject;
+    const [createGivingGroupObject, setCreateGivingGroupObject] = useState(createGivingGroupStoreFlowObjectValues);
     const [validity, setValidity] = useState(intializeValidity);
     const provinceOptions = useSelector(state => state.createGivingGroup.provinceOptions || []);
     const provincesListLoader = useSelector(state => state.createGivingGroup.provincesListLoader || false);
@@ -61,11 +73,18 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     useEffect(() => {
         scrollTo(0, 0);
         _isEmpty(provinceOptions) && dispatch(getProvincesList(1, 50));
-        return () => {
-            !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
-                dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
+        if (city !== '') {
+            dispatch({
+                type: actionTypes.GET_UNIQUE_CITIES,
+                payload: [{
+                    key: city,
+                    value: city,
+                    text: city,
+                }],
+            });
         }
     }, []);
+
     const handleOnChange = (event, data) => {
         let {
             name,
@@ -83,23 +102,17 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                 setDisableContinue(false);
                 break;
             case 'province':
-                dispatch({
-                    type: actionTypes.GET_UNIQUE_CITIES,
-                    payload: [],
-                });
                 if (value === "defaultProvince") {
                     value = ""
                     createGivingGroupObject.attributes.city = '';
                 } else {
                     dispatch(getUniqueCities(1, 50, value));
                 }
+                createGivingGroupObject.attributes.city = ''
                 break;
             case 'city':
                 setShowCitiesDropdown(false);
                 setEnableCitySearchOption(false);
-                if (value === "defaultCity") {
-                    value = ""
-                }
                 break;
             default: break;
         }
@@ -110,7 +123,8 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                 [name]: value
             },
         });
-        setValidity(ValidateCreateGivingGroup(validity, name, value))
+        setValidity(ValidateCreateGivingGroup(validity, name, value));
+        !fromCreate && setDisableContinue(false);
     };
 
     const handleOnBlur = (event, data) => {
@@ -124,94 +138,145 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
     const handleContinue = () => {
         setDisableContinue(true);
         if (name !== '') {
+            //handle continue from create giving group
             dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
             Router.pushRoute(CreateGivingGroupFlowSteps.stepTwo);
         }
     };
+
+    const handleEditSave = (event, data) => {
+        //handle Save from manage giving group
+        let {
+            name,
+            value,
+            checked,
+        } = data || event.target;
+        if (name === 'prefersRecurringEnabled') {
+            value = checked ? "1" : "0";
+            dispatch(editGivingGroupApiCall({
+                'attributes': {
+                    'prefersRecurringEnabled': value
+                }
+            }, groupId))
+                .then(() => {
+                    setCreateGivingGroupObject({
+                        ...createGivingGroupObject,
+                        attributes: {
+                            ...createGivingGroupObject.attributes,
+                            [name]: value
+                        },
+                    });
+                })
+                .catch(() => {
+                    //handle error
+                })
+            return;
+        }
+        dispatch(editGivingGroupApiCall({
+            'attributes': {
+                'province': createGivingGroupObject.attributes.province,
+                'name': createGivingGroupObject.attributes.name,
+                'city': createGivingGroupObject.attributes.city,
+                'prefersInviteOnly': createGivingGroupObject.attributes.prefersInviteOnly === "0" ? "Public" : "Private",
+            }
+        }, groupId))
+            .then(() => {
+                setDisableContinue(true);
+            })
+            .catch(() => {
+                // handle error
+            })
+    }
     return (
         <Container>
-            <div className='createNewGroupWrap'>
-                <div className='createNewGrpheader'>
-                    <Header as='h2'>{formatMessage('createGivingGroupHeader')}</Header>
-                    {generateBreadCrum(breakCrumArray, currentActiveStepCompleted)}
-                </div>
+            <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
+                {fromCreate && <CreateGivingGroupHeader
+                    breakCrumArray={breakCrumArray}
+                    currentActiveStepCompleted={currentActiveStepCompleted}
+                    header={formatMessage('createGivingGroupHeader')}
+                />
+                }
                 <div className='mainContent'>
                     <div className='basicsettings'>
-                        <Header className='titleHeader'>{formatMessage('createGivingGroupBasic.basicHeader')}</Header>
+                        {showBasic && <Header className='titleHeader'>{formatMessage('createGivingGroupBasic.basicHeader')}</Header>}
                         <Form>
-                            <div className='createnewSec'>
-                                <div className="requiredfield field">
-                                    <Form.Field
-                                        id='form-input-control-group-name'
-                                        name="name"
-                                        control={Input}
-                                        label={formatMessage('createGivingGroupBasic.groupLabel')}
-                                        placeholder={formatMessage('createGivingGroupBasic.groupNamePlaceholder')}
-                                        value={name}
-                                        onChange={handleOnChange}
-                                        onBlur={handleOnBlur}
-                                        error={!validity.doesNameExist}
-                                    />
-                                    {!validity.doesNameExist &&
-                                        <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
-                                    }
+                            {showBasic &&
+                                <div className='createnewSec'>
+                                    <div className="requiredfield field">
+                                        <Form.Field
+                                            id='form-input-control-group-name'
+                                            name="name"
+                                            control={Input}
+                                            label={formatMessage('createGivingGroupBasic.groupLabel')}
+                                            placeholder={formatMessage('createGivingGroupBasic.groupNamePlaceholder')}
+                                            value={name}
+                                            onChange={handleOnChange}
+                                            onBlur={handleOnBlur}
+                                            error={!validity.doesNameExist}
+                                        />
+                                        {!validity.doesNameExist &&
+                                            <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
+                                        }
+                                    </div>
+                                    <Form.Group widths='equal'>
+                                        <Form.Field
+                                            className={provincesListLoader ? '' : 'dropdownWithArrowParent'}
+                                            control={Select}
+                                            loading={provincesListLoader}
+                                            options={provinceOptions.length > 1 ? [{
+                                                key: formatMessage('createGivingGroupBasic.provincePlaceholder'),
+                                                text: formatMessage('createGivingGroupBasic.provincePlaceholder'),
+                                                value: "defaultProvince",
+                                            }].concat(provinceOptions) : []}
+                                            name='province'
+                                            label={{ children: `${formatMessage('createGivingGroupBasic.provinveLabel')}`, htmlFor: 'form-select-control-province' }}
+                                            placeholder={formatMessage('createGivingGroupBasic.provincePlaceholder')}
+                                            searchInput={{ id: 'form-select-control-province' }}
+                                            onChange={handleOnChange}
+                                            value={province}
+                                        />
+                                        <Form.Field
+                                            open={showCitiesDropdown && !_isEmpty(uniqueCities)}
+                                            className={uniqueCitiesLoader ? '' : 'dropdownWithArrowParent'}
+                                            name='city'
+                                            loading={uniqueCitiesLoader}
+                                            control={Select}
+                                            search={enableCitySearchOption && !_isEmpty(uniqueCities)}
+                                            label={{ children: `${formatMessage('createGivingGroupBasic.cityLabel')}`, htmlFor: 'form-select-control-city' }}
+                                            placeholder={formatMessage('createGivingGroupBasic.cityPlaceholder')}
+                                            {...(uniqueCities.length > 0 && {
+                                                options: [{
+                                                    key: formatMessage('createGivingGroupBasic.cityPlaceholder'),
+                                                    text: formatMessage('createGivingGroupBasic.cityPlaceholder'),
+                                                    value: "",
+                                                }].concat(uniqueCities)
+                                            })}
+                                            value={city}
+                                            onChange={handleOnChange}
+                                            selectOnBlur={false}
+                                            selectOnNavigation={false}
+                                            onClick={() => {
+                                                setEnableCitySearchOption(true)
+                                                setShowCitiesDropdown(true)
+                                            }}
+                                            onBlur={() => setShowCitiesDropdown(false)}
+                                        />
+                                    </Form.Group>
+                                    <div className='field'>
+                                        <label>{formatMessage('createGivingGroupBasic.whoCanSeeHeader')}</label>
+                                        <Dropdown
+                                            inline
+                                            options={whoCanSeeOptions}
+                                            value={whoCanSeeOptions[prefersInviteOnly].value}
+                                            icon='chevron down'
+                                            className='whocanseeDropdown'
+                                            name='prefersInviteOnly'
+                                            onChange={handleOnChange}
+                                        />
+                                    </div>
                                 </div>
-                                <Form.Group widths='equal'>
-                                    <Form.Field
-                                        className={provincesListLoader ? '' : 'dropdownWithArrowParent'}
-                                        control={Select}
-                                        loading={provincesListLoader}
-                                        options={provinceOptions.length > 1 ? [{
-                                            key: formatMessage('createGivingGroupBasic.provincePlaceholder'),
-                                            text: formatMessage('createGivingGroupBasic.provincePlaceholder'),
-                                            value: "defaultProvince",
-                                        }].concat(provinceOptions) : []}
-                                        name='province'
-                                        label={{ children: `${formatMessage('createGivingGroupBasic.provinveLabel')}`, htmlFor: 'form-select-control-province' }}
-                                        placeholder={formatMessage('createGivingGroupBasic.provincePlaceholder')}
-                                        searchInput={{ id: 'form-select-control-province' }}
-                                        onChange={handleOnChange}
-                                        value={province}
-                                    />
-                                    <Form.Field
-                                        open={showCitiesDropdown && !_isEmpty(uniqueCities)}
-                                        className={uniqueCitiesLoader ? '' : 'dropdownWithArrowParent'}
-                                        name='city'
-                                        loading={uniqueCitiesLoader}
-                                        control={Select}
-                                        search={enableCitySearchOption && !_isEmpty(uniqueCities)}
-                                        options={uniqueCities.length > 1 ? [{
-                                            key: formatMessage('createGivingGroupBasic.cityPlaceholder'),
-                                            text: formatMessage('createGivingGroupBasic.cityPlaceholder'),
-                                            value: "defaultCity",
-                                        }].concat(uniqueCities) : []}
-                                        label={{ children: `${formatMessage('createGivingGroupBasic.cityLabel')}`, htmlFor: 'form-select-control-city' }}
-                                        placeholder={formatMessage('createGivingGroupBasic.cityPlaceholder')}
-                                        value={city}
-                                        onChange={handleOnChange}
-                                        selectOnBlur={false}
-                                        selectOnNavigation={false}
-                                        onClick={() => {
-                                            setEnableCitySearchOption(true)
-                                            setShowCitiesDropdown(true)
-                                        }}
-                                        onBlur={() => setShowCitiesDropdown(false)}
-                                    />
-                                </Form.Group>
-                                <div className='field'>
-                                    <label>{formatMessage('createGivingGroupBasic.whoCanSeeHeader')}</label>
-                                    <Dropdown
-                                        inline
-                                        options={whoCanSeeOptions}
-                                        value={whoCanSeeOptions[prefersInviteOnly].value}
-                                        icon='chevron down'
-                                        className='whocanseeDropdown'
-                                        name='prefersInviteOnly'
-                                        onChange={handleOnChange}
-                                    />
-                                </div>
-                            </div>
-                            <div className='createnewSec'>
+                            }
+                            {showMonthly && <div className='createnewSec'>
                                 <Header className='sectionHeader'>{formatMessage('createGivingGroupBasic.monthlyGiftsHeader')}</Header>
                                 <p>{formatMessage('createGivingGroupBasic.monthlyGiftsDescription')}</p>
                                 <Checkbox
@@ -221,28 +286,40 @@ const CreateGivingGroupBasic = ({ createGivingGroupStoreFlowObject, t }) => {
                                     id="discoverability"
                                     name="prefersRecurringEnabled"
                                     label={formatMessage('createGivingGroupBasic.monthlyGiftsLabel')}
-                                    onChange={handleOnChange}
+                                    onChange={
+                                        (event, data) => {
+                                            fromCreate ? handleOnChange(event, data) : handleEditSave(event, data)
+                                        }
+                                    }
                                 />
                             </div>
+                            }
                         </Form>
-                        <div className='buttonsWrap'>
+                        {showButton && (<div className='buttonsWrap'>
                             <Button
                                 className='blue-btn-rounded-def'
                                 disabled={disableContinue || !validity.doesNameExist}
-                                onClick={handleContinue}
+                                onClick={(event, data) => { fromCreate ? handleContinue() : handleEditSave(event, data) }}
                             >
-                                {formatMessage('continueButton')}
+                                {fromCreate ? formatMessage('continueButton') : 'Save'}
                             </Button>
-                        </div>
+                        </div>)
+                        }
                     </div>
                 </div>
-            </div>
-        </Container>
+            </div >
+        </Container >
     );
 }
 
 CreateGivingGroupBasic.defaultProps = {
-    createGivingGroupStoreFlowObject: { ...intializeCreateGivingGroup }
+    createGivingGroupStoreFlowObject: { ...intializeCreateGivingGroup },
+    editGivingGroupStoreFlowObject: { ...intializeCreateGivingGroup },
+    groupId: '',
+    showBasic: true,
+    showButton: true,
+    fromCreate: true,
+    showMonthly: true,
 };
 
 CreateGivingGroupBasic.prototype = {
@@ -261,8 +338,8 @@ CreateGivingGroupBasic.prototype = {
             logo: PropTypes.string,
             videoUrl: PropTypes.string,
         }),
-        groupDescriptions: PropTypes.array,
-        beneficiaryIds: PropTypes.array,
+        groupPurposeDescriptions: PropTypes.array,
+        beneficiaryItems: PropTypes.array,
         galleryImages: PropTypes.array,
     })
 };

@@ -18,6 +18,7 @@ import getConfig from 'next/config';
 
 import { withTranslation } from '../i18n';
 import {
+    actionTypes,
     getGroupFromSlug,
     getImageGallery,
     getMatchingHistory,
@@ -37,10 +38,6 @@ import {
 } from '../actions/give';
 import '../static/less/charityProfile.less';
 
-const actionTypes = {
-    RESET_GROUP_STATES: 'RESET_GROUP_STATES',
-};
-
 class GroupProfile extends React.Component {
     static async getInitialProps({
         reduxStore,
@@ -54,7 +51,7 @@ class GroupProfile extends React.Component {
         if (typeof window === 'undefined') {
             auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
         }
-        await reduxStore.dispatch(getGroupFromSlug(query.slug, auth0AccessToken));
+        await reduxStore.dispatch(getGroupFromSlug(query.slug, auth0AccessToken, false));
         return {
             namespacesRequired: [
                 'common',
@@ -196,7 +193,7 @@ GroupProfile.defaultProps = {
             hasAdminAccess: false,
         },
     },
-    dispatch: () => {},
+    dispatch: () => { },
     groupDetails: {
         attributes: {
             avatar: '',
@@ -221,7 +218,7 @@ GroupProfile.defaultProps = {
     redirectToDashboard: false,
     redirectToPrivateGroupErrorPage: false,
     slug: '',
-    t: () => {},
+    t: () => { },
 };
 
 GroupProfile.propTypes = {

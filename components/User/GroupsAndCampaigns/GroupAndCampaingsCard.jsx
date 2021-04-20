@@ -14,6 +14,7 @@ import { Link } from '../../../routes';
 import placeholder from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import LeaveModal from '../../shared/LeaveModal';
 import { renderTextByCharacter } from '../../../helpers/utils';
+import { Router } from '../../../routes';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -59,7 +60,24 @@ class GroupsAndCampaignsCard extends React.Component {
             buttonState: true,
         });
     }
-
+    renderLinkElement = (isGroup, editLink) => {
+        const editText = 'Edit';
+        if (isGroup) {
+            return (
+                <Button
+                    className="btn-small-white-border editOpt"
+                    onClick={() => Router.pushRoute(editLink)}
+                >
+                    {editText}
+                </Button>
+            )
+        }
+        return (
+            <a href={editLink}>
+                <Button className="btn-small-white-border editOpt">{editText}</Button>
+            </a>
+        )
+    }
     render() {
         const {
             listingType,
@@ -73,7 +91,7 @@ class GroupsAndCampaignsCard extends React.Component {
             buttonState,
         } = this.state;
         const {
-            attributes:{
+            attributes: {
                 avatar,
                 name,
                 location,
@@ -83,13 +101,14 @@ class GroupsAndCampaignsCard extends React.Component {
         } = data;
         const shortName = renderTextByCharacter(name, 40);
         let urlType = 'groups';
-        const editText = 'Edit';
         let headingText = 'giving group';
-        let editLink = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
+        let editLink = `/groups/${slug}/edit`;
+        let isGroup = true;
         if (listingType === 'administeredCampaigns') {
             urlType = 'campaigns';
             editLink = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
             headingText = 'Campaign';
+            isGroup = false
         }
         let showError = false;
         let showMangeGroups = false;
@@ -111,7 +130,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                 </Grid.Column>
                                 <Grid.Column width={10} className="ml-0">
                                     <Grid columns="2">
-                                        <Grid.Row style={{padding:'1.7rem 0rem 0.2rem'}}>
+                                        <Grid.Row style={{ padding: '1.7rem 0rem 0.2rem' }}>
                                             <Grid.Column>
                                                 <Header as="h4">
                                                     <Header.Content>
@@ -124,17 +143,17 @@ class GroupsAndCampaignsCard extends React.Component {
                                                     <Header.Content>
                                                         <Header.Subheader>
                                                             {(listingType !== 'administeredCampaigns')
-                                                            && (
-                                                                <Dropdown
-                                                                    className="rightBottom"
-                                                                    icon="ellipsis horizontal"
-                                                                    closeOnBlur
-                                                                >
-                                                                    <Dropdown.Menu>
-                                                                        <Dropdown.Item text="Leave Group" onClick={() => { this.openModal(); }} />
-                                                                    </Dropdown.Menu>
-                                                                </Dropdown>
-                                                            )
+                                                                && (
+                                                                    <Dropdown
+                                                                        className="rightBottom"
+                                                                        icon="ellipsis horizontal"
+                                                                        closeOnBlur
+                                                                    >
+                                                                        <Dropdown.Menu>
+                                                                            <Dropdown.Item text="Leave Group" onClick={() => { this.openModal(); }} />
+                                                                        </Dropdown.Menu>
+                                                                    </Dropdown>
+                                                                )
                                                             }
                                                             {
                                                                 this.state.open && (
@@ -158,7 +177,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                             </Grid.Column>
                                         </Grid.Row>
                                     </Grid>
-                                    <Header as="h4" style={{margin:'0rem 0.5rem .5rem 0rem'}}>
+                                    <Header as="h4" style={{ margin: '0rem 0.5rem .5rem 0rem' }}>
                                         <Header.Content>
                                             {shortName}
                                             <br />
@@ -173,15 +192,13 @@ class GroupsAndCampaignsCard extends React.Component {
                                             className="btn-small-white-border"
                                             onClick={this.changeButtonState}
                                         >
-                                        View
+                                            View
                                         </Button>
                                     </Link>
                                     {
                                         (listingType !== 'groupsWithMemberships')
                                         && (
-                                            <a href={editLink}>
-                                                <Button className="btn-small-white-border editOpt">{editText}</Button>
-                                            </a>
+                                            this.renderLinkElement(isGroup, editLink)
                                         )
                                     }
                                 </Grid.Column>

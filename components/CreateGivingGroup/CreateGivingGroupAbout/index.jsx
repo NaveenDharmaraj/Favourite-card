@@ -8,15 +8,20 @@ import {
     Icon,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
+import _cloneDeep from 'lodash/cloneDeep';
 import arrayMove from 'array-move';
 import dynamic from 'next/dynamic';
+import { connect } from 'react-redux';
 
 import { aboutDescriptionLimit, createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, initializeAddSectionModalObject, intializeCreateGivingGroup } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import CreateGivingGroupAddSectionModal from '../CreateGivingGroupAddSectionModal';
-import { updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import { editGivingGroupApiCall, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
 import { withTranslation } from '../../../i18n';
+import CreateGivingGroupHeader from '../CreateGivingGroupHeader';
+import EditGivingGroupDescriptionModal from '../EditGivingGroupDescriptionModal';
 
 const SortableList = dynamic(() => import('../../shared/DragAndDropComponent'), { ssr: false });
 
@@ -26,31 +31,40 @@ const currentActiveStepCompleted = [1, 2];
 class CreateGivingGroupAbout extends React.Component {
     constructor(props) {
         super(props);
+        const cloneEditGivingGroupObject = _cloneDeep(props.editGivingGroupStoreFlowObject);
         this.state = {
             addModalSectionObject: initializeAddSectionModalObject,
             disableContinue: !_isEmpty((props.createGivingGroupStoreFlowObject)
                 && props.createGivingGroupStoreFlowObject.attributes
                 && props.createGivingGroupStoreFlowObject.attributes.short) ? false : true,
             showModal: false,
-            createGivingGroupObjectState: !_isEmpty(props.createGivingGroupStoreFlowObject) ? props.createGivingGroupStoreFlowObject : intializeCreateGivingGroup,
+            createGivingGroupObjectState: props.fromCreate ? props.createGivingGroupStoreFlowObject : cloneEditGivingGroupObject,
             doesDescriptionPresent: true,
         }
         breakCrumArray = createGivingGroupBreadCrum(props.t);
-    }
-    componentWillUnmount() {
-        const {
-            dispatch
-        } = this.props;
-        !Object.values(CreateGivingGroupFlowSteps).includes(Router.router.asPath) &&
-            dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
     }
     onSortEnd = ({ oldIndex, newIndex }) => {
         this.setState(({ createGivingGroupObjectState }) => ({
             createGivingGroupObjectState: {
                 ...createGivingGroupObjectState,
-                groupDescriptions: arrayMove(createGivingGroupObjectState.groupDescriptions, oldIndex, newIndex),
+                groupPurposeDescriptions: arrayMove(createGivingGroupObjectState.groupPurposeDescriptions, oldIndex, newIndex),
             }
-        }));
+        }), () => {
+            //callback function which passes the updated state value to edit GivingGroupApiCall
+            if (!this.props.fromCreate) {
+                const {
+                    dispatch,
+                    groupId,
+                } = this.props;
+                const editObject = {
+                    attributes: {},
+                    groupPurposeDescriptions: this.state.createGivingGroupObjectState.groupPurposeDescriptions,
+                };
+                dispatch(editGivingGroupApiCall(editObject, groupId));
+            }
+        }
+        );
+
     };
 
     handleOnChange = (event, data) => {
@@ -86,29 +100,49 @@ class CreateGivingGroupAbout extends React.Component {
     handleParentModalClick = (modalState, addSectionObject = {}) => {
         const {
             createGivingGroupObjectState: {
-                groupDescriptions,
+                groupPurposeDescriptions,
             },
             addModalSectionObject,
         } = this.state;
+        const {
+            dispatch,
+            fromCreate,
+            groupId,
+        } = this.props;
         if (!_isEmpty(addSectionObject)) {
             let index;
-            groupDescriptions.find((item, i) => {
+            groupPurposeDescriptions.find((item, i) => {
                 if (item.id === addModalSectionObject.id) {
                     index = i;
                     return;
                 }
             });
-            Number(index) >= 0 ? groupDescriptions.splice(index, 1, addSectionObject) :
-                groupDescriptions.push(
-                    { ...addSectionObject, id: `${addSectionObject.name}${groupDescriptions.length}` }
+            Number(index) >= 0 ? groupPurposeDescriptions.splice(index, 1, addSectionObject) :
+                groupPurposeDescriptions.push(
+                    { ...addSectionObject, id: `${addSectionObject.purpose}${groupPurposeDescriptions.length}` }
                 );
             this.setState({
                 createGivingGroupObjectState: {
                     ...this.state.createGivingGroupObjectState,
-                    groupDescriptions: [...groupDescriptions],
+                    groupPurposeDescriptions: [...groupPurposeDescriptions],
                 },
                 showModal: modalState
-            })
+            });
+            if (!fromCreate) {
+                const editObject = {
+                    attributes: {},
+                    groupPurposeDescriptions: [...groupPurposeDescriptions],
+                };
+                dispatch(editGivingGroupApiCall(editObject, groupId))
+                    .then(() => {
+                        this.setState({
+                            showModal: false,
+                        })
+                    })
+                    .catch(() => {
+                        //handle error
+                    })
+            }
         } else {
             this.setState({
                 addModalSectionObject: initializeAddSectionModalObject,
@@ -126,24 +160,36 @@ class CreateGivingGroupAbout extends React.Component {
         event.stopPropagation();
         const {
             createGivingGroupObjectState: {
-                groupDescriptions,
+                groupPurposeDescriptions,
             },
         } = this.state;
+        const {
+            dispatch,
+            fromCreate,
+            groupId,
+        } = this.props;
         if (!_isEmpty(addSectionObject)) {
             let index;
-            groupDescriptions.find((item, i) => {
-                if (item.id === addSectionObject.id) {
+            groupPurposeDescriptions.find((item, i) => {
+                if (item.id && (item.id === addSectionObject.id)) {
                     index = i;
                     return;
                 }
             });
-            Number(index) >= 0 ? groupDescriptions.splice(index, 1) :
-                this.setState({
-                    createGivingGroupObjectState: {
-                        ...this.state.createGivingGroupObjectState,
-                        groupDescriptions: [...groupDescriptions],
-                    },
-                })
+            if (Number(index) >= 0) { groupPurposeDescriptions.splice(index, 1) }
+            this.setState({
+                createGivingGroupObjectState: {
+                    ...this.state.createGivingGroupObjectState,
+                    groupPurposeDescriptions: [...groupPurposeDescriptions],
+                },
+            });
+            if (!fromCreate) {
+                const editObject = {
+                    attributes: {},
+                    groupPurposeDescriptions: [...groupPurposeDescriptions],
+                };
+                dispatch(editGivingGroupApiCall(editObject, groupId));
+            }
         }
     }
     handleContinue = () => {
@@ -158,7 +204,7 @@ class CreateGivingGroupAbout extends React.Component {
             }
         } = this.state;
         const {
-            dispatch
+            dispatch,
         } = this.props;
         if (short === '') {
             this.setState({
@@ -168,7 +214,6 @@ class CreateGivingGroupAbout extends React.Component {
         }
         dispatch(updateCreateGivingGroupObj(this.state.createGivingGroupObjectState));
         Router.pushRoute(CreateGivingGroupFlowSteps.stepThree);
-
     };
     render() {
         const {
@@ -177,7 +222,7 @@ class CreateGivingGroupAbout extends React.Component {
                 attributes: {
                     short,
                 },
-                groupDescriptions,
+                groupPurposeDescriptions,
             },
             disableContinue,
             doesDescriptionPresent,
@@ -185,56 +230,72 @@ class CreateGivingGroupAbout extends React.Component {
         } = this.state;
         const {
             dispatch,
+            fromCreate,
+            groupId,
             t: formatMessage,
         } = this.props;
         return (
             <Container>
-                <div className='createNewGroupWrap'>
-                    <div className='createNewGrpheader'>
-                        <Header as='h2'>{formatMessage('createGivingGroupHeader')}</Header>
-                        {generateBreadCrum(breakCrumArray, currentActiveStepCompleted)}
-                    </div>
+                <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
+                    {fromCreate && <CreateGivingGroupHeader
+                        breakCrumArray={breakCrumArray}
+                        currentActiveStepCompleted={currentActiveStepCompleted}
+                        header={formatMessage('createGivingGroupHeader')}
+                    />
+                    }
                     <div className='mainContent'>
                         <div className='about-group'>
                             <Header className='titleHeader'>{formatMessage('createGivingGroupAbout.aboutHeader')}</Header>
                             <Form>
                                 <div className='createnewSec'>
-                                    <div className='requiredfield field'>
-                                        <label>{formatMessage('createGivingGroupAbout.aboutDescriptionLabel')}</label>
-                                        <p className='label-info'>{formatMessage('createGivingGroupAbout.aboutDescription')}</p>
-                                        <Form.Field
-                                            control={TextArea}
-                                            value={short}
-                                            onChange={this.handleOnChange}
-                                            onBlur={this.handleOnBlur}
-                                            name="short"
-                                            error={!doesDescriptionPresent}
-                                            maxLength={aboutDescriptionLimit}
-                                        />
-                                        <div className='fieldInfoWrap'>
-                                            <p className="error-message">
-                                                {!doesDescriptionPresent
-                                                    &&
-                                                    (
-                                                        <>
-                                                            <Icon name="exclamation circle" />
+                                    <label>{formatMessage('createGivingGroupAbout.aboutDescriptionLabel')}</label>
+                                    <p className='label-info'>{formatMessage('createGivingGroupAbout.aboutDescription')}</p>
+                                    {fromCreate ? (
+                                        <div className='requiredfield field'>
+                                            <Form.Field
+                                                control={TextArea}
+                                                value={short}
+                                                onChange={this.handleOnChange}
+                                                onBlur={this.handleOnBlur}
+                                                name="short"
+                                                error={!doesDescriptionPresent}
+                                                maxLength={aboutDescriptionLimit}
+                                            />
+                                            <div className='fieldInfoWrap'>
+                                                <p className="error-message">
+                                                    {!doesDescriptionPresent
+                                                        &&
+                                                        (
+                                                            <>
+                                                                <Icon name="exclamation circle" />
                                                             The field is required
                                                         </>
-                                                    )
-                                                }
-                                            </p>
-                                            <div class="field-info">{short.length} {formatMessage('ofText')} 300</div>
-                                        </div>
-                                    </div>
+                                                        )
+                                                    }
+                                                </p>
+                                                <div class="field-info">{short.length} {formatMessage('ofText')} 300</div>
+                                            </div>
+                                        </div>)
+                                        :
+                                        (
+                                            <div className='about_descCardWrap'>
+                                                <EditGivingGroupDescriptionModal
+                                                    editGivingGroupObject={this.state.createGivingGroupObjectState}
+                                                    formatMessage={formatMessage}
+                                                    groupId={groupId}
+                                                />
+                                            </div>
+                                        )
+                                    }
                                 </div>
                                 <div className='createnewSec'>
                                     <Header className='sectionHeader'>{formatMessage('createGivingGroupAbout.additionAboutDescriptionHeader')}
                                         <span className='optional'>&nbsp;{formatMessage('createGivingGroupAbout.additionAboutDescriptionHeaderOptional')}</span></Header>
                                     <p>{formatMessage('createGivingGroupAbout.additionAboutDescriptionDescriptionLabel')}</p>
-                                    {!_isEmpty(groupDescriptions)
+                                    {!_isEmpty(groupPurposeDescriptions)
                                         &&
                                         <SortableList
-                                            addSectionItems={groupDescriptions}
+                                            addSectionItems={groupPurposeDescriptions}
                                             onSortEnd={this.onSortEnd}
                                             disableAutoscroll={true}
                                             handleOnSortableItemClick={this.handleOnSortableItemClick}
@@ -243,7 +304,7 @@ class CreateGivingGroupAbout extends React.Component {
                                             lockAxis='y'
                                         />
                                     }
-                                    {groupDescriptions.length < 5 &&
+                                    {groupPurposeDescriptions && groupPurposeDescriptions.length < 5 &&
                                         <CreateGivingGroupAddSectionModal
                                             addModalSectionObject={addModalSectionObject}
                                             handleParentModalClick={this.handleParentModalClick}
@@ -253,7 +314,7 @@ class CreateGivingGroupAbout extends React.Component {
                                     }
                                 </div>
                             </Form>
-                            <div className='buttonsWrap'>
+                            {fromCreate && <div className='buttonsWrap'>
                                 <Button
                                     className='blue-bordr-btn-round-def'
                                     onClick={() => {
@@ -269,8 +330,9 @@ class CreateGivingGroupAbout extends React.Component {
                                     onClick={this.handleContinue}
                                 >
                                     {formatMessage('continueButton')}
-                                    </Button>
+                                </Button>
                             </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -281,6 +343,8 @@ class CreateGivingGroupAbout extends React.Component {
 
 CreateGivingGroupAbout.defaultProps = {
     createGivingGroupStoreFlowObject: { ...intializeCreateGivingGroup },
-    dispatch: () => { }
+    editGivingGroupStoreFlowObject: intializeCreateGivingGroup,
+    fromCreate: true,
+    dispatch: () => { },
 };
-export default React.memo(withTranslation('givingGroup')(CreateGivingGroupAbout));
+export default React.memo(withTranslation('givingGroup')(connect(null)(CreateGivingGroupAbout)));

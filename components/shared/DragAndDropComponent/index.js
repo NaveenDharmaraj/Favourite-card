@@ -4,7 +4,7 @@ import { Card, Dropdown, Icon } from 'semantic-ui-react';
 
 const SortableItem = SortableElement(({ element, handleOnSortableItemClick, handleOnSortableItemDelete }) =>
     <Card className='DragDesc' as='div' onClick={() => handleOnSortableItemClick(true, element)}>
-        <Card.Header>{element.name}</Card.Header>
+        <Card.Header>{element.purpose}</Card.Header>
         <div className='moveDeleteWrap'>
             <Icon className='move' />
             <Dropdown className='threeDotBtn' direction='left'>
