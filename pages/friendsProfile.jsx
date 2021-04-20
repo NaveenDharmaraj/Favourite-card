@@ -1,132 +1,122 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
-import _ from 'lodash';
 import {
     connect,
 } from 'react-redux';
+import { withRouter } from 'next/router';
+import {
+    string,
+    func,
+    PropTypes,
+} from 'prop-types';
+import {
+    Dimmer,
+    Loader,
+} from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 
+import '../static/less/userProfile.less';
 import Layout from '../components/shared/Layout';
 import {
     getUserFriendProfile,
 } from '../actions/userProfile';
-import FavouritesList from '../components/UserProfile/Favourites';
-import MemberGroupList from '../components/UserProfile/MemberGroups';
-import AdminGroupList from '../components/UserProfile/AdminGroups';
-import CharitableInterestsList from '../components/UserProfile/CharitableInterest';
-import GivingGoal from '../components/UserProfile/GivingGoal';
-import BasicProfile from '../components/UserProfile/BasicProfile';
-import {
-    formatAmount,
-} from '../helpers/give/utils';
+import UserProfileWrapper from '../components/UserProfile';
 
+const friendsPath  = '/friends';
 class FriendProfile extends React.Component {
     static async getInitialProps({ query }) {
         return {
-            friendChimpId: query.slug,
-            namespacesRequired: [],
+            friendUserId: query.slug,
+            namespacesRequired: [
+                'giveCommon',
+            ],
+            friendPageStep: query.step,
         };
     }
 
     componentDidMount() {
         const {
-            currentUser,
-            dispatch,
-            friendChimpId,
-        } = this.props;
-        if (!_.isEmpty(currentUser)) {
-            const {
-                id,
+            currentUser: {
                 attributes: {
                     email,
                 },
-            } = currentUser;
-            getUserFriendProfile(dispatch, email, friendChimpId, id);
-        }
+                id: currentUserId,
+            },
+            dispatch,
+            friendUserId,
+        } = this.props;
+        const updatedFriendId = Number(friendUserId) ? friendUserId : currentUserId;
+        !_isEmpty(currentUserId) && dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
     }
 
     componentDidUpdate(prevProps) {
         const {
             currentUser: {
-                id,
                 attributes: {
                     email,
                 },
+                id: currentUserId,
             },
+            friendUserId,
             dispatch,
-            friendChimpId,
         } = this.props;
-        if (!_.isEqual(friendChimpId, prevProps.friendChimpId)) {
-            getUserFriendProfile(dispatch, email, friendChimpId, id);
+        const updatedFriendId = Number(friendUserId) ? friendUserId : currentUserId;
+        if (!_isEqual(friendUserId, prevProps.friendUserId)) {
+            dispatch({
+                payload: {
+                },
+                type: 'USER_PROFILE_RESET_DATA',
+            });
+            dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
         }
-    }
-
-    componentWillUnmount() {
-        const {
-            dispatch,
-        } = this.props;
-        dispatch({
-            payload: {
-            },
-            type: 'USER_PROFILE_BASIC_FRIEND',
-        });
     }
 
     render() {
         const {
             userFriendProfileData,
         } = this.props;
-        let userData = '';
-        let givingAmount = 0; let givenAmount = 0; let percentage = 0; let profileType = '';
-        if (!_.isEmpty(userFriendProfileData) && _.size(userFriendProfileData.data) > 0) {
-            userData = userFriendProfileData.data[0].attributes;
-            givingAmount = (typeof userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(userData.giving_goal_amt)) : formatAmount(0);
-            givenAmount = (typeof userData.giving_goal_met !== 'undefined') ? formatAmount(Number(userData.giving_goal_met)) : formatAmount(0);
-            percentage = (givenAmount * 100) / givingAmount;
-            profileType = userData.profile_type.toUpperCase();
-        }
+        const showFriendsPage = this.props.router.asPath && this.props.router.asPath.includes(friendsPath);
         return (
             <Layout authRequired>
-                {
-                    !_.isEmpty(userData) && (
-                        <BasicProfile userData={userData} friendUserId={userData.user_id} />
+                {!_isEmpty(userFriendProfileData)
+                    ? (
+                        <UserProfileWrapper {...this.props} showFriendsPage={showFriendsPage}/>
                     )
-                }
-                {
-                    (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
-                        <CharitableInterestsList friendUserId={userData.user_id} />
-                    )
-                }
-                {
-                    (userData.giving_goal_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.giving_goal_visibility === 1)) && (
-                        <GivingGoal
-                            givingAmount={givingAmount}
-                            givenAmount={givenAmount}
-                            percentage={percentage}
-                        />
-                    )
-                }
-                {
-                    (userData.giving_group_manage_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.giving_group_manage_visibility === 1)) && (
-                        <AdminGroupList
-                            friendUserId={userData.user_id}
-                            friendFirstName={userData.first_name}
-                        />
-                    )
-                }
-                {
-                    (userData.giving_group_member_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.giving_group_member_visibility === 1)) && (
-                        <MemberGroupList friendUserId={userData.user_id} />
-                    )
-                }
-                {
-                    (userData.favourites_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.favourites_visibility === 1)) && (
-                        <FavouritesList friendUserId={userData.user_id} />
-                    )
-                }
+                    : (
+                        <Dimmer active inverted>
+                            <Loader />
+                        </Dimmer>
+                    )}
             </Layout>
         );
     }
 }
+
+FriendProfile.defaultProps = {
+    currentUser: {
+        attributes: {
+            email: '',
+        },
+        id: '',
+
+    },
+    dispatch: () => {},
+    friendUserId: '',
+    userFriendProfileData: {},
+};
+
+FriendProfile.propTypes = {
+    currentUser: PropTypes.shape({
+        attributes: PropTypes.shape({
+            email: string,
+        }),
+        id: string,
+
+    }),
+    dispatch: func,
+    friendUserId: string,
+    userFriendProfileData: PropTypes.shape({}),
+};
 
 function mapStateToProps(state) {
     return {
@@ -135,4 +125,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default (connect(mapStateToProps)(FriendProfile));
+export default withRouter(connect(mapStateToProps)(FriendProfile));

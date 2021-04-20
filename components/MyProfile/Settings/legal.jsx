@@ -11,8 +11,8 @@ class Legal extends React.Component {
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
-                    <div className="settingsDetailWraper heading brdr-btm pb-1">
-                        <Header as="h4">Legal </Header>
+                    <div className="settingsDetailWraper heading ">
+                        <Header as="h4" className='mb-0'>Legal </Header>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Terms and conditions</p>

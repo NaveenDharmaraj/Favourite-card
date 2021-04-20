@@ -1,5 +1,6 @@
-/* eslint-disable react/prop-types */
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import _ from 'lodash';
 import {
     Container,
@@ -11,39 +12,52 @@ import {
     Dropdown,
     Modal,
 } from 'semantic-ui-react';
+import { Router } from '../../../routes';
 import {
     connect,
 } from 'react-redux';
 import dynamic from 'next/dynamic';
+import {
+    bool,
+    string,
+    number,
+    PropTypes,
+} from 'prop-types';
+import _isEmpty from 'lodash/isEmpty';
 
+import { withTranslation } from '../../../i18n';
 import { Link } from '../../../routes';
-import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 import {
     addToFriend,
     blockUser,
     removeFriend,
     generateDeeplinkUserProfile,
     acceptFriend,
+    ingnoreFriendRequest,
+    updateUserProfileToastMsg,
 } from '../../../actions/userProfile';
 import {
     storeEmailIdToGive,
 } from '../../../actions/dashboard';
-const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
-    ssr: false
-});
 
-class UserBasciProfile extends React.Component {
+import {
+    getLocation,
+} from '../../../helpers/profiles/utils';
+
+import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
+import EditBasicProfile from '../EditBasicProfile';
+import PlaceholderUser  from '../../../static/images/no-data-avatar-user-profile.png';
+
+class UserBasicProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             addButtonClicked: false,
             blockButtonClicked: false,
-            errorMessage: null,
             unfriendButtonClicked: false,
             acceptButtonClicked: false,
             confirmBlockModal: false,
             confirmUnfriendModal: false,
-            statusMessage: false,
             successMessage: '',
         };
 
@@ -57,6 +71,8 @@ class UserBasciProfile extends React.Component {
         this.handleBlockCancelClick = this.handleBlockCancelClick.bind(this);
         this.handleUnfriendCancelClick = this.handleUnfriendCancelClick.bind(this);
         this.handleCopyLink = this.handleCopyLink.bind(this);
+        this.handleRejectRequest = this.handleRejectRequest.bind(this);
+        this.renderFriendsPage = this.renderFriendsPage.bind(this);
     }
 
     componentDidMount() {
@@ -65,9 +81,13 @@ class UserBasciProfile extends React.Component {
                 id,
             },
             dispatch,
-            friendUserId,
+            userFriendProfileData: {
+                attributes: {
+                    user_id,
+                },
+            },
         } = this.props;
-        generateDeeplinkUserProfile(dispatch, id, friendUserId);
+        generateDeeplinkUserProfile(dispatch, id, user_id);
     }
 
     handleAddToFriends(destinationUserId, destinationEmailId) {
@@ -205,336 +225,449 @@ class UserBasciProfile extends React.Component {
         });
     }
 
-    // eslint-disable-next-line class-methods-use-this
     handleCopyLink(e) {
-        const data = document.getElementById('txtDeeplinkUser');
-        data.type = 'text';
-        data.select();
-        document.execCommand('copy');
-        data.type = 'hidden';
-        e.target.focus();
-        this.setState({
-            errorMessage: null,
-            successMessage: 'Copied to clipboard',
-            statusMessage: true,
-        })
+        const {
+            dispatch
+        } = this.props;
+        e.preventDefault()
+        try {
+            const data = document.getElementById('txtDeeplinkUser');
+            data.type = 'text';
+            data.select();
+            document.execCommand('copy');
+            data.type = 'hidden';
+            document.activeElement.blur();
+            //e.target.focus();
+            const statusMessageProps = {
+                message: 'Link copied to clipboard',
+                type: 'success',
+            };
+            dispatch(updateUserProfileToastMsg(statusMessageProps));
+        } catch (err) {
+            const statusMessageProps = {
+                message: 'Failed to copy to clipboard',
+                type: 'error',
+            };
+            dispatch(updateUserProfileToastMsg(statusMessageProps));
+        }
     }
 
+    handleRejectRequest(type) {
+        const {
+            currentUser: {
+                attributes: {
+                    email,
+                },
+                id: currentUserId,
+            },
+            dispatch,
+            userFriendProfileData: {
+                attributes: {
+                    user_id: friendUserId,
+                },
+            },
+        } = this.props;
+        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, 'myProfile', type));
+    }
+    renderFriendsPage() {
+        const {
+            currentUser: {
+                id,
+            },
+            userFriendProfileData: {
+                attributes: {
+                    user_id,
+                },
+            },
+        } = this.props;
+        id == user_id ? Router.pushRoute('/user/profile/friends') :
+            Router.pushRoute(`/users/profile/${user_id}/friends`);
+    }
     render() {
         const {
-            userData,
+            previewMode: {
+                isPreviewMode,
+                previewValue,
+            },
+            userFriendProfileData: {
+                attributes: {
+                    avatar,
+                    city,
+                    description,
+                    display_name,
+                    first_name,
+                    last_name,
+                    number_of_friends,
+                    province,
+                    profile_type,
+                    friends_visibility,
+                    user_id,
+                    email_hash,
+                    state,
+                },
+            },
+            handlePreviewPage,
             userProfileProfilelink,
         } = this.props;
         const {
             acceptButtonClicked,
             addButtonClicked,
             blockButtonClicked,
-            errorMessage,
             unfriendButtonClicked,
             confirmBlockModal,
             confirmUnfriendModal,
-            statusMessage,
-            successMessage,
         } = this.state;
-        const avatar = (typeof userData.avatar === 'undefined') || (userData.avatar === null) ? UserPlaceholder : userData.avatar;
-        const friendsVisibility = (typeof userData.friends_visibility === 'undefined') ? 0 : userData.friends_visibility;
-        let isBlocked = false;
-        let isFriendPending = false;
-        let isFriend = false; let isLimited = false; let isProfileOut = false; let isProfileIn = false;
-        let email = '';
-        let profileType = ''; let userProfileDeeplink = '';
-        let locationDetails = '';
-        let profileTypeValidation = '';
-        if (!_.isEmpty(userData)) {
-            const profile = userData.profile_type;
-            isBlocked = profile.substring(0, 7) === 'blocked' ? true : false;
-            isFriendPending = profile.substring(0, 7) === 'pending' ? true : false;
-            isFriend = profile === 'friends_profile' ? true : false;
-            isLimited = profile === 'limited_profile' ? true : false;
-            isProfileOut = profile === 'pending_profile_out' ? true : false;
-            isProfileIn = profile === 'pending_profile_in' ? true : false;
-            email = Buffer.from(userData.email_hash, 'base64').toString('ascii');
-            profileType = profile.substring(0, 7) === 'limited' ? '' : profile.substring(0, 7);
-            const locationDetailsCity = (!_.isEmpty(userData.city)) && userData.city !== 'null' ? userData.city : '';
-            const locationDetailsProvince = (!_.isEmpty(userData.province)) && userData.province !== 'null' ? userData.province : '';
-            if (locationDetailsCity === '' && locationDetailsProvince !== '') {
-                locationDetails = locationDetailsProvince;
-            } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
-                locationDetails = locationDetailsCity;
-            } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
-                locationDetails = `${userData.city}, ${userData.province}`;
-            }
-            profileTypeValidation = userData.profile_type.toUpperCase();
-        }
+        let userProfileDeeplink = '';
+        const isMyProfile = (profile_type === 'my_profile');
+        const friendText = (number_of_friends == 1) ? 'friend' : 'friends';
+        const showUserFriends = (friends_visibility === 0 ||
+            (profile_type === 'friends_profile' && friends_visibility === 1) ||
+            (isMyProfile && !isPreviewMode) || (isPreviewMode && friends_visibility === previewValue));
+
         if (!_.isEmpty(userProfileProfilelink)) {
             userProfileDeeplink = userProfileProfilelink.data.attributes['short-link'];
         }
+        const isBlocked = (profile_type.substring(0, 7) === 'blocked') ? true : false;
+        const isBlockedIn = (profile_type.includes('blocked_profile_in')) ? true : false
+        const isFriendPending = (profile_type.substring(0, 7) === 'pending') ? true : false;
+        const isIgnored = (profile_type === 'pending_profile_in' && state === 'IGNORED') ? true: false;
+        const isFriend = (profile_type === 'friends_profile') ? true : false;
+        const isLimited = (profile_type === 'limited_profile') ? true : false;
+        const isProfileOut = (profile_type === 'pending_profile_out') ? true : false;
+        const isProfileIn = (profile_type === 'pending_profile_in' && state !== 'IGNORED') ? true : false;
+        let email = ((!_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : ''));
         return (
-            <div>
-                <div className="profile-header-image user" />
-                <div className="profile-header">
-                    <Container>
-                        <Grid>
-                            <Grid.Row>
-                                <Grid.Column mobile={16} tablet={3} computer={2}>
-                                    <div className="profile-img-rounded">
-                                        <div className="pro-pic-wraper">
-                                            <Image src={avatar} circular/>
-                                        </div>
-                                    </div>
-                                </Grid.Column>
-                                <Grid.Column mobile={16} tablet={5} computer={7}>
-                                    <Grid stackable>
-                                        <Grid.Row>
-                                            <Grid.Column mobile={16} tablet={16} computer={16}>
-                                                <div className="ProfileHeaderWraper">
-                                                    <Header as="h3">
-                                                        <span className="font-s-10 type-profile">{profileType}</span>
-                                                        {userData.first_name}
-                                                        {' '}
-                                                        {userData.last_name}
-                                                        <span className="small m-0">
-                                                            &nbsp;
-                                                            {locationDetails}
-                                                        </span>
-                                                        {
-                                                            (friendsVisibility === 0 || (profileTypeValidation === 'FRIENDS_PROFILE' && friendsVisibility === 1)) && (
-                                                                <Header.Subheader>
-                                                                    <Icon name="users" />
-                                                                    {userData.number_of_friends}
-                                                                    &nbsp; friends
-                                                                </Header.Subheader>
-                                                            )
-                                                        }
-                                                    </Header>
-                                                </div>
-                                                <div>
-                                                    <Modal
-                                                        size="tiny"
-                                                        dimmer="inverted"
-                                                        className="chimp-modal"
-                                                        closeIcon
-                                                        closeOnEscape={false}
-                                                        closeOnDimmerClick={false}
-                                                        open={confirmBlockModal}
-                                                        onClose={() => { this.setState({ confirmBlockModal: false }); }}
-                                                    >
-                                                        <Modal.Header>
-                                                            Block
-                                                            {' '}
-                                                            {userData.first_name}
-                                                            {' '}
-                                                            {userData.last_name}?
-                                                        </Modal.Header>
-                                                        <Modal.Content>
-                                                            <Modal.Description className="font-s-16">
-                                                                Are you sure you want to block this user?
-                                                            </Modal.Description>
-                                                            <div className="btn-wraper pt-3 text-right">
-                                                                <Button
-                                                                    className="danger-btn-rounded-def c-small"
-                                                                    onClick={() => this.handleBlockUser(userData.user_id)}
-                                                                    disabled={blockButtonClicked}
-                                                                >
-                                                                    Block
-                                                                </Button>
-                                                                <Button
-                                                                    className="blue-bordr-btn-round-def c-small"
-                                                                    onClick={this.handleBlockCancelClick}
-                                                                    disabled={blockButtonClicked}
-                                                                >
-                                                                    Cancel
-                                                                </Button>
-                                                            </div>
-                                                        </Modal.Content>
-                                                    </Modal>
-                                                </div>
-                                                <div>
-                                                    <Modal
-                                                        size="tiny"
-                                                        dimmer="inverted"
-                                                        className="chimp-modal"
-                                                        closeIcon
-                                                        closeOnEscape={false}
-                                                        closeOnDimmerClick={false}
-                                                        open={confirmUnfriendModal}
-                                                        onClose={() => { this.setState({ confirmUnfriendModal: false }); }}
-                                                    >
-                                                        <Modal.Header>
-                                                            Unfriend
-                                                            {' '}
-                                                            {userData.first_name}
-                                                            {' '}
-                                                            {userData.last_name}?
-                                                        </Modal.Header>
-                                                        <Modal.Content>
-                                                            <Modal.Description className="font-s-16">
-                                                                Are you sure you want to unfriend this user?
-                                                            </Modal.Description>
-                                                            <div className="btn-wraper pt-3 text-right">
-                                                                <Button
-                                                                    className="danger-btn-rounded-def c-small"
-                                                                    onClick={() => this.handleUnfriendUser(userData.user_id)}
-                                                                    disabled={unfriendButtonClicked}
-                                                                >
-                                                                    Unfriend
-                                                                </Button>
-                                                                <Button
-                                                                    className="blue-bordr-btn-round-def c-small"
-                                                                    onClick={this.handleUnfriendCancelClick}
-                                                                    disabled={unfriendButtonClicked}
-                                                                >
-                                                                    Cancel
-                                                                </Button>
-                                                            </div>
-                                                        </Modal.Content>
-                                                    </Modal>
-                                                </div>
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    </Grid>
-                                </Grid.Column>
-                                {
-                                    !isBlocked && !_.isEmpty(userData) && (
-                                        <Grid.Column mobile={16} tablet={8} computer={7}>
-                                            <Grid stackable>
-                                                <Grid.Row>
-                                                    <Grid.Column width={16}>
-                                                        <div className="userProfileRightBtn">
-                                                            <input
-                                                                ref={(textarea) => this.textArea = textarea}
-                                                                value={userProfileDeeplink}
-                                                                type="hidden"
-                                                                id="txtDeeplinkUser"
-                                                            />
-                                                            {
-                                                                !isFriendPending && !isFriend && (
-                                                                    <Button
-                                                                        className="blue-btn-rounded"
-                                                                        onClick={() => this.handleAddToFriends(userData.user_id, email)}
-                                                                        disabled={addButtonClicked}
-                                                                        primary
-                                                                    >
-                                                                        Add Friend
-                                                                    </Button>
-                                                                )
-                                                            }                                                            
-                                                            {
-                                                                isProfileOut && (
-                                                                    <Button
-                                                                        className="blue-btn-rounded"
-                                                                        disabled
-                                                                        primary
-                                                                    >
-                                                                        Pending
-                                                                    </Button>
-                                                                )
-                                                            }
-                                                            {
-                                                                isProfileIn && (
-                                                                    <Button
-                                                                        className="blue-btn-rounded"
-                                                                        onClick={() => this.handleAcceptFriend(userData.user_id, email)}
-                                                                        disabled={acceptButtonClicked}
-                                                                        primary
-                                                                    >
-                                                                        Accept Friend Request
-                                                                    </Button>
-                                                                )
-                                                            }
-                                                            {
-                                                                isFriend && (
-                                                                    <Link className="lnkChange" route={`/chats/${userData.user_id}`}>
-                                                                        <Button
-                                                                            className="blue-btn-rounded"
-                                                                            primary
-                                                                        >
-                                                                            Message
-                                                                        </Button>
-                                                                    </Link>
-                                                                )
-                                                            }
-                                                            <Link className="lnkChange" route="/give/to/friend/new">
-                                                                <Button
-                                                                    className="blue-bordr-btn-round"
-                                                                    onClick={() => this.giveButtonClick(email, `${userData.first_name} ${userData.last_name}`, avatar)}
-                                                                >
-                                                                    Give
-                                                                </Button>
-                                                            </Link>
-                                                            {   
-                                                                <Dropdown
-                                                                    className="userEllips middleEllipse ml-1"
-                                                                    icon="ellipsis horizontal"
-                                                                    closeOnBlur
-                                                                >
-                                                                    <Dropdown.Menu>
-                                                                        {
-                                                                            <Dropdown.Item
-                                                                                text="Copy Profile URL"
-                                                                                onClick={this.handleCopyLink}
-                                                                            />
-                                                                        }
-                                                                        {
-                                                                            isFriend && (
-                                                                                <Dropdown.Item
-                                                                                    text="Unfriend"
-                                                                                    onClick={this.handleUnfriendModal}
-                                                                                />
-                                                                            )
-                                                                        }                                                                            
-                                                                        {
-                                                                            <Dropdown.Item
-                                                                                text="Block"
-                                                                                onClick={this.handleBlockModal}
-                                                                            />
-                                                                        }
-                                                                    </Dropdown.Menu>
-                                                                </Dropdown>
-                                                            }                                                            
-                                                        </div>
-                                                    </Grid.Column>
-                                                </Grid.Row>
-                                            </Grid>
-                                        </Grid.Column>
-                                    )
-                                }
-                            </Grid.Row>
-                            {
-                                statusMessage && (
-                                    <Grid.Row>
-                                        <Grid.Column width={16}>
-                                            <ModalStatusMessage 
-                                                message = {!_.isEmpty(successMessage) ? successMessage : null}
-                                                error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+            <Fragment>
+                <div className="user_profileImage">
+                    <Image src={isBlocked ? PlaceholderUser : avatar} />
+                </div>
+                <div className='user_profileDetails'>
+                    <Header className="usrName">{`${display_name}`}</Header>
+                    <input
+                        ref={(textarea) => this.textArea = textarea}
+                        value={userProfileDeeplink}
+                        type="hidden"
+                        id="txtDeeplinkUser"
+                    />
+                    <div>
+                        <Modal
+                            size="tiny"
+                            dimmer="inverted"
+                            className="chimp-modal"
+                            closeIcon
+                            closeOnEscape={false}
+                            closeOnDimmerClick={false}
+                            open={confirmBlockModal}
+                            onClose={() => { this.setState({ confirmBlockModal: false }); }}
+                        >
+                            <Modal.Header>
+                                Block
+                                {' '}
+                                {first_name}
+                                {' '}
+                                {last_name}?
+                            </Modal.Header>
+                            <Modal.Content>
+                                <p>
+                                    They won't be able to find your profile or message you on Charitable Impact. We won't let them know you blocked them.
+                                </p>
+                                <div className="block-unfriend-Modal-buttons">
+                                    <Button
+                                        className="red-btn-rounded-def"
+                                        onClick={() => this.handleBlockUser(user_id)}
+                                        disabled={blockButtonClicked}
+                                    >
+                                        Block
+                                    </Button>
+                                    <Button
+                                        className="blue-bordr-btn-round-def"
+                                        onClick={this.handleBlockCancelClick}
+                                        disabled={blockButtonClicked}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </Modal.Content>
+                        </Modal>
+                    </div>
+                    <div>
+                        <Modal
+                            size="tiny"
+                            dimmer="inverted"
+                            className="chimp-modal"
+                            closeIcon
+                            closeOnEscape={false}
+                            closeOnDimmerClick={false}
+                            open={confirmUnfriendModal}
+                            onClose={() => { this.setState({ confirmUnfriendModal: false }); }}
+                        >
+                            <Modal.Header>
+                                Unfriend
+                                {' '}
+                                {first_name}
+                                {' '}
+                                {last_name}?
+                            </Modal.Header>
+                            <Modal.Content>
+                                <p>
+                                    You and {first_name} {last_name} will no longer be friends on Charitable Impact.
+                                </p>
+                                <div className="block-unfriend-Modal-buttons">
+                                    <Button
+                                        className="red-btn-rounded-def"
+                                        onClick={() => this.handleUnfriendUser(user_id)}
+                                        disabled={unfriendButtonClicked}
+                                    >
+                                        Unfriend
+                                    </Button>
+                                    <Button
+                                        className="blue-bordr-btn-round-def"
+                                        onClick={this.handleUnfriendCancelClick}
+                                        disabled={unfriendButtonClicked}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </Modal.Content>
+                        </Modal>
+                    </div>
+                    <div className="userCity_friends">
+                        {(!_isEmpty(getLocation(city, province)))
+                            && (
+                                <p>{getLocation(city, province)}</p>
+                            )}
+                        {((showUserFriends) && !isBlocked)
+                            && (
+                                <div
+                                    className="userfriends"
+                                >
+                                    <Header
+                                        as='h5'
+                                        onClick={this.renderFriendsPage}
+                                    >
+                                        {`${(number_of_friends) && number_of_friends} ${friendText}`}
+                                    </Header>
+                                    {(isMyProfile && !isPreviewMode)
+                                        && (
+                                            <ProfilePrivacySettings
+                                                columnName='friends_visibility'
+                                                columnValue={friends_visibility}
                                             />
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                )
-                            }
-                        </Grid>
-                    </Container>
+                                        )}
+                                </div>
+                            )}
+                    </div>
+                    {isBlockedIn ? "" : <p className='textAboutuser'>{description}</p>}
+                    <div className="userButtonsWrap">
+                        {(isMyProfile && !isPreviewMode)
+                            && (
+                                <Fragment>
+                                    <Button
+                                        className='blue-bordr-btn-round-def m-w-100'
+                                        onClick={handlePreviewPage}
+                                    >
+                                        View what others see
+                                </Button>
+                                    <EditBasicProfile />
+                                    <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left'>
+                                        <Dropdown.Menu >
+                                            <Dropdown.Item
+                                                text='Copy profile URL'
+                                                onClick={this.handleCopyLink}
+                                            />
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </Fragment>
+                            )}
+                        {((!isMyProfile || (isPreviewMode && previewValue === 0)) && (!isFriendPending || isIgnored) && !isFriend && !isBlocked)
+                            && (
+                                <Button
+                                    className="blue-btn-rounded"
+                                    onClick={() => this.handleAddToFriends(user_id, email)}
+                                    disabled={addButtonClicked || isPreviewMode}
+                                    primary
+                                >
+                                    Add Friend
+                                </Button>
+                            )
+                        }
+                        {
+                            isProfileOut && (
+                                <Dropdown
+                                    className='userProfile_drpbtn'
+                                    icon='chevron down'
+                                    direction='left'
+                                    disabled={isPreviewMode}
+                                    trigger={(
+                                        <Button
+                                            className="blue-bordr-btn-round-def"
+                                        >
+                                            Pending
+                                        </Button>
+                                    )}
+                                >
+                                    <Dropdown.Menu >
+                                        <Dropdown.Item onClick={() =>this.handleRejectRequest('cancel')}>
+                                            Cancel<span className='mob-hide'> friend</span> request
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            )
+                        }
+                        {
+                            isProfileIn && (
+                                <Dropdown
+                                    className='userProfile_drpbtn m-w-100'
+                                    icon='chevron down'
+                                    direction='left'
+                                    disabled={isPreviewMode}
+                                    trigger={(
+                                        <Button
+                                            className='blue-btn-rounded-def'
+                                        >
+                                            Respond to friend request
+                                        </Button>
+                                    )} >
+                                    <Dropdown.Menu >
+                                        <Dropdown.Item
+                                            onClick={() => this.handleAcceptFriend(user_id, email)}
+                                            text='Accept'
+                                        />
+                                        <Dropdown.Item
+                                            onClick={() => this.handleRejectRequest('ignore')}
+                                            text='Ignore'
+                                        />
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            )
+                        }
+                        {
+                            (isFriend || (isPreviewMode && previewValue > 0)) && (
+                                <Link className="lnkChange" route={`/chats/${user_id}`}>
+                                    <Button
+                                        className="blue-btn-rounded"
+                                        primary
+                                        disabled={isPreviewMode}
+                                    >
+                                        Message
+                                    </Button>
+                                </Link>
+                            )
+                        }
+                        {(isBlocked && !isBlockedIn)
+                            && (
+                                <Button
+                                    className="grey-btn-rounded-def blockBtn"
+                                    disabled={true}
+                                >
+                                    Block
+                                </Button>
+                            )
+                        }
+                        {(!isMyProfile || isPreviewMode)
+                            && (
+                                <Fragment>
+                                    {!isBlocked
+                                        && (
+                                            <Link className="lnkChange" route="/give/to/friend/new">
+                                                <Button
+                                                    className="blue-bordr-btn-round"
+                                                    onClick={() => this.giveButtonClick(email, `${first_name} ${last_name}`, avatar)}
+                                                    disabled={isPreviewMode}
+                                                >
+                                                    Give
+                                        </Button>
+                                            </Link>
+                                        )
+                                    }
+                                    {!isBlockedIn &&
+                                        (
+                                            <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left' disabled={isPreviewMode}>
+                                                <Dropdown.Menu >
+                                                    <Dropdown.Item
+                                                        text='Copy profile URL'
+                                                        onClick={this.handleCopyLink}
+                                                    />
+                                                    {isFriend
+                                                        && (
+                                                            <Dropdown.Item
+                                                                text='Unfriend'
+                                                                onClick={this.handleUnfriendModal}
+                                                            />
+                                                        )}
+                                                    {!isBlocked
+                                                        && (
+                                                            <Dropdown.Item
+                                                                text='Block'
+                                                                onClick={this.handleBlockModal}
+                                                            />
+                                                        )}
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        )
+                                    }
+                                </Fragment>
+                            )
+                        }
+                    </div>
                 </div>
-                <div className="pb-3">
-                    <Container>
-                        <Header as="h4" className="underline">
-                            About
-                        </Header>
-                        <p className="font-s-14">
-                            {userData.description}
-                        </p>
-                    </Container>
-                </div>
-            </div>
+            </Fragment>
         );
     }
+}
+
+UserBasicProfile.defaultProps = {
+    previewMode: {
+        isPreviewMode: false,
+    },
+    userFriendProfileData: {
+        attributes: {
+            avatar: '',
+            city: '',
+            causes_visibility: null,
+            description: '',
+            first_name: '',
+            last_name: '',
+            number_of_friends: null,
+            province: '',
+            friends_visibility: null,
+        },
+    },
+}
+
+UserBasicProfile.propTypes = {
+    previewMode: PropTypes.shape({
+        isPreviewMode: bool,
+    }),
+    userFriendProfileData: PropTypes.shape({
+        attributes: PropTypes.shape({
+            avatar: string,
+            city: string,
+            causes_visibility: number,
+            description: string,
+            first_name: string,
+            last_name: string,
+            number_of_friends: number,
+            province: string,
+            friends_visibility: number,
+        }),
+    }),
 }
 
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileProfilelink: state.userProfile.userProfileProfilelink,
+        previewMode: state.userProfile.previewMode,
     };
 }
 
-export default (connect(mapStateToProps)(UserBasciProfile));
+const connectedComponent = withTranslation([
+    'common',
+])(connect(mapStateToProps)(UserBasicProfile));
+export {
+    connectedComponent as default,
+    UserBasicProfile,
+    mapStateToProps,
+};

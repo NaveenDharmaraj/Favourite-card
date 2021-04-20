@@ -89,7 +89,7 @@ class Profile extends React.Component {
         } = this.props;
         const formatMessage = t;
         let accountSettingsText = formatMessage('accountSettings');
-        let accountUrl = `/user/profile/basic`;
+        let accountUrl = `/user/profile/settings`;
         if (accountType === 'company') {
             accountSettingsText = formatMessage('companyAccountSettings');
             accountUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}/edit`;
@@ -105,41 +105,67 @@ class Profile extends React.Component {
                     className="account-popup"
                     position="bottom right"
                     open={this.state.popupOpen}
-                    onOpen={() => { this.setState({popupOpen: !this.state.popupOpen}); }}
-                    onClose={() => { this.setState({popupOpen: !this.state.popupOpen}); }}
+                    onOpen={() => { this.setState({ popupOpen: !this.state.popupOpen }); }}
+                    onClose={() => { this.setState({ popupOpen: !this.state.popupOpen }); }}
                     trigger={(
-                        <Menu.Item as="a" className={router.asPath.search('/user/profile') !== -1 ? 'user-img active' : 'user-img'}>
-                            <Image src={avatar || IconIndividual} style={{ width: '35px' }} circular />
+                        <Menu.Item as="a" className={(router.asPath.includes('/user/profile/basic') || router.asPath.includes('/user/profile/friends'))
+                            ? 'user-img active' : 'user-img'}>
+                            <Image src={avatar || IconIndividual} circular />
                         </Menu.Item>
                     )}
                 >
                     <Popup.Header>
                         <Table>
-                            <Table.Row>
-                                <Table.Cell><Image src={(avatar) || IconIndividual} style={{ width: '80px' }} circular /></Table.Cell>
-                                <Table.Cell>
-                                    {name}
-                                    <List link>
-                                        <Link route={accountUrl}>
-                                            <List.Item as="a">
-                                                {accountSettingsText}
-                                            </List.Item>
-                                        </Link>
-                                    </List>
-                                </Table.Cell>
-                            </Table.Row>
+                            { (accountType === 'personal') ? (
+                                <Link route={`/user/profile/basic`}>
+                                    <Table.Row className='userLink'>
+                                        <Table.Cell><Image src={avatar || IconIndividual} style={{ width: '80px' }} circular /></Table.Cell>
+                                        <Table.Cell>
+                                            {name}
+                                        </Table.Cell>
+                                    </Table.Row>
+                                </Link>
+                            ) : (
+                                <Table.Row>
+                                    <Table.Cell><Image src={avatar || IconIndividual} style={{ width: '80px' }} circular /></Table.Cell>
+                                    <Table.Cell>
+                                        {name}
+                                    </Table.Cell>
+                                </Table.Row>
+                            )}
+
                         </Table>
 
                     </Popup.Header>
                     <Popup.Content>
-                        <List link>
+                        <List divided link>
+                            { (accountType === 'personal') && (
+                                <Link route={'/user/favourites'}>
+                                    <List.Item as="a">
+                                        <List.Icon name='heart' />
+                                        <List.Content>
+                                            Favourites
+                                        </List.Content>
+                                    </List.Item>
+                                </Link>
+                            )}
+                            <Link route={accountUrl}>
+                                <List.Item as="a">
+                                    <List.Icon name='settings' />
+                                    <List.Content>
+                                        {accountSettingsText}
+                                    </List.Content>
+                                </List.Item>
+                            </Link>
                             {
                                 !_isEmpty(otherAccounts) && (
                                     <Fragment>
                                         <List.Item as="a" onClick={() => { this.openModal(); }}>
-                                            {formatMessage('switchAccounts')}
+                                            <List.Icon name='switchAcc' />
+                                            <List.Content>
+                                                {formatMessage('switchAccounts')}
+                                            </List.Content>
                                         </List.Item>
-                                        <Divider />
                                     </Fragment>
 
                                 )
@@ -149,17 +175,22 @@ class Profile extends React.Component {
                                     <Fragment>
                                         <Link href={`${RAILS_APP_URL_ORIGIN}/chimp-admin/users`}>
                                             <List.Item as="a">
-                                                {formatMessage('chimpAdmin')}
+                                                <List.Icon name='admin' />
+                                                <List.Content>
+                                                    {formatMessage('chimpAdmin')}
+                                                </List.Content>
                                             </List.Item>
                                         </Link>
-                                        <Divider />
                                     </Fragment>
                                 )
                             }
 
                             <Link route="/users/logout">
                                 <List.Item as="a">
-                                    {formatMessage('logout')}
+                                    <List.Icon name='logout' />
+                                    <List.Content>
+                                        {formatMessage('logout')}
+                                    </List.Content>
                                 </List.Item>
                             </Link>
                         </List>
