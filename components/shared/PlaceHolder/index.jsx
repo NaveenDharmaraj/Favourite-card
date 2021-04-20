@@ -51,6 +51,21 @@ const columnComponent = (column, placeholderType) => {
                     </Segment>
                 </div>,
             );
+        } else if (placeholderType === 'CardNew') {
+            columnComponents.push(
+                <Card>
+                    <Card.Content>
+                        <Placeholder>
+                            <Placeholder.Header image>
+                                <Placeholder.Line  length='full' />
+                                <Placeholder.Line length='short'/>
+                                <Placeholder.Line length='medium' />
+                                <Placeholder.Line length='long' />
+                            </Placeholder.Header>
+                        </Placeholder>
+                    </Card.Content>
+                </Card>,
+            );
         } else if (placeholderType === 'multiLine') {
             columnComponents.push(
                 <Grid.Column width={16}>
@@ -147,6 +162,12 @@ const PlaceholderGrid = (props) => {
         } else if (placeholderType === 'singleCard') {
             placeHolderComponent.push(
                 columnComponent(column, placeholderType)
+            );
+        } else if (placeholderType === 'CardNew') {
+            placeHolderComponent.push(
+                <div className="cardwrap">
+                    {columnComponent(column, placeholderType)}
+                </div>
             );
         } else if (placeholderType === 'multiLine') {
             placeHolderComponent.push(

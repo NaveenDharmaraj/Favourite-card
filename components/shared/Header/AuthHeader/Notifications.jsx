@@ -16,6 +16,7 @@ import placeholderUser from '../../../../static/images/no-data-avatar-user-profi
 import { distanceOfTimeInWords } from '../../../../helpers/utils';
 import eventApi from '../../../../services/eventApi';
 import {
+    ingnoreFriendRequest,
     updateUserPreferences,
 } from '../../../../actions/userProfile';
 import { getParamStoreConfig } from '../../../../actions/user';
@@ -40,7 +41,7 @@ class Notifications extends React.Component {
         this.renderbackImage = this.renderbackImage.bind(this);
     }
 
-    updateDeleteFlag(msgKey, msg, flag) {
+    updateDeleteFlag(msgKey, msg, flag, showUndo) {
         const {
             deletedItems,
             deleteTimeouts,
@@ -50,13 +51,13 @@ class Notifications extends React.Component {
             userInfo,
         } = this.props;
         if (flag) {
-            deletedItems.push(msg.id);
+            showUndo && deletedItems.push(msg.id);
             deleteTimeouts[msg.id] = setTimeout(() => {
                 eventApi.post('/notification/delete', {
                     id: msg.id,
                     user_id: userInfo.id,
                 });
-            }, 10000);
+            }, showUndo ? 10000 : 0);
         } else {
             deletedItems.splice(deletedItems.indexOf(msg.id), 1);
             clearTimeout(deleteTimeouts[msg.id]);
@@ -109,6 +110,24 @@ class Notifications extends React.Component {
         NotificationHelper.acceptFriendRequest(userInfo, dispatch, msg);
     }
 
+    rejectInvite(friendUserId, type, msg) {
+        const {
+            userInfo: {
+                attributes: {
+                    email,
+                },
+                id: currentUserId,
+            },
+            dispatch,
+        } = this.props;
+        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, type));
+        // .then(() => {
+        //     this.onNotificationMsgAction('delete', msg, false);
+        // })
+        // .catch(() => {
+
+        // });
+    }
     // eslint-disable-next-line class-methods-use-this
     splitNotifications(messages = []) {
         const {
@@ -168,7 +187,7 @@ class Notifications extends React.Component {
         }
         let list = [];
         messages.slice(0, 6).map((msg) => {
-        // const messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
+            // const messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
             let messagePart;
             if (!_isEmpty(msg) && msg.msg) {
                 messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
@@ -210,7 +229,17 @@ class Notifications extends React.Component {
                                 return Object.keys(msg.cta).map((ctaKey) => {
                                     const cta = msg.cta[ctaKey];
                                     if (cta.isWeb) {
-                                        return <Button key={ctaKey} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>;
+                                        const friendId = cta.user_id;
+                                        return (
+                                            <>  
+                                                <div className='NotifybtnWrap'>
+                                                    <Button key={ctaKey} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                                    {ctaKey === 'accept' &&
+                                                        <a className='ignore' onClick={() => this.rejectInvite(friendId, 'invitation', msg)}>Ignore</a>
+                                                    }
+                                                </div>
+                                            </>
+                                        );
                                     }
                                 });
                             }
@@ -275,10 +304,10 @@ class Notifications extends React.Component {
         }
     };
 
-    async onNotificationMsgAction(cta, msg) {
+    async onNotificationMsgAction(cta, msg, showUndo = true) {
         switch (cta) {
             case 'delete': {
-                this.updateDeleteFlag(msg._key, msg, true);
+                this.updateDeleteFlag(msg._key, msg, true, showUndo);
                 break;
             }
             case 'turnOff': {
@@ -339,7 +368,7 @@ class Notifications extends React.Component {
         const recentList = (recentItems && recentItems.length > 0) && this.renderlistItems(recentItems, 'new');
         const earlierList = (earlierItems && earlierItems.length > 0) && this.renderlistItems(earlierItems);
         let renderList = [];
-        if (recentList && recentList.length> 0 && earlierList && earlierList.length > 0) {
+        if (recentList && recentList.length > 0 && earlierList && earlierList.length > 0) {
             renderList = recentList.concat(earlierList).slice(0, 6);
         } else if (recentList && recentList.length > 0) {
             renderList = recentList;

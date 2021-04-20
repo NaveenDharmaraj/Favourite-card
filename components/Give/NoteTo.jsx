@@ -43,16 +43,17 @@ const NoteTo = (props) => {
         noteToCharity,
         noteToSelf,
         validity,
+        isEditModal,
     } = props;
     const currentCountNoteToSelf = (!_isEmpty(noteToSelf)) ? Math.max(0, (1000 - Number(noteToSelf.length))) : 1000;
-    const infoNoteToSelf = `${currentCountNoteToSelf} of 1000 characters left`;
+    const infoNoteToSelf = isEditModal? ' ' :`${currentCountNoteToSelf} of 1000 characters left`;
     const currentCountNoteToCharity = (!_isEmpty(noteToCharity)) ? Math.max(0, (1000 - Number(noteToCharity.length))) : 1000;
-    const infoNoteToCharity = `${currentCountNoteToCharity} of 1000 characters left`;
+    const infoNoteToCharity = isEditModal? ' ' :`${currentCountNoteToCharity} of 1000 characters left`;
     const giveFromType = (!_isEmpty(giveFrom.type)) ? giveFrom.type : 'user';
     const labelText = labelTextIds[giveFromType];
     return (
         <Fragment>
-            <Form.Field className="give_flow_field">
+            <Form.Field className="give_flow_field recurring_edit_Message">
                 <label htmlFor="noteToCharity">
                     {formatMessage(`noteTo:include${allocationType}MessageLabel`)}
                 </label>
@@ -96,7 +97,7 @@ const NoteTo = (props) => {
             {/* PM-585 Remove note to self for company and campaigns */}
             {(giveFromType === 'groups' || giveFromType === 'user') && (
                 <Fragment>
-                    <Form.Field className="give_flow_field">
+                    <Form.Field className="give_flow_field recurring_edit_noteToSelf">
                         <label htmlFor="noteToSelf" id="noteToSelfLabel">
                             {formatMessage(`noteTo:${labelText}`)}
                         </label>

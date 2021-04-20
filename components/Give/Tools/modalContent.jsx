@@ -64,11 +64,11 @@ function ModalContent(props) {
             /> */}
         </Form>
     );
-};
+}
 
 ModalContent.defaultProps = {
-    placeholder: "Amount",
+    placeholder: 'Amount',
     showLabel: true,
     showDollarIcon: true
-}
+};
 export default ModalContent;

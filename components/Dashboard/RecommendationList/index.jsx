@@ -250,7 +250,7 @@ class RecommendationList extends React.Component {
                                 <Header as="h3">
                                     <Header.Content>
                                         Discovered for you
-                                        <span className="small">Suggestions based on your interests. </span>
+                                        <span className="small">See suggestions based on your interests. </span>
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>

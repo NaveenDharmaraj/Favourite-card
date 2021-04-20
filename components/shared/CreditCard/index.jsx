@@ -307,7 +307,7 @@ class CreditCard extends React.Component {
                         errorMessage={formatMessage('giveCommon:creditCardErrorMessages.invalidCardNameError')}
                     />
                 </Form.Field>
-                <Form.Group widths="equal">
+                <Form.Group widths="equal" className="Expiry_full">
                     <Form.Field>
                         <label htmlFor="card-expiration">
                             {formatMessage('giveCommon:creditCard.expiryDateLabel')}
@@ -327,7 +327,7 @@ class CreditCard extends React.Component {
                         <label htmlFor="card-cvv">
                             {formatMessage('giveCommon:creditCard.cvvLabel')}
                         </label>
-                        <Popup
+                        {/* <Popup
                             content={<Image src={cvvImg} />}
                             position="top center"
                             trigger={(
@@ -338,7 +338,7 @@ class CreditCard extends React.Component {
                                     size="large"
                                 />
                             )}
-                        />
+                        /> */}
                         <CardCVCElement
                             className="field fieldCC"
                             id="card-cvv"
