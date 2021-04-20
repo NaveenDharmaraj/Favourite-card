@@ -113,7 +113,7 @@ class EmailDetails extends React.Component {
         } = this.state;
         const emailData = (
             <Fragment>
-                <span className="font-s-16">{email}</span>
+                <span className="font-s-17">{email}</span>
                 {isPrimary
                     && (
                         <span className="primary">Primary</span>

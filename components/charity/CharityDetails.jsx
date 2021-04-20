@@ -58,6 +58,7 @@ class CharityDetails extends React.Component {
                     name,
                     formattedDescription,
                     formattedDescriptionNew,
+                    showActivityNew,
                 },
                 id: profileId,
                 type,
@@ -92,7 +93,7 @@ class CharityDetails extends React.Component {
                                     <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
                                         {!_isEmpty(formattedDescription)
                                             && <p data-test="Charity_CharityDetails_description">{ReactHtmlParser(formattedDescription)}</p>}
-                                        {!_isEmpty(formattedDescriptionNew)
+                                        {(!_isEmpty(formattedDescriptionNew) && showActivityNew)
                                             && <p data-test="Charity_CharityDetails_new_description">{ReactHtmlParser(formattedDescriptionNew)}</p>}
                                     </Grid.Column>
                                 </Grid.Row>
@@ -125,6 +126,7 @@ CharityDetails.defaultProps = {
             formattedDescriptionNew: '',
             location: '',
             name: '',
+            showActivityNew: false,
         },
         id: '',
         type: '',
@@ -147,6 +149,7 @@ CharityDetails.propTypes = {
             formattedDescriptionNew: string,
             location: string,
             name: string,
+            showActivityNew: bool,
         }),
         id: string,
         type: string,
