@@ -47,7 +47,7 @@ class Layout extends React.Component {
             isMobile,
             userInfo
         } = this.props;
-        if (window !== 'undefined' && ((isMobile && window.innerWidth > 991) || !isMobile && window.innerWidth < 992)) {
+        if (window !== 'undefined' && ((isMobile && window.innerWidth > 1198) || !isMobile && window.innerWidth < 1199)) {
             storage.set('windowSize', window.innerWidth, 'cookie');
             location.reload();
         }
@@ -144,7 +144,7 @@ class Layout extends React.Component {
             isMobile
         } = this.props;
         const isSSR = typeof window === 'undefined';
-        const ssrWidth = isMobile ? 990 : 1000;
+        const ssrWidth = isMobile ? 1195 : 1199;
         return isSSR ? ssrWidth : window.innerWidth;
     }
 
@@ -204,7 +204,7 @@ class Layout extends React.Component {
                 </Head>
                 <div>
                     <ErrorBoundary>
-                        <Responsive {...widthProp} minWidth={320} maxWidth={991}>
+                        <Responsive {...widthProp} minWidth={320} maxWidth={1198}>
                             <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}>
                                 <div className={disableMinHeight ? "" : "chimpLayout"}>
                                     {children}
@@ -228,7 +228,7 @@ class Layout extends React.Component {
                                 </Container>
                             }
                         </Responsive>
-                        <Responsive {...widthProp} minWidth={992}>
+                        <Responsive {...widthProp} minWidth={1199}>
                             <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader} />
                             {!_.isEmpty(appErrors) &&
                                 <Container

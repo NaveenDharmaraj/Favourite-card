@@ -120,12 +120,16 @@ class CausesMigration extends React.Component {
             const causesBlock = [];
             if (!_.isEmpty(causesList)) {
                 causesList.forEach((cause, i) => {
-                    causesBlock.push(<SingleCause
-                        parentHandleCauses={this.handleCauses}
-                        userCauses={userCauses}
-                        cause={cause}
-                        index={i % 12}
-                    />);
+                    causesBlock.push(
+                        <Grid.Column computer={4} tablet={8} mobile={16}>
+                            <SingleCause
+                                parentHandleCauses={this.handleCauses}
+                                userCauses={userCauses}
+                                cause={cause}
+                                index={i % 12}
+                            />
+                        </Grid.Column>
+                    );
                 });
             }
             return causesBlock;

@@ -1,201 +1,123 @@
 import React from 'react';
-import _ from 'lodash';
-import {
-    Container,
-    Tab,
-} from 'semantic-ui-react';
 import {
     connect,
 } from 'react-redux';
-import dynamic from 'next/dynamic';
-
 import {
-    getUserProfileBasic,
-} from '../actions/userProfile';
-import Layout from '../components/shared/Layout';
-import BasicProfile from '../components/MyProfile/BasicProfile';
-import EditProfileBasic from '../components/MyProfile/EditBasicProfile';
-import EditCharitableInterest from '../components/MyProfile/EditCharitableInterest';
-const Friends = dynamic(() => import('../components/MyProfile/Friends'), {
-    ssr: false
-});
-const Settings = dynamic(() => import('../components/MyProfile/Settings'), {
-    ssr: false
-});
-import { Router } from '../routes';
+    string,
+    func,
+    PropTypes,
+} from 'prop-types';
+import {
+    Dimmer,
+    Loader,
+} from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 
-class MyProfile extends React.Component {
+import '../static/less/userProfile.less';
+import Layout from '../components/shared/Layout';
+import {
+    getUserFriendProfile,
+} from '../actions/userProfile';
+import UserProfileWrapper from '../components/UserProfile';
+
+class Myprofile extends React.Component {
     static async getInitialProps({ query }) {
         return {
-            pageName: query.slug,
-            settingName: query.step,
+            friendUserId: query.slug,
             namespacesRequired: [
                 'giveCommon',
             ],
         };
     }
 
-    constructor(props) {
-        super(props);
-        const {
-            pageName,
-        } = this.props;
-        const activeTabIndex = _.isEmpty(pageName) ? 0 : this.getPageIndexByName(pageName);
-        this.state = {
-            activeTabIndex,
-        };
-        this.handleTab = this.handleTab.bind(this);
-    }
-
     componentDidMount() {
         const {
-            currentUser,
-            dispatch,
-        } = this.props;
-        if (!_.isEmpty(currentUser)) {
-            const {
-                id,
+            currentUser: {
                 attributes: {
                     email,
                 },
-            } = currentUser;
-            getUserProfileBasic(dispatch, email, id, id);
-        }
-    }
-
-    getPageIndexByName(pageName) {
-        switch (pageName) {
-            case 'basic':
-                return 0;
-            case 'charitableinterest':
-                return 1;
-            case 'friends':
-                return 2
-            case 'settings':
-                return 3
-            default:
-                break;
-        }
-    }
-
-    handleTab(event, data) {
-        switch (data.activeIndex) {
-            case 0:
-                Router.pushRoute('/user/profile/basic');
-                break;
-            case 1:
-                Router.pushRoute('/user/profile/charitableinterest');
-                break;
-            case 2:
-                Router.pushRoute('/user/profile/friends');
-                break;
-            case 3:
-                Router.pushRoute('/user/profile/settings');
-                break;
-            default:
-                break;
-        }
-        this.setState({
-            activeTabIndex: data.activeIndex
-        });
-    }
-
-    panes = [
-        {
-            menuItem: 'Basics',
-            render: () => {
-                const {
-                    userProfileBasicData,
-                } = this.props;
-                let userData = '';
-                if (userProfileBasicData
-                    && userProfileBasicData.data
-                    && _.size(userProfileBasicData.data) > 0) {
-                    userData = userProfileBasicData.data[0].attributes;
-                }
-                return (
-                    <Tab.Pane attached={false}>
-                        <EditProfileBasic userData={userData} />
-                    </Tab.Pane>
-                );
-            }
-        },
-        {
-
-            menuItem: 'Your causes and topics',
-            render: () => {
-                return (
-                    <Tab.Pane attached={false}>
-                        <EditCharitableInterest />
-                    </Tab.Pane>
-                );
+                id: currentUserId,
             },
-        },
-        {
-            menuItem: 'Friends',
-            render: () => (
-                <Tab.Pane attached={false} className="user-messaging">
-                    <Friends settingName={this.props.settingName} />
-                </Tab.Pane>
-            ),
-        },
-        {
-            menuItem: 'Settings',
-            render: () => (
-                <Tab.Pane attached className="user-messaging">
-                    <Settings settingName={this.props.settingName} />
-                </Tab.Pane>
-            ),
-        },
-    ];
+            dispatch,
+            friendUserId,
+        } = this.props;
+        const updatedFriendId = Number(friendUserId) ? friendUserId : currentUserId;
+        !_isEmpty(currentUserId) && dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
+    }
 
+    componentDidUpdate(prevProps) {
+        const {
+            currentUser: {
+                attributes: {
+                    email,
+                },
+                id: currentUserId,
+            },
+            friendUserId,
+            dispatch,
+        } = this.props;
+        const updatedFriendId = Number(friendUserId) ? friendUserId : currentUserId;
+        if (!_isEqual(friendUserId, prevProps.friendUserId)) {
+            dispatch({
+                payload: {
+                },
+                type: 'USER_PROFILE_RESET_DATA',
+            });
+            dispatch(getUserFriendProfile(email, updatedFriendId, currentUserId));
+        }
+    }
     render() {
         const {
-            userProfileBasicData,
-            currentUser,
+            userFriendProfileData,
         } = this.props;
-        const {
-            activeTabIndex,
-        } = this.state;
-        let userData = '';
-        if (userProfileBasicData
-            && userProfileBasicData.data
-            && _.size(userProfileBasicData.data) > 0) {
-            userData = userProfileBasicData.data[0].attributes;
-        }
-        let userAvatar = '';
-        if (!_.isEmpty(currentUser)) {
-            userAvatar = currentUser.attributes.avatar;
-        }
         return (
-            <Layout authRequired stripe>
-                <BasicProfile userData={userData} avatar={userAvatar} />
-                <div className="pb-3">
-                    <Container>
-                        <div className="charityTab n-border user-profile-settings">
-                            <Tab
-                                activeIndex={activeTabIndex}
-                                menu={{
-                                    pointing: true,
-                                    secondary: true,
-                                }}
-                                panes={this.panes}
-                                onTabChange={this.handleTab}
-                            />
-                        </div>
-                    </Container>
-                </div>
+            <Layout authRequired>
+                {!_isEmpty(userFriendProfileData)
+                    ? (
+                        <UserProfileWrapper {...this.props} showFriendsPage={false} />
+                    )
+                    : (
+                        <Dimmer active inverted>
+                            <Loader />
+                        </Dimmer>
+                    )}
             </Layout>
         );
     }
 }
 
+Myprofile.defaultProps = {
+    currentUser: {
+        attributes: {
+            email: '',
+        },
+        id: '',
+
+    },
+    dispatch: () => { },
+    friendUserId: '',
+    userFriendProfileData: {},
+};
+
+Myprofile.propTypes = {
+    currentUser: PropTypes.shape({
+        attributes: PropTypes.shape({
+            email: string,
+        }),
+        id: string,
+
+    }),
+    dispatch: func,
+    friendUserId: string,
+    userFriendProfileData: PropTypes.shape({}),
+};
+
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
-        userProfileBasicData: state.userProfile.userProfileBasicData,
-        userCausesList: state.userProfile.userCausesList,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
     };
 }
 
-export default (connect(mapStateToProps)(MyProfile));
+export default (connect(mapStateToProps)(Myprofile));

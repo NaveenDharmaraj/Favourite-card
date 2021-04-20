@@ -1,11 +1,13 @@
 import _orderBy from 'lodash/orderBy';
 import _isEmpty from 'lodash/isEmpty';
+import _size from 'lodash/size';
+import { Button } from 'semantic-ui-react';
 
 const getSelectedYear = (beneficiaryFinance) => {
     let selectedYear = null;
     beneficiaryFinance.some((year) => {
         if ((year.expenses.find((o) => o.name === 'total_expense').value > 0)
-        || (year.revenues.find((o) => o.name === 'revenue_total').value > 0)) {
+            || (year.revenues.find((o) => o.name === 'revenue_total').value > 0)) {
             selectedYear = year.returns_year;
             return true;
         }
@@ -153,11 +155,63 @@ const getLocation = (city, province) => {
     return location;
 };
 
+const getPrivacyType = (visibility) => {
+    let type = '';
+    switch (visibility) {
+        case 0:
+            type = 'globe';
+            break;
+        case 1:
+            type = 'users';
+            break;
+        case 2:
+            type = 'lock';
+            break;
+        default:
+            break;
+    }
+    return type;
+};
+
+/**
+ * Displaying see more button for pagination
+ * @param {boolean} loader
+ * @param {handleSeeMore} cb - The callback that handles the onClick event of see more.
+ * @return {HTMLElement} returns a see more button
+ */
+const displaySeeMoreButton = (loader = false, handleSeeMore = () => { }) => {
+    return (
+        <div className="text-centre">
+            <Button
+                className="blue-bordr-btn-round-def"
+                onClick={handleSeeMore}
+                loading={loader}
+                disabled={loader}
+                content="See more"
+            />
+        </div>
+    )
+};
+/**
+ * Display the record counts in the array
+ * @param {Array} dataArr total length of the data array loaded
+ * @param { number } totalRecordCount total number of records present
+ * @return {HTMLElement} returns the count of records and total records
+ */
+const displayRecordCount = (dataArr = [], totalRecordCount = 0) => {
+    const countText = `Showing ${_size(dataArr)} of ${totalRecordCount}`;
+    return (
+        <div className="result">{countText}</div>
+    );
+}
 export {
     createChartData,
+    displayRecordCount,
+    displaySeeMoreButton,
     formatGraphData,
     getChartIndex,
     getSelectedYear,
     formatChartAmount,
     getLocation,
+    getPrivacyType,
 };

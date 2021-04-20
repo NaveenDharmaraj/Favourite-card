@@ -26,6 +26,7 @@
     "inviteFriends": "Invite friends",
     "anonymousUser": "Anonymous user",
     "addFriend": "Add friend",
+    "accept": "Accept",
     "pending": "Pending",
     "blocked": "Blocked",
     "admin": "Admin",
@@ -80,5 +81,6 @@
     "givingGroupMemberText": "Another Giving Group that you're a member of ",
     "givingGroupNotMemberText": "It looks like you're not yet a member of any other groups",
     "friendText": " One of your friends on Charitable Impact",
-    "searchText": " A different charity, Giving Group, or Campaign that you want to search for"
+    "searchText": " A different charity, Giving Group, or Campaign that you want to search for",
+    "messageText": "Message"
 }

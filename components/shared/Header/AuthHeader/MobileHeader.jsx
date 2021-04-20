@@ -13,7 +13,7 @@ import {
     Accordion,
 } from "semantic-ui-react";
 import {
-  connect,
+    connect,
 } from 'react-redux';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
@@ -25,13 +25,15 @@ import notificationIcon from '../../../../static/images/icons/icon-notification.
 import messageIcon from '../../../../static/images/icons/icon-message.svg';
 import logoutIcon from '../../../../static/images/icons/logout.svg';
 import settingsIcon from '../../../../static/images/icons/icon-account_settings.svg';
+import favouritesIcon from '../../../../static/images/icons/favourite.svg';
 import MainNavItem from './MainNavItem';
 import { getMainNavItems } from '../../../../helpers/utils';
-import { Link } from '../../../../routes';
+import Link from '../../../shared/Link';
 import Notifications from './Notifications';
 import Chat from './Chat';
 import Give from './Give';
 import SwitchAccountModal from './SwitchAccountModal';
+import IconIndividual from '../../../../static/images/no-data-avatar-user-profile.png';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -40,17 +42,17 @@ const {
 } = publicRuntimeConfig;
 
 const NavBarMobile = ({
-  children,
-  onPusherClick,
-  onToggle,
-  visible,
-  currentAccount,
-  formatMessage,
-  notificationUpdate,
-  handleClick,
-  activeIndex,
-  onSwitchClick,
-  otherAccounts,
+    children,
+    onPusherClick,
+    onToggle,
+    visible,
+    currentAccount,
+    formatMessage,
+    notificationUpdate,
+    handleClick,
+    activeIndex,
+    onSwitchClick,
+    otherAccounts,
 }) => {
     const {
         accountType,
@@ -60,7 +62,8 @@ const NavBarMobile = ({
     } = currentAccount;
     const menuLinks = getMainNavItems(accountType, slug);
     let accountSettingsText = formatMessage('accountSettings');
-    let accountUrl = `/user/profile/basic`;
+    let accountUrl = `/user/profile/settings`;
+    let favouritesUrl = `/user/favourites`;
     let logoUrl = `/dashboard`;
     let isExternal = false;
     if (accountType === 'company') {
@@ -85,20 +88,22 @@ const NavBarMobile = ({
                 <Menu.Item className="userPrifileHeader">
                     <List verticalAlign='middle'>
                         <List.Item>
-                            <Image avatar src={avatar}/>
+                            <Image avatar src={avatar || IconIndividual} />
                             <List.Content>
-                                <div className="name">
-                                    {name}
-                                </div>
-                                <div className="iconWraper smo-d-none">
+                                <Link route={`/user/profile/basic`} activeClassName="active">
+                                    <div className='name' onClick={onPusherClick}>
+                                        {name}
+                                    </div>
+                                </Link>
+                                <div className="iconWraper smo-d-none md-d-none">
                                     <Link route='/notifications/all'>
-                                        <a className={`${notificationUpdate ? ' new' : ''}`}>
-                                            <Image src={notificationIcon}/>
+                                        <a className={`${notificationUpdate ? ' new' : ''}`} onClick={onPusherClick}>
+                                            <Image src={notificationIcon} />
                                         </a>
                                     </Link>
                                     <Link route='/chats/all'>
-                                        <a>
-                                            <Image src={messageIcon}/>
+                                        <a onClick={onPusherClick}>
+                                            <Image src={messageIcon} />
                                         </a>
                                     </Link>
                                 </div>
@@ -106,7 +111,7 @@ const NavBarMobile = ({
                         </List.Item>
                     </List>
                 </Menu.Item>
-                <Link route={logoUrl}>
+                <Link route={logoUrl} activeClassName="active">
                     <Menu.Item
                         as="a"
                         onClick={onPusherClick}
@@ -114,25 +119,26 @@ const NavBarMobile = ({
                         Dashboard
                     </Menu.Item>
                 </Link>
-                <Link route='/search'>
-                    <Menu.Item
-                        as="a"
-                        onClick={onPusherClick}
-                    >
-                        Explore
-                    </Menu.Item>
-                </Link>
                 {menuLinks.map((item) => <MainNavItem {...item} onPusherClick={onPusherClick} />)}
+                {(accountType === 'personal') && (
+                    <Link route={favouritesUrl} activeClassName="active">
+                        <Menu.Item as="a" onClick={onPusherClick}>
+                            <span className="mobMenuLeftIcon settingsIcon"><Image src={favouritesIcon} /></span>
+                                Favourites
+                        </Menu.Item>
+                    </Link>
+                )
+                }
                 {
                     (!isExternal) ? (
-                        <Link route={accountUrl}>
-                            <Menu.Item as='a'><span className="mobMenuLeftIcon settingsIcon"><Image src={settingsIcon}/></span>{accountSettingsText}</Menu.Item>
+                        <Link route={accountUrl} activeClassName="active">
+                            <Menu.Item as='a' onClick={onPusherClick}><span className="mobMenuLeftIcon settingsIcon"><Image src={settingsIcon} /></span>{accountSettingsText}</Menu.Item>
                         </Link>
                     ) : (
-                        <a href={accountUrl}>
-                            <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={settingsIcon}/></span>{accountSettingsText}</Menu.Item>
-                        </a>
-                    )
+                            <a href={accountUrl} activeClassName="active">
+                                <Menu.Item as='a' onClick={onPusherClick}><span className="mobMenuLeftIcon"><Image src={settingsIcon} /></span>{accountSettingsText}</Menu.Item>
+                            </a>
+                        )
                 }
                 {/* {
                     !_isEmpty(otherAccounts) && (
@@ -145,7 +151,7 @@ const NavBarMobile = ({
                     )
                 } */}
                 <Link route='/users/logout'>
-                    <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={logoutIcon}/></span>Log out</Menu.Item>
+                    <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={logoutIcon} /></span>Log out</Menu.Item>
                 </Link>
             </Sidebar>
             <Sidebar.Pusher
@@ -155,7 +161,7 @@ const NavBarMobile = ({
                 <Menu secondary className="fixed-header">
                     <Give />
                     <Menu.Item className="logoImg">
-                        <Link route={logoUrl}>
+                        <Link route={logoUrl} activeClassName="active">
                             <Image src={logo} />
                         </Link>
                     </Menu.Item>
@@ -164,15 +170,15 @@ const NavBarMobile = ({
                         <Chat />
                         <Menu.Item className="mobSearchIcon">
                             <Link route="/search">
-                                <Image src={searchIcon}/>
+                                <Image src={searchIcon} />
                             </Link>
                         </Menu.Item>
                         <Menu.Item onClick={onToggle}>
                             <div class="nav-icon3">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
                             </div>
                         </Menu.Item>
                     </Menu.Menu>
@@ -184,32 +190,32 @@ const NavBarMobile = ({
 }
 
 class MobileHeader extends Component {
-  state = {
-    visible: false,
-    open: false,
-  };
-  state = { activeIndex: -1 };
+    state = {
+        visible: false,
+        open: false,
+    };
+    state = { activeIndex: -1 };
 
-  handleClick = (e, titleProps) => {
-    const { index } = titleProps
-    const { activeIndex } = this.state
-    const newIndex = activeIndex === index ? -1 : index
+    handleClick = (e, titleProps) => {
+        const { index } = titleProps
+        const { activeIndex } = this.state
+        const newIndex = activeIndex === index ? -1 : index
 
-    this.setState({ activeIndex: newIndex })
-  }
+        this.setState({ activeIndex: newIndex })
+    }
 
-  handlePusher = () => {
-    const { visible } = this.state;
-    if (visible) this.setState({ visible: false });
-  };
+    handlePusher = () => {
+        const { visible } = this.state;
+        if (visible) this.setState({ visible: false });
+    };
 
-  handleToggle = () => this.setState({ visible: !this.state.visible });
+    handleToggle = () => this.setState({ visible: !this.state.visible });
 
-  openModal = () => {
-    this.setState({
-        open: true,
-    });
-  };
+    openModal = () => {
+        this.setState({
+            open: true,
+        });
+    };
 
     closeModal = () => {
         this.setState({
@@ -217,44 +223,44 @@ class MobileHeader extends Component {
         });
     };
 
-  render() {
-    const {
-        children,
-        currentAccount,
-        notificationUpdate,
-    } = this.props;
-    const formatMessage = this.props.t;
-    const { visible } = this.state;
-    const { activeIndex } = this.state
-    return (
-        <Fragment>
-            <NavBarMobile
-            onPusherClick={this.handlePusher}
-            onToggle={this.handleToggle}
-            handleClick={this.handleClick}
-            visible={this.state.visible}
-            currentAccount={currentAccount}
-            formatMessage={formatMessage}
-            activeIndex={activeIndex}
-            notificationUpdate={notificationUpdate}
-            onSwitchClick={this.openModal}
-            otherAccounts={this.props.otherAccounts}
-            >
-                {children}
-            </NavBarMobile>
-            {
-                this.state.open && (
-                    <SwitchAccountModal
-                        accounts={this.props.otherAccounts}
-                        close={this.closeModal}
-                        open={this.state.open}
-                    />
-                )
-            }
-        </Fragment>
+    render() {
+        const {
+            children,
+            currentAccount,
+            notificationUpdate,
+        } = this.props;
+        const formatMessage = this.props.t;
+        const { visible } = this.state;
+        const { activeIndex } = this.state
+        return (
+            <Fragment>
+                <NavBarMobile
+                    onPusherClick={this.handlePusher}
+                    onToggle={this.handleToggle}
+                    handleClick={this.handleClick}
+                    visible={this.state.visible}
+                    currentAccount={currentAccount}
+                    formatMessage={formatMessage}
+                    activeIndex={activeIndex}
+                    notificationUpdate={notificationUpdate}
+                    onSwitchClick={this.openModal}
+                    otherAccounts={this.props.otherAccounts}
+                >
+                    {children}
+                </NavBarMobile>
+                {
+                    this.state.open && (
+                        <SwitchAccountModal
+                            accounts={this.props.otherAccounts}
+                            close={this.closeModal}
+                            open={this.state.open}
+                        />
+                    )
+                }
+            </Fragment>
 
-    );
-  }
+        );
+    }
 }
 
 const mapStateToProps = (state) => ({
