@@ -705,14 +705,36 @@ class Friend extends React.Component {
     }
     populateFrequenyOptions(date) {
         const months = fullMonthNames(this.props.t);
-        let dateText = date.getDate() + 'th';
-        if (Number(date.getDate()) === 1) {
-            dateText = '1st'
-        } else if (Number(date.getDate()) === 2) {
-            dateText = '2nd'
-        } else if (Number(date.getDate()) === 3) {
-            dateText = '3rd'
+        const selectedMOnth = months[date.getMonth()];
+        const selectedDate = Number(date.getDate());
+        let monthlyText = '';
+        if( (selectedMOnth === 'February' && (selectedDate === 28 || selectedDate === 29))
+            || (selectedDate === 30 || selectedDate === 31) ){
+                monthlyText = 'Repeat monthly on the last day of the month';
+        } else {
+            let dateText = date.getDate() + 'th';
+            if (selectedDate > 3 && selectedDate < 21) {
+                dateText = date.getDate() + 'th';
+            } else {
+                switch (selectedDate % 10) {
+                    case 1:
+                        dateText =  date.getDate() + "st";
+                        break;
+                    case 2:
+                        dateText = date.getDate() + "nd";
+                        break;
+                    case 3:
+                        dateText = date.getDate() + "rd";
+                        break;
+                    default:
+                        dateText = date.getDate() + "th";
+                        break;
+                  }
+            }
+            monthlyText = `Repeat monthly on the ${dateText}`;
         }
+
+
         return [
             {
                 text: 'Send once',
@@ -723,7 +745,7 @@ class Friend extends React.Component {
                 value: 'weekly',
             },
             {
-                text: `Repeat monthly on the ${dateText}`,
+                text: monthlyText,
                 value: 'monthly',
             },
             {

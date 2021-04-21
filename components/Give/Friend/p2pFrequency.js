@@ -1,5 +1,5 @@
 import {
-    Form, Select
+    Form, Select,
 } from 'semantic-ui-react';
 const P2pFrequency = ({ frequencyObject, handleSendMoneyInputChange }) => {
     return (
@@ -26,13 +26,15 @@ const P2pFrequency = ({ frequencyObject, handleSendMoneyInputChange }) => {
 
 P2pFrequency.defaultProps = {
     frequencyObject: {
-        options: [{
-            text: 'Send once',
-            value: 'once',
-        },],
-        value: 'once'
+        options: [
+            {
+                text: 'Send once',
+                value: 'once',
+            },
+        ],
+        value: 'once',
     },
     handleSendMoneyInputChange: () => { },
 };
 
-export default P2pFrequency; 
+export default P2pFrequency;
