@@ -246,6 +246,7 @@ const EditMonthlyDepositModal = ({ currentMonthlyDepositAmount, t, paymentInstru
                             formatMessage={formatMessage}
                             options={paymentInstrumenOptions}
                             validity={validity}
+                            fromEdit={true}
                         />
                         {isCreditCardModalOpen &&
                             <NewCreditCard

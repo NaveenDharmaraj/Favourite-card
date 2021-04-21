@@ -8,6 +8,7 @@ import {
     Placeholder,
 } from 'semantic-ui-react';
 
+import { Link } from '../../../routes';
 import FormValidationErrorMessage from '../FormValidationErrorMessage';
 
 function PaymentInstruments(props) {
@@ -20,6 +21,7 @@ function PaymentInstruments(props) {
         handleInputChange,
         options,
         validity,
+        fromEdit,
     } = props;
     let iconClass = {
         amex: 'cardExpress',
@@ -73,6 +75,21 @@ function PaymentInstruments(props) {
                                 value={creditCard.value}
                             />
                         </div>
+                        {(fromEdit)
+                            && (
+                                <p>
+                                    <span>
+                                        {formatMessage('giveCommon:creditCardEditMessagePart1')}
+                                    &nbsp;
+                                        <Link route='profile/settings/creditcard'>
+                                            {formatMessage('giveCommon:creditCardEditMessagePart2')}
+                                        </Link>
+                                    &nbsp;
+                                        {formatMessage('giveCommon:creditCardEditMessagePart3')}
+                                    </span>
+                                </p>
+                            )
+                        }
                     </Form.Field>
                 </Fragment>
             );
