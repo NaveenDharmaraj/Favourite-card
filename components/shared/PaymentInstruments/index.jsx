@@ -77,8 +77,7 @@ function PaymentInstruments(props) {
                         </div>
                         {(fromEdit)
                             && (
-                                <p>
-                                    <span>
+                                <p className="payment_method">
                                         {formatMessage('giveCommon:creditCardEditMessagePart1')}
                                     &nbsp;
                                         <Link route='profile/settings/creditcard'>
@@ -86,7 +85,7 @@ function PaymentInstruments(props) {
                                         </Link>
                                     &nbsp;
                                         {formatMessage('giveCommon:creditCardEditMessagePart3')}
-                                    </span>
+
                                 </p>
                             )
                         }
