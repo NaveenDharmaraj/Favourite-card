@@ -128,6 +128,13 @@ const user = (state = {}, action) => {
                 upcomingTransactionsMeta: action.payload.upcomingTransactionsMeta,
             };
             break;
+        case 'GET_UPCOMING_P2P_TRANSACTIONS':
+            newState = {
+                ...state,
+                upcomingP2pTransactions: action.payload.upcomingP2Transactions,
+                upcomingP2pTransactionsMeta: action.payload.upcomingP2pTransactionsMeta,
+            };
+            break;
         case 'MONTHLY_TRANSACTION_API_CALL':
             newState = {
                 ...state,

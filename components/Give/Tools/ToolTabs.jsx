@@ -24,6 +24,7 @@ import {
     getUpcomingTransactions,
     deleteUpcomingTransaction,
     editUpcommingDeposit,
+    getUpcomingP2pAndAlloc
 } from '../../../actions/user';
 import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
 import {
@@ -178,9 +179,13 @@ class ToolTabs extends React.Component {
                 const {
                     monthlyTransactionApiCall,
                     upcomingTransactions,
-                    upcomingTransactionsMeta
+                    upcomingTransactionsMeta,
+                    upcomingP2pTransactions,
+                    upcomingP2pTransactionsMeta,
                 } = this.props;
                 const totalPages = (upcomingTransactionsMeta) ? upcomingTransactionsMeta.pageCount: 1;
+
+                const totalPagesP2p = (upcomingP2pTransactionsMeta) ? upcomingP2pTransactionsMeta.pageCount: 1;
                 const {
                     activePage
                 } =this.state;
@@ -191,9 +196,11 @@ class ToolTabs extends React.Component {
                             activePage={activePage}
                             onPageChange={this.onPageChange}
                             upcomingTransactions={upcomingTransactions}
+                            upcomingP2pTransactions={upcomingP2pTransactions}
                             deleteTransaction={this.deleteTransaction}
                             monthlyTransactionApiCall={monthlyTransactionApiCall}
                             totalPages={totalPages}
+                            totalPagesP2p={totalPagesP2p}
                         />
                     </div>
                 </Tab.Pane>
@@ -288,10 +295,14 @@ class ToolTabs extends React.Component {
         let url = `users/${id}/upcomingTransactions`;
         if(defaultActiveIndex === "0") {
             url+= `?filter[type]=RecurringDonation&page[size]=10`
+            getUpcomingTransactions(dispatch, url);
         } else if(defaultActiveIndex === "1") {
+            let url2 = `${url}?filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active&page[size]=10`
+            let url3 = `${url}?filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active&page[size]=10`
             url+= `?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`
+            getUpcomingP2pAndAlloc(dispatch, url, url2);
+
         }
-        getUpcomingTransactions(dispatch, url);
         if(id){
             getUserGivingGoal(dispatch, id);
 
@@ -335,9 +346,14 @@ class ToolTabs extends React.Component {
         } = this.props;
         let url = `users/${id}/upcomingTransactions?page[number]=${data.activePage}&page[size]=10`;
         if(defaultActiveIndex === "0") {
-            url+= `&filter[type]=RecurringDonation`
+            url+= `&filter[type]=RecurringDonation`;
+            getUpcomingTransactions(dispatch, url);
         } else if(defaultActiveIndex === "1") {
-            url+= `&filter[type]=RecurringAllocation,RecurringFundAllocation`
+            let url2 = `${url}?filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active&page[size]=10`
+            let url3 = `${url}?filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active&page[size]=10`
+            url+= `?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`
+            // url+= `?filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active&page[size]=10`
+            getUpcomingP2pAndAlloc(dispatch, url, url2);
         }
         getUpcomingTransactions(dispatch, url);
         this.setState({
@@ -384,6 +400,8 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         upcomingTransactions: state.user.upcomingTransactions,
         upcomingTransactionsMeta: state.user.upcomingTransactionsMeta,
+        upcomingP2pTransactions: state.user.upcomingP2pTransactions,
+        upcomingP2pTransactionsMeta: state.user.upcomingP2pTransactionsMeta,
         monthlyTransactionApiCall: state.user.monthlyTransactionApiCall,
         userGivingGoalDetails: state.user.userGivingGoalDetails,
     };
