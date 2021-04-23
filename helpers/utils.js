@@ -96,6 +96,11 @@ const getMainNavItems = (accountType, slug) => {
             name: 'Manage Employees',
             isExternal: true,
         });
+        menuLinks.push({
+            location: `/companies/${slug}/tax-receipts`,
+            name: 'Tax Receipts',
+            isExternal: true,
+        });
     } else if (accountType === 'charity') {
         menuLinks.push({
             location: `/admin/beneficiaries/${slug}/eft`,
@@ -119,13 +124,8 @@ const getMainNavItems = (accountType, slug) => {
             isExternal: false,
         });
         menuLinks.push({
-            location: '/user/favourites',
-            name: 'Favourites',
-            isExternal: false,
-        });
-        menuLinks.push({
             location: '/user/recurring-donations',
-            name: 'Tools',
+            name: 'Manage deposits and gifts',
             isExternal: false,
         });
         menuLinks.push({

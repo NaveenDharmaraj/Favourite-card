@@ -69,17 +69,9 @@
     "commonOr": "or ",
     "commonMakeChanges" : "make changes. ",
     "doNotMatchLabel": "Do not match ",
-    "automaticDonationPopup": "Adding money monthly is a great way to make sure you always have charitable dollars on hand when you decide to give."
-
-
-
-
-
-
-
-
-
-
-
+    "automaticDonationPopup": "Adding money monthly is a great way to make sure you always have charitable dollars on hand when you decide to give.",
+    "creditCardEditMessagePart1": "If you need to change this card's expiry date,",
+    "creditCardEditMessagePart2": "update your payment method",
+    "creditCardEditMessagePart3": "first."
 
 }

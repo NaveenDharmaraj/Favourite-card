@@ -1011,8 +1011,7 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
     });
 };
 
-export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCount, pageSize, currentPageNumber, pageCount) => {
-
+export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCount, pageSize, currentPageNumber, pageCount, myProfile = false) => {
     const fsa = {
         payload: {},
         type: actionTypes.UPDATE_FAVORITES,
@@ -1021,15 +1020,16 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
     const params = generatePayloadBodyForFollowAndUnfollow(userId, favId, type);
     graphApi.post(`/users/deleterelationship`, params).then(
         async () => {
-            const removedItem = (type === 'charity') ? {
-                attributes: {
-                    charity_id: favId
-                }
-            } : {
-                attributes: {
-                    group_id: favId
-                }
-            };
+            if (myProfile) {
+                dispatch({
+                    payload: {
+                        userProfileFavouritesLoadStatus: true,
+                    },
+                    type: 'USER_PROFILE_FAVOURITES_LOAD_STATUS',
+                });
+            }
+            const removedItem = (type === 'charity') ? { attributes: { charity_id: favId } }
+                : { attributes: { group_id: favId } };
             _.remove(dataArray, removedItem);
             let pageNumber = currentPageNumber;
             const url = `user/favourites?userid=${Number(userId)}&page[number]=${currentPageNumber}&page[size]=${pageSize}`;
@@ -1037,6 +1037,29 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
             if (currentData) {
                 if (_.size(currentData.data) === 0 && currentData.meta.pageCount < currentPageNumber) {
                     pageNumber = (currentData.meta.pageCount === 0) ? 1 : 0;
+                }
+                if (myProfile) {
+                    dispatch({
+                        payload: {
+                            data: _.uniqWith(_.concat(dataArray, currentData.data), _.isEqual),
+                            totalUserFavouritesRecordCount: currentData.meta.recordCount,
+                            totalUserFavouritesPageCount: currentData.meta.pageCount,
+                            seeMoreLoader: false,
+                        },
+                        type: 'USER_PROFILE_FAVOURITES',
+                    })
+                    dispatch({
+                        payload: {
+                        },
+                        type: actionTypes.ENABLE_FAVORITES_BUTTON,
+                    });
+                    dispatch({
+                        payload: {
+                            userProfileFavouritesLoadStatus: false,
+                        },
+                        type: 'USER_PROFILE_FAVOURITES_LOAD_STATUS',
+                    });
+                    return;
                 }
                 fsa.payload.favorites = {
                     currentPageNumber: pageNumber,
