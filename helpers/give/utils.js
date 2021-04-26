@@ -1509,7 +1509,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
 };
 
 const formatDateForP2p = (sendDate) => {
-    if (!_.isEmpty(sendDate)) {
+    if (sendDate && sendDate.getMonth()) {
         const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() + 1 : `0${sendDate.getMonth() + 1}`;
         const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
         return `${sendDate.getFullYear()}-${month}-${day}`;

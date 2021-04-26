@@ -62,6 +62,7 @@ export const actionTypes = {
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
     UPDATE_USER_INFO_SHARE_PREFERENCES: 'UPDATE_USER_INFO_SHARE_PREFERENCES',
     CLAIM_CHARITY_ERROR_MESSAGE: 'CLAIM_CHARITY_ERROR_MESSAGE',
+    GET_UPCOMING_P2P_TRANSACTIONS: 'GET_UPCOMING_P2P_TRANSACTIONS',
 };
 
 const getAllPaginationData = async (url, params = null) => {
@@ -773,6 +774,54 @@ export const getUpcomingTransactions = (dispatch, url) => {
 
                 },
                 type: actionTypes.GET_UPCOMING_TRANSACTIONS,
+            });
+        },
+    ).catch((error) => {
+        // console.log(error);
+        // Router.pushRoute('/give/error');
+    });
+};
+
+export const getUpcomingP2pAndAlloc = (dispatch, url, url2) => {
+    dispatch({
+        payload: {},
+        type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
+    });
+    coreApi.get(url).then(
+        (result) => {
+            dispatch({
+                payload: {
+                    apiCallStats: false,
+                },
+                type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
+            });
+            dispatch({
+                payload: {
+                    upcomingTransactions: result.data,
+                    upcomingTransactionsMeta: result.meta,
+
+                },
+                type: actionTypes.GET_UPCOMING_TRANSACTIONS,
+            });
+        },
+    ).catch((error) => {
+        // console.log(error);
+        // Router.pushRoute('/give/error');
+    });
+    coreApi.get(url2).then(
+        (result) => {
+            dispatch({
+                payload: {
+                    apiCallStats: false,
+                },
+                type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
+            });
+            dispatch({
+                payload: {
+                    upcomingP2pTransactionsMeta: result.meta,
+                    upcomingP2Transactions: result.data,
+                },
+                type: actionTypes.GET_UPCOMING_P2P_TRANSACTIONS,
             });
         },
     ).catch((error) => {

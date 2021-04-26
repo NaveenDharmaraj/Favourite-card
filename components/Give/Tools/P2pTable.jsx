@@ -15,13 +15,14 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 
 import TransactionTableRow from './TransactionsTableRow';
 
-function AllocationsTable(props) {
+function P2pTable(props) {
     const {
         upcomingTransactions,
         deleteTransaction,
         monthlyTransactionApiCall,
         activePage,
     } = props;
+    console.log(upcomingTransactions, 'p2p table')
     const {
         i18n: { language },
     } = props;
@@ -33,52 +34,42 @@ function AllocationsTable(props) {
                 const {
                     attributes, id,
                 } = transaction;
-                const transactionDate = attributes.transactionDate.includes(15)
-                    ? '15th'
-                    : '1st';
-                const formattedDate = formatDateForGivingTools(
-                    attributes.createdAt,
-                );
-                const destinationType =					attributes.destinationAccount === 'Beneficiary'
-					    ? 'Charity'
-					    : attributes.destinationAccount;
-                const recipientAccount = `${attributes.accountName} (${attributes.campaign ? 'Campaign' : destinationType})`;
+                const recipients = _.join(_.map(attributes.destinationDetails, (u) => { return u.receiverExists ? u.displayName : u.email; }), ', ');
                 const formattedAmount = formatCurrency(
                     attributes.amount,
                     language,
                     'USD',
                 );
-                const giftType = {
-                    value: attributes.transactionDate.includes('15') ? 15 : 1,
-                };
                 activeIndexs.push(index);
                 tableBody.push(
                     <TransactionTableRow
                         activePage={activePage}
                         isAllocation
                         modalHeader="Delete monthly gift?"
-                        firstColoumn={recipientAccount}
+                        firstColoumn={recipients}
                         secondColoumn={formattedAmount}
-                        thirdColoumn={transactionDate}
-                        fourthColoumn={formattedDate}
+                        thirdColoumn={attributes.frequency}
+                        fourthColoumn={attributes.reason}
+                        fifthColoumn={formatDateForGivingTools(attributes.createdAt)}
                         deleteTransaction={deleteTransaction}
                         transactionType={attributes.transactionType}
                         transactionId={id}
-                        giftType={giftType}
+                        // giftType={giftType}
                         language={language}
                         index={index}
                         destinationType={attributes.destinationAccount}
                         noteToRecipientSaved={attributes.noteToRecipient || ''}
                         noteToSelfSaved={attributes.noteToSelf || ''}
                         activeIndexs={activeIndexs}
-                        isCampaign={attributes.campaign}
-                        hasCampaign={attributes.hasCampaign}
-                        dedicate={attributes.metaInfo ? attributes.metaInfo.dedicate : {}}
+                        // isCampaign={attributes.campaign}
+                        // hasCampaign={attributes.hasCampaign}
+                        // dedicate={attributes.metaInfo ? attributes.metaInfo.dedicate : {}}
                     />,
                 );
             });
         }
         return tableBody;
+
     };
     return _.isEmpty(upcomingTransactions) ? null : (
         <Fragment>
@@ -87,14 +78,17 @@ function AllocationsTable(props) {
                     <Table padded unstackable className="no-border-table tbl_border_bottom">
                         <Table.Header>
                             <Table.Row>
-                                <Table.HeaderCell className="edit-trxn-name">Recipient </Table.HeaderCell>
+                                <Table.HeaderCell className="edit-trxn-name">Recipient(s) </Table.HeaderCell>
                                 <Table.HeaderCell textAlign="right">
 									Amount
                                 </Table.HeaderCell>
                                 <Table.HeaderCell>
-									Day of month
+									Frequency
                                 </Table.HeaderCell>
                                 <Table.HeaderCell className="w-120">
+									Reason to give
+                                </Table.HeaderCell>
+                                <Table.HeaderCell>
 									Created
                                 </Table.HeaderCell>
                                 <Table.HeaderCell>Action</Table.HeaderCell>
@@ -130,4 +124,4 @@ function AllocationsTable(props) {
         </Fragment>
     );
 }
-export default withTranslation()(AllocationsTable);
+export default withTranslation()(P2pTable);
