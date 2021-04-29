@@ -21,8 +21,8 @@ class Support extends React.Component {
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
-                    <div className="settingsDetailWraper heading brdr-btm pb-1">
-                        <Header as="h4">Support </Header>
+                    <div className="settingsDetailWraper heading">
+                        <Header as="h4" className='mb-0'>Support </Header>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Live chat</p>

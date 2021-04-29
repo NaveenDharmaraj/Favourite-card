@@ -28,6 +28,7 @@ import {
     groupDefaultProps,
     // p2pDefaultProps,
 } from '../../helpers/give/defaultProps';
+import { isFalsy } from '../utils';
 import visaIcon from '../../static/images/icons/icon-cc-visa-colour.png';
 import mastercardIcon from '../../static/images/icons/icon-cc-mastercard-colour.png';
 import expressCard from '../../static/images/icons/icon-cc-american-express-colour.png';
@@ -42,7 +43,7 @@ const isCreditCardBlank = (giveData) => (_.isEmpty(giveData.creditCard) || giveD
 
 const isFieldBlank = (field) => (_.isEmpty(field) || field.value === null || field.value === 0);
 
-const formatCurrency = (value, language, currencyType) => {
+const formatCurrency = (value = 0, language, currencyType) => {
     const currencyFormat = {
         currency: currencyType,
         currencyDisplay: 'symbol',
@@ -580,7 +581,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
         const newCreditCard = [
             {
                 disabled: false,
-                text: ReactHtmlParser('<span class="hyperLinks-style">+ Add new card</span>'),
+                text: ReactHtmlParser('<span class="hyperLinks-style">+&nbsp;&nbsp;&nbsp;Add new card</span>'),
                 value: 0,
             },
         ];
@@ -646,7 +647,7 @@ const populateTaxReceipts = (taxReceiptData, formatMessage) => {
                 null,
                 (item) => item.id,
                 (attributes) => ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
-                                    <span class="attributes"> ${attributes.addressOne} ${attributes.addressTwo} </span>
+                                    <span class="attributes"> ${attributes.addressOne} ${!isFalsy(attributes.addressTwo) ? attributes.addressTwo : ''} </span>
                                     <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`),
                 (attributes) => false,
             ),

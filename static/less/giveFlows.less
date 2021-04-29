@@ -620,32 +620,7 @@ body{
         }
     }
 }
-.price_btn{
-    margin-bottom: 10px;
-    .btn-basic-outline{
-        &.ui{
-            &.button{
-                background-color: transparent;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                &.small{
-                    height: 30px !important;
-                    width: 65px !important;
-                    padding: 7px 10px 6px !important;
-                }
-                +.button{
-                    margin-left: 10px;
-                    @media only screen and (max-width:360px) {
-                        margin-left: 5px;
-                    } 
-                }
-                &:hover,&:focus{
-                    background-color: #F1F6FD;
-                }
-            }
-        }
-    }
-}
+
 .font-w-n{
     &.ui{
         &.radio{
@@ -950,6 +925,79 @@ body{
     }
     .error-message{
         font-size: 12px;
+    }
+    &.recurring_edit_modal{
+        .ui{
+            &.form{
+                .field{
+                    &.recurring_edit_noteToSelf{
+                        >label {
+                            display: inline-block !important;
+                        }
+                    }
+                }
+            }
+        }
+        .give_flow_field{
+            &.Frequencybottom{
+                margin-top: 28px !important;
+                .field{
+                    line-height: 0px;
+                    margin-bottom: 10px !important;
+                    label{
+                        margin-bottom: 6px;
+                    }
+                }
+            }
+        }
+        .recurringMsg{
+            margin-top:-5px !important;
+            margin-bottom: 28px !important;
+        }
+        .field{
+            margin-bottom: 18px !important;
+        }
+        .recurring_edit_members {
+            margin-top: 26px !important;
+            margin-bottom: 10px !important;
+        }
+        .recurring_edit_admins{
+            margin-top: 0px !important;
+        }
+        .recurring_edit_gift{
+            margin-top: 0px !important;
+            .give_flow_field{
+                margin-top:28px !important;
+            }
+            .dedicate-flow{
+                .ui{
+                    &.accordion {
+                        margin-top:6px !important;
+                    }
+                }
+
+                .edit-modal-label{
+                    font-family: 'ProximaNova-Semibold';
+                    color: #263238;
+                    font-size: 14px;
+                    letter-spacing: -0.1px;
+                    line-height: 17px;
+                }
+            }
+        }
+        .recurring_edit_Message{
+            margin-top: 18px !important;
+            span.givingInfoText {
+                margin-top: 8px !important;
+            }
+        }
+        .recurring_edit_noteToSelf{
+            margin-top: 48px !important;
+            margin-bottom:58px !important;
+        }
+        .margin-edit-modal{
+            margin-top: -0px !important;
+        }
     }
 }
 
@@ -1551,7 +1599,6 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
 .to_space{
     margin-top: 0px !important;
     padding-top: 0px !important;
-    
 }
 .give_flow_field{
     .field {
@@ -1839,10 +1886,7 @@ p{
         padding-top: 30px;
     }
 }
-.hyperLinks-style{
-    color: #055CE5;
-    cursor: pointer;
-}
+
 .flowReview{
     .field.blue-btn-rounded.btn_right.rivewbtnp2p{
         margin-top: 40px !important;

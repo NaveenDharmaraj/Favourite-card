@@ -26,6 +26,27 @@ class DedicateGift extends Component {
         }
     }
 
+    componentDidUpdate(prevProps){
+        if (!_isEqual(this.props, prevProps)) {
+            let{
+                currentName,
+                activeIndex
+            } = this.state;
+            if(!_isEqual(this.props.dedicateType, prevProps.dedicateType)){
+                currentName =  !_isEmpty(this.props.dedicateType) ? this.props.dedicateType : '';
+                if (this.props.dedicateType === 'inHonorOf') {
+                    activeIndex = 0;
+                } else if (this.props.dedicateType === 'inMemoryOf') {
+                   activeIndex = 1;
+                }
+                this.setState({
+                    activeIndex,
+                    currentName,
+                });
+            }
+        }
+    }
+    
     handleOnInputChangeWrapper(event, titleProps) {
         const {
             index, value,
@@ -63,12 +84,13 @@ class DedicateGift extends Component {
             handleInputChange,
             handleInputOnBlur,
             validity,
+            isEditAlloc,
         } = this.props;
         return (
             <Fragment>
                 <div className="give_flow_field dedicate-flow">
-                    <label>Dedicate this gift (optional)</label>
-                    <span className="givingInfoText">Only you will see this in your Account Details.</span>
+                    <label className="edit-modal-label">Dedicate this gift (optional)</label>
+                    {!!!isEditAlloc && (<span className="givingInfoText">Only you will see this in your Account Details.</span>)}
                     <Accordion>
                         <Accordion.Title
                             data-test="Give_DedicateGift_accordian_inhonor"

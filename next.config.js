@@ -5,6 +5,7 @@ const withImages = require('next-images');
 
 const configVars = {
     publicRuntimeConfig: {
+        AMZ_TRACE_ID_VERSION: process.env.AMZ_TRACE_ID_VERSION,
         PARAMSTORE_APP_NAME: process.env.PARAMSTORE_APP_NAME,
         PARAMSTORE_ENV_NAME: process.env.PARAMSTORE_ENV_NAME,
         PARAMSTORE_NAME_SPACE: process.env.PARAMSTORE_NAME_SPACE,
