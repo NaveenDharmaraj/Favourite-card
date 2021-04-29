@@ -34,7 +34,6 @@ const GroupProfileEdit = (props) => {
     } = props;
 
     useEffect(() => {
-        debugger
         if (isCampaign) {
             Router.pushRoute(`/campaigns/${slug}`);
         } else if (redirectToDashboard) {
