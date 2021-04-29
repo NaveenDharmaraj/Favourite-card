@@ -13,7 +13,13 @@ export const actionTypes = {
     GET_UNIQUE_CITIES: 'GET_UNIQUE_CITIES',
     GET_UNIQUE_CITIES_LOADER: 'GET_UNIQUE_CITIES_LOADER',
     UPDATE_CREATE_GIVING_GROUP_OBJECT: 'UPDATE_CREATE_GIVING_GROUP_OBJECT',
-    UPDATE_EDIT_GIVING_GROUP_OBJECT: 'UPDATE_EDIT_GIVING_GROUP_OBJECT'
+    UPDATE_EDIT_GIVING_GROUP_OBJECT: 'UPDATE_EDIT_GIVING_GROUP_OBJECT',
+    GET_GROUP_MEMBERS_ROLES: 'GET_GROUP_MEMBERS_ROLES',
+    GET_GROUP_PENDING_INVITES: 'GET_GROUP_PENDING_INVITES',
+    SHOW_PENDING_INVITES_PLACEHOLDER: 'SHOW_PENDING_INVITES_PLACEHOLDER',
+    SHOW_GROUP_MEMBERS_PLACEHOLDER: 'SHOW_GROUP_MEMBERS_PLACEHOLDER',
+    TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
+    GET_GROUP_WIDGET_CODE: 'GET_GROUP_WIDGET_CODE',
 };
 export const upadateEditGivingGroupObj = (editGivingGroupObject = {}) => dispatch =>
     dispatch({
@@ -261,4 +267,250 @@ export const deleteGroupLogo = (editGivingGroupObj, groupId = '') => dispatch =>
         .catch(() => {
             //handle error
         })
+};
+
+export const getGroupMembers = (groupId, pageNumber = 1) => (dispatch) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.GET_GROUP_MEMBERS_ROLES,
+    };
+    const placeholder = {
+        payload: {
+            status: true,
+        },
+        type: actionTypes.SHOW_GROUP_MEMBERS_PLACEHOLDER,
+    };
+    dispatch(placeholder);
+    return coreApi.get(`/groups/${groupId}/groupMembers`, {
+        params: {
+            dispatch,
+            'page[number]': pageNumber,
+            'page[size]': 10,
+            uxCritical: true,
+        },
+    }).then(
+        (result) => {
+            if (!_isEmpty(result) && !_isEmpty(result.data)) {
+                fsa.payload = result;
+                dispatch(fsa);
+            }
+        },
+    ).catch((error) => {
+        console.log('error ->', error);
+    }).finally(() => {
+        placeholder.payload.status = false;
+        dispatch(placeholder);
+    });
+};
+
+export const getPendingInvites = (groupId, pageNumber = 1) => (dispatch) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.GET_GROUP_PENDING_INVITES,
+    };
+    const placeholder = {
+        payload: {
+            status: true,
+        },
+        type: actionTypes.SHOW_PENDING_INVITES_PLACEHOLDER,
+    };
+    dispatch(placeholder);
+    return coreApi.get(`/groups/${groupId}/pendingGroupInvites`, {
+        params: {
+            dispatch,
+            'page[number]': pageNumber,
+            'page[size]': 10,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (!_isEmpty(result) && !_isEmpty(result.data)) {
+            fsa.payload = result.data;
+            dispatch(fsa);
+        }
+    }).catch((error) => {
+        console.log('error ->', error);
+    }).finally(() => {
+        placeholder.payload.status = false;
+        dispatch(placeholder);
+    });
+};
+
+export const toggleAdmin = (memberId, groupId) => (dispatch) => {
+    const params = {
+        data: {
+            attributes: {
+                group_id: groupId,
+            },
+            type: 'groups',
+        },
+    };
+    return coreApi.patch(`/members/${memberId}/toggleAdmin`, params).then(() => {
+        dispatch(getGroupMembers(groupId));
+    }).catch((error) => {
+        console.log('error ->', error);
+    }).finally();
+};
+
+export const emailMembers = (groupId, data) => (dispatch) => {
+    const toastMessageProps = {
+        message: 'Your message has been sent!',
+        type: 'success',
+    };
+    return coreApi.post(`/groups/${groupId}/email_members`, data, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then(() => {
+        dispatch({
+            payload: {
+                errors: [
+                    toastMessageProps,
+                ],
+            },
+            type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+        });
+    }).catch((error) => {
+        console.log('error ->', error);
+    }).finally();
+};
+
+export const sendEmailInvite = (data) => (dispatch) => {
+    const toastMessageProps = {
+        message: 'Your invitation has been sent.',
+        type: 'success',
+    };
+    return coreApi.post(`/members`, data).then(() => {
+        dispatch({
+            payload: {
+                errors: [
+                    toastMessageProps,
+                ],
+            },
+            type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+        });
+    }).catch((error) => {
+        console.log('error ->', error);
+    }).finally();
+};
+
+export const resendInvite = (data, inviteId) => (dispatch) => {
+    const toastMessageProps = {
+        message: 'Invite resent.',
+        type: 'success',
+    };
+    return coreApi.patch(`/members/${inviteId}/resendInvite`, data).then(() => {
+        dispatch({
+            payload: {
+                errors: [
+                    toastMessageProps,
+                ],
+            },
+            type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+        });
+    }).catch((error) => {
+        console.log('error ->', error);
+    }).finally();
+};
+
+export const cancelInvite = (modifiedpayload, inviteId) => (dispatch) => {
+    const toastMessageProps = {
+        message: 'Invite cancelled.',
+        type: 'success',
+    };
+    return coreApi.patch(`/members/${inviteId}/cancelInvite`, modifiedpayload).then(() => {
+        dispatch({
+            payload: {
+                errors: [
+                    toastMessageProps,
+                ],
+            },
+            type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+        });
+        dispatch(getPendingInvites(modifiedpayload.data.attributes.group_id));
+    }).catch((error) => {
+        console.log('error ->', error);
+    }).finally();
+};
+
+export const searchMember = (groupId, searchStr, pageNumber = 1) => (dispatch) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.GET_GROUP_MEMBERS_ROLES,
+    };
+    const placeholder = {
+        payload: {
+            status: true,
+        },
+        type: actionTypes.SHOW_GROUP_MEMBERS_PLACEHOLDER,
+    };
+    dispatch(placeholder);
+    return coreApi.get(`/groups/${groupId}/groupMembers`, {
+        params: {
+            dispatch,
+            'filter[groupMembers]': searchStr,
+            'page[number]': pageNumber,
+            'page[size]': 10,
+            sort: 'first_name',
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (!_isEmpty(result) && !_isEmpty(result.data)) {
+            fsa.payload = result;
+            dispatch(fsa);
+        }
+    }).catch((error) => {
+        console.log('error ->', error);
+    }).finally(() => {
+        placeholder.payload.status = false;
+        dispatch(placeholder);
+    });
+};
+
+export const getWidgetCode = (groupId) => (dispatch) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.GET_GROUP_WIDGET_CODE,
+    };
+    return coreApi.get(`/widgets/generateWidgetScript`, {
+        params: {
+            dispatch,
+            entity_type: 'group',
+            id: groupId,
+            selected_value: 'Green',
+            uxCritical: true,
+        },
+    }).then((greenData) => {
+        coreApi.get(`/widgets/generateWidgetScript`, {
+            params: {
+                dispatch,
+                entity_type: 'group',
+                id: groupId,
+                selected_value: 'Blue',
+                uxCritical: true,
+            },
+        }).then((blueData) => {
+            fsa.payload = {
+                blue: blueData,
+                green: greenData,
+            };
+            dispatch(fsa);
+        }).catch((error) => {
+            console.log('error ->', error);
+        }).finally();
+    }).catch((error) => {
+        console.log('error ->', error);
+    }).finally();
+};
+
+export const removeGroupMember = (userId, groupId) => (dispatch) => {
+    const params = {
+        group_id: groupId,
+        user_id: userId,
+    };
+    return coreApi.patch(`/members/removeMember`, params).then(() => {
+        dispatch(getGroupMembers(groupId));
+    }).catch((error) => {
+        console.log('error ->', error);
+    }).finally();
 };
