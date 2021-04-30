@@ -21,8 +21,8 @@ function P2pTable(props) {
         deleteTransaction,
         monthlyTransactionApiCall,
         activePage,
+        pauseResumeTransaction,
     } = props;
-    console.log(upcomingTransactions, 'p2p table')
     const {
         i18n: { language },
     } = props;
@@ -44,7 +44,6 @@ function P2pTable(props) {
                 tableBody.push(
                     <TransactionTableRow
                         activePage={activePage}
-                        isAllocation
                         modalHeader="Delete monthly gift?"
                         firstColoumn={recipients}
                         secondColoumn={formattedAmount}
@@ -61,6 +60,12 @@ function P2pTable(props) {
                         noteToRecipientSaved={attributes.noteToRecipient || ''}
                         noteToSelfSaved={attributes.noteToSelf || ''}
                         activeIndexs={activeIndexs}
+                        isP2p
+                        pauseResumeTransaction={pauseResumeTransaction}
+                        destinationDetails={attributes.destinationDetails}
+                        reason={attributes.reason}
+                        frequency={attributes.frequency}
+                        nextTransaction={attributes.nextTransaction}
                         // isCampaign={attributes.campaign}
                         // hasCampaign={attributes.hasCampaign}
                         // dedicate={attributes.metaInfo ? attributes.metaInfo.dedicate : {}}

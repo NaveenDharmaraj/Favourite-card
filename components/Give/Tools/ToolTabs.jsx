@@ -23,8 +23,8 @@ import {validateGivingGoal} from '../../../helpers/users/utils';
 import {
     getUpcomingTransactions,
     deleteUpcomingTransaction,
-    editUpcommingDeposit,
-    getUpcomingP2pAndAlloc
+    getUpcomingP2pAndAlloc,
+    editUpcomingP2p,
 } from '../../../actions/user';
 import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
 import {
@@ -200,6 +200,7 @@ class ToolTabs extends React.Component {
                             monthlyTransactionApiCall={monthlyTransactionApiCall}
                             totalPages={totalPages}
                             totalPagesP2p={totalPagesP2p}
+                            pauseResumeTransaction={this.pauseResumeTransaction}
                         />
                     </div>
                 </Tab.Pane>
@@ -338,6 +339,44 @@ class ToolTabs extends React.Component {
         if (id && transactionType) {
             deleteUpcomingTransaction(dispatch, id, transactionType, activePage, this.props.currentUser.id)
         }
+    }
+
+    pauseResumeTransaction=(transactionId, status) =>{
+        let{
+            currentUser: {
+                id,
+            },
+            upcomingP2pTransactions,
+            dispatch,
+        } = this.props;
+        let { activePage } = this.state;
+        let selectedTransaction = _.find(upcomingP2pTransactions,{'id':transactionId})
+        if(!_.isEmpty(selectedTransaction)){
+            let {
+                attributes:{
+                    amount,
+                    reason,
+                    recipientEmails,
+                    nextTransaction,
+                    frequency,
+                    noteToRecipient,
+                    noteToSelf
+                }
+            } = selectedTransaction
+            dispatch(editUpcomingP2p(transactionId,
+                amount,
+                reason,
+                recipientEmails,
+                nextTransaction,
+                frequency,
+                noteToRecipient,
+                noteToSelf,
+                activePage,
+                id,
+                status));
+        }
+       
+        
     }
 
     onPageChange(event, data) {

@@ -23,6 +23,7 @@ function AllocationsTab(props) {
         upcomingP2pTransactions,
         deleteTransaction,
         monthlyTransactionApiCall,
+        pauseResumeTransaction,
     } = props;
     return (
         <Fragment>
@@ -62,6 +63,7 @@ function AllocationsTab(props) {
                 deleteTransaction={deleteTransaction}
                 monthlyTransactionApiCall={monthlyTransactionApiCall}
                 activePage={activePage}
+                pauseResumeTransaction={pauseResumeTransaction}
             />
             <Grid.Column textAlign="right">
                 <div className="db-pagination  pt-2">
