@@ -559,7 +559,7 @@ const EditP2pAllocationModal = ({
             </Modal.Header>
             <Modal.Content>
                 <Modal.Description>
-                    <div className="flowFirst recurring_edit_modal">
+                    <div className="flowFirst recurring_edit_modal recurring_p2p_edit_modal">
                         <Form>
                             <Fragment>
                                 <Grid.Column className="friends-error" mobile={16} tablet={12} computer={10}>
@@ -721,13 +721,13 @@ const EditP2pAllocationModal = ({
                                     </Fragment>
                                 )
                                 }
-                                <div>
+                                {/* <div>
                                     <P2pReasons
                                         reason={reason}
                                         reasonOther={reasonOther}
                                         handleSendMoneyInputChange={handleSendMoneyInputChange}
                                     />
-                                </div>
+                                </div> */}
                             </div>
                             <Form.Field>
                                 <label htmlFor="giveFrom">

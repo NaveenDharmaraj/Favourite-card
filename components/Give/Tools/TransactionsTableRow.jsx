@@ -174,7 +174,7 @@ class TransactionTableRow extends React.Component {
 			<Fragment>
 				{/* Desktop transaction details row start */}
 				<Responsive minWidth={768} as={'tr'}>
-					{firstColoumn && <Table.Cell className="edit-trxn-name">{firstColoumn}</Table.Cell>}
+					{firstColoumn && <Table.Cell className="edit-trxn-name recipient-width">{firstColoumn}</Table.Cell>}
 					{secondColoumn && (
 						<Table.Cell className="text-right">
 							{secondColoumn}
@@ -254,35 +254,23 @@ class TransactionTableRow extends React.Component {
 							<Table.Footer>
 								<Table.Row>
 									<Table.Cell colSpan="3">
-										{isAllocation ? (
-											<EditMonthlyAllocationModal
-                                                recipientName={firstColoumn}
-                                                currentMonthlyAllocAmount={secondColoumn}
-                                                paymentInstrumentId={paymentInstrumentId}
-                                                transactionId={transactionId}
-                                                activePage={activePage}
-                                                giftType={giftType}
-                                                language={language}
-                                                giveToType={destinationType}
-                                                noteToSelfSaved={noteToSelfSaved}
-                                                noteToRecipientSaved={noteToRecipientSaved}
-                                                isCampaign={isCampaign}
-                                                hasCampaign={hasCampaign}
-                                                dedicate={dedicate}
-                                            />
-										) : (
-											<EditMonthlyDepositModal
-												currentMonthlyDepositAmount={
-													secondColoumn
-												}
-												paymentInstrumentId={
-													paymentInstrumentId
-												}
-												activePage={activePage}
-												transactionId={transactionId}
-											/>
-										)}
-										{deleteModal}
+									{
+										isP2p? (
+											<Fragment>
+												{p2pModal}
+												<a
+													className='deleteLink'
+													onClick={()=>{pauseResumeTransaction(transactionId, 'pause')}}
+												>
+													Pause{'   '}
+												</a>
+											</Fragment>): (isAllocation ? (
+										monthlyAllocModal
+									) : (
+									monthlyDepositModal	
+									))
+									}
+									{deleteModal}
                                         
 									</Table.Cell>
 								</Table.Row>
