@@ -291,6 +291,7 @@ const EditP2pAllocationModal = ({
                     ...validity,
                     isValidDate: true,
                 });
+                setDisableButton(false);
             } else {
                 setValidity({
                     ...validity,
@@ -329,6 +330,7 @@ const EditP2pAllocationModal = ({
             setReason(name === 'reason' ? value : 'Other');
             setReasonOther(name === 'reason' ? null : value);
         }
+        setDisableButton(false);
     };
     // initializing the flow object for edit flow
     const flowObject = {

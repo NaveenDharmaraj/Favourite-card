@@ -34,7 +34,21 @@ function P2pTable(props) {
                 const {
                     attributes, id,
                 } = transaction;
-                const recipients = _.join(_.map(attributes.destinationDetails, (u) => { return u.receiverExists ? u.displayName : u.email; }), ', ');
+                // changing destinationDetails to an array of objects
+                let destinationDetails = [];
+                const {
+                    // eslint-disable-next-line camelcase
+                    child_allocations, ...parentAllocation
+                } = attributes.destinationDetails || {};
+                destinationDetails.push(parentAllocation);
+                if (!_.isEmpty(attributes.destinationDetails.child_allocations)) {
+                    destinationDetails = [
+                        ...destinationDetails,
+                        // eslint-disable-next-line camelcase
+                        ...child_allocations,
+                    ];
+                }
+                const recipients = _.join(_.map(destinationDetails, (u) => (u.receiverExists ? u.displayName : u.email)), ', ');
                 const formattedAmount = formatCurrency(
                     attributes.amount,
                     language,
@@ -62,10 +76,11 @@ function P2pTable(props) {
                         activeIndexs={activeIndexs}
                         isP2p
                         pauseResumeTransaction={pauseResumeTransaction}
-                        destinationDetails={attributes.destinationDetails}
+                        destinationDetails={destinationDetails}
                         reason={attributes.reason}
                         frequency={attributes.frequency}
                         nextTransaction={attributes.nextTransaction}
+                        status={attributes.status}
                         // isCampaign={attributes.campaign}
                         // hasCampaign={attributes.hasCampaign}
                         // dedicate={attributes.metaInfo ? attributes.metaInfo.dedicate : {}}
@@ -74,7 +89,6 @@ function P2pTable(props) {
             });
         }
         return tableBody;
-
     };
     return _.isEmpty(upcomingTransactions) ? null : (
         <Fragment>

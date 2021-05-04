@@ -4,11 +4,8 @@
 import React, { Fragment } from 'react';
 import {
 	Button,
-	Form,
 	Modal,
 	Table,
-	Input,
-	Dropdown,
 	Responsive,
 	Accordion,
 	TableBody,
@@ -91,6 +88,7 @@ class TransactionTableRow extends React.Component {
             reason,
             frequency,
             nextTransaction,
+            status
 		} = this.props;
 		const { showDeleteModal, activeIndexs } = this.state;
         const monthlyAllocModal = (<EditMonthlyAllocationModal
@@ -190,9 +188,9 @@ class TransactionTableRow extends React.Component {
                                     {p2pModal}
                                     <a
                                         className='deleteLink'
-                                        onClick={()=>{pauseResumeTransaction(transactionId, 'pause')}}
+                                        onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
                                     >
-                                        Pause{'   '}
+                                        {status === 'active' ? 'Pause' : 'Resume'}
                                     </a>
                                 </Fragment>): (isAllocation ? (
 							monthlyAllocModal

@@ -135,10 +135,29 @@ const user = (state = {}, action) => {
                 upcomingP2pTransactionsMeta: action.payload.upcomingP2pTransactionsMeta,
             };
             break;
+        case 'GET_UPCOMING_PAUSED_P2P_TRANSACTIONS':
+            newState = {
+                ...state,
+                upcomingPausedP2pTransactions: action.payload.upcomingPausedP2Transactions,
+                upcomingPausedP2pTransactionsMeta: action.payload.upcomingPausedP2pTransactionsMeta,
+            };
+            break;
         case 'MONTHLY_TRANSACTION_API_CALL':
             newState = {
                 ...state,
                 monthlyTransactionApiCall: action.payload.apiCallStats,
+            };
+            break;
+        case 'RECURRING_P2P_TRANSACTION_API_CALL':
+            newState = {
+                ...state,
+                upcomingP2pTransactionApiCall: action.payload.apiCallStats,
+            };
+            break;
+        case 'RECURRING_PAUSED_P2P_RANSACTION_API_CALL':
+            newState = {
+                ...state,
+                upcomingPausedP2pTransactionApiCall: action.payload.apiCallStats,
             };
             break;
         case 'USER_INITIAL_FAVORITES':
