@@ -28,7 +28,7 @@ function SupportingGroup(props) {
         t: formatMessage,
     } = props;
     const currency = 'USD';
-    const entityShortName = renderTextByCharacter(entityName, 50);
+    const entityShortName = renderTextByCharacter(entityName, 37);
     let locationDetails = '';
     if (_isEmpty(city) && !_isEmpty(province)) {
         locationDetails = province;
