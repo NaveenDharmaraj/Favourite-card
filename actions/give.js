@@ -328,12 +328,22 @@ const saveP2pAllocations = (allocation) => {
             noteToRecipients,
             noteToSelf,
             recipients,
-            reason,
+            reasonOther,
             selectedFriendsList,
             sendDate,
             sendGift,
         },
     } = allocation;
+
+    let {
+        giveData: {
+            reason,
+        },
+    } = allocation;
+
+    if (reason === 'Other') {
+        reason = reasonOther;
+    }
     const emailArray = _.concat(selectedFriendsList.map((friend) => friend.email), recipients);
     const allocationData = initializeP2pAllocations(
         emailArray,

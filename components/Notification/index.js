@@ -124,7 +124,7 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "sendGift": {
-                Router.pushRoute("/give/to/friend/new");
+                Router.pushRoute("/dashboard");
                 break;
             }
             case "viewMessage": {
@@ -136,7 +136,7 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "seeUpcomingGifts": {
-                Router.pushRoute("/dashboard");
+                Router.pushRoute("/user/recurring-gifts");
                 break;
             }
             case "goToGivingGroup": {
