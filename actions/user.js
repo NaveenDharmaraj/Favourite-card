@@ -758,70 +758,50 @@ export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
     });
 };
 
-export const getUpcomingTransactions = (allocationUrl) => (dispatch) => {
-    if (allocationUrl) {
-        dispatch({
-            payload: {
-                apiCallStats: true,
-            },
-            type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
-        });
-        return coreApi.get(allocationUrl).then(
-            (result) => {
-                dispatch({
-                    payload: {
-                        apiCallStats: false,
-                    },
-                    type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
-                });
-                dispatch({
-                    payload: {
-                        upcomingTransactions: result.data,
-                        upcomingTransactionsMeta: result.meta,
-    
-                    },
-                    type: actionTypes.GET_UPCOMING_TRANSACTIONS,
-                });
-            },
-        ).catch((error) => {
-            // console.log(error);
-            // Router.pushRoute('/give/error');
-        });
-    }
-    // if (p2pUrl) {
-        
-    // }
-    // if (pausedP2pUrl) {
-    //     dispatch({
-    //         payload: {
-    //             apiCallStats: true,
-    //         },
-    //         type: actionTypes.RECURRING_PAUSED_P2P_RANSACTION_API_CALL,
-    //     });
-    //     coreApi.get(pausedP2pUrl).then(
-    //         (result) => {
-    //             dispatch({
-    //                 payload: {
-    //                     apiCallStats: false,
-    //                 },
-    //                 type: actionTypes.RECURRING_PAUSED_P2P_RANSACTION_API_CALL,
-    //             });
-    //             dispatch({
-    //                 payload: {
-    //                     upcomingPausedP2pTransactionsMeta: result.meta,
-    //                     upcomingPausedP2Transactions: result.data,
-    //                 },
-    //                 type: actionTypes.GET_UPCOMING_PAUSED_P2P_TRANSACTIONS,
-    //             });
-    //         },
-    //     ).catch((error) => {
-    //         // console.log(error);
-    //         // Router.pushRoute('/give/error');
-    //     });
-    // }
+export const getUpcomingTransactions = (id, filter, activePage = 1, pageSize = 10) => (dispatch) => {
+    dispatch({
+        payload: {
+            apiCallStats: true,
+        },
+        type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
+    });
+    return coreApi.get(`users/${id}/upcomingTransactions`, {
+        params: {
+            'filter[type]': filter,
+            'page[size]': pageSize,
+            'page[number]':activePage,
+        },
+    }).then(
+        (result) => {
+            dispatch({
+                payload: {
+                    apiCallStats: false,
+                },
+                type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
+            });
+            dispatch({
+                payload: {
+                    upcomingTransactions: result.data,
+                    upcomingTransactionsMeta: result.meta,
+
+                },
+                type: actionTypes.GET_UPCOMING_TRANSACTIONS,
+            });
+        },
+    ).catch((error) => {
+        // console.log(error);
+        // Router.pushRoute('/give/error');
+    });
 };
 
-export const getUpcomingP2pAllocations = (p2pUrl, transactionType = 'active') => (dispatch) => {
+export const getUpcomingP2pAllocations = (
+    id,
+    filter,
+    state = 'active',
+    activePage = 1,
+    pageSize = 10,
+    sort = 'next_transfer_date',
+) => (dispatch) => {
     const apicallObj = {
         payload: {
             apiCallStats: true,
@@ -835,12 +815,20 @@ export const getUpcomingP2pAllocations = (p2pUrl, transactionType = 'active') =>
         },
         type: actionTypes.GET_UPCOMING_P2P_TRANSACTIONS,
     };
-    if (transactionType === 'inactive') {
+    if (state === 'inactive') {
         apicallObj.type = actionTypes.RECURRING_PAUSED_P2P_RANSACTION_API_CALL;
         resultsObj.type = actionTypes.GET_UPCOMING_PAUSED_P2P_TRANSACTIONS;
     }
     dispatch(apicallObj);
-    return coreApi.get(p2pUrl).then(
+    return coreApi.get(`users/${id}/upcomingTransactions`, {
+        params: {
+            'filter[aasm_state]': state,
+            'filter[type]': filter,
+            'page[number]':activePage,
+            'page[size]': pageSize,
+            sort,
+        },
+    }).then(
         (result) => {
             apicallObj.payload.apiCallStats = false;
             dispatch(apicallObj);
@@ -880,18 +868,13 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
     });
     return coreApi.delete(url).then(
         (result) => {
-            let activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10`;
             if (transactionType === 'RecurringAllocation' || transactionType === 'RecurringFundAllocation') {
-                activepageUrl += '&filter[type]=RecurringAllocation,RecurringFundAllocation';
-                dispatch(getUpcomingTransactions(activepageUrl));
+                dispatch(getUpcomingTransactions(userId, 'RecurringAllocation,RecurringFundAllocation', activePage));
             } else if (transactionType === 'ScheduledP2pAllocation') {
-                const pausedPageUrl = `${activepageUrl}&filter[type]=ScheduledP2pAllocation&filter[aasm_state]=inactive`;
-                dispatch(getUpcomingP2pAllocations(pausedPageUrl, 'inactive'));
-                activepageUrl += '&filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active';
-                dispatch(getUpcomingP2pAllocations(activepageUrl));
+                dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation', 'inactive'));
+                dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation'));
             } else {
-                activepageUrl += '&filter[type]=RecurringDonation';
-                dispatch(getUpcomingTransactions(activepageUrl));
+                dispatch(getUpcomingTransactions(userId, 'RecurringDonation', activePage));
             }
         },
     ).catch((error) => {
@@ -920,8 +903,7 @@ export const editUpcommingDeposit = (donationId, donationAmount, paymentInstruem
         data: donationData,
     }).then(
         () => {
-            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=RecurringDonation`;
-            dispatch(getUpcomingTransactions(activepageUrl));
+            dispatch(getUpcomingTransactions(userId, 'RecurringDonation', activePage));
             const statusMessageProps = {
                 message: 'Your monthly deposit has been updated.',
                 type: 'success',
@@ -986,8 +968,7 @@ export const editUpcomingAllocation = (id, giveToType, allocAmount, dayOfMonth, 
         data: allocationData,
     }).then(
         () => {
-            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=RecurringAllocation,RecurringFundAllocation`;
-            dispatch(getUpcomingTransactions(activepageUrl));
+            dispatch(getUpcomingTransactions(userId, 'RecurringAllocation,RecurringFundAllocation', activePage));
             const statusMessageProps = {
                 message: 'Your scheduled gift has been updated.',
                 type: 'success',
@@ -1047,11 +1028,11 @@ export const editUpcomingP2p = (
         data: allocationData,
     }).then(
         () => {
-            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=ScheduledP2pAllocation&sort=next_transfer_date&filter[aasm_state]=active`;
+            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=&sort=next_transfer_date&filter[aasm_state]=active`;
             const pausepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=ScheduledP2pAllocation&sort=next_transfer_date&filter[aasm_state]=inactive`;
             // const allocUrl = `users/${id}/upcomingTransactions?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`;
-            dispatch(getUpcomingP2pAllocations(activepageUrl));
-            dispatch(getUpcomingP2pAllocations(pausepageUrl, 'inactive'));
+            dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation', 'active', activePage));
+            dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation', 'inactive', activePage));
             const statusMessageProps = {
                 message: 'Your scheduled gift has been updated.',
                 type: 'success',
