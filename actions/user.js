@@ -879,7 +879,7 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
         },
     ).catch((error) => {
         // console.log(error);
-    });
+    })
 };
 
 export const editUpcommingDeposit = (donationId, donationAmount, paymentInstruementId, activePage, userId) => (dispatch) => {
@@ -1028,9 +1028,6 @@ export const editUpcomingP2p = (
         data: allocationData,
     }).then(
         () => {
-            const activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=&sort=next_transfer_date&filter[aasm_state]=active`;
-            const pausepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10&filter[type]=ScheduledP2pAllocation&sort=next_transfer_date&filter[aasm_state]=inactive`;
-            // const allocUrl = `users/${id}/upcomingTransactions?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`;
             dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation', 'active', activePage));
             dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation', 'inactive', activePage));
             const statusMessageProps = {

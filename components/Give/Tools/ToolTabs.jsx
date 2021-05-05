@@ -403,19 +403,13 @@ class ToolTabs extends React.Component {
         if(defaultActiveIndex === "0") {
             dispatch(getUpcomingTransactions(id, 'RecurringDonation', data.activePage));
         } else if(defaultActiveIndex === "1") {
-            let url2;
-            let url3;
             if(type === 'p2pAllocation'){
-                url2 = `${url}&filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active&sort=next_transfer_date`;
-                url3 = `${url}&filter[type]=ScheduledP2pAllocation&filter[aasm_state]=inactive&sort=next_transfer_date`;
                 dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation'));
                 dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation', 'inactive'));
             } else if( type === 'allocation'){
                 dispatch(getUpcomingTransactions(id, 'RecurringAllocation,RecurringFundAllocation', data.activePage));
             }
-            // url+= `?filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active&page[size]=10`
         }
-        // dispatch(getUpcomingTransactions(url));
         this.setState({
             activePage: data.activePage,
         });
