@@ -39,9 +39,9 @@ function AllocationsTable(props) {
                 const formattedDate = formatDateForGivingTools(
                     attributes.createdAt,
                 );
-                const destinationType =					attributes.destinationAccount === 'Beneficiary'
-					    ? 'Charity'
-					    : attributes.destinationAccount;
+                const destinationType = attributes.destinationAccount === 'Beneficiary'
+                    ? 'Charity'
+                    : attributes.destinationAccount;
                 const recipientAccount = `${attributes.accountName} (${attributes.campaign ? 'Campaign' : destinationType})`;
                 const formattedAmount = formatCurrency(
                     attributes.amount,

@@ -21,8 +21,8 @@ function P2pTable(props) {
         deleteTransaction,
         monthlyTransactionApiCall,
         activePage,
+        pauseResumeTransaction,
     } = props;
-    console.log(upcomingTransactions, 'p2p table')
     const {
         i18n: { language },
     } = props;
@@ -34,7 +34,21 @@ function P2pTable(props) {
                 const {
                     attributes, id,
                 } = transaction;
-                const recipients = _.join(_.map(attributes.destinationDetails, (u) => { return u.receiverExists ? u.displayName : u.email; }), ', ');
+                // changing destinationDetails to an array of objects
+                let destinationDetails = [];
+                const {
+                    // eslint-disable-next-line camelcase
+                    child_allocations, ...parentAllocation
+                } = attributes.destinationDetails || {};
+                destinationDetails.push(parentAllocation);
+                if (!_.isEmpty(attributes.destinationDetails.child_allocations)) {
+                    destinationDetails = [
+                        ...destinationDetails,
+                        // eslint-disable-next-line camelcase
+                        ...child_allocations,
+                    ];
+                }
+                const recipients = _.join(_.map(destinationDetails, (u) => (u.receiverExists ? u.displayName : u.email)), ', ');
                 const formattedAmount = formatCurrency(
                     attributes.amount,
                     language,
@@ -44,7 +58,6 @@ function P2pTable(props) {
                 tableBody.push(
                     <TransactionTableRow
                         activePage={activePage}
-                        isAllocation
                         modalHeader="Delete monthly gift?"
                         firstColoumn={recipients}
                         secondColoumn={formattedAmount}
@@ -61,6 +74,13 @@ function P2pTable(props) {
                         noteToRecipientSaved={attributes.noteToRecipient || ''}
                         noteToSelfSaved={attributes.noteToSelf || ''}
                         activeIndexs={activeIndexs}
+                        isP2p
+                        pauseResumeTransaction={pauseResumeTransaction}
+                        destinationDetails={destinationDetails}
+                        reason={attributes.reason}
+                        frequency={attributes.frequency}
+                        nextTransaction={attributes.nextTransaction}
+                        status={attributes.status}
                         // isCampaign={attributes.campaign}
                         // hasCampaign={attributes.hasCampaign}
                         // dedicate={attributes.metaInfo ? attributes.metaInfo.dedicate : {}}
@@ -69,7 +89,6 @@ function P2pTable(props) {
             });
         }
         return tableBody;
-
     };
     return _.isEmpty(upcomingTransactions) ? null : (
         <Fragment>
@@ -78,7 +97,7 @@ function P2pTable(props) {
                     <Table padded unstackable className="no-border-table tbl_border_bottom">
                         <Table.Header>
                             <Table.Row>
-                                <Table.HeaderCell className="edit-trxn-name">Recipient(s) </Table.HeaderCell>
+                                <Table.HeaderCell className="edit-trxn-name recipient-width">Recipient(s) </Table.HeaderCell>
                                 <Table.HeaderCell textAlign="right">
 									Amount
                                 </Table.HeaderCell>
