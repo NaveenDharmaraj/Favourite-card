@@ -5,6 +5,7 @@ import {
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import _split from 'lodash/split';
+import _endsWith from 'lodash/endsWith';
 import ReactHtmlParser from 'react-html-parser';
 
 import { NotificationHelper } from '../../../../Firebase/NotificationHelper';
@@ -159,7 +160,10 @@ class Notifications extends React.Component {
                 if (msg.includes(data.text)) {
                     dataMap[`${data.text}`] = data.replaceValue;
                     let hyper = `<link name=${data.text} route=${data.url}>`;
-                    hyper = (splitedMessage.length - 1 === i) ? `${hyper}.` : hyper;
+                    // hyper = (splitedMessage.length - 1 === i) ? `${hyper}.` : hyper;
+                    if (_endsWith(msg, '.')) {
+                        hyper = `${hyper}.`;
+                    }
                     splitedMessage.splice(i, 1, hyper);
                 }
             });

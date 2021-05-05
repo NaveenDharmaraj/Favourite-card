@@ -174,7 +174,10 @@ class NotificationWrapper extends React.Component {
                 if (msg.includes(data.text)) {
                     dataMap[`${data.text}`] = data.replaceValue;
                     let hyper = `<link name=${data.text} route=${data.url}>`;
-                    hyper = (splitedMessage.length - 1 === i) ? `${hyper}.` : hyper;
+                    // hyper = (splitedMessage.length - 1 === i) ? `${hyper}.` : hyper;
+                    if (_.endsWith(msg, '.')) {
+                        hyper = `${hyper}.`;
+                    }
                     splitedMessage.splice(i, 1, hyper);
                 }
             });
