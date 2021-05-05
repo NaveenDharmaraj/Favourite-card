@@ -22,6 +22,7 @@ import { connect } from 'react-redux';
 import {validateGivingGoal} from '../../../helpers/users/utils';
 import {
     getUpcomingTransactions,
+    getUpcomingP2pAllocations,
     deleteUpcomingTransaction,
     editUpcomingP2p,
 } from '../../../actions/user';
@@ -313,12 +314,14 @@ class ToolTabs extends React.Component {
         let url = `users/${id}/upcomingTransactions`;
         if(defaultActiveIndex === "0") {
             url+= `?filter[type]=RecurringDonation&page[size]=10`
-            getUpcomingTransactions(dispatch, url);
+            dispatch(getUpcomingTransactions(url));
         } else if(defaultActiveIndex === "1") {
             let url2 = `${url}?filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active&page[size]=10&sort=next_transfer_date`
             let url3 = `${url}?filter[type]=ScheduledP2pAllocation&filter[aasm_state]=inactive&page[size]=10&sort=next_transfer_date`
             url+= `?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`
-            getUpcomingTransactions(dispatch, url, url2, url3);
+            dispatch(getUpcomingTransactions(url));
+            dispatch(getUpcomingP2pAllocations(url2));
+            dispatch(getUpcomingP2pAllocations(url3, 'inactive'));
         }
         if(id){
             getUserGivingGoal(dispatch, id);
@@ -406,21 +409,22 @@ class ToolTabs extends React.Component {
         let url = `users/${id}/upcomingTransactions?page[number]=${data.activePage}&page[size]=10`;
         if(defaultActiveIndex === "0") {
             url+= `&filter[type]=RecurringDonation`;
-            getUpcomingTransactions(dispatch, url);
+            dispatch(getUpcomingTransactions(url));
         } else if(defaultActiveIndex === "1") {
             let url2;
             let url3;
             if(type === 'p2pAllocation'){
                 url2 = `${url}&filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active&sort=next_transfer_date`;
-                url3 = `${url}&filter[type]=ScheduledP2pAllocation&filter[aasm_state]=inactive&sort=next_transfer_date`
-                url = null;
+                url3 = `${url}&filter[type]=ScheduledP2pAllocation&filter[aasm_state]=inactive&sort=next_transfer_date`;
+                dispatch(getUpcomingP2pAllocations(url2));
+                dispatch(getUpcomingP2pAllocations(url3, 'inactive'));
             } else if( type === 'allocation'){
                 url+= `&filter[type]=RecurringAllocation,RecurringFundAllocation`
+                dispatch(getUpcomingTransactions(url));
             }
             // url+= `?filter[type]=ScheduledP2pAllocation&filter[aasm_state]=active&page[size]=10`
-            getUpcomingTransactions(dispatch, url, url2, url3);
         }
-        getUpcomingTransactions(dispatch, url);
+        // dispatch(getUpcomingTransactions(url));
         this.setState({
             activePage: data.activePage,
         });
