@@ -12,8 +12,10 @@ const DashboardTransactionDetails = (props) => {
         modalDate,
         informationSharedEntity,
         sourceUserId,
+        isScheduledAllocation,
     } = props;
     const dataArrayTransaction = [];
+    const recepientsList = [];
     let dataObjectData = {};
     if (data.attributes.transactionType.toLowerCase() === 'donation') {
         dataObjectData = {};
@@ -30,10 +32,30 @@ const DashboardTransactionDetails = (props) => {
     }
     
     if (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'allocation') {
+        if (isScheduledAllocation) {
+            recepientsList.push(data.attributes.destinationDetails.name);
+            data.attributes.destinationDetails.child_allocations.map((user) => {
+                if (user.name) {
+                    recepientsList.push(user.name);
+                } else {
+                    recepientsList.push(user.email);
+                }
+            });
+            dataObjectData = {};
+            dataObjectData.labelValue = 'Given to';
+            dataObjectData.transactionValue = recepientsList;
+            dataArrayTransaction.push(dataObjectData);
+        }
         if ((_.isEmpty(data.attributes.destination) || (!_.isEmpty(data.attributes.destination) && data.attributes.destination.id !== Number(sourceUserId))) && data.attributes.source.id === Number(sourceUserId)) {
             dataObjectData = {};
             dataObjectData.labelValue = 'Source account';
             dataObjectData.transactionValue = !_.isEmpty(data.attributes.source.name) ? `${data.attributes.source.name}'s Impact Account` : 'Impact Account';
+            dataArrayTransaction.push(dataObjectData);
+        }
+        if (isScheduledAllocation && !_.isEmpty(data.attributes.reason)) {
+            dataObjectData = {};
+            dataObjectData.labelValue = 'Reason to give';
+            dataObjectData.transactionValue = data.attributes.reason;
             dataArrayTransaction.push(dataObjectData);
         }
     }
@@ -82,7 +104,7 @@ const DashboardTransactionDetails = (props) => {
         dataArrayTransaction.push(dataObjectData);
     }
     if (!_.isEmpty(data.attributes.noteToSelf) || !_.isEmpty(data.attributes.reason)) {
-        if (!_.isEmpty(data.attributes.destination)) {
+        if (!_.isEmpty(data.attributes.destination) && !_.isEmpty(data.attributes.noteToSelf)) {
             if (data.attributes.destination.id !== Number(sourceUserId)) {
                 dataObjectData = {};
                 dataObjectData.labelValue = 'Note to self';
@@ -136,6 +158,7 @@ DashboardTransactionDetails.propTypes = {
         },
     },
     informationSharedEntity: PropTypes.string,
+    isScheduledAllocation: PropTypes.bool,
     modalDate: PropTypes.string,
     sourceUserId: PropTypes.string,
 };
@@ -147,6 +170,7 @@ DashboardTransactionDetails.defaultProps = {
         },
     },
     informationSharedEntity: '',
+    isScheduledAllocation: false,
     modalDate: '',
     sourceUserId: '',
 };

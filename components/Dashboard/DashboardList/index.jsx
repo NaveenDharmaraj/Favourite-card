@@ -25,6 +25,7 @@ import Pagination from '../../shared/Pagination';
 import noDataImg from '../../../static/images/noresults.png';
 import iconsRight from '../../../static/images/icons/icon-document.svg';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
+import userGroupImage from '../../../static/images/no-data-avatar-group-chat-profile.png';
 import { withTranslation } from '../../../i18n';
 import {
     formatCurrency,
@@ -165,6 +166,8 @@ class DashboradList extends React.Component {
                 const giftReturned = <label className='giftNotSent'>GIFT RETURNED</label>;
                 const giftRefund = <label className='giftNotSent'>REFUND</label>;
                 const matchReturned = <label className='giftNotSent'>MATCH RETURNED</label>;
+                const isScheduledAllocation = data.attributes.parentTransactionType === 'ScheduledP2pAllocation';
+                const newtransactionTypeDisplay = (isScheduledAllocation ? 'Scheduled Allocation' : 'Gift given');
                 if (!_.isEmpty(data.attributes.destination)) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
                         givingType = 'giving group';
@@ -233,16 +236,16 @@ class DashboradList extends React.Component {
                     } else if ((data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation')) {
                         givingType = '';
                         rowClass = 'gift';
-                        transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
+                        transactionTypeDisplay = isGiftCancelled ? giftReturned : newtransactionTypeDisplay;
                         descriptionType = 'Given to ';
-                        entity = data.attributes.destination.name;
+                        entity = isScheduledAllocation ? `${data.attributes.destination.name} and others` : data.attributes.destination.name;
                         transactionSign = '-';
-                        profileUrl = `users/profile/${data.attributes.destination.id}`;
+                        profileUrl = !isScheduledAllocation ? `users/profile/${data.attributes.destination.id}` : '';
                     }
                 } else if (data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation') {
                     givingType = '';
                     rowClass = 'gift';
-                    transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
+                    transactionTypeDisplay = isGiftCancelled ? giftReturned : newtransactionTypeDisplay;
                     descriptionType = 'Given to ';
                     entity = data.attributes.recipientEmail;
                     transactionSign = isGiftCancelled ? '+' : '-';
@@ -264,7 +267,7 @@ class DashboradList extends React.Component {
                         <Table.Cell>
                             <List verticalAlign="middle">
                                 <List.Item>
-                                    <Image className={imageCls} size="tiny" src={data.attributes.imageUrl} />
+                                    <Image className={imageCls} size="tiny" src={isScheduledAllocation ? userGroupImage : data.attributes.imageUrl} />
                                     <List.Content>
                                         <List.Header>
                                             {descriptionType}
@@ -284,7 +287,7 @@ class DashboradList extends React.Component {
                                                 <Modal.Content>
                                                     <div className="acntActivityHeader">
                                                         <Header as="h2" icon>
-                                                            <Image className={imageCls} size="tiny" src={data.attributes.imageUrl} />
+                                                            <Image className={imageCls} size="tiny" src={isScheduledAllocation ? userGroupImage : data.attributes.imageUrl} />
                                                             {transactionSign}
                                                             {amount}
                                                             <Header.Subheader>
@@ -316,6 +319,7 @@ class DashboradList extends React.Component {
                                                                 modalDate={modalDate}
                                                                 informationSharedEntity={informationSharedEntity}
                                                                 sourceUserId={id}
+                                                                isScheduledAllocation={isScheduledAllocation}
                                                             />
                                                         )
                                                     }
