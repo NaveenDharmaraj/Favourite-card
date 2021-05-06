@@ -1009,8 +1009,9 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
     switch (field) {
         case 'giveAmount':
             validity.doesAmountExist = !isInputBlank(value);
-            validity.isAmountLessThanOneBillion = (giveData.giftType.value > 0)
-                ? isAmountLessThanOneBillion(value) : true;
+            // commented this validation for PM-855
+            // validity.isAmountLessThanOneBillion = (giveData.giftType.value > 0)
+            //     ? isAmountLessThanOneBillion(value) : true;
             validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries')
                 ? isAmountMoreThanOneDollor(value) : isAmountMoreOrEqualToOneDollor(value);
             validity.isValidPositiveNumber = isValidPositiveNumber(value);
