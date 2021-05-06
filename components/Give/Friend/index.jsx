@@ -655,6 +655,12 @@ class Friend extends React.Component {
         validity = validateGiveForm('noteToRecipients', giveData.noteToRecipients, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('recipients', giveData.recipients, validity, giveData, coverFeesAmount, userEmailList);
         validity = validateForReload(validity, giveData.giveFrom.type, giveData.totalP2pGiveAmount, giveData.giveFrom.balance);
+        if(giveData.sendGift !== 'now'){
+            const convertIncomingDate = new Date(giveData.sendDate) && dateFormatConverter(new Date(giveData.sendDate), '-');
+            const currentDate = dateFormatConverter(new Date(), '-');
+            const checkCurrentDate = new Date(convertIncomingDate) >= new Date(currentDate);
+            validity.isValidDate= checkCurrentDate;
+        }
         this.setState({
             validity,
             reviewBtnFlag: !validity.isReloadRequired,
@@ -704,55 +710,62 @@ class Friend extends React.Component {
         });
     }
     populateFrequenyOptions(date) {
-        const months = fullMonthNames(this.props.t);
-        const selectedMOnth = months[date.getMonth()];
-        const selectedDate = Number(date.getDate());
-        let monthlyText = '';
-        if( (selectedMOnth === 'February' && (selectedDate === 28 || selectedDate === 29))
+        if(date){
+            const months = fullMonthNames(this.props.t);
+            const selectedMOnth = months[date.getMonth()];
+            const selectedDate = Number(date.getDate());
+            let monthlyText = '';
+            if( (selectedMOnth === 'February' && (selectedDate === 28 || selectedDate === 29))
             || (selectedDate === 30 || selectedDate === 31) ){
                 monthlyText = 'Repeat monthly on the last day of the month';
-        } else {
-            let dateText = date.getDate() + 'th';
-            if (selectedDate > 3 && selectedDate < 21) {
-                dateText = date.getDate() + 'th';
             } else {
-                switch (selectedDate % 10) {
-                    case 1:
-                        dateText =  date.getDate() + "st";
-                        break;
-                    case 2:
-                        dateText = date.getDate() + "nd";
-                        break;
-                    case 3:
-                        dateText = date.getDate() + "rd";
-                        break;
-                    default:
-                        dateText = date.getDate() + "th";
-                        break;
-                  }
+                let dateText = date.getDate() + 'th';
+                if (selectedDate > 3 && selectedDate < 21) {
+                    dateText = date.getDate() + 'th';
+                } else {
+                    switch (selectedDate % 10) {
+                        case 1:
+                            dateText =  date.getDate() + "st";
+                            break;
+                        case 2:
+                            dateText = date.getDate() + "nd";
+                            break;
+                        case 3:
+                            dateText = date.getDate() + "rd";
+                            break;
+                        default:
+                            dateText = date.getDate() + "th";
+                            break;
+                    }
+                }
+                monthlyText = `Repeat monthly on the ${dateText}`;
             }
-            monthlyText = `Repeat monthly on the ${dateText}`;
+            return [
+                {
+                    text: 'Send once',
+                    value: 'once',
+                },
+                {
+                    text: `Repeat weekly on ${getDayName(date)}`,
+                    value: 'weekly',
+                },
+                {
+                    text: monthlyText,
+                    value: 'monthly',
+                },
+                {
+                    text: `Repeat annually on ${months[date.getMonth()]} ${date.getDate()}`,
+                    value: 'yearly',
+                },
+            ]
+        } else{
+            return [
+                {
+                    text: 'Send once',
+                    value: 'once',
+                }
+            ]
         }
-
-
-        return [
-            {
-                text: 'Send once',
-                value: 'once',
-            },
-            {
-                text: `Repeat weekly on ${getDayName(date)}`,
-                value: 'weekly',
-            },
-            {
-                text: monthlyText,
-                value: 'monthly',
-            },
-            {
-                text: `Repeat annually on ${months[date.getMonth()]} ${date.getDate()}`,
-                value: 'yearly',
-            },
-        ]
     }
     handleDateChange = (date) => {
         try {
@@ -816,9 +829,10 @@ class Friend extends React.Component {
                 sendDate = null;
                 validity.isValidDate = true;
             } else {
-                sendDate = new Date();
+                // sendDate = new Date();
+                sendDate = null
                 frequencyObject = {
-                    options: this.populateFrequenyOptions(new Date()),
+                    options: this.populateFrequenyOptions(sendDate),
                     value: 'once'
                 }
             }
@@ -966,7 +980,6 @@ class Friend extends React.Component {
             showGiveToEmail,
             reviewBtnFlag,
         } = this.state;
-
         const recipientsList = recipients.join(',');
         let submtBtn = (reviewBtnFlag) ? (
             <Form.Button
