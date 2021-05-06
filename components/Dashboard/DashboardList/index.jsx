@@ -238,7 +238,7 @@ class DashboradList extends React.Component {
                         rowClass = 'gift';
                         transactionTypeDisplay = isGiftCancelled ? giftReturned : newtransactionTypeDisplay;
                         descriptionType = 'Given to ';
-                        entity = isScheduledAllocation ? `${data.attributes.destination.name} and others` : data.attributes.destination.name;
+                        entity = (isScheduledAllocation && !_.isEmpty(data.attributes.destinationDetails.child_allocations)) ? `${data.attributes.destination.name} and others` : data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = !isScheduledAllocation ? `users/profile/${data.attributes.destination.id}` : '';
                     }
