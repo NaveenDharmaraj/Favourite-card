@@ -12,6 +12,7 @@ import {
     Grid,
     Header,
     Modal,
+    TableCell,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -238,7 +239,7 @@ class DashboradList extends React.Component {
                         rowClass = 'gift';
                         transactionTypeDisplay = isGiftCancelled ? giftReturned : newtransactionTypeDisplay;
                         descriptionType = 'Given to ';
-                        entity = (isScheduledAllocation && !_.isEmpty(data.attributes.destinationDetails.child_allocations)) ? `${data.attributes.destination.name} and others` : data.attributes.destination.name;
+                        entity = data.attributes.hasChildAllocations ? `${data.attributes.destination.name} and others` : data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = !isScheduledAllocation ? `users/profile/${data.attributes.destination.id}` : '';
                     }
@@ -247,7 +248,7 @@ class DashboradList extends React.Component {
                     rowClass = 'gift';
                     transactionTypeDisplay = isGiftCancelled ? giftReturned : newtransactionTypeDisplay;
                     descriptionType = 'Given to ';
-                    entity = data.attributes.recipientEmail;
+                    entity = data.attributes.hasChildAllocations ? `${data.attributes.recipientEmail} and others` : data.attributes.recipientEmail;
                     transactionSign = isGiftCancelled ? '+' : '-';
                 } else if (data.attributes.source.id === Number(id)) {
                     // last catch block to handle all other senarios
@@ -260,7 +261,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReversed : 'Deposit';
                     }
                 }
-                const amount = formatCurrency(data.attributes.amount, language, 'USD');
+                const amount = data.attributes.hasChildAllocations ? formatCurrency(data.attributes.totalAmount, language, 'USD') : formatCurrency(data.attributes.amount, language, 'USD');
                 return (
                     <Table.Row className={rowClass} key={index}>
                         <Table.Cell className={dateClass}>{date}</Table.Cell>
@@ -282,62 +283,6 @@ class DashboradList extends React.Component {
                                                     {entity}
                                                 </b>
                                             )}
-                                            <Modal size="tiny" dimmer="inverted" className="chimp-modal acntActivityModel" closeIcon trigger={<span className="descriptionRight"><Image className="icons-right-page" src={iconsRight}/></span>}>
-                                                <Modal.Header>{modalDate}</Modal.Header>
-                                                <Modal.Content>
-                                                    <div className="acntActivityHeader">
-                                                        <Header as="h2" icon>
-                                                            <Image className={imageCls} size="tiny" src={isScheduledAllocation ? userGroupImage : data.attributes.imageUrl} />
-                                                            {transactionSign}
-                                                            {amount}
-                                                            <Header.Subheader>
-                                                                {isGiftCancelled
-                                                                    ? (
-                                                                        transactionTypeDisplay
-                                                                    )
-                                                                    : (
-                                                                        <Fragment>
-                                                                            {descriptionType}
-                                                                            {(profileUrl) ? (
-                                                                                <span>
-                                                                                    {entity}
-                                                                                </span>
-                                                                            ) : (
-                                                                                <span>
-                                                                                    {entity}
-                                                                                </span>
-                                                                            )}
-                                                                        </Fragment>
-                                                                    )}
-                                                            </Header.Subheader>
-                                                        </Header>
-                                                    </div>
-                                                    {
-                                                        !_.isEmpty(data.attributes.metaValues) && (
-                                                            <DashboardTransactionDetails
-                                                                data={data}
-                                                                modalDate={modalDate}
-                                                                informationSharedEntity={informationSharedEntity}
-                                                                sourceUserId={id}
-                                                                isScheduledAllocation={isScheduledAllocation}
-                                                            />
-                                                        )
-                                                    }
-                                                    {isGiftCancelled
-                                                    && (
-                                                        <div className="learnAboutWrap">
-                                                            {(data.attributes.transactionType.toLowerCase() === 'matchallocation')
-                                                            && (
-                                                                <p>Due to a refund in a previous transaction. </p>
-                                                            )}
-                                                            If you have questions about this transaction,
-                                                            <a href={`${CORP_DOMAIN}/contact/`}> contact us </a>
-                                                            for help.
-                                                        </div>
-                                                    )
-                                                    }
-                                                </Modal.Content>
-                                            </Modal>
                                         </List.Header>
                                         <List.Description className={givingTypeClass}>
                                             {givingType}
@@ -346,6 +291,74 @@ class DashboradList extends React.Component {
                                 </List.Item>
                             </List>
                         </Table.Cell>
+                        <TableCell>
+                            <Modal
+                                size="tiny"
+                                dimmer="inverted"
+                                className="chimp-modal acntActivityModel"
+                                closeIcon
+                                trigger={
+                                    (
+                                        <span className="descriptionRight">
+                                            <Image className="icons-right-page" src={iconsRight} />
+                                        </span>
+                                    )}
+                            >
+                                <Modal.Header>{modalDate}</Modal.Header>
+                                <Modal.Content>
+                                    <div className="acntActivityHeader">
+                                        <Header as="h2" icon>
+                                            <Image className={imageCls} size="tiny" src={isScheduledAllocation ? userGroupImage : data.attributes.imageUrl} />
+                                            {transactionSign}
+                                            {amount}
+                                            <Header.Subheader>
+                                                {isGiftCancelled
+                                                    ? (
+                                                        transactionTypeDisplay
+                                                    )
+                                                    : (
+                                                        <Fragment>
+                                                            {descriptionType}
+                                                            {(profileUrl) ? (
+                                                                <span>
+                                                                    {entity}
+                                                                </span>
+                                                            ) : (
+                                                                <span>
+                                                                    {entity}
+                                                                </span>
+                                                            )}
+                                                        </Fragment>
+                                                    )}
+                                            </Header.Subheader>
+                                        </Header>
+                                    </div>
+                                    {
+                                        !_.isEmpty(data.attributes.metaValues) && (
+                                            <DashboardTransactionDetails
+                                                data={data}
+                                                modalDate={modalDate}
+                                                informationSharedEntity={informationSharedEntity}
+                                                sourceUserId={id}
+                                            />
+                                        )
+                                    }
+                                    {isGiftCancelled
+                                        && (
+                                            <div className="learnAboutWrap">
+                                                {(data.attributes.transactionType.toLowerCase() === 'matchallocation')
+                                                && (
+                                                    <p>Due to a refund in a previous transaction. </p>
+                                                )}
+                                                If you have questions about this transaction,
+                                                <a href={`${CORP_DOMAIN}/contact/`}> contact us </a>
+                                                for help.
+                                            </div>
+                                        )
+                                    }
+                                </Modal.Content>
+                            </Modal>
+                        </TableCell>
                         <Table.Cell className="reason">{transactionTypeDisplay}</Table.Cell>
                         <Table.Cell className="amount">
                             {transactionSign}
