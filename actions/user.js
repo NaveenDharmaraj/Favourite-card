@@ -765,7 +765,7 @@ export const getUpcomingTransactions = (id, filter, activePage = 1, pageSize = 1
         },
         type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
     });
-    return coreApi.get(`users/${id}/upcomingTransactions`, {
+    return coreApi.get(`users/${id}/upcomingTransactionsNew`, {
         params: {
             'filter[type]': filter,
             'page[size]': pageSize,
@@ -820,7 +820,7 @@ export const getUpcomingP2pAllocations = (
         resultsObj.type = actionTypes.GET_UPCOMING_PAUSED_P2P_TRANSACTIONS;
     }
     dispatch(apicallObj);
-    return coreApi.get(`users/${id}/upcomingTransactions`, {
+    return coreApi.get(`users/${id}/upcomingTransactionsNew`, {
         params: {
             'filter[aasm_state]': state,
             'filter[type]': filter,
