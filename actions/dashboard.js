@@ -44,9 +44,9 @@ const getPaginatedData = (url, type, dispatch) => {
 
 const getDashBoardData = (dispatch, type, userId, pageNumber) => {
     const apiTypeUrl = {
-        all: 'moneyTransfersAll',
-        in: 'moneyTransfersIn',
-        out: 'moneyTransfersOut',
+        all: 'moneyTransfersAllNew',
+        in: 'moneyTransfersInNew',
+        out: 'moneyTransfersOutNew',
     };
     const apiType = (_.isEmpty(type)) ? 'all' : type;
     getPaginatedData(`/users/${userId}/${apiTypeUrl[apiType]}?page[number]=${pageNumber}&page[size]=10`, apiType, dispatch);

@@ -33,14 +33,20 @@ const DashboardTransactionDetails = (props) => {
     
     if (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'allocation') {
         if (isScheduledAllocation) {
-            recepientsList.push(data.attributes.destinationDetails.name);
-            data.attributes.destinationDetails.child_allocations.map((user) => {
-                if (user.name) {
-                    recepientsList.push(user.name);
-                } else {
-                    recepientsList.push(user.email);
-                }
-            });
+            if (data.attributes.destinationDetails.name) {
+                recepientsList.push(data.attributes.destinationDetails.name);
+            } else {
+                recepientsList.push(data.attributes.destinationDetails.email);
+            }
+            if (!_.isEmpty(data.attributes.destinationDetails.child_allocations)) {
+                data.attributes.destinationDetails.child_allocations.map((user) => {
+                    if (user.name) {
+                        recepientsList.push(user.name);
+                    } else {
+                        recepientsList.push(user.email);
+                    }
+                });
+            }
             dataObjectData = {};
             dataObjectData.labelValue = 'Given to';
             dataObjectData.transactionValue = recepientsList;
