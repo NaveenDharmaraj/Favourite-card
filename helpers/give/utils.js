@@ -1565,7 +1565,6 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         name: 'reviewGiveFrom',
         value: giveFrom.text,
     });
-    state.buttonText = (state.isRecurring) ? formatMessage('reviewP2pSendGiftMonthly') : formatMessage('reviewP2pGive');
     if (emails || selectedFriendsList) {
         if (emails.length === 1 && _.isEmpty(selectedFriendsList)) {
             state.mainDisplayImage = (recipientImage) || placeholderUser;
@@ -1602,6 +1601,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         });
     }
     if (sendGift === 'schedule' && frequencyObject) {
+        state.isRecurring = frequencyObject.value !== 'once';
         const selectedFrequency = frequencyObject.options.find((item) => item.value === frequencyObject.value);
         listingData.push({
             name: 'reviewP2pFrequency',
@@ -1626,6 +1626,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
             value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf'),
         });
     }
+    state.buttonText = (state.isRecurring) ? formatMessage('reviewP2pSendGiftMonthly') : formatMessage('reviewP2pGive');
     state.listingData = listingData;
     return (state);
 };
