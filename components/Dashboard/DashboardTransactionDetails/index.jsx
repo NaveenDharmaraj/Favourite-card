@@ -12,7 +12,6 @@ const DashboardTransactionDetails = (props) => {
         modalDate,
         informationSharedEntity,
         sourceUserId,
-        isScheduledAllocation,
     } = props;
     const dataArrayTransaction = [];
     const recepientsList = [];
@@ -32,21 +31,19 @@ const DashboardTransactionDetails = (props) => {
     }
     
     if (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'allocation') {
-        if (isScheduledAllocation) {
-            if (data.attributes.destinationDetails.name) {
+        if (data.attributes.hasChildAllocations) {
+            if (data.attributes.destinationDetails.userExists) {
                 recepientsList.push(data.attributes.destinationDetails.name);
             } else {
                 recepientsList.push(data.attributes.destinationDetails.email);
             }
-            if (!_.isEmpty(data.attributes.destinationDetails.child_allocations)) {
-                data.attributes.destinationDetails.child_allocations.map((user) => {
-                    if (user.name) {
-                        recepientsList.push(user.name);
-                    } else {
-                        recepientsList.push(user.email);
-                    }
-                });
-            }
+            data.attributes.destinationDetails.child_allocations.map((user) => {
+                if (user.userExists) {
+                    recepientsList.push(user.name);
+                } else {
+                    recepientsList.push(user.email);
+                }
+            });
             dataObjectData = {};
             dataObjectData.labelValue = 'Given to';
             dataObjectData.transactionValue = recepientsList;
@@ -58,7 +55,7 @@ const DashboardTransactionDetails = (props) => {
             dataObjectData.transactionValue = !_.isEmpty(data.attributes.source.name) ? `${data.attributes.source.name}'s Impact Account` : 'Impact Account';
             dataArrayTransaction.push(dataObjectData);
         }
-        if (isScheduledAllocation && !_.isEmpty(data.attributes.reason)) {
+        if (!_.isEmpty(data.attributes.reason) && ((data.attributes.reason !== 'Perfer not to Say') || (data.attributes.reason === 'Perfer not to Say' && data.attributes.source.id === Number(sourceUserId)))) {
             dataObjectData = {};
             dataObjectData.labelValue = 'Reason to give';
             dataObjectData.transactionValue = data.attributes.reason;
@@ -164,7 +161,6 @@ DashboardTransactionDetails.propTypes = {
         },
     },
     informationSharedEntity: PropTypes.string,
-    isScheduledAllocation: PropTypes.bool,
     modalDate: PropTypes.string,
     sourceUserId: PropTypes.string,
 };
@@ -176,7 +172,6 @@ DashboardTransactionDetails.defaultProps = {
         },
     },
     informationSharedEntity: '',
-    isScheduledAllocation: false,
     modalDate: '',
     sourceUserId: '',
 };
