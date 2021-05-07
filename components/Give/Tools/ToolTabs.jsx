@@ -225,7 +225,6 @@ class ToolTabs extends React.Component {
                                                     Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account.
                                                 </Header.Subheader>
                                             </Header>
-                                            <p>Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account. </p>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
                                             <Modal
