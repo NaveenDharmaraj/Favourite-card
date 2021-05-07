@@ -780,7 +780,8 @@ class ReloadAddAmount extends React.Component {
             let convertedPolicyPeriod = formatMessage('policyPeriodYear');
             const currentDate = new Date();
             let donationMonth = currentDate.getFullYear();
-            if (!_.isEmpty(this.props.donationMatchData)) {
+
+            if (!_.isEmpty(this.props.donationMatchData) && !formData.donationMatch.value) {
                 const [
                     defaultMatch,
                 ] = populateDonationMatch(donationMatchData, formatMessage, language);
