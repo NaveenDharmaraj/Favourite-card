@@ -906,6 +906,14 @@ class Friend extends React.Component {
                     amountToDonate = formatAmount(5);
                 }
                 const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
+                let allocationGiftType = giftType.value;
+                if(giveData.sendGift !== 'now' && giveData.sendDate && giveData.sendDate.getTime()){
+                    let today = new Date()
+                    today.setHours(0, 0, 0, 0);
+                    if(today.getTime() !== giveData.sendDate.getTime()){
+                        allocationGiftType = 1;
+                    }
+                }
                 return (
                     <ReloadAddAmount
                         defaultTaxReceiptProfile={defaultTaxReceiptProfileForReload}
@@ -913,7 +921,7 @@ class Friend extends React.Component {
                         donationMatchData={(giveFrom.type === 'user') ? donationMatchData : {}}
                         formatedDonationAmount={(amountToDonate > 9999) ? formatAmount(9999) : amountToDonate}
                         formatMessage={formatMessage}
-                        allocationGiftType={giftType.value}
+                        allocationGiftType={allocationGiftType}
                         giveTo={giveFrom}
                         language={language}
                         paymentInstrumentOptions={paymentInstrumentOptions}
@@ -993,7 +1001,7 @@ class Friend extends React.Component {
                 primary
                 className="blue-btn-rounded btn_right rivewbtnp2p"
                 content={formatMessage('giveCommon:reviewButton')}
-                disabled={!this.props.userAccountsFetched || !_every(validity)}
+                disabled={!this.props.userAccountsFetched}
                 type="submit"
             />)
         const giveFromType = (!_isEmpty(giveFrom.type)) ? giveFrom.type : 'user';
@@ -1193,7 +1201,7 @@ class Friend extends React.Component {
                                                                     </div>
                                                                     {!validity.isValidDate && <FormValidationErrorMessage
                                                                         condition={!validity.isValidDate}
-                                                                        errorMessage={'Enter a proper date'}
+                                                                        errorMessage={'Select a date to send your gift.'}
                                                                     />
                                                                     }
                                                                     <div>

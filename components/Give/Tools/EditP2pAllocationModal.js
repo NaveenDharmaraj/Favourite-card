@@ -710,7 +710,7 @@ const EditP2pAllocationModal = ({
                                         {!validity.isValidDate && (
                                             <FormValidationErrorMessage
                                                 condition={!validity.isValidDate}
-                                                errorMessage="Enter a proper date"
+                                                errorMessage="Select a date to send your gift."
                                             />
                                         )
                                         }
