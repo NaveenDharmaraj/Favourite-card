@@ -61,7 +61,7 @@ function P2pTable(props) {
                         modalHeader="Delete monthly gift?"
                         firstColoumn={recipients}
                         secondColoumn={formattedAmount}
-                        thirdColoumn={attributes.frequency}
+                        thirdColoumn={_.startCase(_.toLower(attributes.frequency))}
                         fourthColoumn={attributes.reason}
                         fifthColoumn={formatDateForGivingTools(attributes.createdAt)}
                         deleteTransaction={deleteTransaction}
