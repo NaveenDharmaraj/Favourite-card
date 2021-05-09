@@ -1597,7 +1597,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
     if (sendGift === 'schedule' && sendDate) {
         listingData.push({
             name: 'reviewP2pSendDate',
-            value: formatDateForP2p(sendDate),
+            value: formatDateForGivingTools(sendDate),
         });
     }
     if (sendGift === 'schedule' && frequencyObject) {
