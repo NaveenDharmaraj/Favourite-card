@@ -172,7 +172,7 @@ class TransactionTableRow extends React.Component {
 			<Fragment>
 				{/* Desktop transaction details row start */}
 				<Responsive minWidth={768} as={'tr'}>
-					{firstColoumn && <Table.Cell className="edit-trxn-name recipient-width">{firstColoumn}</Table.Cell>}
+					{firstColoumn && <Table.Cell className={isP2p? "edit-trxn-name recipient-width p2p-tab-width": "edit-trxn-name recipient-width"}>{firstColoumn}</Table.Cell>}
 					{secondColoumn && (
 						<Table.Cell className="text-right">
 							{secondColoumn}
@@ -181,7 +181,7 @@ class TransactionTableRow extends React.Component {
 					{thirdColoumn && <Table.Cell>{thirdColoumn}</Table.Cell>}
 					{fourthColoumn && <Table.Cell>{fourthColoumn}</Table.Cell>}
 					{fifthColoumn && <Table.Cell>{fifthColoumn}</Table.Cell>}
-					<Table.Cell className="tbl-action">
+					<Table.Cell className={isP2p? "tbl-action p2p-action-padding": "tbl-action"}>
                         {
                             isP2p? (
                                 <Fragment>
