@@ -8,8 +8,12 @@ import {
     Segment,
     Grid,
     Tab,
+    Loader,
 } from 'semantic-ui-react';
 import _ from 'lodash';
+import {
+    bool,
+} from 'prop-types';
 import {
     formatAmount,
 } from '../../../helpers/give/utils';
@@ -186,7 +190,8 @@ class ToolTabs extends React.Component {
                     upcomingP2pTransactions,
                     upcomingP2pTransactionsMeta,
                     upcomingPausedP2pTransactions,
-                    upcomingPausedP2pTransactionsMeta
+                    upcomingPausedP2pTransactionsMeta,
+                    showScheduleGiftLoader,
                 } = this.props;
                 const totalPages = (upcomingTransactionsMeta) ? upcomingTransactionsMeta.pageCount: 1;
                 const totalPagesP2p = (upcomingP2pTransactionsMeta) ? upcomingP2pTransactionsMeta.pageCount: 1;
@@ -199,7 +204,14 @@ class ToolTabs extends React.Component {
                 return (
                 <Tab.Pane attached={false}>
                     <div className="tools-tabpane">
-                        <AllocationsTab
+                        {showScheduleGiftLoader
+                        ? (
+                            <div className='schedule_gift_loader'>
+                                <Loader active inline='centered'/>
+                            </div>
+                        )
+                        : (
+                            <AllocationsTab
                             activePage={activePage}
                             onPageChange={this.onPageChange}
                             upcomingTransactions={upcomingTransactions}
@@ -215,7 +227,10 @@ class ToolTabs extends React.Component {
                             p2pActivePage={p2pActivePage}
                             p2pPausedPage={p2pPausedPage}
                             pauseResumeTransaction={this.pauseResumeTransaction}
+                            showScheduleGiftLoader={showScheduleGiftLoader}
                         />
+                        )
+                    }
                     </div>
                 </Tab.Pane>
             )
@@ -314,9 +329,22 @@ class ToolTabs extends React.Component {
         if(defaultActiveIndex === "0") {
             dispatch(getUpcomingTransactions(id, 'RecurringDonation'));
         } else if(defaultActiveIndex === "1") {
+            dispatch({
+                payload: {
+                    status: true,
+                },
+                type: 'SCHEDULED_GIFTS_LOADER',
+            });
             dispatch(getUpcomingTransactions(id, 'RecurringAllocation,RecurringFundAllocation'));
             dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation'));
-            dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation', 'inactive'));
+            dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation', 'inactive')).then(() => {
+                dispatch({
+                    payload: {
+                        status: false,
+                    },
+                    type: 'SCHEDULED_GIFTS_LOADER',
+                });
+            });
         }
         if(id){
             getUserGivingGoal(dispatch, id);
@@ -449,6 +477,15 @@ class ToolTabs extends React.Component {
         );
     }
 }
+
+ToolTabs.defaultProps = {
+    showScheduleGiftLoader: true,
+};
+
+ToolTabs.propTypes = {
+    showScheduleGiftLoader: bool,
+};
+
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
@@ -462,6 +499,7 @@ function mapStateToProps(state) {
         upcomingP2pTransactionApiCall:state.user.upcomingP2pTransactionApiCall,
         upcomingPausedP2pTransactionApiCall:state.user.upcomingPausedP2pTransactionApiCall,
         userGivingGoalDetails: state.user.userGivingGoalDetails,
+        showScheduleGiftLoader: state.user.showScheduleGiftLoader,
     };
 }
 export default (connect(mapStateToProps)(ToolTabs));

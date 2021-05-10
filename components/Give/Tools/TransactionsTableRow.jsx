@@ -148,7 +148,11 @@ class TransactionTableRow extends React.Component {
                 <Modal.Header>{modalHeader}</Modal.Header>
                 <Modal.Content>
                     <span>
-                    If you delete this transaction, it won't be processed each month.
+                        {isP2p? 
+                        `If you delete this transaction, it won't be processed${frequency ==='once'? '' 
+                        :` each ${frequency.substring(0, frequency.length - 2)}`}.`: 
+                        `If you delete this transaction, it won't be processed each month.`}
+                    
                     </span>
                     <div className="pt-2 pb-1 text-right">
                         <Button

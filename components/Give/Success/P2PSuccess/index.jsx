@@ -7,7 +7,7 @@ import _isEmpty from 'lodash/isEmpty';
 import { withTranslation } from '../../../../i18n';
 import '../../../../static/less/giveFlows.less';
 import { Link } from '../../../../routes';
-import { formatDateForP2p } from '../../../../helpers/give/utils';
+import { formatDateForGivingTools } from '../../../../helpers/give/utils';
 
 const P2PSuccess = (props) => {
     const {
@@ -30,38 +30,48 @@ const P2PSuccess = (props) => {
             const last = receipientsArr.pop();
             name = `${receipientsArr.join(', ')}, and ${last}`; // added extra coma for bugherd #290
         }
+
         if (!_isEmpty(frequencyObject)) {
             switch (frequencyObject.value) {
                 case 'once':
-                    secondParagraph = formatMessage('fromToRecipientOnce', {
-                        date: formatDateForP2p(sendDate),
-                        name,
-                    });
+                    if (giveData.giveFrom.type === 'user') {
+                        secondParagraph = formatMessage('fromToRecipientOnce', {
+                            date: formatDateForGivingTools(sendDate),
+                            name,
+                        });
+                    } else {
+                        secondParagraph = formatMessage('fromOtherToRecipientOnce', {
+                            fromName: giveData.giveFrom.name,
+                            name,
+                            date: formatDateForGivingTools(sendDate),
+                        });
+                    }
+                    
                     break;
                 case 'weekly':
                 case 'monthly':
-                case 'anually':
+                case 'yearly':
                     if (giveData.giveFrom.type === 'user') {
                         secondParagraph = formatMessage(
                             'fromToRecipientRecurring',
                             {
-                                date: formatDateForP2p(sendDate),
+                                date: formatDateForGivingTools(sendDate),
                                 frequency: frequencyObject.value,
                                 name,
                             },
                         );
-                        thirdParagraph = formatMessage('scheduleForP2p');
                     } else {
                         secondParagraph = formatMessage(
                             'fromOtherRecipientRecurring',
                             {
-                                date: formatDateForP2p(sendDate),
+                                date: formatDateForGivingTools(sendDate),
                                 frequency: frequencyObject.value,
                                 fromName: giveData.giveFrom.name,
                                 name,
                             },
                         );
                     }
+                    thirdParagraph = formatMessage('scheduleForP2p');
                     break;
                 default:
                     break;

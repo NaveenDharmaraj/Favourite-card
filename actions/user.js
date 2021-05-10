@@ -1034,6 +1034,9 @@ export const editUpcomingP2p = (
                 message: 'Your scheduled gift has been updated.',
                 type: 'success',
             };
+            if (status) {
+                statusMessageProps.message =  `Your gift has been ${status}d.`;
+            }
             dispatch({
                 payload: {
                     errors: [

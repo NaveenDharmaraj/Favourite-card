@@ -268,7 +268,7 @@ class DashboradList extends React.Component {
                         <Table.Cell>
                             <List verticalAlign="middle">
                                 <List.Item>
-                                    <Image className={imageCls} size="tiny" src={isScheduledAllocation ? userGroupImage : data.attributes.imageUrl} />
+                                    <Image className={imageCls} size="tiny" src={data.attributes.hasChildAllocations ? userGroupImage : data.attributes.imageUrl} />
                                     <List.Content>
                                         <List.Header>
                                             {descriptionType}

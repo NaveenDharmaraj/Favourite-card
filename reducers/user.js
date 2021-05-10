@@ -255,6 +255,12 @@ const user = (state = {}, action) => {
                 claimCharityErrorMessage: action.payload.claimCharityErrorMessage,
             };
             break;
+        case 'SCHEDULED_GIFTS_LOADER':
+            newState = {
+                ...state,
+                showScheduleGiftLoader: action.payload.status,
+            };
+            break;
         default:
             break;
     }

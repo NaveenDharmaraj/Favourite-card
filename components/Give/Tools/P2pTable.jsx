@@ -61,8 +61,8 @@ function P2pTable(props) {
                         modalHeader="Delete monthly gift?"
                         firstColoumn={recipients}
                         secondColoumn={formattedAmount}
-                        thirdColoumn={attributes.frequency}
-                        fourthColoumn={attributes.reason}
+                        thirdColoumn={_.startCase(_.toLower(attributes.frequency))}
+                        fourthColoumn={attributes.reason || ' '}
                         fifthColoumn={formatDateForGivingTools(attributes.createdAt)}
                         deleteTransaction={deleteTransaction}
                         transactionType={attributes.transactionType}
@@ -99,16 +99,16 @@ function P2pTable(props) {
                             <Table.Row>
                                 <Table.HeaderCell className="edit-trxn-name recipient-width p2p-tab-width">Recipient(s) </Table.HeaderCell>
                                 <Table.HeaderCell textAlign="right">
-									Amount
+                                    Amount
                                 </Table.HeaderCell>
                                 <Table.HeaderCell>
-									Frequency
+                                    Frequency
                                 </Table.HeaderCell>
                                 <Table.HeaderCell className="w-120 reason-width">
-									Reason to give
+                                    Reason to give
                                 </Table.HeaderCell>
                                 <Table.HeaderCell>
-									Created
+                                    Created
                                 </Table.HeaderCell>
                                 <Table.HeaderCell className="p2p-action-padding">Action</Table.HeaderCell>
                             </Table.Row>

@@ -24,7 +24,7 @@ const P2pReasons = ({ handleSendMoneyInputChange, reason, reasonOther }) => {
             text: 'Prefer not to Say',
             value: 'Prefer not to Say',
         },
-    ]
+    ];
 
     return (
         <div>
@@ -49,6 +49,7 @@ const P2pReasons = ({ handleSendMoneyInputChange, reason, reasonOther }) => {
                     control={Input}
                     icon={null}
                     placeholder="Why are you giving? (optional)"
+                    maxLength='100'
                     size="large"
                     name="reasonOther"
                     onChange={handleSendMoneyInputChange}
@@ -57,7 +58,7 @@ const P2pReasons = ({ handleSendMoneyInputChange, reason, reasonOther }) => {
             </div>
             }
         </div>
-    )
+    );
 };
 
 P2pReasons.defaultProps = {
@@ -66,4 +67,4 @@ P2pReasons.defaultProps = {
     reasonOther: '',
 };
 
-export default P2pReasons; 
+export default P2pReasons;
