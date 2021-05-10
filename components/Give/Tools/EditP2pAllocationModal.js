@@ -379,6 +379,19 @@ const EditP2pAllocationModal = ({
             case 'recipients':
                 setRecipients(parseRecipients(newValue));
                 setTotalP2pGiveAmount(calculateP2pTotalGiveAmount((friendsList.length + recipients.length), amount));
+                if (_isEmpty(parseRecipients) && _isEmpty(newValue)) {
+                    flowObject.giveData.friendsList = friendsList;
+                    const validations = validateGiveForm(
+                        'recipients',
+                        [],
+                        validity,
+                        flowObject.giveData,
+                        coverFeesAmount,
+                        email,
+                    );
+                    validations.isValidEmailList = true;
+                    setValidity(validations);
+                }
                 break;
             case 'friendsList':
                 setFriendsList(newValue);
@@ -602,7 +615,7 @@ const EditP2pAllocationModal = ({
                                                         placeholder="You're not connected to friends on Charitable Impact yet"
                                                     />
                                                 </Form.Field>
-                                                <span className="givetoInfoText">You can find friends to give to on Charitable Impact under your Account Settings.</span>
+                                                <span className="givetoInfoText">You can find friends to give to on Charitable Impact under your profile.</span>
                                             </div>
                                         )
                                     }
@@ -733,7 +746,7 @@ const EditP2pAllocationModal = ({
                             </div>
                             <Form.Field>
                                 <label htmlFor="giveFrom">
-                                    {formatMessage('giveFromLabel')}
+                                    {formatMessage('dropDownAccountOptions:giveFromLabel')}
                                 </label>
                                 <Form.Field
                                     control={Input}

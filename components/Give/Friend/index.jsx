@@ -913,6 +913,8 @@ class Friend extends React.Component {
                     if(today.getTime() !== giveData.sendDate.getTime()){
                         allocationGiftType = 1;
                     }
+                } else if(giveData.sendGift!== 'now' && !giveData.sendDate) {
+                    allocationGiftType = 1;
                 }
                 return (
                     <ReloadAddAmount
@@ -1091,7 +1093,7 @@ class Friend extends React.Component {
                                                                                     placeholder="You're not connected to friends on Charitable Impact yet"
                                                                                 />
                                                                             </Form.Field>
-                                                                            <span class="givetoInfoText">You can find friends to give to on Charitable Impact under your Account Settings.</span>
+                                                                            <span class="givetoInfoText">You can find friends to give to on Charitable Impact under your profile.</span>
                                                                         </div>
                                                                     )
                                                                 }
