@@ -4094,6 +4094,37 @@ label.giftNotSent{
       clear: both;
   }
 }
+.Filter_icon_text{
+  cursor: pointer;
+  .ui{
+    &.image {
+      &.filter_icons{
+        filter: invert(22%) sepia(53%) saturate(6446%) hue-rotate(213deg) brightness(95%) contrast(96%);
+        -webkit-filter:invert(22%) sepia(53%) saturate(6446%) hue-rotate(213deg) brightness(95%) contrast(96%);
+      }
+    }
+  }
+  .Filter_text{
+    color: #263238;
+    font-size: 14px;
+    .primeFont-semi-bold();
+    letter-spacing: 0;
+    line-height: 21px;
+    margin-left: 5px;
+  }
+}
+.dropdown_filter{
+  .ui{
+    &.list{
+      .item{
+        color: #000;
+        &:hover{
+          color: #055CE5;
+        }
+      }
+    }
+  }
+}
 .paginationWraper{
   display: table;
   width: 100%;
