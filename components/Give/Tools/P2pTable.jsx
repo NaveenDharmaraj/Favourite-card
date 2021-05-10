@@ -97,7 +97,7 @@ function P2pTable(props) {
                     <Table padded unstackable className="no-border-table tbl_border_bottom">
                         <Table.Header>
                             <Table.Row>
-                                <Table.HeaderCell className="edit-trxn-name recipient-width p2p-tab-width">Recipient(s) </Table.HeaderCell>
+                                <Table.HeaderCell className="edit-trxn-name recipient-width p2p-tab-width">Recipient(s)</Table.HeaderCell>
                                 <Table.HeaderCell textAlign="right">
                                     Amount
                                 </Table.HeaderCell>
