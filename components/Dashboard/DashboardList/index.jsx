@@ -261,7 +261,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReversed : 'Deposit';
                     }
                 }
-                const amount = data.attributes.hasChildAllocations ? formatCurrency(data.attributes.totalAmount, language, 'USD') : formatCurrency(data.attributes.amount, language, 'USD');
+                const amount = (!_.isEmpty(data.attributes.source) && data.attributes.source.id === Number(id) && data.attributes.hasChildAllocations) ? formatCurrency(data.attributes.totalAmount, language, 'USD') : formatCurrency(data.attributes.amount, language, 'USD');
                 return (
                     <Table.Row className={rowClass} key={index}>
                         <Table.Cell className={dateClass}>{date}</Table.Cell>
