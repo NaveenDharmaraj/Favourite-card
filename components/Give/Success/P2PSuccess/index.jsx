@@ -30,20 +30,21 @@ const P2PSuccess = (props) => {
             const last = receipientsArr.pop();
             name = `${receipientsArr.join(', ')}, and ${last}`; // added extra coma for bugherd #290
         }
+
         if (!_isEmpty(frequencyObject)) {
             switch (frequencyObject.value) {
                 case 'once':
-                    if(giveData.giveFrom.type === 'user') {
+                    if (giveData.giveFrom.type === 'user') {
                         secondParagraph = formatMessage('fromToRecipientOnce', {
                             date: formatDateForGivingTools(sendDate),
                             name,
                         });
-                    }else{
-                        formatMessage('fromOtherToRecipientOnce', {
+                    } else {
+                        secondParagraph = formatMessage('fromOtherToRecipientOnce', {
                             fromName: giveData.giveFrom.name,
                             name,
                             date: formatDateForGivingTools(sendDate),
-                        })
+                        });
                     }
                     
                     break;
