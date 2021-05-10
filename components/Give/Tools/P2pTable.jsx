@@ -97,20 +97,20 @@ function P2pTable(props) {
                     <Table padded unstackable className="no-border-table tbl_border_bottom">
                         <Table.Header>
                             <Table.Row>
-                                <Table.HeaderCell className="edit-trxn-name recipient-width">Recipient(s) </Table.HeaderCell>
+                                <Table.HeaderCell className="edit-trxn-name recipient-width p2p-tab-width">Recipient(s) </Table.HeaderCell>
                                 <Table.HeaderCell textAlign="right">
                                     Amount
                                 </Table.HeaderCell>
                                 <Table.HeaderCell>
                                     Frequency
                                 </Table.HeaderCell>
-                                <Table.HeaderCell className="w-120">
+                                <Table.HeaderCell className="w-120 reason-width">
                                     Reason to give
                                 </Table.HeaderCell>
                                 <Table.HeaderCell>
                                     Created
                                 </Table.HeaderCell>
-                                <Table.HeaderCell>Action</Table.HeaderCell>
+                                <Table.HeaderCell className="p2p-action-padding">Action</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
                         {monthlyTransactionApiCall === undefined || false ? (
