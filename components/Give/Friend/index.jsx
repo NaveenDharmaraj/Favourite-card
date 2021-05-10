@@ -1210,6 +1210,7 @@ class Friend extends React.Component {
                                                                 parentOnBlurChange={this.handleOnInputBlur}
                                                                 formatMessage={formatMessage}
                                                                 reviewBtnFlag={reviewBtnFlag}
+                                                                isScheduledP2P={sendGift === 'schedule'}
                                                             />
                                                             {this.renderReloadAddAmount()}
                                                         </div>
