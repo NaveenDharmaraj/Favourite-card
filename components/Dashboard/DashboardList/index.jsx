@@ -49,6 +49,7 @@ class DashboradList extends React.Component {
             currentActivePage: 1,
             dashboardListLoader: !props.dataList,
             filterType: 'all',
+            disableFilter: false,
         };
         this.onPageChanged = this.onPageChanged.bind(this);
     }
@@ -61,6 +62,9 @@ class DashboradList extends React.Component {
             dispatch,
         } = this.props;
         getDashBoardData(dispatch, 'all', id, 1);
+        this.setState({
+            disableFilter: true
+        })
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -80,6 +84,11 @@ class DashboradList extends React.Component {
         if (!_.isEqual(this.state, prevState)) {
             if (!_.isEqual(filterType, prevState.filterType)) {
                 getDashBoardData(dispatch, filterType, id, 1);
+                if(filterType === 'all') {
+                    this.setState({
+                        disableFilter: true,
+                    });
+                }
             }
         }
         if (!_.isEqual(this.props, prevProps)) {
@@ -414,6 +423,8 @@ class DashboradList extends React.Component {
             currentActivePage,
             dashboardListLoader,
             isOpen,
+            filterType,
+            disableFilter,
         } = this.state;
         return (
             <div className="pt-2 pb-2">
@@ -458,7 +469,8 @@ class DashboradList extends React.Component {
                                                         isOpen: false,
                                                     })
                                                 }}
-                                                className="filterType_bg"
+                                                disabled={disableFilter}
+                                                className="filterType_bg_hover"
                                             >
                                                 {formatMessage('giveCommon:accountActivity.allText')}
                                             </List.Item>
@@ -467,11 +479,13 @@ class DashboradList extends React.Component {
                                                 onClick={() => {
                                                     this.setState({
                                                         dashboardListLoader: true,
+                                                        disableFilter: false,
                                                         filterType: 'in',
                                                         isOpen: false,
                                                     })
                                                 }}
-                                                className="filterType_bg"
+                                                disabled={filterType === 'in' ?  true : false}
+                                                className="filterType_bg_hover"
                                             >
                                                 {formatMessage('giveCommon:accountActivity.inText')}
                                             </List.Item>
@@ -482,9 +496,11 @@ class DashboradList extends React.Component {
                                                         dashboardListLoader: true,
                                                         filterType: 'out',
                                                         isOpen: false,
+                                                        disableFilter: false
                                                     })
                                                 }}
-                                                className="filterType_bg"
+                                                disabled={filterType === 'out' ?  true : false}
+                                                className="filterType_bg_hover"
                                             >
                                                 {formatMessage('giveCommon:accountActivity.outText')}
                                             </List.Item>
@@ -506,7 +522,7 @@ class DashboradList extends React.Component {
                     <div className="paginationWraper">
                         <div className="db-pagination right-align pt-2">
                             {
-                                !_.isEmpty(dataList) && dataList.count > 1 && (
+                                !_.isEmpty(dataList) && dataList.count > 1 && dashboardListLoader === false && (
                                     <Pagination
                                         activePage={currentActivePage}
                                         totalPages={dataList.count}
