@@ -33,7 +33,7 @@ const DashboardTransactionDetails = (props) => {
     }
     
     if (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'allocation') {
-        if (data.attributes.hasChildAllocations) {
+        if (data.attributes.hasChildAllocations && isMyAccount) {
             if (data.attributes.destinationDetails.userExists) {
                 recepientsList.push(data.attributes.destinationDetails.name);
             } else {
@@ -46,7 +46,7 @@ const DashboardTransactionDetails = (props) => {
                     recepientsList.push(user.email);
                 }
             });
-            recepientsList = recepientsList.join(' ');
+            recepientsList = recepientsList.join(', ');
             dataObjectData = {};
             dataObjectData.labelValue = 'Given to';
             dataObjectData.transactionValue = recepientsList;
@@ -104,7 +104,7 @@ const DashboardTransactionDetails = (props) => {
                 dataObjectData.labelValue = `Message from ${data.attributes.source.name}`;
             }
             if (data.attributes.destination.type.toLowerCase() === 'user' && data.attributes.destination.id !== Number(sourceUserId)) {
-                dataObjectData.labelValue = `Message to friend`;
+                dataObjectData.labelValue = `Message`;
             }
         }
         dataObjectData.transactionValue = data.attributes.noteToRecipient;
