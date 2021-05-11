@@ -183,7 +183,7 @@ class TransactionTableRow extends React.Component {
 						</Table.Cell>
 					)}
 					{thirdColoumn && <Table.Cell>{thirdColoumn}</Table.Cell>}
-					{fourthColoumn && <Table.Cell>{fourthColoumn}</Table.Cell>}
+					{fourthColoumn && <Table.Cell className={isP2p? "w-120 reason-width": ""}>{fourthColoumn}</Table.Cell>}
 					{fifthColoumn && <Table.Cell>{fifthColoumn}</Table.Cell>}
 					<Table.Cell className={isP2p? "tbl-action p2p-action-padding": "tbl-action"}>
                         {
