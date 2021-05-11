@@ -348,12 +348,27 @@ class DashboradList extends React.Component {
                                             <div className="learnAboutWrap">
                                                 {(data.attributes.transactionType.toLowerCase() === 'matchallocation')
                                                 && (
-                                                    <p>Due to a refund in a previous transaction. </p>
+                                                    <List.Item>
+                                                        <List.Content>
+                                                            Due to a refund in a previous transaction.
+                                                        </List.Content>
+                                                    </List.Item>
                                                 )}
-                                                Learn about the common reasons
-                                                <br />
-                                                <a href={`${HELP_CENTRE_URL}article/198-gifts-returned-to-your-impact-account`}>why a gift is returned. </a>
-                                                Or,
+                                                {(data.attributes.transactionType.toLowerCase() !== 'donation')
+                                                    ? (
+                                                        <Fragment>
+                                                            Learn about the common reasons
+                                                            <br />
+                                                            <a href={`${HELP_CENTRE_URL}article/198-gifts-returned-to-your-impact-account`}>why a gift is returned. </a>
+                                                            Or,
+                                                        </Fragment>
+                                                    ) : (
+                                                        <List.Item>
+                                                            <List.Content>
+                                                                If you have questions about this transaction,
+                                                            </List.Content>
+                                                        </List.Item>
+                                                    )}
                                                 <a href={`${CORP_DOMAIN}/contact/`}> contact us </a>
                                                 for help.
                                             </div>
