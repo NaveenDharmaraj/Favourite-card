@@ -848,7 +848,9 @@ class Friend extends React.Component {
                     value: 'once'
                 }
             }
-            giveFrom = defaultGiveFrom;
+            if (giveFrom.type !== 'companies') {
+                giveFrom = defaultGiveFrom;
+            }
         } else if (name === 'frequency') {
             frequencyObject = {
                 ...this.state.flowObject.giveData.frequencyObject,
