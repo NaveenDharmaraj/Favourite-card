@@ -54,11 +54,13 @@ function P2pTable(props) {
                     language,
                     'USD',
                 );
+                const modalHeader = `Delete${attributes.frequency === 'once' ? ' '
+                    : ` ${attributes.frequency}`} gift?`;
                 activeIndexs.push(index);
                 tableBody.push(
                     <TransactionTableRow
                         activePage={activePage}
-                        modalHeader="Delete monthly gift?"
+                        modalHeader={modalHeader}
                         firstColoumn={recipients}
                         secondColoumn={formattedAmount}
                         thirdColoumn={_.startCase(_.toLower(attributes.frequency))}

@@ -42,8 +42,8 @@ function AllocationsTab(props) {
     const allocationPageChange = (event, data) => {
         onPageChange(event, data, 'allocation');
     };
-    const p2pAllocationPageChange = (event, data) => {
-        onPageChange(event, data, 'p2pAllocation');
+    const p2pAllocationPageChange = (event, data, status) => {
+        onPageChange(event, data, 'p2pAllocation', status);
     };
     return (
         <Fragment>
@@ -120,7 +120,7 @@ function AllocationsTab(props) {
                                 {!upcomingP2pTransactionApiCall && (totalPagesP2p > 1) &&
                                 <PaginationComponent
                                     activePage={p2pActivePage}
-                                    onPageChanged={p2pAllocationPageChange}
+                                    onPageChanged={(e, data) => { p2pAllocationPageChange(e, data, 'active'); }}
                                     totalPages={totalPagesP2p}
                                     firstItem={(p2pActivePage === 1) ? null : undefined}
                                     lastItem={(p2pActivePage === totalPagesP2p) ? null : undefined}
@@ -174,7 +174,7 @@ function AllocationsTab(props) {
                                 {!upcomingPausedP2pTransactionApiCall && (totalPagesPausedP2p > 1) &&
                                 <PaginationComponent
                                     activePage={p2pPausedPage}
-                                    onPageChanged={onPageChange}
+                                    onPageChanged={(e, data) => { p2pAllocationPageChange(e, data, 'inactive'); }}
                                     totalPages={totalPagesPausedP2p}
                                     firstItem={(p2pPausedPage === 1) ? null : undefined}
                                     lastItem={(p2pPausedPage === totalPagesPausedP2p) ? null : undefined}

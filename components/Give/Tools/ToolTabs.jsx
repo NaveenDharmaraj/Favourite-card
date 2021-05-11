@@ -420,7 +420,7 @@ class ToolTabs extends React.Component {
         } 
     }
 
-    onPageChange(event, data, type) {
+    onPageChange(event, data, type, status) {
         const {
             currentUser: {
                 id,
@@ -428,18 +428,32 @@ class ToolTabs extends React.Component {
             dispatch,
             defaultActiveIndex
         } = this.props;
+        let{
+            activePage,
+            p2pActivePage,
+            p2pPausedPage
+        } = this.state;
         if(defaultActiveIndex === "0") {
             dispatch(getUpcomingTransactions(id, 'RecurringDonation', data.activePage));
+            activePage = data.activePage;
         } else if(defaultActiveIndex === "1") {
             if(type === 'p2pAllocation'){
-                dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation'));
-                dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation', 'inactive'));
+                if(status = 'active'){
+                    dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation', 'active', data.activePage));
+                    p2pActivePage = data.activePage;
+                } else{
+                    dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation', 'inactive', data.activePage));
+                    p2pPausedPage = data.activePage;
+                }
             } else if( type === 'allocation'){
                 dispatch(getUpcomingTransactions(id, 'RecurringAllocation,RecurringFundAllocation', data.activePage));
+                activePage = data.activePage;
             }
         }
         this.setState({
-            activePage: data.activePage,
+            activePage,
+            p2pActivePage,
+            p2pPausedPage
         });
     }
     onTabChangeFunc(event, data) {
