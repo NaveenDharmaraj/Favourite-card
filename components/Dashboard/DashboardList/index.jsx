@@ -45,6 +45,7 @@ class DashboradList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isOpen: false,
             currentActivePage: 1,
             dashboardListLoader: !props.dataList,
             filterType: 'all',
@@ -76,6 +77,11 @@ class DashboradList extends React.Component {
         const {
             filterType,
         } = this.state;
+        if (!_.isEqual(this.state, prevState)) {
+            if (!_.isEqual(filterType, prevState.filterType)) {
+                getDashBoardData(dispatch, filterType, id, 1);
+            }
+        }
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEqual(dataList, prevProps.dataList)) {
                 dashboardListLoader = false;
@@ -83,11 +89,6 @@ class DashboradList extends React.Component {
             this.setState({
                 dashboardListLoader,
             });
-        }
-        if (!_.isEqual(this.state, prevState)) {
-            if (!_.isEqual(filterType, prevState.filterType)) {
-                getDashBoardData(dispatch, filterType, id, 1);
-            }
         }
     }
 
@@ -396,6 +397,14 @@ class DashboradList extends React.Component {
         );
     }
 
+    handleCancel = () => {
+        this.setState({ isOpen: false });
+    }
+
+    handleOpen = () => {
+        this.setState({ isOpen: true })
+    }
+
     render() {
         const {
             dataList,
@@ -404,6 +413,7 @@ class DashboradList extends React.Component {
         const {
             currentActivePage,
             dashboardListLoader,
+            isOpen,
         } = this.state;
         return (
             <div className="pt-2 pb-2">
@@ -420,6 +430,10 @@ class DashboradList extends React.Component {
                             <Grid.Column mobile={5} tablet={4} computer={4}>
                                 <Popup
                                     basic
+                                    open={isOpen}
+                                    onClose={this.handleCancel}
+                                    onOpen={this.handleOpen}
+                                    show="Hide"
                                     on="click"
                                     wide
                                     className="filter-popup"
@@ -437,17 +451,41 @@ class DashboradList extends React.Component {
                                         <List>
                                             <List.Item
                                                 as='a'
-                                                onClick={() => { this.setState({ filterType: 'all'}) }}>
+                                                onClick={() => {
+                                                    this.setState({
+                                                        dashboardListLoader: true,
+                                                        filterType: 'all',
+                                                        isOpen: false,
+                                                    })
+                                                }}
+                                                className="filterType_bg"
+                                            >
                                                 {formatMessage('giveCommon:accountActivity.allText')}
                                             </List.Item>
                                             <List.Item
                                                 as='a'
-                                                onClick={() => { this.setState({ filterType: 'in'}) }}>
+                                                onClick={() => {
+                                                    this.setState({
+                                                        dashboardListLoader: true,
+                                                        filterType: 'in',
+                                                        isOpen: false,
+                                                    })
+                                                }}
+                                                className="filterType_bg"
+                                            >
                                                 {formatMessage('giveCommon:accountActivity.inText')}
                                             </List.Item>
                                             <List.Item
                                                 as='a'
-                                                onClick={() => { this.setState({ filterType: 'out'}) }}>
+                                                onClick={() => {
+                                                    this.setState({
+                                                        dashboardListLoader: true,
+                                                        filterType: 'out',
+                                                        isOpen: false,
+                                                    })
+                                                }}
+                                                className="filterType_bg"
+                                            >
                                                 {formatMessage('giveCommon:accountActivity.outText')}
                                             </List.Item>
                                         </List>
