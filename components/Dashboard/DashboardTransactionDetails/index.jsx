@@ -104,7 +104,7 @@ const DashboardTransactionDetails = (props) => {
                 dataObjectData.labelValue = `Message from ${data.attributes.source.name}`;
             }
             if (data.attributes.destination.type.toLowerCase() === 'user' && data.attributes.destination.id !== Number(sourceUserId)) {
-                dataObjectData.labelValue = `Message to friend`;
+                dataObjectData.labelValue = `Message`;
             }
         }
         dataObjectData.transactionValue = data.attributes.noteToRecipient;
