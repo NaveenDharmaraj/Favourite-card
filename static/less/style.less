@@ -1871,10 +1871,34 @@ h4{
               }
         }
     }
+    .edit-trxn-name.recipient-width.p2p-tab-width{
+      @media only screen and (max-width: 992px) and (min-width:768px) {
+        width: 18% !important;
+      }
+    }
     .ui.table tr td.tbl-action {
         @media only screen and (max-width: 1199px) and (min-width:768px) {
             min-width: 154px;
         }
+        &.p2p-action-padding{
+          .deleteLink{
+            @media only screen and (max-width: 992px) and (min-width:768px) {
+            margin: 0px 8px;
+            }
+          }
+          .button{
+            @media only screen and (max-width: 992px) and (min-width:768px) {
+            margin-right: 8px;
+            }
+          }
+        }
+    }
+}
+.reason-width{
+  word-break: break-word;
+  @media only screen and (max-width: 992px) and (min-width:768px) {
+    width: 110px !important;
+    min-width: 110px !important;
     }
 }
 .price_btn{

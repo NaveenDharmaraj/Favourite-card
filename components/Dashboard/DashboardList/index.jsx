@@ -261,7 +261,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReversed : 'Deposit';
                     }
                 }
-                const amount = data.attributes.hasChildAllocations ? formatCurrency(data.attributes.totalAmount, language, 'USD') : formatCurrency(data.attributes.amount, language, 'USD');
+                const amount = (!_.isEmpty(data.attributes.source) && data.attributes.source.id === Number(id) && data.attributes.hasChildAllocations) ? formatCurrency(data.attributes.totalAmount, language, 'USD') : formatCurrency(data.attributes.amount, language, 'USD');
                 return (
                     <Table.Row className={rowClass} key={index}>
                         <Table.Cell className={dateClass}>{date}</Table.Cell>
@@ -350,7 +350,10 @@ class DashboradList extends React.Component {
                                                 && (
                                                     <p>Due to a refund in a previous transaction. </p>
                                                 )}
-                                                If you have questions about this transaction,
+                                                Learn about the common reasons
+                                                <br />
+                                                <a href={`${HELP_CENTRE_URL}article/198-gifts-returned-to-your-impact-account`}>why a gift is returned. </a>
+                                                Or,
                                                 <a href={`${CORP_DOMAIN}/contact/`}> contact us </a>
                                                 for help.
                                             </div>

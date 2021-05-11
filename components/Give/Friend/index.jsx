@@ -810,6 +810,19 @@ class Friend extends React.Component {
             name,
             value,
         } = data || event.target;
+        const {
+            currentUser: {
+                id,
+                attributes: {
+                    avatar,
+                    displayName,
+                    email,
+                    firstName,
+                    lastName,
+                },
+            },
+            fund,
+        } = this.props;
         let {
             flowObject: {
                 giveData: {
@@ -818,10 +831,23 @@ class Friend extends React.Component {
                     reasonOther,
                     sendDate,
                     sendGift,
+                    giveFrom,
                 },
             },
             validity,
         } = this.state;
+        let defaultGiveFrom = {};
+        if (!_isEmpty(fund)) {
+            defaultGiveFrom = {
+                avatar,
+                id,
+                value: fund.id,
+                type: 'user',
+                text: `${fund.attributes.name} (${fund.attributes.balance})`,
+                balance: fund.attributes.balance,
+                name: `${firstName} ${lastName}`,
+            }
+        }
         if (name === 'sendGift') {
             sendGift = value;
             if (sendGift === 'now') {
@@ -835,6 +861,9 @@ class Friend extends React.Component {
                     options: this.populateFrequenyOptions(sendDate),
                     value: 'once'
                 }
+            }
+            if (giveFrom.type !== 'companies') {
+                giveFrom = defaultGiveFrom;
             }
         } else if (name === 'frequency') {
             frequencyObject = {
@@ -855,6 +884,7 @@ class Friend extends React.Component {
                     reasonOther,
                     sendDate,
                     sendGift,
+                    giveFrom,
                 },
             },
             validity,
@@ -1233,6 +1263,7 @@ class Friend extends React.Component {
                                                                 parentOnBlurChange={this.handleOnInputBlur}
                                                                 formatMessage={formatMessage}
                                                                 reviewBtnFlag={reviewBtnFlag}
+                                                                isScheduledP2P={sendGift === 'schedule'}
                                                             />
                                                             {this.renderReloadAddAmount()}
                                                         </div>
