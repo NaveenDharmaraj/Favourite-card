@@ -126,6 +126,7 @@ class TransactionTableRow extends React.Component {
             reasonToGive={reason}
             giveFrequency={frequency}
             nextTransaction={nextTransaction}
+            status={status}
         />);
 
         const deleteModal = (

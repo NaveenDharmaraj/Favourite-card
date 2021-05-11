@@ -40,6 +40,9 @@ import {
     validateGiveForm,
     getSelectedFriendList,
 } from '../../../helpers/give/utils';
+import {
+    parseEmails,
+} from '../../../helpers/give/giving-form-validation';
 import { dateFormatConverter } from '../../../helpers/utils';
 import {
     getCoverAmount,
@@ -51,7 +54,6 @@ import { getEmailList } from '../../../actions/userProfile';
 import Note from '../../shared/Note';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import P2pFrequency from '../Friend/p2pFrequency';
-import P2pReasons from '../Friend/p2pReasons';
 import ChimpDatePicker from '../Friend/p2pDatePicker';
 import FriendsDropDown from '../../shared/FriendsDropDown';
 
@@ -71,6 +73,7 @@ const EditP2pAllocationModal = ({
     reasonToGive,
     nextTransaction,
     giveFrequency,
+    status,
 }) => {
     const formatMessage = t;
     const intializeValidations = {
@@ -526,15 +529,16 @@ const EditP2pAllocationModal = ({
         setDisableButton(true);
         if (validateForm()) {
             const selectedFriendsEmail = _map(getSelectedFriendList(allFriendsList, friendsList), 'email');
+            const rescipientList = parseEmails([
+                ...recipients,
+                ...selectedFriendsEmail,
+            ]);
             dispatch(
                 editUpcomingP2p(
                     transactionId,
                     amount,
                     reason,
-                    [
-                        ...recipients,
-                        ...selectedFriendsEmail,
-                    ],
+                    rescipientList,
                     sendDate,
                     frequencyObject.value,
                     noteToRecipients,
@@ -564,6 +568,7 @@ const EditP2pAllocationModal = ({
                 <Button
                     className="blue-bordr-btn-round-def c-small"
                     onClick={() => handleEditClick()}
+                    disabled={status !== 'active'}
                 >
                     Edit
                 </Button>

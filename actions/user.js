@@ -824,7 +824,7 @@ export const getUpcomingP2pAllocations = (
         params: {
             'filter[aasm_state]': state,
             'filter[type]': filter,
-            'page[number]':activePage,
+            'page[number]': activePage,
             'page[size]': pageSize,
             sort,
         },
@@ -1029,13 +1029,13 @@ export const editUpcomingP2p = (
     }).then(
         () => {
             dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation', 'active', activePage));
-            dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation', 'inactive', activePage));
             const statusMessageProps = {
                 message: 'Your scheduled gift has been updated.',
                 type: 'success',
             };
             if (status) {
-                statusMessageProps.message =  `Your gift has been ${status}d.`;
+                statusMessageProps.message = `Your gift has been ${status}d.`;
+                dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation', 'inactive', activePage));
             }
             dispatch({
                 payload: {
