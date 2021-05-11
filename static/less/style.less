@@ -4095,6 +4095,51 @@ label.giftNotSent{
       clear: both;
   }
 }
+.Filter_icon_text{
+  cursor: pointer;
+  .ui{
+    &.image {
+      &.filter_icons{
+        filter: invert(22%) sepia(53%) saturate(6446%) hue-rotate(213deg) brightness(95%) contrast(96%);
+        -webkit-filter:invert(22%) sepia(53%) saturate(6446%) hue-rotate(213deg) brightness(95%) contrast(96%);
+      }
+    }
+  }
+  .Filter_text{
+    color: #263238;
+    font-size: 14px;
+    .primeFont-semi-bold();
+    letter-spacing: 0;
+    line-height: 21px;
+    margin-left: 5px;
+  }
+}
+.filter-popup{
+  padding: 0px !important;
+}
+.dropdown_filter{
+  .ui{
+    &.list{
+      .item{
+        padding: 10px 15px;
+        border-bottom: 1px solid #E6E1E8;
+        font-family: 'ProximaNova-Regular';
+        &:last-child{
+          border-bottom:none; 
+        }
+        color: #000;
+        &:hover{
+          color: #055CE5;
+        }
+      }
+    }
+  }
+}
+.filterType_bg_hover {
+  &:hover{
+    background-color: @border-light;
+  }
+}
 .paginationWraper{
   display: table;
   width: 100%;
