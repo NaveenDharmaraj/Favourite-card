@@ -32,12 +32,11 @@ import DonationAmountField from '../DonationAmountField';
 import {
     formatCurrency,
     formatAmount,
-    fullMonthNames,
-    getDayName,
     isValidGiftAmount,
     calculateP2pTotalGiveAmount,
     validateGiveForm,
     getSelectedFriendList,
+    populateFrequenyOptions,
 } from '../../../helpers/give/utils';
 import {
     parseEmails,
@@ -205,75 +204,28 @@ const EditP2pAllocationModal = ({
     const emailDetailList = useSelector((state) => state.userProfile.emailDetailList);
     const allFriendsList = useSelector((state) => state.user.friendsList);
 
-    const populateFrequenyOptions = (date) => {
-        const months = fullMonthNames(t);
-        const selectedMOnth = months[date.getMonth()];
-        const selectedDate = Number(date.getDate());
-        let monthlyText = '';
-        if ((selectedMOnth === 'February' && (selectedDate === 28 || selectedDate === 29))
-            || (selectedDate === 30 || selectedDate === 31)) {
-            monthlyText = 'Repeat monthly on the last day of the month';
-        } else {
-            let dateText = `${date.getDate()}th`;
-            if (selectedDate > 3 && selectedDate < 21) {
-                dateText = `${date.getDate()}th`;
-            } else {
-                switch (selectedDate % 10) {
-                    case 1:
-                        dateText = `${date.getDate()}st`;
-                        break;
-                    case 2:
-                        dateText = `${date.getDate()}nd`;
-                        break;
-                    case 3:
-                        dateText = `${date.getDate()}rd`;
-                        break;
-                    default:
-                        dateText = `${date.getDate()}th`;
-                        break;
-                }
-            }
-            monthlyText = `Repeat monthly on the ${dateText}`;
-        }
-
-
-        return [
-            {
-                text: 'Send once',
-                value: 'once',
-            },
-            {
-                text: `Repeat weekly on ${getDayName(date)}`,
-                value: 'weekly',
-            },
-            {
-                text: monthlyText,
-                value: 'monthly',
-            },
-            {
-                text: `Repeat annually on ${months[date.getMonth()]} ${date.getDate()}`,
-                value: 'yearly',
-            },
-        ];
-    };
     function setValuesForRecipients() {
-        const chimpUsers = _map(_flatMap(_map(friendListData, (friend) => _filter(destinationDetails, (user) => user.receiverExists && user.receiver_id !== friend.attributes.user_id))), 'email');
-        const usersFriends = _map(_flatMap(_map(friendListData, (friend) => _filter(destinationDetails, (user) => user.receiverExists && user.receiver_id === friend.attributes.user_id))), 'receiver_id');
-        setChimpUsersNotFriends(chimpUsers);
-        console.log('friendsList---->', usersFriends);
-        setFriendsList([
-            ...usersFriends,
-        ]);
-        console.log('recipients------->', [
-            ..._map(_filter(destinationDetails, (u) => !u.receiverExists), 'email'),
-            ...chimpUsers,
-        ]);
-        console.log('recipient splitup ---->>>>>', ..._map(_filter(destinationDetails, (u) => !u.receiverExists), 'email'), 'recipients from destinationdetails');
-        console.log('recipient splitup ---->>>>>', chimpUsers, 'email', 'recipients from chimpUsers');
-        
+        // let emp
+        const friendsIds = _map(friendListData, (f) => f.attributes.user_id);
+        const chimpUsersNotFriendsEmail = _map(
+            _filter(
+                destinationDetails, (user) => user.receiverExists && !friendsIds.includes(user.receiver_id),
+            ),
+            'email',
+        );
+        const usersFriends = _map(
+            _filter(
+                destinationDetails, (user) => user.receiverExists && friendsIds.includes(user.receiver_id),
+            ),
+            'receiver_id',
+        );
+        setChimpUsersNotFriends(chimpUsersNotFriendsEmail);
         setRecipients([
             ..._map(_filter(destinationDetails, (u) => !u.receiverExists), 'email'),
-            ...chimpUsers,
+            ...chimpUsersNotFriendsEmail,
+        ]);
+        setFriendsList([
+            ...usersFriends,
         ]);
     }
     useEffect(() => {
@@ -286,7 +238,7 @@ const EditP2pAllocationModal = ({
             setNoteToSelf(noteToSelfSaved);
             setReason(reasonToGive);
             setFrequencyObject({
-                options: populateFrequenyOptions(new Date(nextTransaction)),
+                options: populateFrequenyOptions(new Date(nextTransaction), t),
                 value: giveFrequency,
             });
             setSendDate(new Date(nextTransaction));
@@ -319,7 +271,7 @@ const EditP2pAllocationModal = ({
             const currentDate = dateFormatConverter(new Date(), '-');
             const checkCurrentDate = new Date(convertIncomingDate) >= new Date(currentDate);
             if (checkCurrentDate) {
-                const frequencyOptions = populateFrequenyOptions(new Date(date));
+                const frequencyOptions = populateFrequenyOptions(new Date(date), t);
                 setFrequencyObject({
                     ...frequencyObject,
                     options: frequencyOptions,

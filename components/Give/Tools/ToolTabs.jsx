@@ -437,7 +437,7 @@ class ToolTabs extends React.Component {
             activePage = data.activePage;
         } else if(defaultActiveIndex === "1") {
             if(type === 'p2pAllocation'){
-                if(status = 'active'){
+                if(status === 'active'){
                     dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation', 'active', data.activePage));
                     p2pActivePage = data.activePage;
                 } else{

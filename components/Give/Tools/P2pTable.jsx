@@ -115,30 +115,31 @@ function P2pTable(props) {
                                 <Table.HeaderCell className="p2p-action-padding">Action</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
-                        {monthlyTransactionApiCall === undefined || false ? (
+                        {(monthlyTransactionApiCall === (undefined || false)) ? (
+                            <Table.Body>{renderTableData()}</Table.Body>
+                        ) : (
+
                             <PlaceholderGrid
                                 row={2}
                                 column={6}
                                 placeholderType="table"
                             />
-                        ) : (
-                            <Table.Body>{renderTableData()}</Table.Body>
                         )}
                     </Table>
                 </div>
             </Responsive>
             <Responsive maxWidth={767}>
                 <div className="mbleAccordionTable">
-                    {monthlyTransactionApiCall === undefined || false ? (
+                    {(monthlyTransactionApiCall === (undefined || false)) ? (
+                        <Accordion fluid exclusive={false}>
+                            {renderTableData()}
+                        </Accordion>
+                    ) : (
                         <PlaceholderGrid
                             row={2}
                             column={6}
                             placeholderType="table"
                         />
-                    ) : (
-                        <Accordion fluid exclusive={false}>
-                            {renderTableData()}
-                        </Accordion>
                     )}
                 </div>
             </Responsive>
