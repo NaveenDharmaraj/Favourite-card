@@ -22,8 +22,6 @@
         "giveAmountGreaterThanBalance": "Désolé, vous ne pouvez pas envoyer plus d'argent qu'il n'y en a dans votre compte.",
         "creditCardNotAdded": "Add a payment method.",
         "taxReceiptNotAdded": "Add a tax receipt recipient."
-
-
     },
     "breadCrumb" : {
         "new" : "Ajoutez de l'argent",
@@ -73,5 +71,21 @@
     "automaticDonationPopup": "Activer l’ajout automatique mensuel à son compte CHARITABLE IMPACT est un excellent moyen de maintenir et agrandir son impact potentiel. Vous aurez également des dollars charitables sous la main lorsque vous ressentez l’inspiration à donner.",
     "creditCardEditMessagePart1": "If you need to change this card's expiry date,",
     "creditCardEditMessagePart2": "update your payment method",
-    "creditCardEditMessagePart3": "first."
+    "creditCardEditMessagePart3": "first.",
+    "accountActivity": {
+        "accountActivityHeader": "Account activity",
+        "notransactionText": "No transactions yet.",
+        "giftReversedText": "GIFT CANCELLED",
+        "giftReturnedText": "GIFT RETURNED",
+        "giftRefundText": "REFUND",
+        "matchReturnedText": "MATCH RETURNED",
+        "isGiftCancelledTextOne": "Due to a refund in a previous transaction. ",
+        "isGiftCancelledTextTwo": "If you have questions about this transaction,",
+        "contactUsText": " contact us ",
+        "forHelpText": "for help.",
+        "filterText": "Filter",
+        "allText": "All",
+        "inText": "In",
+        "outText": "Out"
+    }
 }

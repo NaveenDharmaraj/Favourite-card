@@ -11,7 +11,9 @@ import {
     List,
     Grid,
     Header,
+    Menu,
     Modal,
+    Popup,
     TableCell,
 } from 'semantic-ui-react';
 import {
@@ -28,6 +30,7 @@ import iconsRight from '../../../static/images/icons/icon-document.svg';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 import userGroupImage from '../../../static/images/no-data-avatar-group-chat-profile.png';
 import { withTranslation } from '../../../i18n';
+import grayfilter from '../../../static/images/icon_gray_filter.svg';
 import {
     formatCurrency,
 } from '../../../helpers/give/utils';
@@ -42,8 +45,11 @@ class DashboradList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isOpen: false,
             currentActivePage: 1,
             dashboardListLoader: !props.dataList,
+            filterType: 'all',
+            disableFilter: false,
         };
         this.onPageChanged = this.onPageChanged.bind(this);
     }
@@ -56,15 +62,35 @@ class DashboradList extends React.Component {
             dispatch,
         } = this.props;
         getDashBoardData(dispatch, 'all', id, 1);
+        this.setState({
+            disableFilter: true
+        })
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         const {
             dataList,
+            currentUser: {
+                id,
+            },
+            dispatch,
         } = this.props;
         let {
             dashboardListLoader,
         } = this.state;
+        const {
+            filterType,
+        } = this.state;
+        if (!_.isEqual(this.state, prevState)) {
+            if (!_.isEqual(filterType, prevState.filterType)) {
+                getDashBoardData(dispatch, filterType, id, 1);
+                if(filterType === 'all') {
+                    this.setState({
+                        disableFilter: true,
+                    });
+                }
+            }
+        }
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEqual(dataList, prevProps.dataList)) {
                 dashboardListLoader = false;
@@ -82,7 +108,8 @@ class DashboradList extends React.Component {
             },
             dispatch,
         } = this.props;
-        getDashBoardData(dispatch, 'all', id, data.activePage);
+        const { filterType } = this.state;
+        getDashBoardData(dispatch, filterType, id, data.activePage);
         this.setState({
             currentActivePage: data.activePage,
         });
@@ -90,6 +117,7 @@ class DashboradList extends React.Component {
 
     // eslint-disable-next-line class-methods-use-this
     nodataCard() {
+        const { t: formatMessage } = this.props;
         return (
             <Card fluid className="noDataCard rightImg noHeader">
                 <Card.Content>
@@ -101,7 +129,7 @@ class DashboradList extends React.Component {
                         <Header as="h4">
                             <Header.Subheader>
                                 <Header.Content>
-                                    No transactions yet.
+                                    {formatMessage('giveCommon:accountActivity.notransactionText')}
                                 </Header.Content>
                             </Header.Subheader>
                         </Header>
@@ -120,6 +148,7 @@ class DashboradList extends React.Component {
             i18n: {
                 language,
             },
+            t: formatMessage,
         } = this.props;
         let accordianHead = this.nodataCard();
         let compareDate = '';
@@ -163,10 +192,10 @@ class DashboradList extends React.Component {
                 || data.attributes.status === 'returned_to_donor'
                 || data.attributes.status === 'expired'
                 || data.attributes.status === 'bounced');
-                const giftReversed = <label className='giftNotSent'>GIFT CANCELLED</label>;
-                const giftReturned = <label className='giftNotSent'>GIFT RETURNED</label>;
-                const giftRefund = <label className='giftNotSent'>REFUND</label>;
-                const matchReturned = <label className='giftNotSent'>MATCH RETURNED</label>;
+                const giftReversed = <label className='giftNotSent'>{formatMessage('giveCommon:giftReversedText')}</label>;
+                const giftReturned = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.giftReturnedText')}</label>;
+                const giftRefund = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.giftRefundText')}</label>;
+                const matchReturned = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.matchReturnedText')}</label>;
                 const isScheduledAllocation = data.attributes.parentTransactionType === 'ScheduledP2pAllocation';
                 const newtransactionTypeDisplay = (isScheduledAllocation ? 'Scheduled Allocation' : 'Gift given');
                 if (!_.isEmpty(data.attributes.destination)) {
@@ -348,12 +377,27 @@ class DashboradList extends React.Component {
                                             <div className="learnAboutWrap">
                                                 {(data.attributes.transactionType.toLowerCase() === 'matchallocation')
                                                 && (
-                                                    <p>Due to a refund in a previous transaction. </p>
+                                                    <List.Item>
+                                                        <List.Content>
+                                                            Due to a refund in a previous transaction.
+                                                        </List.Content>
+                                                    </List.Item>
                                                 )}
-                                                Learn about the common reasons
-                                                <br />
-                                                <a href={`${HELP_CENTRE_URL}article/198-gifts-returned-to-your-impact-account`}>why a gift is returned. </a>
-                                                Or,
+                                                {(data.attributes.transactionType.toLowerCase() !== 'donation')
+                                                    ? (
+                                                        <Fragment>
+                                                            Learn about the common reasons
+                                                            <br />
+                                                            <a href={`${HELP_CENTRE_URL}article/198-gifts-returned-to-your-impact-account`}>why a gift is returned. </a>
+                                                            Or,
+                                                        </Fragment>
+                                                    ) : (
+                                                        <List.Item>
+                                                            <List.Content>
+                                                                If you have questions about this transaction,
+                                                            </List.Content>
+                                                        </List.Item>
+                                                    )}
                                                 <a href={`${CORP_DOMAIN}/contact/`}> contact us </a>
                                                 for help.
                                             </div>
@@ -380,25 +424,107 @@ class DashboradList extends React.Component {
         );
     }
 
+    handleCancel = () => {
+        this.setState({ isOpen: false });
+    }
+
+    handleOpen = () => {
+        this.setState({ isOpen: true })
+    }
+
     render() {
         const {
             dataList,
+            t: formatMessage,
         } = this.props;
         const {
             currentActivePage,
             dashboardListLoader,
+            isOpen,
+            filterType,
+            disableFilter,
         } = this.state;
         return (
             <div className="pt-2 pb-2">
                 <Container>
                     <Grid verticalAlign="middle">
                         <Grid.Row>
-                            <Grid.Column mobile={16} tablet={12} computer={12}>
+                            <Grid.Column mobile={11} tablet={12} computer={12}>
                                 <Header as="h3">
                                     <Header.Content>
-                                        Account activity
+                                        {formatMessage('giveCommon:accountActivity.accountActivityHeader')}
                                     </Header.Content>
                                 </Header>
+                            </Grid.Column>
+                            <Grid.Column mobile={5} tablet={4} computer={4}>
+                                <Popup
+                                    basic
+                                    open={isOpen}
+                                    onClose={this.handleCancel}
+                                    onOpen={this.handleOpen}
+                                    show="Hide"
+                                    on="click"
+                                    wide
+                                    className="filter-popup"
+                                    position="bottom right"
+                                    trigger={(
+                                        <Menu.Item className="user-img give-btn">
+                                            <div className="text-right Filter_icon_text">
+                                                <span><Image className="filter_icons" src={grayfilter}/></span>
+                                                <span className="Filter_text">{formatMessage('giveCommon:accountActivity.filterText')}</span>
+                                            </div>
+                                        </Menu.Item>
+                                    )}
+                                >
+                                    <Popup.Content className="dropdown_filter">
+                                        <List>
+                                            <List.Item
+                                                as='a'
+                                                onClick={() => {
+                                                    this.setState({
+                                                        dashboardListLoader: true,
+                                                        filterType: 'all',
+                                                        isOpen: false,
+                                                    })
+                                                }}
+                                                disabled={disableFilter}
+                                                className="filterType_bg_hover"
+                                            >
+                                                {formatMessage('giveCommon:accountActivity.allText')}
+                                            </List.Item>
+                                            <List.Item
+                                                as='a'
+                                                onClick={() => {
+                                                    this.setState({
+                                                        dashboardListLoader: true,
+                                                        disableFilter: false,
+                                                        filterType: 'in',
+                                                        isOpen: false,
+                                                    })
+                                                }}
+                                                disabled={filterType === 'in' ?  true : false}
+                                                className="filterType_bg_hover"
+                                            >
+                                                {formatMessage('giveCommon:accountActivity.inText')}
+                                            </List.Item>
+                                            <List.Item
+                                                as='a'
+                                                onClick={() => {
+                                                    this.setState({
+                                                        dashboardListLoader: true,
+                                                        filterType: 'out',
+                                                        isOpen: false,
+                                                        disableFilter: false
+                                                    })
+                                                }}
+                                                disabled={filterType === 'out' ?  true : false}
+                                                className="filterType_bg_hover"
+                                            >
+                                                {formatMessage('giveCommon:accountActivity.outText')}
+                                            </List.Item>
+                                        </List>
+                                    </Popup.Content>
+                                </Popup>
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
@@ -414,7 +540,7 @@ class DashboradList extends React.Component {
                     <div className="paginationWraper">
                         <div className="db-pagination right-align pt-2">
                             {
-                                !_.isEmpty(dataList) && dataList.count > 1 && (
+                                !_.isEmpty(dataList) && dataList.count > 1 && dashboardListLoader === false && (
                                     <Pagination
                                         activePage={currentActivePage}
                                         totalPages={dataList.count}
