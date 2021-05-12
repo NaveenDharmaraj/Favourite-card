@@ -1877,21 +1877,47 @@ h4{
       }
     }
     .ui.table tr td.tbl-action {
-        @media only screen and (max-width: 1199px) and (min-width:768px) {
-            min-width: 154px;
-        }
-        &.p2p-action-padding{
-          .deleteLink{
-            @media only screen and (max-width: 992px) and (min-width:768px) {
-            margin: 0px 8px;
-            }
+      .btn-ellipsis-full-width{
+        display: flex;
+        align-items: center;
+        .ui{
+          &.dropdown{
+              &.dropdown_ellipsis_action{
+                  display: flex;
+                  width:36px;
+                  height: 36px;
+                  border-radius: 100%;
+                  align-items: center;
+                  margin-left: 10px;
+                  top: 0px;
+                  &.active{
+                  width:36px;
+                  height: 36px;
+                  background-color:#ddd;
+                  border-radius: 100%;
+                  align-items: center;
+                  }
+                  .horizontal{
+                    &::before{
+                      top: 3px;
+                      left: 7px;
+                    }
+                  }
+                  .menu{
+                      &.transition{
+                          &.visible{
+                              .item{
+                                  margin: 0px !important;
+                                  padding:12px 20px!important;
+                                  .primeFont-semi-bold();
+                              }
+                          }
+                      }
+                  }
+              }
           }
-          .button{
-            @media only screen and (max-width: 992px) and (min-width:768px) {
-            margin-right: 8px;
-            }
-          }
-        }
+      }
+      }
     }
 }
 .reason-width{
@@ -9568,3 +9594,4 @@ p{
   margin-top: 20%;
   margin-bottom: 20%;
 }
+

@@ -10,6 +10,7 @@ import {
 	Accordion,
 	TableBody,
 	TableCell,
+	Dropdown,
 } from 'semantic-ui-react';
 import dynamic from 'next/dynamic';
 import EditMonthlyAllocationModal from './EditMonthlyAllocationModal';
@@ -187,6 +188,7 @@ class TransactionTableRow extends React.Component {
 					{fourthColoumn && <Table.Cell className={isP2p? "w-120 reason-width": ""}>{fourthColoumn}</Table.Cell>}
 					{fifthColoumn && <Table.Cell>{fifthColoumn}</Table.Cell>}
 					<Table.Cell className={isP2p? "tbl-action p2p-action-padding": "tbl-action"}>
+						<div className="btn-ellipsis-full-width">
                         {
                             isP2p? (
                                 <Fragment>
@@ -204,7 +206,27 @@ class TransactionTableRow extends React.Component {
 						))
                         }
 						{/* {deleteModal} */}
-                        
+						
+						<Dropdown className="dropdown_ellipsis_action " icon="ellipsis horizontal">
+                                <Dropdown.Menu className="left"> 
+                                    <Dropdown.Item
+                                        text="Edit"
+                                        // open={isDropdownOpen}
+                                        // onOpen={this.onOpen}
+                                        // onClose={this.onClose}
+                                        // onClick={() => { this.handleEditClick(data) }}
+                                    />
+                                    <Dropdown.Item
+                                        // disabled={showActiveDetails}
+                                        text="Delete"
+                                        // open={isDropdownOpen}
+                                        // onOpen={this.onOpen}
+                                        // onClose={this.onClose}
+                                        // onClick={() => { this.handleDeleteClick(data.attributes.description, data.id) }}
+                                    />
+                                </Dropdown.Menu>
+                            </Dropdown>
+							</div>
 					</Table.Cell>
 				</Responsive>
 				{/* Desktop transaction details row end */}
