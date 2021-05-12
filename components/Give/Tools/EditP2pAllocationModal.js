@@ -260,7 +260,7 @@ const EditP2pAllocationModal = ({
         const chimpUsers = _map(_flatMap(_map(friendListData, (friend) => _filter(destinationDetails, (user) => user.receiverExists && user.receiver_id !== friend.attributes.user_id))), 'email');
         const usersFriends = _map(_flatMap(_map(friendListData, (friend) => _filter(destinationDetails, (user) => user.receiverExists && user.receiver_id === friend.attributes.user_id))), 'receiver_id');
         setChimpUsersNotFriends(chimpUsers);
-        console('friendsList---->', usersFriends);
+        console.log('friendsList---->', usersFriends);
         setFriendsList([
             ...usersFriends,
         ]);
