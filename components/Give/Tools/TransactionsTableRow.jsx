@@ -191,19 +191,20 @@ class TransactionTableRow extends React.Component {
                             isP2p? (
                                 <Fragment>
                                     {p2pModal}
-                                    <a
+                                    {/* <a
                                         className='deleteLink'
                                         onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
                                     >
                                         {status === 'active' ? 'Pause' : 'Resume'}
-                                    </a>
+                                    </a> */}
                                 </Fragment>): (isAllocation ? (
 							monthlyAllocModal
 						) : (
 						monthlyDepositModal	
 						))
                         }
-						{deleteModal}
+						{/* {deleteModal} */}
+                        
 					</Table.Cell>
 				</Responsive>
 				{/* Desktop transaction details row end */}
