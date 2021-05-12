@@ -258,11 +258,19 @@ const EditP2pAllocationModal = ({
     };
     function setValuesForRecipients() {
         const chimpUsers = _map(_flatMap(_map(friendListData, (friend) => _filter(destinationDetails, (user) => user.receiverExists && user.receiver_id !== friend.attributes.user_id))), 'email');
-        const usersfriends = _map(_flatMap(_map(friendListData, (friend) => _filter(destinationDetails, (user) => user.receiverExists && user.receiver_id === friend.attributes.user_id))), 'receiver_id');
+        const usersFriends = _map(_flatMap(_map(friendListData, (friend) => _filter(destinationDetails, (user) => user.receiverExists && user.receiver_id === friend.attributes.user_id))), 'receiver_id');
         setChimpUsersNotFriends(chimpUsers);
+        console('friendsList---->', usersFriends);
         setFriendsList([
-            ...usersfriends,
+            ...usersFriends,
         ]);
+        console.log('recipients------->', [
+            ..._map(_filter(destinationDetails, (u) => !u.receiverExists), 'email'),
+            ...chimpUsers,
+        ]);
+        console.log('recipient splitup ---->>>>>', ..._map(_filter(destinationDetails, (u) => !u.receiverExists), 'email'), 'recipients from destinationdetails');
+        console.log('recipient splitup ---->>>>>', chimpUsers, 'email', 'recipients from chimpUsers');
+        
         setRecipients([
             ..._map(_filter(destinationDetails, (u) => !u.receiverExists), 'email'),
             ...chimpUsers,
@@ -289,6 +297,7 @@ const EditP2pAllocationModal = ({
             if (_isEmpty(friendListData)) {
                 dispatch(getFriendsList(email));
             } else {
+                console.log('executed from popup useEffect', 'recipients ---->', recipients, 'friendsList---->', friendsList);
                 setValuesForRecipients();
             }
         }
@@ -297,6 +306,8 @@ const EditP2pAllocationModal = ({
     ]);
     useEffect(() => {
         if (!_isEmpty(friendListData) && chimpUsersNotFriends.length === 0 && showEditModal) {
+            console.log('executed from friendsApi useEffect', 'recipients ---->', recipients, 'friendsList---->', friendsList);
+
             setValuesForRecipients();
         }
     }, [
