@@ -245,13 +245,17 @@ class TransactionTableRow extends React.Component {
 										<TableCell>{secondColoumn}</TableCell>
 									</Table.Row>
 									<Table.Row>
-										<TableCell>Day of month</TableCell>
+										<TableCell>{isP2p? 'Frequency':'Day of month'}</TableCell>
 										<TableCell>{thirdColoumn}</TableCell>
 									</Table.Row>
 									<Table.Row>
-										<TableCell>Created</TableCell>
+										<TableCell>{isP2p? 'Reason to give':'Created'}</TableCell>
 										<TableCell>{fourthColoumn}</TableCell>
 									</Table.Row>
+                                    {isP2p && <Table.Row>
+										<TableCell>Created</TableCell>
+										<TableCell>{fifthColoumn}</TableCell>
+									</Table.Row>}
 								</TableBody>
 							)}
 							<Table.Footer>

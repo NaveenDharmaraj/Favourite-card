@@ -11,8 +11,6 @@ import {
     Modal,
     Popup,
     Icon,
-    Select,
-    Radio,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import _find from 'lodash/find';
@@ -20,6 +18,7 @@ import _trim from 'lodash/trim';
 import _every from 'lodash/every';
 import _replace from 'lodash/replace';
 import _map from 'lodash/map';
+import _flatMap from 'lodash/flatMap';
 import _filter from 'lodash/filter';
 import _split from 'lodash/split';
 import {
@@ -49,6 +48,7 @@ import {
 } from '../../../actions/give';
 import {
     editUpcomingP2p,
+    getFriendsList,
 } from '../../../actions/user';
 import { getEmailList } from '../../../actions/userProfile';
 import Note from '../../shared/Note';
@@ -121,7 +121,7 @@ const EditP2pAllocationModal = ({
         id,
     } = currentUser;
     const fund = useSelector((state) => state.user.fund);
-
+    const friendListData = useSelector((state) => state.user.friendsList);
     const [
         showEditModal,
         setShowEditModal,
@@ -198,6 +198,10 @@ const EditP2pAllocationModal = ({
         totalP2pGiveAmount,
         setTotalP2pGiveAmount,
     ] = useState(0);
+    const [
+        chimpUsersNotFriends,
+        setChimpUsersNotFriends,
+    ] = useState([]);
     const emailDetailList = useSelector((state) => state.userProfile.emailDetailList);
     const allFriendsList = useSelector((state) => state.user.friendsList);
 
@@ -252,7 +256,18 @@ const EditP2pAllocationModal = ({
             },
         ];
     };
-
+    function setValuesForRecipients() {
+        const chimpUsers = _map(_flatMap(_map(friendListData, (friend) => _filter(destinationDetails, (user) => user.receiverExists && user.receiver_id !== friend.attributes.user_id))), 'email');
+        const usersfriends = _map(_flatMap(_map(friendListData, (friend) => _filter(destinationDetails, (user) => user.receiverExists && user.receiver_id === friend.attributes.user_id))), 'receiver_id');
+        setChimpUsersNotFriends(chimpUsers);
+        setFriendsList([
+            ...usersfriends,
+        ]);
+        setRecipients([
+            ..._map(_filter(destinationDetails, (u) => !u.receiverExists), 'email'),
+            ...chimpUsers,
+        ]);
+    }
     useEffect(() => {
         if (showEditModal) {
             const commaFormattedAmount = formatAmount(parseFloat(formatedCurrentMonthlyAllocAmount.replace(/,/g, '')));
@@ -261,8 +276,6 @@ const EditP2pAllocationModal = ({
             setFormattedAmount(formatedAmount);
             setNoteToRecipients(noteToRecipientSaved);
             setNoteToSelf(noteToSelfSaved);
-            setRecipients(_map(_filter(destinationDetails, (u) => !u.receiverExists), 'email'));
-            setFriendsList(_map(_filter(destinationDetails, (u) => u.receiverExists), 'receiver_id'));
             setReason(reasonToGive);
             setFrequencyObject({
                 options: populateFrequenyOptions(new Date(nextTransaction)),
@@ -273,11 +286,22 @@ const EditP2pAllocationModal = ({
             if (_isEmpty(emailDetailList)) {
                 getEmailList(dispatch, id);
             }
+            if (_isEmpty(friendListData)) {
+                dispatch(getFriendsList(email));
+            } else {
+                setValuesForRecipients();
+            }
         }
     }, [
         showEditModal,
     ]);
-
+    useEffect(() => {
+        if (!_isEmpty(friendListData) && chimpUsersNotFriends.length === 0 && showEditModal) {
+            setValuesForRecipients();
+        }
+    }, [
+        friendListData,
+    ]);
     const handleDateChange = (date) => {
         try {
             const convertIncomingDate = new Date(date) && dateFormatConverter(new Date(date), '-');
@@ -507,7 +531,7 @@ const EditP2pAllocationModal = ({
         // setAmount(formatedCurrentMonthlyAllocAmount);
         setNoteToRecipients(noteToRecipients);
         setNoteToSelf(noteToSelf);
-
+        // setRecipients([]);
         setShowEditModal(false);
         setValidity(intializeValidations);
     };
@@ -555,7 +579,6 @@ const EditP2pAllocationModal = ({
                 });
         }
     };
-
     return (
         <Modal
             size="tiny"
