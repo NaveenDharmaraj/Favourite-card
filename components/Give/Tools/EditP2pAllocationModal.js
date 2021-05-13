@@ -554,7 +554,7 @@ const EditP2pAllocationModal = ({
                 <Button
                     className="blue-bordr-btn-round-def c-small"
                     onClick={() => handleEditClick()}
-                    disabled={status !== 'active'}
+                    // disabled={status !== 'active'}
                 >
                     Edit
                 </Button>

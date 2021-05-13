@@ -11,6 +11,7 @@ import {
 	TableBody,
 	TableCell,
 	Dropdown,
+    Popup,
 } from 'semantic-ui-react';
 import dynamic from 'next/dynamic';
 import EditMonthlyAllocationModal from './EditMonthlyAllocationModal';
@@ -190,13 +191,22 @@ class TransactionTableRow extends React.Component {
                         {
                             isP2p? (
                                 <Fragment>
-                                    {p2pModal}
-                                    {/* <a
-                                        className='deleteLink'
-                                        onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
-                                    >
-                                        {status === 'active' ? 'Pause' : 'Resume'}
-                                    </a> */}
+                                    {status === 'active'? p2pModal:
+                                        (
+                                        <Popup 
+                                            content='To edit this gift, resume this transaction first.'
+                                            position="bottom center"
+                                            trigger={
+                                                <Button
+                                                    className="blue-bordr-btn-round-def c-small disabled-btn"
+                                                    // disabled
+                                                >
+                                                    Edit
+                                                </Button>
+                                            } 
+                                        />
+                                        )
+                                    }
                                 </Fragment>): (isAllocation ? (
 							monthlyAllocModal
 						) : (
@@ -207,22 +217,14 @@ class TransactionTableRow extends React.Component {
 						
 						<Dropdown className="dropdown_ellipsis_action " icon="ellipsis horizontal">
                                 <Dropdown.Menu className="left"> 
-                                    <Dropdown.Item
-                                        text="Edit"
-                                        // open={isDropdownOpen}
-                                        // onOpen={this.onOpen}
-                                        // onClose={this.onClose}
-                                        // onClick={() => { this.handleEditClick(data) }}
-                                    />
-                                    {/* <Dropdown.Item
-                                        // disabled={showActiveDetails}
-                                        text="Delete"
-                                        // open={isDropdownOpen}
-                                        // onOpen={this.onOpen}
-                                        // onClose={this.onClose}
-                                        // onClick={() => { this.handleDeleteClick(data.attributes.description, data.id) }}
-                                    /> */}
                                     {deleteModal}
+                                    {isP2p && (
+                                        <Dropdown.Item
+                                            text={status === 'active' ? 'Pause' : 'Resume'}
+                                            onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
+                                        />
+                                        )
+                                    }
                                 </Dropdown.Menu>
                             </Dropdown>
 							</div>
@@ -286,12 +288,26 @@ class TransactionTableRow extends React.Component {
 									{
 										isP2p? (
 											<Fragment>
-												{p2pModal}
+												{status === 'active'? p2pModal:
+                                                    (
+                                                    <Popup 
+                                                        content='To edit this gift, resume this transaction first.'
+                                                        position="bottom center"
+                                                        trigger={
+                                                            <Button
+                                                                className="blue-bordr-btn-round-def c-small disabled-btn"
+                                                            >
+                                                                Edit
+                                                            </Button>
+                                                        } 
+                                                    />
+                                                    )
+                                                }
 												<a
 													className='deleteLink'
 													onClick={()=>{pauseResumeTransaction(transactionId, 'pause')}}
 												>
-													Pause{'   '}
+													{status === 'active' ? 'Pause' : 'Resume'}
 												</a>
 											</Fragment>): (isAllocation ? (
 										monthlyAllocModal
