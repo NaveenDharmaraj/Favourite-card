@@ -194,6 +194,7 @@ class TransactionTableRow extends React.Component {
                                     {status === 'active'? p2pModal:
                                         (
                                         <Popup 
+											className="invertPopup"
                                             content='To edit this gift, resume this transaction first.'
                                             position="bottom center"
                                             trigger={
@@ -291,6 +292,7 @@ class TransactionTableRow extends React.Component {
 												{status === 'active'? p2pModal:
                                                     (
                                                     <Popup 
+														className="invertPopup"
                                                         content='To edit this gift, resume this transaction first.'
                                                         position="bottom center"
                                                         trigger={

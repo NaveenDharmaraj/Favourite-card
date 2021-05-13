@@ -9595,3 +9595,19 @@ p{
   margin-bottom: 20%;
 }
 
+.disabled-btn{
+  &.ui.button.blue-bordr-btn-round-def{
+    opacity: 0.5;
+  }
+}
+body{
+  .ui.popup.transition.invertPopup{
+    background-color: #000;
+    color: #fff;
+    white-space: nowrap;
+    max-width: unset;
+    &::before{
+      background-color: #000;
+    }
+  }
+}
