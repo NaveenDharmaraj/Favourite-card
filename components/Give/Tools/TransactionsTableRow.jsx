@@ -215,7 +215,7 @@ class TransactionTableRow extends React.Component {
                                 > 
                                 <Dropdown.Item
                                     text="Delete"
-                                    onClick={() => {debugger; this.setState({ showDeleteModal: true })}}
+                                    onClick={() => {this.setState({ showDeleteModal: true })}}
                                 />
                                     {isP2p && (
                                         <Dropdown.Item
