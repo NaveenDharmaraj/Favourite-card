@@ -138,9 +138,6 @@ class TransactionTableRow extends React.Component {
                 closeIcon
                 onClose={this.closeModal}
                 open={showDeleteModal}
-                // trigger={
-                    
-                // }
             >
                 <Modal.Header>{modalHeader}</Modal.Header>
                 <Modal.Content>
