@@ -40,8 +40,7 @@ import {
     validateForReload,
     calculateP2pTotalGiveAmount,
     findingErrorElement,
-    fullMonthNames,
-    getDayName,
+    populateFrequenyOptions,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { getEmailList } from '../../../actions/userProfile';
@@ -709,71 +708,13 @@ class Friend extends React.Component {
             reviewBtnFlag,
         });
     }
-    populateFrequenyOptions(date) {
-        if(date){
-            const months = fullMonthNames(this.props.t);
-            const selectedMOnth = months[date.getMonth()];
-            const selectedDate = Number(date.getDate());
-            let monthlyText = '';
-            if( (selectedMOnth === 'February' && (selectedDate === 28 || selectedDate === 29))
-            || (selectedDate === 30 || selectedDate === 31) ){
-                monthlyText = 'Repeat monthly on the last day of the month';
-            } else {
-                let dateText = date.getDate() + 'th';
-                if (selectedDate > 3 && selectedDate < 21) {
-                    dateText = date.getDate() + 'th';
-                } else {
-                    switch (selectedDate % 10) {
-                        case 1:
-                            dateText =  date.getDate() + "st";
-                            break;
-                        case 2:
-                            dateText = date.getDate() + "nd";
-                            break;
-                        case 3:
-                            dateText = date.getDate() + "rd";
-                            break;
-                        default:
-                            dateText = date.getDate() + "th";
-                            break;
-                    }
-                }
-                monthlyText = `Repeat monthly on the ${dateText}`;
-            }
-            return [
-                {
-                    text: 'Send once',
-                    value: 'once',
-                },
-                {
-                    text: `Repeat weekly on ${getDayName(date)}`,
-                    value: 'weekly',
-                },
-                {
-                    text: monthlyText,
-                    value: 'monthly',
-                },
-                {
-                    text: `Repeat annually on ${months[date.getMonth()]} ${date.getDate()}`,
-                    value: 'yearly',
-                },
-            ]
-        } else{
-            return [
-                {
-                    text: 'Send once',
-                    value: 'once',
-                }
-            ]
-        }
-    }
     handleDateChange = (date) => {
         try {
             const convertIncomingDate = new Date(date) && dateFormatConverter(new Date(date), '-');
             const currentDate = dateFormatConverter(new Date(), '-');
             const checkCurrentDate = new Date(convertIncomingDate) >= new Date(currentDate);
             if (checkCurrentDate) {
-                const frequencyOptions = this.populateFrequenyOptions(new Date(date));
+                const frequencyOptions = populateFrequenyOptions(new Date(date), this.props.t);
                 this.setState({
                     flowObject: {
                         ...this.state.flowObject,
@@ -858,7 +799,7 @@ class Friend extends React.Component {
                 // sendDate = new Date();
                 sendDate = null
                 frequencyObject = {
-                    options: this.populateFrequenyOptions(sendDate),
+                    options: populateFrequenyOptions(sendDate, this.props.t),
                     value: 'once'
                 }
             }
