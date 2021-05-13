@@ -7,7 +7,7 @@ import {
 import '../../../static/less/datePicker.less';
 function ChimpDatePicker(props) {
     const currentDate = new Date();
-    const minDateFormat = `${currentDate.getMonth() + 1}-${currentDate.getDate()}-${currentDate.getFullYear()}`
+    const minDateFormat = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`
     const DatePickerCustomInput = ({ value, onChange, onClick }) => (
         <Form.Field>
             <Input placeholder='Mmm, DD YYYY' onChange={onChange} value={value} onBlur={(e) => props.onChangeValue(e.target.value)} disabled />
