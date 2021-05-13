@@ -667,8 +667,8 @@ class Friend extends React.Component {
             validity = validateForReload(validity, giveData.giveFrom.type, giveData.totalP2pGiveAmount, giveData.giveFrom.balance);
         }
         if(giveData.sendGift !== 'now'){
-            const convertIncomingDate = new Date(giveData.sendDate) && dateFormatConverter(new Date(giveData.sendDate), '-');
-            const currentDate = dateFormatConverter(new Date(), '-');
+            const convertIncomingDate = new Date(giveData.sendDate) && dateFormatConverter(new Date(giveData.sendDate), '/');
+            const currentDate = dateFormatConverter(new Date(), '/');
             const checkCurrentDate = new Date(convertIncomingDate) >= new Date(currentDate);
             validity.isValidDate= checkCurrentDate;
         }
