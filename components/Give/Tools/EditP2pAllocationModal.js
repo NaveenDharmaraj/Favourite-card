@@ -246,10 +246,9 @@ const EditP2pAllocationModal = ({
             if (_isEmpty(emailDetailList)) {
                 getEmailList(dispatch, id);
             }
-            if (_isEmpty(friendListData)) {
+            if (friendListData) {
                 dispatch(getFriendsList(email));
             } else {
-                console.log('executed from popup useEffect', 'recipients ---->', recipients, 'friendsList---->', friendsList);
                 setValuesForRecipients();
             }
         }
@@ -257,9 +256,7 @@ const EditP2pAllocationModal = ({
         showEditModal,
     ]);
     useEffect(() => {
-        if (!_isEmpty(friendListData) && chimpUsersNotFriends.length === 0 && showEditModal) {
-            console.log('executed from friendsApi useEffect', 'recipients ---->', recipients, 'friendsList---->', friendsList);
-
+        if (friendListData && chimpUsersNotFriends.length === 0 && showEditModal) {
             setValuesForRecipients();
         }
     }, [

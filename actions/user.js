@@ -1225,6 +1225,8 @@ export const getFriendsList = (userId) => {
             fsa.payload.friendsList = friendsList;
             dispatch(fsa);
         } else {
+            fsa.payload.friendsList = [];
+            dispatch(fsa);
             dispatch({
                 payload: {
                     showFriendDropDown: false,
