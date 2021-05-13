@@ -139,12 +139,10 @@ class TransactionTableRow extends React.Component {
                 onClose={this.closeModal}
                 open={showDeleteModal}
                 trigger={
-                    <a
-                        className='deleteLink'
+                    <Dropdown.Item
+                        text="Delete"
                         onClick={() => this.setState({ showDeleteModal: true })}
-                    >
-                        Delete
-                    </a>
+                    />
                 }
             >
                 <Modal.Header>{modalHeader}</Modal.Header>
@@ -216,14 +214,15 @@ class TransactionTableRow extends React.Component {
                                         // onClose={this.onClose}
                                         // onClick={() => { this.handleEditClick(data) }}
                                     />
-                                    <Dropdown.Item
+                                    {/* <Dropdown.Item
                                         // disabled={showActiveDetails}
                                         text="Delete"
                                         // open={isDropdownOpen}
                                         // onOpen={this.onOpen}
                                         // onClose={this.onClose}
                                         // onClick={() => { this.handleDeleteClick(data.attributes.description, data.id) }}
-                                    />
+                                    /> */}
+                                    {deleteModal}
                                 </Dropdown.Menu>
                             </Dropdown>
 							</div>
