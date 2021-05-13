@@ -83,7 +83,6 @@ const P2PSuccess = (props) => {
             });
         }
     }
-    console.log(giveData);
     const dashboardLink = !_isEmpty(giveData.giveFrom) && giveData.giveFrom.type === 'companies' ? `/${giveData.giveFrom.type}/${giveData.giveFrom.slug}` : `/dashboard`;
     const doneButtonText = formatMessage('doneText');
     return (
