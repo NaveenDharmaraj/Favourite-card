@@ -267,8 +267,8 @@ const EditP2pAllocationModal = ({
     ]);
     const handleDateChange = (date) => {
         try {
-            const convertIncomingDate = new Date(date) && dateFormatConverter(new Date(date), '-');
-            const currentDate = dateFormatConverter(new Date(), '-');
+            const convertIncomingDate = new Date(date) && dateFormatConverter(new Date(date), '/');
+            const currentDate = dateFormatConverter(new Date(), '/');
             const checkCurrentDate = new Date(convertIncomingDate) >= new Date(currentDate);
             if (checkCurrentDate) {
                 const frequencyOptions = populateFrequenyOptions(new Date(date), t);
