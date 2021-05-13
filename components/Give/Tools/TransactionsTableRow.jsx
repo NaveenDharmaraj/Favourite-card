@@ -130,7 +130,6 @@ class TransactionTableRow extends React.Component {
             nextTransaction={nextTransaction}
             status={status}
         />);
-
         const deleteModal = (
             <Modal
                 size="tiny"
@@ -139,12 +138,9 @@ class TransactionTableRow extends React.Component {
                 closeIcon
                 onClose={this.closeModal}
                 open={showDeleteModal}
-                trigger={
-                    <Dropdown.Item
-                        text="Delete"
-                        onClick={() => this.setState({ showDeleteModal: true })}
-                    />
-                }
+                // trigger={
+                    
+                // }
             >
                 <Modal.Header>{modalHeader}</Modal.Header>
                 <Modal.Content>
@@ -214,11 +210,16 @@ class TransactionTableRow extends React.Component {
 						monthlyDepositModal	
 						))
                         }
-						{/* {deleteModal} */}
-						
+                        {deleteModal}
 						<Dropdown className="dropdown_ellipsis_action " icon="ellipsis horizontal">
-                                <Dropdown.Menu className="left"> 
-                                    {deleteModal}
+                                <Dropdown.Menu 
+                                    className="left" 
+                                    closeOnChange
+                                > 
+                                <Dropdown.Item
+                                    text="Delete"
+                                    onClick={() => {debugger; this.setState({ showDeleteModal: true })}}
+                                />
                                     {isP2p && (
                                         <Dropdown.Item
                                             text={status === 'active' ? 'Pause' : 'Resume'}
