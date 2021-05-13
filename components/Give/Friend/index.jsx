@@ -648,12 +648,24 @@ class Friend extends React.Component {
                 userEmailList.push(data.attributes.email);
             });
         }
+        let allocationGiftType = giveData.giftType.value;
+        if(giveData.sendGift !== 'now' && giveData.sendDate && giveData.sendDate.getTime()){
+            let today = new Date()
+            today.setHours(0, 0, 0, 0);
+            if(today.getTime() !== giveData.sendDate.getTime()){
+                allocationGiftType = 1;
+            }
+        } else if(giveData.sendGift!== 'now' && !giveData.sendDate) {
+            allocationGiftType = 1;
+        }
         validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToRecipients', giveData.noteToRecipients, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('recipients', giveData.recipients, validity, giveData, coverFeesAmount, userEmailList);
-        validity = validateForReload(validity, giveData.giveFrom.type, giveData.totalP2pGiveAmount, giveData.giveFrom.balance);
+        if(allocationGiftType  === 0){
+            validity = validateForReload(validity, giveData.giveFrom.type, giveData.totalP2pGiveAmount, giveData.giveFrom.balance);
+        }
         if(giveData.sendGift !== 'now'){
             const convertIncomingDate = new Date(giveData.sendDate) && dateFormatConverter(new Date(giveData.sendDate), '-');
             const currentDate = dateFormatConverter(new Date(), '-');
