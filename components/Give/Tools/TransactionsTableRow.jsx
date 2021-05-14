@@ -305,7 +305,7 @@ class TransactionTableRow extends React.Component {
                                                 }
 												<a
 													className='deleteLink'
-													onClick={()=>{pauseResumeTransaction(transactionId, 'pause')}}
+													onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
 												>
 													{status === 'active' ? 'Pause' : 'Resume'}
 												</a>
