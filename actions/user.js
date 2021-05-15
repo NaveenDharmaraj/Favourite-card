@@ -1004,6 +1004,7 @@ export const editUpcomingP2p = (
     activePage,
     userId,
     status,
+    pausedPageId = 1,
 ) => (dispatch) => {
     let allocationData = {};
     const type = 'scheduledP2pAllocations';
@@ -1014,7 +1015,7 @@ export const editUpcomingP2p = (
     };
     if (status) {
         allocationData.attributes = {
-            sendDate: new Date(date),
+            sendDate: formatDateForP2p(new Date(date)),
             status,
         };
     } else {
@@ -1039,7 +1040,7 @@ export const editUpcomingP2p = (
             };
             if (status) {
                 statusMessageProps.message = `Your gift has been ${status}d.`;
-                dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation', 'inactive', activePage));
+                dispatch(getUpcomingP2pAllocations(userId, 'ScheduledP2pAllocation', 'inactive', pausedPageId));
             }
             dispatch({
                 payload: {
