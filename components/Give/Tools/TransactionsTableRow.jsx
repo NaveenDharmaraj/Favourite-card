@@ -315,6 +315,12 @@ class TransactionTableRow extends React.Component {
 									monthlyDepositModal	
 									))
 									}
+                                     <a
+                                        className='deleteLink'
+                                        onClick={() => {this.setState({ showDeleteModal: true })}}
+                                        >
+                                        Delete
+                                    </a>
 									{deleteModal}
                                         
 									</Table.Cell>

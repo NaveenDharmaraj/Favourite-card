@@ -386,7 +386,10 @@ class ToolTabs extends React.Component {
             upcomingPausedP2pTransactions,
             dispatch,
         } = this.props;
-        let { activePage } = this.state;
+        let {
+            p2pActivePage,
+            p2pPausedPage
+        } = this.state;
         let selectedTransaction;
         if (status === 'pause') {
             selectedTransaction = _.find(upcomingP2pTransactions,{'id':transactionId})
@@ -413,9 +416,10 @@ class ToolTabs extends React.Component {
                 frequency,
                 noteToRecipient,
                 noteToSelf,
-                activePage,
+                p2pActivePage,
                 id,
-                status));
+                status,
+                p2pPausedPage));
         } 
     }
 
