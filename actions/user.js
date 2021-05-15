@@ -12,6 +12,10 @@ import {
 } from '../routes';
 import getConfig from 'next/config';
 import {
+    formatDateForP2p,
+} from '../helpers/give/utils';
+
+import {
     triggerUxCritialErrors,
 } from './error';
 import {
@@ -1021,7 +1025,7 @@ export const editUpcomingP2p = (
             noteToSelf,
             reason,
             recipientEmails: recipientEmails.toString(),
-            sendDate: date,
+            sendDate: formatDateForP2p(date),
         };
     }
     return coreApi.patch(`${type}/${id}`, {
