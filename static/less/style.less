@@ -1825,6 +1825,11 @@ h4{
                         td{
                           padding: 12px 14px;
                           border: 0;
+                          width: 80%;
+                          word-break: break-word;
+                          @media only screen and (max-width: 500px){
+                          width: 70%;
+                          }
                           &:last-child{
                             text-align: right;
                             .primeFont-semi-bold();
@@ -4001,6 +4006,15 @@ body{
       >tbody{
         >tr{
           >td{
+            &:nth-child(2){
+              width:65%;
+              @media only screen and (max-width:1199px) {
+                width:59%;
+              }
+              @media only screen and (max-width:992px) {
+                width:47%;
+              }
+            }
             @media only screen and (max-width: 767px) and (min-width:500px) {
                 &:nth-child(2){
                   display: inline-block !important;
