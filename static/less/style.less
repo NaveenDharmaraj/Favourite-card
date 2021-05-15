@@ -4006,6 +4006,15 @@ body{
       >tbody{
         >tr{
           >td{
+            &:nth-child(2){
+              width:65%;
+              @media only screen and (max-width:1199px) {
+                width:59%;
+              }
+              @media only screen and (max-width:992px) {
+                width:47%;
+              }
+            }
             @media only screen and (max-width: 767px) and (min-width:500px) {
                 &:nth-child(2){
                   display: inline-block !important;
