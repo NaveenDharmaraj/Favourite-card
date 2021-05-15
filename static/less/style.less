@@ -4000,6 +4000,29 @@ body{
     &.basic{
       >tbody{
         >tr{
+          >td{
+            @media only screen and (max-width: 767px) and (min-width:500px) {
+                &:nth-child(2){
+                  display: inline-block !important;
+                  width: 90% !important;
+                }
+                &:nth-child(3){
+                  display: inline-block !important;
+                  width: 10% !important;
+                }
+              }
+              @media only screen and (max-width:499px) {
+                &:nth-child(2){
+                  display: inline-block !important;
+                  width: 85% !important;
+                }
+                &:nth-child(3){
+                  display: inline-block !important;
+                  width: 14% !important;
+                }
+              }
+              
+        }
           td{
             &:nth-child(2){
               img{
@@ -4081,6 +4104,7 @@ body{
         .amount{
           color: #263238;
         }
+     
       }
       .donation{
         .reason{
@@ -8913,6 +8937,9 @@ span{
           height: 23px;	width: 17px;
           margin-left:10px;
           cursor: pointer;
+          @media only screen and (max-width: 767px) {
+            margin-left:0px;
+          }
         }
       }
      }  
@@ -8925,6 +8952,10 @@ span{
 }
 .descriptionRight{
   display: inline-block;
+  @media only screen and (max-width: 767px) {
+    text-align: right;
+    width: 100%;
+  }
 }
 .ui.modals.dimmer{
   .acntActivityModel{
