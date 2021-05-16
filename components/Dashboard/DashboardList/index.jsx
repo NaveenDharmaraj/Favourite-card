@@ -198,6 +198,7 @@ class DashboradList extends React.Component {
                 const matchReturned = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.matchReturnedText')}</label>;
                 const isScheduledAllocation = data.attributes.parentTransactionType === 'ScheduledP2pAllocation';
                 const newtransactionTypeDisplay = (isScheduledAllocation ? 'Scheduled Allocation' : 'Gift given');
+                const isp2p = data.attributes.destination.type === 'User';
                 if (!_.isEmpty(data.attributes.destination)) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
                         givingType = 'giving group';
@@ -297,7 +298,7 @@ class DashboradList extends React.Component {
                         <Table.Cell>
                             <List verticalAlign="middle">
                                 <List.Item>
-                                    <Image className={imageCls} size="tiny" src={data.attributes.hasChildAllocations ? userGroupImage : data.attributes.imageUrl} />
+                                    <Image className={imageCls} size="tiny" src={(isp2p && data.attributes.hasChildAllocations) ? userGroupImage : data.attributes.imageUrl} />
                                     <List.Content>
                                         <List.Header>
                                             {descriptionType}
@@ -337,7 +338,7 @@ class DashboradList extends React.Component {
                                 <Modal.Content>
                                     <div className="acntActivityHeader">
                                         <Header as="h2" icon>
-                                            <Image className={imageCls} size="tiny" src={isScheduledAllocation ? userGroupImage : data.attributes.imageUrl} />
+                                            <Image className={imageCls} size="tiny" src={(isp2p && data.attributes.hasChildAllocations) ? userGroupImage : data.attributes.imageUrl} />
                                             {transactionSign}
                                             {amount}
                                             <Header.Subheader>
