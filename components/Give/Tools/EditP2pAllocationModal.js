@@ -558,7 +558,7 @@ const EditP2pAllocationModal = ({
             )}
         >
             <Modal.Header>
-                {`Edit`}
+                {`Edit gift to friends`}
             </Modal.Header>
             <Modal.Content>
                 <Modal.Description>
