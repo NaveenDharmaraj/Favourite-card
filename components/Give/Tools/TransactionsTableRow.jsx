@@ -293,6 +293,7 @@ class TransactionTableRow extends React.Component {
 														className="invertPopup"
                                                         content='To edit this gift, resume this transaction first.'
                                                         position="bottom center"
+														basic
                                                         trigger={
                                                             <Button
                                                                 className="blue-bordr-btn-round-def c-small disabled-btn"
