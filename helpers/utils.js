@@ -260,6 +260,9 @@ const validateDate = (dateStr = '') => {
     }
     return isValid;
 };
+const dateFormatConverter = (date, typeOfSeprator = '/') => (
+    `${date.getFullYear()}${typeOfSeprator}${date.getMonth() + 1}${typeOfSeprator}${date.getDate()}`
+);
 
 /**
  * Finding a particular item from a list of objects based on the id
@@ -303,4 +306,5 @@ export {
     redirectIfNotUSer,
     isValidBrowser,
     validateDate,
+    dateFormatConverter,
 };

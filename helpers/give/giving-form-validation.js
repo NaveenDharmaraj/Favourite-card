@@ -43,7 +43,8 @@ export const isValidEmailList = (input) => {
  * @return {boolean} true if array contains not duplicates, false, otherwise
  */
 export const isUniqueArray = (input) => {
-    const arr = parseEmails(input);
+    let arr = parseEmails(input);
+    arr = (_.map(arr, _.toLower));
     return _.uniq(arr).length === arr.length;
 };
 

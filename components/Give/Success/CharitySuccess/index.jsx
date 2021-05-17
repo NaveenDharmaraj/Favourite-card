@@ -109,7 +109,7 @@ const CharitySuccess = (props) => {
                     <p className="text-center">
                         If you like, you can also
                         {' '}
-                        <Link route="/user/recurring-donations">set up a monthly deposit</Link>
+                        <Link route="/user/recurring-donations">schedule a monthly deposit</Link>
                         {' '}
                         into your account to cover this monthly gift.
                     </p>
