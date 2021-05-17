@@ -54,7 +54,7 @@ function P2pTable(props) {
                     language,
                     'USD',
                 );
-                const modalHeader = `Delete${attributes.frequency === 'once' ? ' '
+                const modalHeader = `Delete${attributes.frequency === 'once' || !attributes.frequency ? ' '
                     : ` ${attributes.frequency}`} gift?`;
                 activeIndexs.push(index);
                 tableBody.push(
@@ -63,7 +63,7 @@ function P2pTable(props) {
                         modalHeader={modalHeader}
                         firstColoumn={recipients}
                         secondColoumn={formattedAmount}
-                        thirdColoumn={_.startCase(_.toLower(attributes.frequency))}
+                        thirdColoumn={attributes.frequency ? _.startCase(_.toLower(attributes.frequency)) : ' '}
                         fourthColoumn={attributes.reason || ' '}
                         fifthColoumn={formatDateForGivingTools(attributes.createdAt)}
                         deleteTransaction={deleteTransaction}
