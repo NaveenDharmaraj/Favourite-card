@@ -79,8 +79,7 @@ function P2pTable(props) {
                         pauseResumeTransaction={pauseResumeTransaction}
                         destinationDetails={destinationDetails}
                         reason={attributes.reason}
-                        // frequency={attributes.frequency}
-                        frequency={null}
+                        frequency={attributes.frequency}
                         nextTransaction={attributes.nextTransaction}
                         status={attributes.status}
                     />,
