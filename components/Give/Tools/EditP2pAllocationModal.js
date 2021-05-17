@@ -56,7 +56,6 @@ import P2pFrequency from '../Friend/p2pFrequency';
 import ChimpDatePicker from '../Friend/p2pDatePicker';
 import FriendsDropDown from '../../shared/FriendsDropDown';
 
-// const ChimpDatePicker = dynamic(() => {import('../Friend/p2pDatePicker'), { ssr: false }});
 
 const EditP2pAllocationModal = ({
     currentMonthlyAllocAmount,
@@ -76,16 +75,6 @@ const EditP2pAllocationModal = ({
 }) => {
     const formatMessage = t;
     const intializeValidations = {
-        // doesAmountExist: true,
-        // isAmountLessThanOneBillion: true,
-        // isAmountMoreThanOneDollor: true,
-        // isNoteToRecipientsInLimit: true,
-        // isNoteToSelfInLimit: true,
-        // isValidDate: true,
-        // isValidNoteSelfText: true,
-        // isValidNoteToRecipients: true,
-        // isValidNoteToSelf: true,
-        // isValidPositiveNumber: true,
         doesAmountExist: true,
         isAmountCoverGive: true,
         isAmountLessThanOneBillion: true,
@@ -295,20 +284,7 @@ const EditP2pAllocationModal = ({
             name,
             value,
         } = data || event.target;
-        if (name === 'sendGift') {
-            // setSendGift(value);
-            // if (value === 'now') {
-            //     setFrequencyObject({});
-            //     setSendDate(null);
-            //     // validity.isValidDate = true;
-            // } else {
-            //     setSendDate(new Date());
-            //     setFrequencyObject({
-            //         options: populateFrequenyOptions(new Date()),
-            //         value: 'once',
-            //     });
-            // }
-        } else if (name === 'frequency') {
+        if (name === 'frequency') {
             setFrequencyObject({
                 ...frequencyObject,
                 value,
@@ -675,30 +651,6 @@ const EditP2pAllocationModal = ({
                                 {formatMessage('friends:multipleFriendAmountFieldText')}
                             </p>
                             <div className="p2pCalenderWrapper">
-                                {/* <div className="p2p_gift">
-                                    <label className="label_gift">When would you like to send this gift?</label>
-                                    <Form.Field className="radio_btn">
-                                        <Radio
-                                            label="Send now"
-                                            name="sendGift"
-                                            className="checkbox chimpRadio"
-                                            value="now"
-                                            onChange={handleSendMoneyInputChange}
-                                            checked={sendGift === 'now'}
-                                        />
-                                    </Form.Field>
-                                    <Form.Field className="radio_btn">
-                                        <Radio
-                                            label="Schedule gift"
-                                            name="sendGift"
-                                            className="checkbox chimpRadio"
-                                            value="schedule"
-                                            onChange={handleSendMoneyInputChange}
-                                            checked={sendGift === 'schedule'}
-                                        />
-                                    </Form.Field>
-
-                                </div> */}
                                 {sendGift === 'schedule' && (
                                     <Fragment>
                                         <div className="Send_date">
@@ -724,13 +676,6 @@ const EditP2pAllocationModal = ({
                                     </Fragment>
                                 )
                                 }
-                                {/* <div>
-                                    <P2pReasons
-                                        reason={reason}
-                                        reasonOther={reasonOther}
-                                        handleSendMoneyInputChange={handleSendMoneyInputChange}
-                                    />
-                                </div> */}
                             </div>
                             <Form.Field>
                                 <label htmlFor="giveFrom">

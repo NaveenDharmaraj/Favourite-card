@@ -69,7 +69,6 @@ function P2pTable(props) {
                         deleteTransaction={deleteTransaction}
                         transactionType={attributes.transactionType}
                         transactionId={id}
-                        // giftType={giftType}
                         language={language}
                         index={index}
                         destinationType={attributes.destinationAccount}
@@ -80,12 +79,10 @@ function P2pTable(props) {
                         pauseResumeTransaction={pauseResumeTransaction}
                         destinationDetails={destinationDetails}
                         reason={attributes.reason}
-                        frequency={attributes.frequency}
+                        // frequency={attributes.frequency}
+                        frequency={null}
                         nextTransaction={attributes.nextTransaction}
                         status={attributes.status}
-                        // isCampaign={attributes.campaign}
-                        // hasCampaign={attributes.hasCampaign}
-                        // dedicate={attributes.metaInfo ? attributes.metaInfo.dedicate : {}}
                     />,
                 );
             });

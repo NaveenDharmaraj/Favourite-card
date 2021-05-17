@@ -86,7 +86,7 @@
         "forHelpText": "for help.",
         "filterText": "Filter",
         "allText": "All",
-        "inText": "In",
-        "outText": "Out"
+        "inText": "Deposits",
+        "outText": "Allocations"
     }
 }
