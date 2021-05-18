@@ -71,6 +71,7 @@
     "reviewDefaultMessage": "No message added",
     "reviewP2pText": "Give to a friend",
     "reviewP2pSendDate": "Send date",
+    "reviewP2pGiftStartDate": "Gift start date",
     "reviewP2pFrequency":"Frequency",
     "reviewP2pReasonToGive": "Reason to give",
     "reviewP2pMessage": "Message to friends (optional)",

@@ -1597,12 +1597,19 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
     }
     if (sendGift === 'schedule' && sendDate) {
         listingData.push({
-            name: 'reviewP2pSendDate',
+            name: (frequencyObject && frequencyObject.value !== 'once') ? `reviewP2pGiftStartDate` : 'reviewP2pSendDate',
             value: formatDateForGivingTools(sendDate),
         });
     }
+
     if (sendGift === 'schedule' && frequencyObject) {
-        state.isRecurring = frequencyObject.value !== 'once';
+        const formatedDate = new Date(sendDate);
+        const todaysDate = new Date();
+        if ((formatedDate.setHours(0,0,0,0) === todaysDate.setHours(0,0,0,0)) && frequencyObject.value === 'once') {
+            state.isRecurring = false;
+        } else {
+            state.isRecurring = true;
+        }
         const selectedFrequency = frequencyObject.options.find((item) => item.value === frequencyObject.value);
         listingData.push({
             name: 'reviewP2pFrequency',

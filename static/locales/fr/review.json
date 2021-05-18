@@ -44,6 +44,7 @@
     "notApplicable": "N/A",
     "reviewGiftAmount": "Gift amount:",
     "reviewP2pSendDate": "Send date",
+    "reviewP2pGiftStartDate": "Gift start date",
     "reviewP2pFrequency":"Frequency",
     "reviewP2pReasonToGive": "Reason to give",
     "givingGroups": {
