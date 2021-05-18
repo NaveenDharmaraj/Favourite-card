@@ -152,7 +152,7 @@ const DashboardTransactionDetails = (props) => {
     }
 
     return (
-        <div className="acntActivityContent">
+        <div className="acntActivityContent activityModel">
             <List celled className="acntActivityList">
                 {transactionDetails}
             </List>
