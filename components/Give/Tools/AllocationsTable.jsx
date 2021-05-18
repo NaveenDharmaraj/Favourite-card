@@ -56,7 +56,7 @@ function AllocationsTable(props) {
                     <TransactionTableRow
                         activePage={activePage}
                         isAllocation
-                        modalHeader="Delete monthly gift?"
+                        modalHeader="Delete scheduled gift?"
                         firstColoumn={recipientAccount}
                         secondColoumn={formattedAmount}
                         thirdColoumn={transactionDate}

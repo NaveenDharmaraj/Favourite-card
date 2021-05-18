@@ -130,11 +130,6 @@ class TransactionTableRow extends React.Component {
             nextTransaction={nextTransaction}
             status={status}
         />);
-        const deleteModalHeader = isP2p? 
-            `If you delete this transaction, it won't be processed${frequency ==='once' || !frequency ? 
-                    '' : ` each ${frequency.substring(0, frequency.length - 2)}`}.`
-                :`If you delete this transaction, it won't be processed each month.`
-
         const deleteModal = (
             <Modal
                 size="tiny"
@@ -147,8 +142,7 @@ class TransactionTableRow extends React.Component {
                 <Modal.Header>{modalHeader}</Modal.Header>
                 <Modal.Content>
                     <span>
-                        {deleteModalHeader}
-                    
+                        If you delete this transaction, it won't be processed on its scheduled send date.
                     </span>
                     <div className="pt-2 pb-1 text-right">
                         <Button

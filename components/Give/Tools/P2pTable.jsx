@@ -12,6 +12,7 @@ import {
     formatCurrency,
 } from '../../../helpers/give/utils';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import { p2pScheduleOptions } from '../../../helpers/constants/index';
 
 import TransactionTableRow from './TransactionsTableRow';
 
@@ -54,16 +55,14 @@ function P2pTable(props) {
                     language,
                     'USD',
                 );
-                const modalHeader = `Delete${attributes.frequency === 'once' || !attributes.frequency ? ' '
-                    : ` ${attributes.frequency}`} gift?`;
                 activeIndexs.push(index);
                 tableBody.push(
                     <TransactionTableRow
                         activePage={activePage}
-                        modalHeader={modalHeader}
+                        modalHeader="Delete scheduled gift?"
                         firstColoumn={recipients}
                         secondColoumn={formattedAmount}
-                        thirdColoumn={attributes.frequency ? _.startCase(_.toLower(attributes.frequency)) : ' '}
+                        thirdColoumn={attributes.frequency ? p2pScheduleOptions[attributes.frequency] : ' '}
                         fourthColoumn={attributes.reason || ' '}
                         fifthColoumn={formatDateForGivingTools(attributes.createdAt)}
                         deleteTransaction={deleteTransaction}
