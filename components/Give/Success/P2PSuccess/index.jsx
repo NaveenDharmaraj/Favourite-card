@@ -16,7 +16,7 @@ const P2PSuccess = (props) => {
     const { giveData } = successData;
     let name;
     let secondParagraph;
-    let thirdParagraph;
+    let thirdParagraph = [];
     if (giveData) {
         const {
             frequencyObject, sendDate,
@@ -71,7 +71,12 @@ const P2PSuccess = (props) => {
                             },
                         );
                     }
-                    thirdParagraph = formatMessage('scheduleForP2p');
+                    if (frequencyObject.value === 'weekly' || frequencyObject.value === 'monthly') {
+                        thirdParagraph.push(formatMessage('scheduleForP2pFirstSection'));
+                        const linkText = formatMessage('scheduleForP2pSecondSection');
+                        thirdParagraph.push(<Link route="/donations/new?donation_details[recurring]=1">{linkText}</Link>);
+                        thirdParagraph.push(formatMessage('scheduleForP2pThirdSection'));
+                    }
                     break;
                 default:
                     break;
