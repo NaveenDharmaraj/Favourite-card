@@ -145,18 +145,19 @@ class TransactionTableRow extends React.Component {
                         If you delete this transaction, it won't be processed on its scheduled send date.
                     </span>
                     <div className="pt-2 pb-1 text-right">
+                        
+                        <Button
+                            className="blue-bordr-btn-round-def c-small"
+                            onClick={() => this.setState({ showDeleteModal: false })}
+                        >
+                            Cancel
+                        </Button>
                         <Button
                             className="danger-btn-rounded-def c-small"
                             color='red'
                             onClick={this.closeModalAndDelete}
                         >
                             Delete
-                        </Button>
-                        <Button
-                            className="blue-bordr-btn-round-def c-small"
-                            onClick={() => this.setState({ showDeleteModal: false })}
-                        >
-                            Cancel
                         </Button>
                     </div>
                 </Modal.Content>
