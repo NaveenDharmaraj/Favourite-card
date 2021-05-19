@@ -1617,12 +1617,12 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         });
     }
 
-    if (reason !== 'Other' || (reason === 'Other' && reasonOther)) {
-        listingData.push({
-            name: 'reviewP2pReasonToGive',
-            value: reason !== 'Other' ? reason : reasonOther,
-        });
-    }
+    // (reason !== 'Other' || (reason === 'Other' && reasonOther))
+    const showingOther = (reasonOther) || 'Other';
+    listingData.push({
+        name: 'reviewP2pReasonToGive',
+        value: reason !== 'Other' ? reason : showingOther,
+    });
     listingData.push({
         name: 'reviewP2pMessage',
         value: (!_.isEmpty(noteToRecipients)) ? noteToRecipients : formatMessage('reviewDefaultMessage'),
