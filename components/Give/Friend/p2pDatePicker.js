@@ -10,7 +10,7 @@ function ChimpDatePicker(props) {
     const minDateFormat = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`
     const DatePickerCustomInput = ({ value, onChange, onClick }) => (
         <Form.Field>
-            <Input placeholder='Mmm, DD YYYY' onChange={onChange} value={value} onBlur={(e) => props.onChangeValue(e.target.value)} disabled />
+            <Input placeholder='MM, DD YYYY' onChange={onChange} value={value} onBlur={(e) => props.onChangeValue(e.target.value)} disabled />
             <Icon
                 class="calendar icon"
                 name="calendar icon"

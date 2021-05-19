@@ -235,7 +235,7 @@ const EditP2pAllocationModal = ({
             if (_isEmpty(emailDetailList)) {
                 getEmailList(dispatch, id);
             }
-            if (friendListData) {
+            if (!friendListData) {
                 dispatch(getFriendsList(email));
             } else {
                 setValuesForRecipients();
@@ -358,7 +358,7 @@ const EditP2pAllocationModal = ({
                 break;
             case 'friendsList':
                 setFriendsList(newValue);
-                flowObject.giveData.friendsList = friendsList;
+                flowObject.giveData.friendsList = newValue;
                 setTotalP2pGiveAmount(calculateP2pTotalGiveAmount((friendsList.length + recipients.length), amount));
                 setValidity(validateGiveForm(
                     'recipients',

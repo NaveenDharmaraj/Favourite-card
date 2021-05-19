@@ -43,9 +43,8 @@ function DonationsTable(props) {
                     donationMatchString = attributes.donationMatch.slice(0, lastOccuranceOfOpenBrace);
                 }
                 const transactionDate = (attributes.transactionDate.includes(15)) ? '15th' : '1st';
-                const formattedDate = formatDateForGivingTools(attributes.createdAt);
                 const formattedAmount = formatCurrency(attributes.amount, language, 'USD');
-                activeIndexs.push(index)
+                activeIndexs.push(index);
                 tableBody.push(<TransactionTableRow
                     isAllocation={false}
                     modalHeader="Delete monthly deposit?"
@@ -53,7 +52,7 @@ function DonationsTable(props) {
                     secondColoumn={formattedAmount}
                     thirdColoumn={transactionDate}
                     fourthColoumn={donationMatchString}
-                    fifthColoumn={formattedDate}
+                    fifthColoumn={attributes.nextTransaction}
                     transactionId={id}
                     transactionType={attributes.transactionType}
                     deleteTransaction={deleteTransaction}
@@ -78,7 +77,7 @@ function DonationsTable(props) {
                                     <Table.HeaderCell className="text-right">Amount</Table.HeaderCell>
                                     <Table.HeaderCell>Day of month</Table.HeaderCell>
                                     <Table.HeaderCell>Matched by</Table.HeaderCell>
-                                    <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
+                                    <Table.HeaderCell className="w-120">Send date</Table.HeaderCell>
                                     <Table.HeaderCell>Action</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
