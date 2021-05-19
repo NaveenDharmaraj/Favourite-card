@@ -64,7 +64,7 @@ function P2pTable(props) {
                         secondColoumn={formattedAmount}
                         thirdColoumn={attributes.frequency ? p2pScheduleOptions[attributes.frequency] : ' '}
                         fourthColoumn={attributes.reason || ' '}
-                        fifthColoumn={formatDateForGivingTools(attributes.createdAt)}
+                        fifthColoumn={attributes.nextTransaction}
                         deleteTransaction={deleteTransaction}
                         transactionType={attributes.transactionType}
                         transactionId={id}
@@ -105,7 +105,7 @@ function P2pTable(props) {
                                     Reason to give
                                 </Table.HeaderCell>
                                 <Table.HeaderCell>
-                                    Created
+                                    Send date
                                 </Table.HeaderCell>
                                 <Table.HeaderCell className="p2p-action-padding">Action</Table.HeaderCell>
                             </Table.Row>

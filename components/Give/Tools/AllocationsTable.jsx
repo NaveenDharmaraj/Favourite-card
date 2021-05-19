@@ -36,9 +36,6 @@ function AllocationsTable(props) {
                 const transactionDate = attributes.transactionDate.includes(15)
                     ? '15th'
                     : '1st';
-                const formattedDate = formatDateForGivingTools(
-                    attributes.createdAt,
-                );
                 const destinationType = attributes.destinationAccount === 'Beneficiary'
                     ? 'Charity'
                     : attributes.destinationAccount;
@@ -60,7 +57,7 @@ function AllocationsTable(props) {
                         firstColoumn={recipientAccount}
                         secondColoumn={formattedAmount}
                         thirdColoumn={transactionDate}
-                        fourthColoumn={formattedDate}
+                        fourthColoumn={attributes.nextTransaction}
                         deleteTransaction={deleteTransaction}
                         transactionType={attributes.transactionType}
                         transactionId={id}
@@ -95,7 +92,7 @@ function AllocationsTable(props) {
 									Day of month
                                 </Table.HeaderCell>
                                 <Table.HeaderCell className="w-120">
-									Created
+									Send date
                                 </Table.HeaderCell>
                                 <Table.HeaderCell>Action</Table.HeaderCell>
                             </Table.Row>
