@@ -50,6 +50,11 @@ function P2pTable(props) {
                     ];
                 }
                 const recipients = _.join(_.map(destinationDetails, (u) => (u.receiverExists ? u.displayName : u.email)), ', ');
+                const formattedTotalAmount = formatCurrency(
+                    attributes.amount * destinationDetails.length,
+                    language,
+                    'USD',
+                );
                 const formattedAmount = formatCurrency(
                     attributes.amount,
                     language,
@@ -61,7 +66,7 @@ function P2pTable(props) {
                         activePage={activePage}
                         modalHeader="Delete scheduled gift?"
                         firstColoumn={recipients}
-                        secondColoumn={formattedAmount}
+                        secondColoumn={formattedTotalAmount}
                         thirdColoumn={attributes.frequency ? p2pScheduleOptions[attributes.frequency] : ' '}
                         fourthColoumn={attributes.reason || ' '}
                         fifthColoumn={attributes.nextTransaction}
@@ -81,6 +86,7 @@ function P2pTable(props) {
                         frequency={attributes.frequency}
                         nextTransaction={attributes.nextTransaction}
                         status={attributes.status}
+                        amount={formattedAmount}
                     />,
                 );
             });

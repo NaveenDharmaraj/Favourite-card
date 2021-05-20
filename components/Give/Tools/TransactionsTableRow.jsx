@@ -90,7 +90,8 @@ class TransactionTableRow extends React.Component {
             reason,
             frequency,
             nextTransaction,
-            status
+            status,
+            amount,
 		} = this.props;
 		const { showDeleteModal, activeIndexs } = this.state;
         const monthlyAllocModal = (<EditMonthlyAllocationModal
@@ -117,7 +118,7 @@ class TransactionTableRow extends React.Component {
         />);
         const p2pModal = (<EditP2pAllocationModal
             recipientName={firstColoumn}
-            currentMonthlyAllocAmount={secondColoumn}
+            currentMonthlyAllocAmount={amount}
             transactionId={transactionId}
             activePage={activePage}
             language={language}
