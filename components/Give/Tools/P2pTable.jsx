@@ -51,7 +51,7 @@ function P2pTable(props) {
                 }
                 const recipients = _.join(_.map(destinationDetails, (u) => (u.receiverExists ? u.displayName : u.email)), ', ');
                 const formattedTotalAmount = formatCurrency(
-                    attributes.amount * destinationDetails.length,
+                    Number(attributes.amount) * destinationDetails.length,
                     language,
                     'USD',
                 );
