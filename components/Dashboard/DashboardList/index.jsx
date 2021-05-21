@@ -197,7 +197,7 @@ class DashboradList extends React.Component {
                 const giftRefund = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.giftRefundText')}</label>;
                 const matchReturned = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.matchReturnedText')}</label>;
                 const isScheduledAllocation = data.attributes.parentTransactionType === 'ScheduledP2pAllocation';
-                const newtransactionTypeDisplay = (isScheduledAllocation ? 'Scheduled Allocation' : 'Gift given');
+                const newtransactionTypeDisplay = 'Gift given';
                 const isp2p = (!_.isEmpty(data.attributes.destinationDetails) && data.attributes.destinationDetails.type === 'User');
                 if (!_.isEmpty(data.attributes.destination)) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
