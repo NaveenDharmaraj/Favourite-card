@@ -74,8 +74,8 @@ function DonationsTable(props) {
                                     <Table.HeaderCell className="Credit_Name">Credit card </Table.HeaderCell>
                                     <Table.HeaderCell className="text-right">Amount</Table.HeaderCell>
                                     <Table.HeaderCell>Matched by</Table.HeaderCell>
-                                    <Table.HeaderCell className="w-120">Send date</Table.HeaderCell>
-                                    <Table.HeaderCell>Action</Table.HeaderCell>
+                                    <Table.HeaderCell className="w-120 custom-width-send-date">Send date</Table.HeaderCell>
+                                    <Table.HeaderCell className="text-center">Action</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
                             {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Table.Body>

@@ -84,10 +84,10 @@ function AllocationsTable(props) {
                                 <Table.HeaderCell textAlign="right">
 									Amount
                                 </Table.HeaderCell>
-                                <Table.HeaderCell className="w-120">
+                                <Table.HeaderCell className="w-120 custom-width-send-date">
 									Send date
                                 </Table.HeaderCell>
-                                <Table.HeaderCell>Action</Table.HeaderCell>
+                                <Table.HeaderCell className="text-center">Action</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
                         {monthlyTransactionApiCall === undefined || false ? (
