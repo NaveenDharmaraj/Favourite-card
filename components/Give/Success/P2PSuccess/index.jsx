@@ -56,7 +56,7 @@ const P2PSuccess = (props) => {
                             'fromToRecipientRecurring',
                             {
                                 date: formatDateForGivingTools(sendDate),
-                                frequency: frequencyObject.value,
+                                frequency: frequencyObject.value === 'yearly' ? 'annually' : frequencyObject.value,
                                 name,
                             },
                         );
@@ -65,7 +65,7 @@ const P2PSuccess = (props) => {
                             'fromOtherRecipientRecurring',
                             {
                                 date: formatDateForGivingTools(sendDate),
-                                frequency: frequencyObject.value,
+                                frequency: frequencyObject.value === 'yearly' ? 'annually' : frequencyObject.value,
                                 fromName: giveData.giveFrom.name,
                                 name,
                             },

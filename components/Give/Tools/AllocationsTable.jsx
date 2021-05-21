@@ -33,9 +33,6 @@ function AllocationsTable(props) {
                 const {
                     attributes, id,
                 } = transaction;
-                const transactionDate = attributes.transactionDate.includes(15)
-                    ? '15th'
-                    : '1st';
                 const destinationType = attributes.destinationAccount === 'Beneficiary'
                     ? 'Charity'
                     : attributes.destinationAccount;
@@ -56,8 +53,7 @@ function AllocationsTable(props) {
                         modalHeader="Delete scheduled gift?"
                         firstColoumn={recipientAccount}
                         secondColoumn={formattedAmount}
-                        thirdColoumn={transactionDate}
-                        fourthColoumn={attributes.nextTransaction}
+                        thirdColoumn={attributes.nextTransaction}
                         deleteTransaction={deleteTransaction}
                         transactionType={attributes.transactionType}
                         transactionId={id}
@@ -88,13 +84,10 @@ function AllocationsTable(props) {
                                 <Table.HeaderCell textAlign="right">
 									Amount
                                 </Table.HeaderCell>
-                                <Table.HeaderCell>
-									Day of month
-                                </Table.HeaderCell>
-                                <Table.HeaderCell className="w-120">
+                                <Table.HeaderCell className="w-120 custom-width-send-date">
 									Send date
                                 </Table.HeaderCell>
-                                <Table.HeaderCell>Action</Table.HeaderCell>
+                                <Table.HeaderCell className="text-center">Action</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
                         {monthlyTransactionApiCall === undefined || false ? (

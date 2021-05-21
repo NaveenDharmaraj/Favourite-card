@@ -113,7 +113,7 @@ function P2pTable(props) {
                                 <Table.HeaderCell>
                                     Send date
                                 </Table.HeaderCell>
-                                <Table.HeaderCell className="p2p-action-padding">Action</Table.HeaderCell>
+                                <Table.HeaderCell className="p2p-action-padding text-center">Action</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
                         {(monthlyTransactionApiCall === (undefined || false)) ? (

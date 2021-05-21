@@ -136,6 +136,9 @@ body{
         tbody{
             tr{
                 td{
+                    &.text-center{
+                        text-align: center;
+                    }
                     &.mobile-text-right{
                         @media only screen and (max-width:767px) {
                             display: inline-block !important;
@@ -177,6 +180,12 @@ body{
             }
         }
         
+    }
+}
+.custom-width-send-date{
+    width:275px;
+    @media only screen and (max-width:991px) {
+        width: 200px;
     }
 }
 

@@ -247,16 +247,12 @@ class TransactionTableRow extends React.Component {
 										<TableCell>{secondColoumn}</TableCell>
 									</Table.Row>
 									<Table.Row>
-										<TableCell>Day of month</TableCell>
+										<TableCell>Matched by</TableCell>
 										<TableCell>{thirdColoumn}</TableCell>
 									</Table.Row>
 									<Table.Row>
-										<TableCell>Matched by</TableCell>
-										<TableCell>{fourthColoumn}</TableCell>
-									</Table.Row>
-									<Table.Row>
 										<TableCell>Send date</TableCell>
-										<TableCell>{fifthColoumn}</TableCell>
+										<TableCell>{fourthColoumn}</TableCell>
 									</Table.Row>
 								</TableBody>
 							) : (
@@ -266,17 +262,22 @@ class TransactionTableRow extends React.Component {
 										<TableCell>{secondColoumn}</TableCell>
 									</Table.Row>
 									<Table.Row>
-										<TableCell>{isP2p? 'Frequency':'Day of month'}</TableCell>
+										<TableCell>{isP2p? 'Frequency' : 'Send date'}</TableCell>
 										<TableCell>{thirdColoumn}</TableCell>
 									</Table.Row>
-									<Table.Row>
-										<TableCell>{isP2p? 'Reason to give':'Send date'}</TableCell>
-										<TableCell>{fourthColoumn}</TableCell>
-									</Table.Row>
-                                    {isP2p && <Table.Row>
-										<TableCell>Send date</TableCell>
-										<TableCell>{fifthColoumn}</TableCell>
-									</Table.Row>}
+                                    {isP2p && 
+                                    (
+                                        <Fragment>
+                                            <Table.Row>
+                                                <TableCell>Reason to give</TableCell>
+                                                <TableCell>{fourthColoumn}</TableCell>
+                                            </Table.Row>
+                                            <Table.Row>
+                                                <TableCell>Send date</TableCell>
+                                                <TableCell>{fifthColoumn}</TableCell>
+                                            </Table.Row>
+                                        </Fragment>
+                                    )}
 								</TableBody>
 							)}
 							<Table.Footer>
