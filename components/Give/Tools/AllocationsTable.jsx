@@ -82,10 +82,10 @@ function AllocationsTable(props) {
                             <Table.Row>
                                 <Table.HeaderCell className="edit-trxn-name">Recipient </Table.HeaderCell>
                                 <Table.HeaderCell textAlign="right">
-									Amount
+                                    Amount
                                 </Table.HeaderCell>
                                 <Table.HeaderCell className="w-120 allocation-send-date">
-									Send date
+                                    Send date
                                 </Table.HeaderCell>
                                 <Table.HeaderCell className="text-center">Action</Table.HeaderCell>
                             </Table.Row>

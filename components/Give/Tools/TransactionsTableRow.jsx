@@ -93,6 +93,7 @@ class TransactionTableRow extends React.Component {
             nextTransaction,
             status,
             amount,
+            isP2pOnceError
 		} = this.props;
 		const { showDeleteModal, activeIndexs } = this.state;
         const monthlyAllocModal = (<EditMonthlyAllocationModal
@@ -168,7 +169,7 @@ class TransactionTableRow extends React.Component {
 		return (
 			<Fragment>
 				{/* Desktop transaction details row start */}
-				<Responsive minWidth={768} as={'tr'} className={thirdColoumn=== 'Once' && true ? 'error-msg-row-for-p2p-once':''}>
+				<Responsive minWidth={768} as={'tr'} className={isP2pOnceError ? 'error-msg-row-for-p2p-once':''}>
 					{firstColoumn && <Table.Cell className={isP2p? "edit-trxn-name recipient-width p2p-tab-width": "edit-trxn-name recipient-width"}>{firstColoumn}</Table.Cell>}
 					{secondColoumn && (
 						<Table.Cell className="text-right">
