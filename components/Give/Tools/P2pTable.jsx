@@ -13,6 +13,7 @@ import {
 } from '../../../helpers/give/utils';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import { p2pScheduleOptions } from '../../../helpers/constants/index';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 import TransactionTableRow from './TransactionsTableRow';
 
@@ -60,6 +61,7 @@ function P2pTable(props) {
                     language,
                     'USD',
                 );
+                const isP2pOnceError = !!attributes.is_missed_processing;
                 activeIndexs.push(index);
                 tableBody.push(
                     <TransactionTableRow
@@ -87,8 +89,21 @@ function P2pTable(props) {
                         nextTransaction={attributes.nextTransaction}
                         status={attributes.status}
                         amount={formattedAmount}
+                        isP2pOnceError={isP2pOnceError}
                     />,
                 );
+                if (isP2pOnceError) {
+                    tableBody.push(
+                        <Table.Row className="error-msg-p2p-once">
+                            <Table.Cell colSpan="6">
+                                <FormValidationErrorMessage
+                                    condition
+                                    errorMessage="Paused gifts can't be edited or resumed after the send date has passed. You'll need to schedule a new gift."
+                                />
+                            </Table.Cell>
+                        </Table.Row>,
+                    );
+                }
             });
         }
         return tableBody;
