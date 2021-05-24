@@ -61,7 +61,7 @@ function P2pTable(props) {
                     language,
                     'USD',
                 );
-                const isP2pOnceError = !!attributes.is_missed_processing;
+                const isP2pOnceError = !!attributes.isMissedProcessing;
                 activeIndexs.push(index);
                 tableBody.push(
                     <TransactionTableRow
