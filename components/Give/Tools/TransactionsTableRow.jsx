@@ -168,7 +168,7 @@ class TransactionTableRow extends React.Component {
 		return (
 			<Fragment>
 				{/* Desktop transaction details row start */}
-				<Responsive minWidth={768} as={'tr'} className={thirdColoumn=== 'Once' && true ? 'error-msg-for-once':''}>
+				<Responsive minWidth={768} as={'tr'} className={thirdColoumn=== 'Once' && true ? 'error-msg-row-for-p2p-once':''}>
 					{firstColoumn && <Table.Cell className={isP2p? "edit-trxn-name recipient-width p2p-tab-width": "edit-trxn-name recipient-width"}>{firstColoumn}</Table.Cell>}
 					{secondColoumn && (
 						<Table.Cell className="text-right">
@@ -227,12 +227,6 @@ class TransactionTableRow extends React.Component {
                             </Dropdown>
 							</div>
 					</Table.Cell>
-                    <div className="error-p2p-date-passed">
-                        <FormValidationErrorMessage
-                            condition={thirdColoumn=== 'Once' && true}
-                            errorMessage="Paused gifts can't be edited or resumed after the send date has passed. You'll need to schedule a new gift."
-                        />
-                    </div>
 				</Responsive>
 				{/* Desktop transaction details row end */}
 

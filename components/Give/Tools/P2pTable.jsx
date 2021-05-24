@@ -90,16 +90,18 @@ function P2pTable(props) {
                         amount={formattedAmount}
                     />,
                 );
-                // if (attributes.status === 'inactive' && attributes.frequency && attributes.frequency === 'once' && true) {
-                //     tableBody.push(
-                //         <Table.Row>
-                //             <FormValidationErrorMessage
-                //                 condition={attributes.status === 'inactive' && attributes.frequency && attributes.frequency === 'once' && true}
-                //                 errorMessage="Paused gifts can't be edited or resumed after the send date has passed. You'll need to schedule a new gift."
-                //             />
-                //         </Table.Row>,
-                //     );
-                // }
+                if (attributes.status === 'inactive' && attributes.frequency && attributes.frequency === 'once' && true) {
+                    tableBody.push(
+                        <Table.Row className="error-msg-p2p-once">
+                            <Table.Cell colSpan="6">
+                                <FormValidationErrorMessage
+                                    condition={attributes.status === 'inactive' && attributes.frequency && attributes.frequency === 'once' && true}
+                                    errorMessage="Paused gifts can't be edited or resumed after the send date has passed. You'll need to schedule a new gift."
+                                />
+                            </Table.Cell>
+                        </Table.Row>,
+                    );
+                }
             });
         }
         return tableBody;
