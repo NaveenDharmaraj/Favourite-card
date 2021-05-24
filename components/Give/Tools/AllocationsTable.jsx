@@ -84,7 +84,7 @@ function AllocationsTable(props) {
                                 <Table.HeaderCell textAlign="right">
 									Amount
                                 </Table.HeaderCell>
-                                <Table.HeaderCell className="w-120 custom-width-send-date">
+                                <Table.HeaderCell className="w-120 allocation-send-date">
 									Send date
                                 </Table.HeaderCell>
                                 <Table.HeaderCell className="text-center">Action</Table.HeaderCell>

@@ -9681,3 +9681,34 @@ body{
     }
   }
 }
+.responsiveTable{
+  .tbl_border_bottom{
+    tbody{
+      tr{
+        &.error-msg-row-for-p2p-once{
+         td{
+           border-bottom: none !important;
+           padding-bottom: 0px !important;
+         }
+        }
+        &.error-msg-p2p-once{
+          td{
+            padding-top: 10px !important;
+            padding-bottom: 0px !important;
+            p{
+              &.error-message{
+                padding-bottom: 15px;
+                padding-bottom: 16px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.error-message{
+  @media only screen and (max-width:768px) {
+  padding: 0px 15px 20px 15px !important;
+  }
+}
