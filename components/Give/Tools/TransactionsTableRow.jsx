@@ -217,7 +217,7 @@ class TransactionTableRow extends React.Component {
                                     text="Delete"
                                     onClick={() => {this.setState({ showDeleteModal: true })}}
                                 />
-                                    {isP2p && (
+                                    {isP2p  && !isP2pOnceError && (
                                         <Dropdown.Item
                                             text={status === 'active' ? 'Pause' : 'Resume'}
                                             onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
@@ -305,12 +305,12 @@ class TransactionTableRow extends React.Component {
                                                     />
                                                     )
                                                 }
-												<a
+												{!isP2pOnceError && (<a
 													className='deleteLink'
 													onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
 												>
 													{status === 'active' ? 'Pause' : 'Resume'}
-												</a>
+												</a>)}
 											</Fragment>): (isAllocation ? (
 										monthlyAllocModal
 									) : (
@@ -340,5 +340,6 @@ class TransactionTableRow extends React.Component {
 TransactionTableRow.defaultProps = {
 	isAllocation: false,
     frequency: '',
+    isP2pOnceError:false,
 };
 export default TransactionTableRow;
