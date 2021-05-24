@@ -13,6 +13,7 @@ import {
 } from '../../../helpers/give/utils';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import { p2pScheduleOptions } from '../../../helpers/constants/index';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 import TransactionTableRow from './TransactionsTableRow';
 
@@ -89,6 +90,16 @@ function P2pTable(props) {
                         amount={formattedAmount}
                     />,
                 );
+                // if (attributes.status === 'inactive' && attributes.frequency && attributes.frequency === 'once' && true) {
+                //     tableBody.push(
+                //         <Table.Row>
+                //             <FormValidationErrorMessage
+                //                 condition={attributes.status === 'inactive' && attributes.frequency && attributes.frequency === 'once' && true}
+                //                 errorMessage="Paused gifts can't be edited or resumed after the send date has passed. You'll need to schedule a new gift."
+                //             />
+                //         </Table.Row>,
+                //     );
+                // }
             });
         }
         return tableBody;

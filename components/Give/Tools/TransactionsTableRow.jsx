@@ -16,6 +16,7 @@ import {
 import dynamic from 'next/dynamic';
 import EditMonthlyAllocationModal from './EditMonthlyAllocationModal';
 import EditP2pAllocationModal from './EditP2pAllocationModal';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 const EditMonthlyDepositModal = dynamic(
 	() => import('./EditMonthlyDepositModal'),
@@ -226,6 +227,12 @@ class TransactionTableRow extends React.Component {
                             </Dropdown>
 							</div>
 					</Table.Cell>
+                    <Table.Row>
+                    <FormValidationErrorMessage
+                        condition={thirdColoumn=== 'Once' && true}
+                        errorMessage="Paused gifts can't be edited or resumed after the send date has passed. You'll need to schedule a new gift."
+                    />
+                </Table.Row>
 				</Responsive>
 				{/* Desktop transaction details row end */}
 
