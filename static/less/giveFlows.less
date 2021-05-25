@@ -136,6 +136,9 @@ body{
         tbody{
             tr{
                 td{
+                    &.text-center{
+                        text-align: center;
+                    }
                     &.mobile-text-right{
                         @media only screen and (max-width:767px) {
                             display: inline-block !important;
@@ -179,7 +182,16 @@ body{
         
     }
 }
-
+.custom-width-send-date{
+    width:275px;
+    @media only screen and (max-width:991px) {
+        width: 200px;
+    }
+}
+.allocation-send-date{
+    width:275px;
+    padding-left: 150px !important;
+}
 
 .flowBreadcrumb{
     @media only screen and (max-width:767px) {
@@ -930,7 +942,7 @@ body{
         &.recurring_p2p_edit_modal{
             margin-bottom: 36px;
             .Frequency_Wrapper{
-                margin-top: 0px;
+                margin-top: 20px;
             }
             .label_gift{
                 margin-bottom: 7px;
@@ -3045,6 +3057,8 @@ body{
                 i{
                     &.calendar{
                         cursor: pointer;
+                        position: absolute;
+                        right: 0px;
                         &.icon{
                             pointer-events: unset;
                             &::before{
@@ -3098,25 +3112,24 @@ body{
 .p2pCalenderWrapper{
     .react-datepicker__input-container{
         .field{
-        .disabled{
-            &.input{
-                margin: 0;
-                outline: 0;
-                -webkit-appearance: none;
-                line-height: 1.21428571em;
-                background: #fff;
-                border: 1px solid rgba(34,36,38,.15) !important;
-                color: #263238 !important;
-                border-radius: .28571429rem;
-                box-shadow: 0 0 0 0 transparent inset;
-                transition: color .1s ease,border-color .1s ease;
-                opacity: 1 !important;
-                >.input{
-                    color: #263238!important;
-                    opacity: 1 !important;
+            .ui{
+                &.disabled{
+                    &.input{
+                        opacity:1;
+                        input{
+                            &[disabled] {
+                                opacity:1;
+                                background-color: #fff !important;
+                                padding: 11px;
+                            }
+                            color: #424242 !important;
+                            &::placeholder{
+                                color: #a0a0a0 !important;
+                            }
+                        }
+                    }
                 }
             }
-        }
         }
     }
 }

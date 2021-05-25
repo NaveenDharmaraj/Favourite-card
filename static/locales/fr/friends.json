@@ -26,6 +26,6 @@
     "multipleFriendAmountFieldText": "For multiple friends, the amount you enter will be sent to each friend.",
     "giveToEmailsText": "Or, enter your friends' email addresses",
     "giveToFriendText": "Give to a friend",
-    "userWithFriendsError": "Select friends or enter email address separated by comma",
+    "userWithFriendsError": "Select friends or enter email addresses separated by a comma.",
     "userWithoutFriendsError": "Enter email address separated by comma"
 }
