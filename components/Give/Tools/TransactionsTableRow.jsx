@@ -188,7 +188,7 @@ class TransactionTableRow extends React.Component {
                                         (
                                         <Popup 
 											className="invertPopup"
-                                            content='To edit this gift, resume this transaction first.'
+                                            content= {isP2pOnceError ? `Paused gifts can't be edited after the send date has passed.`:`To edit this gift, resume this transaction first.`}
                                             position="bottom center"
                                             trigger={
                                                 <Button
@@ -292,7 +292,7 @@ class TransactionTableRow extends React.Component {
                                                     (
                                                     <Popup 
 														className="invertPopup"
-                                                        content='To edit this gift, resume this transaction first.'
+                                                        content={isP2pOnceError ? `Paused gifts can't be edited after the send date has passed.`:`To edit this gift, resume this transaction first.`}
                                                         position="bottom center"
 														basic
                                                         trigger={
