@@ -35,7 +35,7 @@ const EmailGroupMembers = () => {
                 type: 'groups',
             },
         };
-        dispatch(emailMembers(groupDetails.id, payload)).then(() => {
+        dispatch(emailMembers(groupDetails.id, payload)).finally(() => {
             setemailMessage('');
             setshowLoader(false);
         });

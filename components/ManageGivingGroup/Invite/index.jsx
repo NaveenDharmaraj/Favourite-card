@@ -44,7 +44,7 @@ const Invite = () => {
             },
         };
         setshowLoader(true);
-        dispatch(sendEmailInvite(payload)).then(() => {
+        dispatch(sendEmailInvite(payload)).finally(() => {
             setemails('');
             setmessage('');
             setshowLoader(false);
