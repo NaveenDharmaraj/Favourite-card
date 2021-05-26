@@ -556,7 +556,6 @@ class Friend extends React.Component {
                     reloadModalOpen = 0;
                     giveData['formatedP2PAmount'] = newValue;
                     giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + _.compact(giveData.recipients).length), giveData.giveAmount);
-                    debugger
                     break;
                 case 'recipients':
                     reviewBtnFlag = false;
