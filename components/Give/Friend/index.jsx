@@ -555,18 +555,18 @@ class Friend extends React.Component {
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     giveData['formatedP2PAmount'] = newValue;
-                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), giveData.giveAmount);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + _.compact(giveData.recipients).length), giveData.giveAmount);
                     break;
                 case 'recipients':
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     giveData[name] = Friend.parseRecipients(newValue);
-                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), giveData.giveAmount);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + _.compact(giveData.recipients).length), giveData.giveAmount);
                     break;
                 case 'friendsList':
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
-                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), giveData.giveAmount);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + _.compact(giveData.recipients).length), giveData.giveAmount);
                     validity = validateGiveForm(
                         'recipients',
                         giveData.recipients,
@@ -705,7 +705,7 @@ class Friend extends React.Component {
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         const formatedP2PAmount = _replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         giveData.giveAmount = inputValue;
-        giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), inputValue);
+        giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + _compact(giveData.recipients).length), inputValue);
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
         reviewBtnFlag = false;
         this.setState({
