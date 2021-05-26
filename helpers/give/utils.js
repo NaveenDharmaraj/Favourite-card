@@ -1646,7 +1646,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
  * @return {number} The total amount we are giving
  */
 const calculateP2pTotalGiveAmount = (numberOfRecipients, amountEachRecipient) => (
-    numberOfRecipients * amountEachRecipient
+    formatAmount(numberOfRecipients * amountEachRecipient)
 );
 
 /**
