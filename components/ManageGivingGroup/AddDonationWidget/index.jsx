@@ -7,6 +7,7 @@ import {
     Button,
     TextArea,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     getWidgetCode,
@@ -14,12 +15,12 @@ import {
 
 const AddDonationWidget = () => {
     const dispatch = useDispatch();
-    const groupDetails = useSelector((state) => state.group.groupDetails);
+    const groupDetails = useSelector((state) => state.group.groupDetails || {});
     const widgetCode = useSelector((state) => state.createGivingGroup.widgetCode);
     const [scriptValue, setscriptValue] = useState('');
     const [selectedValue, setselectedValue] = useState('');
     useEffect(() => {
-        if (groupDetails) {
+        if (!_isEmpty(groupDetails)) {
             dispatch(getWidgetCode(groupDetails.id));
         }
     }, [groupDetails]);

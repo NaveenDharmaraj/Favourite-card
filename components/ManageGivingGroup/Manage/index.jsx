@@ -41,6 +41,16 @@ const Manage = () => {
         currentActivePage,
         setcurrentActivePage,
     ] = useState(1);
+    const [
+        memberList,
+        setmemberList,
+    ] = useState([]);
+    const [
+        pendingList,
+        setpendingList,
+    ] = useState([]);
+    let isSingleAdmin = (memberCount === 1);
+    let adminCount = 0;
 
     useEffect(() => {
         if (groupDetails) {
@@ -50,44 +60,53 @@ const Manage = () => {
     }, [
         groupDetails,
     ]);
-    const memberList = [];
-    const pendingList = [];
-    let isSingleAdmin = (memberCount === 1);
-    let adminCount = 0;
-    if (!_isEmpty(membersData) && !isSingleAdmin) {
-        membersData.map((member) => {
-            if (member.isGroupAdmin) {
-                adminCount = adminCount++;
-            }
-        });
-        if (adminCount === 1) {
-            isSingleAdmin = true;
-        }
-    }
-    if (!_isEmpty(membersData) && !_isEmpty(membersData)) {
-        membersData.map((member) => (
-            memberList.push(
-                <MemberListCard
-                    memberData={member}
-                    groupId={groupDetails.id}
-                    isInvite={false}
-                    isSingleAdmin={isSingleAdmin}
-                />,
-            )
-        ));
-    }
 
-    if (!_isEmpty(groupPendingInvites)) {
-        groupPendingInvites.map((invite) => (
-            pendingList.push(
-                <MemberListCard
-                    memberData={invite}
-                    groupId={groupDetails.id}
-                    isInvite
-                />,
-            )
-        ));
-    }
+    useEffect(() => {
+        const tempArr = [];
+        if (!_isEmpty(membersData) && !isSingleAdmin) {
+            membersData.map((member) => {
+                if (member.isGroupAdmin) {
+                    adminCount = adminCount++;
+                }
+            });
+            if (adminCount === 1) {
+                isSingleAdmin = true;
+            }
+        }
+        if (!_isEmpty(membersData)) {
+            membersData.map((member) => (
+                tempArr.push(
+                    <MemberListCard
+                        memberData={member}
+                        groupId={groupDetails.id}
+                        isInvite={false}
+                        isSingleAdmin={isSingleAdmin}
+                    />,
+                )
+            ));
+            setmemberList(tempArr);
+        }
+    }, [
+        membersData,
+    ]);
+
+    useEffect(() => {
+        const tempArr = [];
+        if (!_isEmpty(groupPendingInvites)) {
+            groupPendingInvites.map((invite) => (
+                tempArr.push(
+                    <MemberListCard
+                        memberData={invite}
+                        groupId={groupDetails.id}
+                        isInvite
+                    />,
+                )
+            ));
+            setpendingList(tempArr);
+        }
+    }, [
+        groupPendingInvites,
+    ]);
 
     const onPageChanged = (event, data) => {
         setcurrentActivePage(data.activePage);
@@ -105,7 +124,6 @@ const Manage = () => {
     const handleSearch = () => {
         dispatch(searchMember(groupDetails.id, searchText));
     };
-
     return (
         <div className="basicsettings">
             <Header className="titleHeader">

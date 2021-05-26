@@ -295,9 +295,7 @@ export const getGroupMembers = (groupId, pageNumber = 1) => (dispatch) => {
                 dispatch(fsa);
             }
         },
-    ).catch((error) => {
-        console.log('error ->', error);
-    }).finally(() => {
+    ).finally(() => {
         placeholder.payload.status = false;
         dispatch(placeholder);
     });
@@ -327,15 +325,13 @@ export const getPendingInvites = (groupId, pageNumber = 1) => (dispatch) => {
             fsa.payload = result.data;
             dispatch(fsa);
         }
-    }).catch((error) => {
-        console.log('error ->', error);
     }).finally(() => {
         placeholder.payload.status = false;
         dispatch(placeholder);
     });
 };
 
-export const toggleAdmin = (memberId, groupId) => (dispatch) => {
+export const toggleAdmin = (memberId, groupId, type, displayName) => (dispatch) => {
     const params = {
         data: {
             attributes: {
@@ -344,11 +340,26 @@ export const toggleAdmin = (memberId, groupId) => (dispatch) => {
             type: 'groups',
         },
     };
+    const toastMessageProps = {
+        message: '',
+        type: 'success',
+    };
+    if (type === 'make_admin') {
+        toastMessageProps.message = `${displayName} is an admin now.`;
+    } else {
+        toastMessageProps.message = `${displayName} has been removed as admin.`;
+    }
     return coreApi.patch(`/members/${memberId}/toggleAdmin`, params).then(() => {
         dispatch(getGroupMembers(groupId));
-    }).catch((error) => {
-        console.log('error ->', error);
-    }).finally();
+        dispatch({
+            payload: {
+                errors: [
+                    toastMessageProps,
+                ],
+            },
+            type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+        });
+    });
 };
 
 export const emailMembers = (groupId, data) => (dispatch) => {
@@ -370,9 +381,7 @@ export const emailMembers = (groupId, data) => (dispatch) => {
             },
             type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
         });
-    }).catch((error) => {
-        console.log('error ->', error);
-    }).finally();
+    });
 };
 
 export const sendEmailInvite = (data) => (dispatch) => {
@@ -389,9 +398,7 @@ export const sendEmailInvite = (data) => (dispatch) => {
             },
             type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
         });
-    }).catch((error) => {
-        console.log('error ->', error);
-    }).finally();
+    });
 };
 
 export const resendInvite = (data, inviteId) => (dispatch) => {
@@ -408,9 +415,7 @@ export const resendInvite = (data, inviteId) => (dispatch) => {
             },
             type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
         });
-    }).catch((error) => {
-        console.log('error ->', error);
-    }).finally();
+    });
 };
 
 export const cancelInvite = (modifiedpayload, inviteId) => (dispatch) => {
@@ -428,9 +433,7 @@ export const cancelInvite = (modifiedpayload, inviteId) => (dispatch) => {
             type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
         });
         dispatch(getPendingInvites(modifiedpayload.data.attributes.group_id));
-    }).catch((error) => {
-        console.log('error ->', error);
-    }).finally();
+    });
 };
 
 export const searchMember = (groupId, searchStr, pageNumber = 1) => (dispatch) => {
@@ -459,8 +462,6 @@ export const searchMember = (groupId, searchStr, pageNumber = 1) => (dispatch) =
             fsa.payload = result;
             dispatch(fsa);
         }
-    }).catch((error) => {
-        console.log('error ->', error);
     }).finally(() => {
         placeholder.payload.status = false;
         dispatch(placeholder);
@@ -495,22 +496,18 @@ export const getWidgetCode = (groupId) => (dispatch) => {
                 green: greenData,
             };
             dispatch(fsa);
-        }).catch((error) => {
-            console.log('error ->', error);
-        }).finally();
-    }).catch((error) => {
-        console.log('error ->', error);
-    }).finally();
+        });
+    });
 };
 
 export const removeGroupMember = (userId, groupId) => (dispatch) => {
     const params = {
+        dispatch,
         group_id: groupId,
         user_id: userId,
+        uxCritical: true,
     };
     return coreApi.patch(`/members/removeMember`, params).then(() => {
         dispatch(getGroupMembers(groupId));
-    }).catch((error) => {
-        console.log('error ->', error);
-    }).finally();
+    });
 };
