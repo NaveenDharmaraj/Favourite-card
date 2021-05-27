@@ -705,7 +705,7 @@ class Friend extends React.Component {
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         const formatedP2PAmount = _replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         giveData.giveAmount = inputValue;
-        giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + _compact(giveData.recipients).length), inputValue);
+        giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + _.compact(giveData.recipients).length), inputValue);
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
         reviewBtnFlag = false;
         this.setState({
