@@ -196,6 +196,7 @@ class DashboradList extends React.Component {
                 const giftReturned = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.giftReturnedText')}</label>;
                 const giftRefund = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.giftRefundText')}</label>;
                 const matchReturned = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.matchReturnedText')}</label>;
+                const isMyTransaction = !_.isEmpty(data.attributes.source) && (data.attributes.source.id === Number(id));
                 const isScheduledAllocation = data.attributes.parentTransactionType === 'ScheduledP2pAllocation';
                 const newtransactionTypeDisplay = 'Gift given';
                 const isp2p = (!_.isEmpty(data.attributes.destinationDetails) && data.attributes.destinationDetails.type === 'User');
@@ -298,7 +299,7 @@ class DashboradList extends React.Component {
                         <Table.Cell>
                             <List verticalAlign="middle">
                                 <List.Item>
-                                    <Image className={imageCls} size="tiny" src={(isp2p && data.attributes.hasChildAllocations) ? userGroupImage : data.attributes.imageUrl} />
+                                    <Image className={imageCls} size="tiny" src={(isMyTransaction && isp2p && data.attributes.hasChildAllocations) ? userGroupImage : data.attributes.imageUrl} />
                                     <List.Content>
                                         <List.Header>
                                             {descriptionType}
@@ -338,7 +339,7 @@ class DashboradList extends React.Component {
                                 <Modal.Content>
                                     <div className="acntActivityHeader">
                                         <Header as="h2" icon>
-                                            <Image className={imageCls} size="tiny" src={(isp2p && data.attributes.hasChildAllocations) ? userGroupImage : data.attributes.imageUrl} />
+                                            <Image className={imageCls} size="tiny" src={(isMyTransaction && isp2p && data.attributes.hasChildAllocations) ? userGroupImage : data.attributes.imageUrl} />
                                             {transactionSign}
                                             {amount}
                                             <Header.Subheader>
@@ -457,7 +458,7 @@ class DashboradList extends React.Component {
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>
-                            <Grid.Column mobile={5} tablet={4} computer={4}>
+                            {/* <Grid.Column mobile={5} tablet={4} computer={4}>
                                 <Popup
                                     basic
                                     open={isOpen}
@@ -526,7 +527,7 @@ class DashboradList extends React.Component {
                                         </List>
                                     </Popup.Content>
                                 </Popup>
-                            </Grid.Column>
+                            </Grid.Column> */}
                         </Grid.Row>
                     </Grid>
                     <div className="pt-2">
