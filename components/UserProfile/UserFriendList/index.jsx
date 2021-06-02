@@ -96,7 +96,7 @@ class UserFriendList extends React.Component {
         const isMyprofile = Number(updatedFriendId) === Number(userId);
         const currentEmail = isMyprofile ? email : !_isEmpty(email_hash) ? Buffer.from(email_hash, 'base64').toString('ascii') : '';
         dispatch(getMyFriendsList(currentEmail, 1, isMyprofile ? null : userId));
-        dispatch(generateDeeplinkSignup('OpenFriendRequest', userId));
+        dispatch(generateDeeplinkSignup('signup'));
         if (isMyprofile) {
             dispatch(getFriendsInvitations(email, 1));
         }

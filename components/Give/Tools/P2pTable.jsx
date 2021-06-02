@@ -12,8 +12,6 @@ import {
     formatCurrency,
 } from '../../../helpers/give/utils';
 import PlaceholderGrid from '../../shared/PlaceHolder';
-import { p2pScheduleOptions } from '../../../helpers/constants/index';
-import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 import TransactionTableRow from './TransactionsTableRow';
 
@@ -51,27 +49,23 @@ function P2pTable(props) {
                     ];
                 }
                 const recipients = _.join(_.map(destinationDetails, (u) => (u.receiverExists ? u.displayName : u.email)), ', ');
-                const formattedTotalAmount = formatCurrency(
-                    Number(attributes.amount) * destinationDetails.length,
-                    language,
-                    'USD',
-                );
                 const formattedAmount = formatCurrency(
                     attributes.amount,
                     language,
                     'USD',
                 );
-                const isP2pOnceError = !!attributes.isMissedProcessing;
+                const modalHeader = `Delete${attributes.frequency === 'once' || !attributes.frequency ? ' '
+                    : ` ${attributes.frequency}`} gift?`;
                 activeIndexs.push(index);
                 tableBody.push(
                     <TransactionTableRow
                         activePage={activePage}
-                        modalHeader="Delete scheduled gift?"
+                        modalHeader={modalHeader}
                         firstColoumn={recipients}
-                        secondColoumn={formattedTotalAmount}
-                        thirdColoumn={attributes.frequency ? p2pScheduleOptions[attributes.frequency] : ' '}
+                        secondColoumn={formattedAmount}
+                        thirdColoumn={attributes.frequency ? _.startCase(_.toLower(attributes.frequency)) : ' '}
                         fourthColoumn={attributes.reason || ' '}
-                        fifthColoumn={attributes.nextTransaction}
+                        fifthColoumn={formatDateForGivingTools(attributes.createdAt)}
                         deleteTransaction={deleteTransaction}
                         transactionType={attributes.transactionType}
                         transactionId={id}
@@ -88,22 +82,8 @@ function P2pTable(props) {
                         frequency={attributes.frequency}
                         nextTransaction={attributes.nextTransaction}
                         status={attributes.status}
-                        amount={formattedAmount}
-                        isP2pOnceError={isP2pOnceError}
                     />,
                 );
-                if (isP2pOnceError) {
-                    tableBody.push(
-                        <Table.Row className="error-msg-p2p-once">
-                            <Table.Cell colSpan="6">
-                                <FormValidationErrorMessage
-                                    condition
-                                    errorMessage="Paused gifts can't be edited or resumed after the send date has passed. You'll need to schedule a new gift."
-                                />
-                            </Table.Cell>
-                        </Table.Row>,
-                    );
-                }
             });
         }
         return tableBody;
@@ -126,9 +106,9 @@ function P2pTable(props) {
                                     Reason to give
                                 </Table.HeaderCell>
                                 <Table.HeaderCell>
-                                    Send date
+                                    Created
                                 </Table.HeaderCell>
-                                <Table.HeaderCell className="p2p-action-padding text-center">Action</Table.HeaderCell>
+                                <Table.HeaderCell className="p2p-action-padding">Action</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
                         {(monthlyTransactionApiCall === (undefined || false)) ? (

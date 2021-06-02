@@ -33,6 +33,12 @@ function AllocationsTable(props) {
                 const {
                     attributes, id,
                 } = transaction;
+                const transactionDate = attributes.transactionDate.includes(15)
+                    ? '15th'
+                    : '1st';
+                const formattedDate = formatDateForGivingTools(
+                    attributes.createdAt,
+                );
                 const destinationType = attributes.destinationAccount === 'Beneficiary'
                     ? 'Charity'
                     : attributes.destinationAccount;
@@ -50,10 +56,11 @@ function AllocationsTable(props) {
                     <TransactionTableRow
                         activePage={activePage}
                         isAllocation
-                        modalHeader="Delete scheduled gift?"
+                        modalHeader="Delete monthly gift?"
                         firstColoumn={recipientAccount}
                         secondColoumn={formattedAmount}
-                        thirdColoumn={attributes.nextTransaction}
+                        thirdColoumn={transactionDate}
+                        fourthColoumn={formattedDate}
                         deleteTransaction={deleteTransaction}
                         transactionType={attributes.transactionType}
                         transactionId={id}
@@ -82,12 +89,15 @@ function AllocationsTable(props) {
                             <Table.Row>
                                 <Table.HeaderCell className="edit-trxn-name">Recipient </Table.HeaderCell>
                                 <Table.HeaderCell textAlign="right">
-                                    Amount
+									Amount
                                 </Table.HeaderCell>
-                                <Table.HeaderCell className="w-120 allocation-send-date">
-                                    Send date
+                                <Table.HeaderCell>
+									Day of month
                                 </Table.HeaderCell>
-                                <Table.HeaderCell className="text-center">Action</Table.HeaderCell>
+                                <Table.HeaderCell className="w-120">
+									Created
+                                </Table.HeaderCell>
+                                <Table.HeaderCell>Action</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
                         {monthlyTransactionApiCall === undefined || false ? (

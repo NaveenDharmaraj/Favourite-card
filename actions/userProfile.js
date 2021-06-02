@@ -1297,13 +1297,13 @@ const inviteFriends = (dispatch, inviteEmailIds) => {
     return inviteFriendsResponse;
 };
 
-const generateDeeplinkSignup = (profileType, userId) => (dispatch) => {
+const generateDeeplinkSignup = (profileType) => dispatch => {
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_SIGNUP_DEEPLINK,
     };
-    return utilityApi.get(`/deeplink?profileType=${profileType}&sourceId=${userId}`).then(
+    return utilityApi.get(`/deeplink?profileType=${profileType}&webLink=true`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,

@@ -69,7 +69,7 @@ const PrivacyOptions = (props) => {
                     >
                         {formatMessage('privacyOptions:forGivingGroupLabel')}
                     </label>
-                    <p className="givingInfoText">This information will be shared on the Giving Group page which is visible to all group members.</p>
+                    <br />
                     <Form.Field
                         className="infoToShareDropdown dropdownWithArrowParent"
                         control={Select}

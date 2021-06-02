@@ -196,9 +196,8 @@ class DashboradList extends React.Component {
                 const giftReturned = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.giftReturnedText')}</label>;
                 const giftRefund = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.giftRefundText')}</label>;
                 const matchReturned = <label className='giftNotSent'>{formatMessage('giveCommon:accountActivity.matchReturnedText')}</label>;
-                const isMyTransaction = !_.isEmpty(data.attributes.source) && (data.attributes.source.id === Number(id));
                 const isScheduledAllocation = data.attributes.parentTransactionType === 'ScheduledP2pAllocation';
-                const newtransactionTypeDisplay = 'Gift given';
+                const newtransactionTypeDisplay = (isScheduledAllocation ? 'Scheduled Allocation' : 'Gift given');
                 const isp2p = (!_.isEmpty(data.attributes.destinationDetails) && data.attributes.destinationDetails.type === 'User');
                 if (!_.isEmpty(data.attributes.destination)) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
@@ -208,7 +207,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
-                        transactionSign = isGiftCancelled ? '+' : '-';
+                        transactionSign = '-';
                         profileUrl = `groups/${data.attributes.destination.slug}`;
                         informationSharedEntity = data.attributes.hasCampaign ? 'Giving Group and Campaign admins' : 'Giving Group admin';
                     } else if (data.attributes.destination.type.toLowerCase() === 'beneficiary') {
@@ -218,7 +217,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
-                        transactionSign = isGiftCancelled ? '+' : '-';
+                        transactionSign = '-';
                         profileUrl = `charities/${data.attributes.destination.slug}`;
                         informationSharedEntity = 'charity';
                     } else if (data.attributes.destination.type.toLowerCase() === 'campaign') {
@@ -228,7 +227,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
-                        transactionSign = isGiftCancelled ? '+' : '-';
+                        transactionSign = '-';
                         profileUrl = `campaigns/${data.attributes.destination.slug}`;
                         informationSharedEntity = 'campaign';
                     } else if (data.attributes.transactionType.toLowerCase() === 'donation') {
@@ -236,7 +235,7 @@ class DashboradList extends React.Component {
                         rowClass = 'donation';
                         descriptionType = 'Added to ';
                         entity = 'your Impact Account';
-                        transactionSign = isGiftCancelled ? '-' : '+';
+                        transactionSign = '+';
                         transactionTypeDisplay = isGiftCancelled ? giftRefund : 'Deposit';
                         imageCls = 'ui avatar image';
                     } else if (data.attributes.transactionType.toLowerCase() === 'matchallocation') {
@@ -245,7 +244,7 @@ class DashboradList extends React.Component {
                         descriptionType = 'Matched by ';
                         transactionTypeDisplay = isGiftCancelled ? matchReturned : 'Matched';
                         entity = data.attributes.source.name;
-                        transactionSign = isGiftCancelled ? '-' : '+';
+                        transactionSign = '+';
                     } else if (data.attributes.destination.id === Number(id)) {
                         givingType = '';
                         rowClass = 'gift';
@@ -271,7 +270,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReturned : newtransactionTypeDisplay;
                         descriptionType = 'Given to ';
                         entity = data.attributes.hasChildAllocations ? `${data.attributes.destination.name} and others` : data.attributes.destination.name;
-                        transactionSign = isGiftCancelled ? '+' : '-';
+                        transactionSign = '-';
                         profileUrl = !isScheduledAllocation ? `users/profile/${data.attributes.destination.id}` : '';
                     }
                 } else if (data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation') {
@@ -299,7 +298,7 @@ class DashboradList extends React.Component {
                         <Table.Cell>
                             <List verticalAlign="middle">
                                 <List.Item>
-                                    <Image className={imageCls} size="tiny" src={(isMyTransaction && isp2p && data.attributes.hasChildAllocations) ? userGroupImage : data.attributes.imageUrl} />
+                                    <Image className={imageCls} size="tiny" src={(isp2p && data.attributes.hasChildAllocations) ? userGroupImage : data.attributes.imageUrl} />
                                     <List.Content>
                                         <List.Header>
                                             {descriptionType}
@@ -339,7 +338,7 @@ class DashboradList extends React.Component {
                                 <Modal.Content>
                                     <div className="acntActivityHeader">
                                         <Header as="h2" icon>
-                                            <Image className={imageCls} size="tiny" src={(isMyTransaction && isp2p && data.attributes.hasChildAllocations) ? userGroupImage : data.attributes.imageUrl} />
+                                            <Image className={imageCls} size="tiny" src={(isp2p && data.attributes.hasChildAllocations) ? userGroupImage : data.attributes.imageUrl} />
                                             {transactionSign}
                                             {amount}
                                             <Header.Subheader>
@@ -458,7 +457,7 @@ class DashboradList extends React.Component {
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>
-                            {/* <Grid.Column mobile={5} tablet={4} computer={4}>
+                            <Grid.Column mobile={5} tablet={4} computer={4}>
                                 <Popup
                                     basic
                                     open={isOpen}
@@ -527,7 +526,7 @@ class DashboradList extends React.Component {
                                         </List>
                                     </Popup.Content>
                                 </Popup>
-                            </Grid.Column> */}
+                            </Grid.Column>
                         </Grid.Row>
                     </Grid>
                     <div className="pt-2">

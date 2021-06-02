@@ -16,7 +16,6 @@ import {
 import dynamic from 'next/dynamic';
 import EditMonthlyAllocationModal from './EditMonthlyAllocationModal';
 import EditP2pAllocationModal from './EditP2pAllocationModal';
-import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 const EditMonthlyDepositModal = dynamic(
 	() => import('./EditMonthlyDepositModal'),
@@ -91,9 +90,7 @@ class TransactionTableRow extends React.Component {
             reason,
             frequency,
             nextTransaction,
-            status,
-            amount,
-            isP2pOnceError
+            status
 		} = this.props;
 		const { showDeleteModal, activeIndexs } = this.state;
         const monthlyAllocModal = (<EditMonthlyAllocationModal
@@ -120,7 +117,7 @@ class TransactionTableRow extends React.Component {
         />);
         const p2pModal = (<EditP2pAllocationModal
             recipientName={firstColoumn}
-            currentMonthlyAllocAmount={amount}
+            currentMonthlyAllocAmount={secondColoumn}
             transactionId={transactionId}
             activePage={activePage}
             language={language}
@@ -133,6 +130,11 @@ class TransactionTableRow extends React.Component {
             nextTransaction={nextTransaction}
             status={status}
         />);
+        const deleteModalHeader = isP2p? 
+            `If you delete this transaction, it won't be processed${frequency ==='once' || !frequency ? 
+                    '' : ` each ${frequency.substring(0, frequency.length - 2)}`}.`
+                :`If you delete this transaction, it won't be processed each month.`
+
         const deleteModal = (
             <Modal
                 size="tiny"
@@ -145,22 +147,22 @@ class TransactionTableRow extends React.Component {
                 <Modal.Header>{modalHeader}</Modal.Header>
                 <Modal.Content>
                     <span>
-                        If you delete this transaction, it won't be processed on its scheduled send date.
+                        {deleteModalHeader}
+                    
                     </span>
                     <div className="pt-2 pb-1 text-right">
-                        
-                        <Button
-                            className="blue-bordr-btn-round-def c-small"
-                            onClick={() => this.setState({ showDeleteModal: false })}
-                        >
-                            Cancel
-                        </Button>
                         <Button
                             className="danger-btn-rounded-def c-small"
                             color='red'
                             onClick={this.closeModalAndDelete}
                         >
                             Delete
+                        </Button>
+                        <Button
+                            className="blue-bordr-btn-round-def c-small"
+                            onClick={() => this.setState({ showDeleteModal: false })}
+                        >
+                            Cancel
                         </Button>
                     </div>
                 </Modal.Content>
@@ -169,14 +171,14 @@ class TransactionTableRow extends React.Component {
 		return (
 			<Fragment>
 				{/* Desktop transaction details row start */}
-				<Responsive minWidth={768} as={'tr'} className={isP2pOnceError ? 'error-msg-row-for-p2p-once':''}>
+				<Responsive minWidth={768} as={'tr'}>
 					{firstColoumn && <Table.Cell className={isP2p? "edit-trxn-name recipient-width p2p-tab-width": "edit-trxn-name recipient-width"}>{firstColoumn}</Table.Cell>}
 					{secondColoumn && (
 						<Table.Cell className="text-right">
 							{secondColoumn}
 						</Table.Cell>
 					)}
-					{thirdColoumn && <Table.Cell className={isAllocation ? "allocation-send-date":""}>{thirdColoumn}</Table.Cell>}
+					{thirdColoumn && <Table.Cell>{thirdColoumn}</Table.Cell>}
 					{fourthColoumn && <Table.Cell className={isP2p? "w-120 reason-width": ""}>{fourthColoumn}</Table.Cell>}
 					{fifthColoumn && <Table.Cell>{fifthColoumn}</Table.Cell>}
 					<Table.Cell className={isP2p? "tbl-action p2p-action-padding": "tbl-action"}>
@@ -188,7 +190,7 @@ class TransactionTableRow extends React.Component {
                                         (
                                         <Popup 
 											className="invertPopup"
-                                            content= {isP2pOnceError ? `Paused gifts can't be edited after the send date has passed.`:`To edit this gift, resume this transaction first.`}
+                                            content='To edit this gift, resume this transaction first.'
                                             position="bottom center"
                                             trigger={
                                                 <Button
@@ -217,7 +219,7 @@ class TransactionTableRow extends React.Component {
                                     text="Delete"
                                     onClick={() => {this.setState({ showDeleteModal: true })}}
                                 />
-                                    {isP2p  && !isP2pOnceError && (
+                                    {isP2p && (
                                         <Dropdown.Item
                                             text={status === 'active' ? 'Pause' : 'Resume'}
                                             onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
@@ -249,12 +251,16 @@ class TransactionTableRow extends React.Component {
 										<TableCell>{secondColoumn}</TableCell>
 									</Table.Row>
 									<Table.Row>
-										<TableCell>Matched by</TableCell>
+										<TableCell>Day of month</TableCell>
 										<TableCell>{thirdColoumn}</TableCell>
 									</Table.Row>
 									<Table.Row>
-										<TableCell>Send date</TableCell>
+										<TableCell>Matched by</TableCell>
 										<TableCell>{fourthColoumn}</TableCell>
+									</Table.Row>
+									<Table.Row>
+										<TableCell>Created</TableCell>
+										<TableCell>{fifthColoumn}</TableCell>
 									</Table.Row>
 								</TableBody>
 							) : (
@@ -264,22 +270,17 @@ class TransactionTableRow extends React.Component {
 										<TableCell>{secondColoumn}</TableCell>
 									</Table.Row>
 									<Table.Row>
-										<TableCell>{isP2p? 'Frequency' : 'Send date'}</TableCell>
+										<TableCell>{isP2p? 'Frequency':'Day of month'}</TableCell>
 										<TableCell>{thirdColoumn}</TableCell>
 									</Table.Row>
-                                    {isP2p && 
-                                    (
-                                        <Fragment>
-                                            <Table.Row>
-                                                <TableCell>Reason to give</TableCell>
-                                                <TableCell>{fourthColoumn}</TableCell>
-                                            </Table.Row>
-                                            <Table.Row>
-                                                <TableCell>Send date</TableCell>
-                                                <TableCell>{fifthColoumn}</TableCell>
-                                            </Table.Row>
-                                        </Fragment>
-                                    )}
+									<Table.Row>
+										<TableCell>{isP2p? 'Reason to give':'Created'}</TableCell>
+										<TableCell>{fourthColoumn}</TableCell>
+									</Table.Row>
+                                    {isP2p && <Table.Row>
+										<TableCell>Created</TableCell>
+										<TableCell>{fifthColoumn}</TableCell>
+									</Table.Row>}
 								</TableBody>
 							)}
 							<Table.Footer>
@@ -292,7 +293,7 @@ class TransactionTableRow extends React.Component {
                                                     (
                                                     <Popup 
 														className="invertPopup"
-                                                        content={isP2pOnceError ? `Paused gifts can't be edited after the send date has passed.`:`To edit this gift, resume this transaction first.`}
+                                                        content='To edit this gift, resume this transaction first.'
                                                         position="bottom center"
 														basic
                                                         trigger={
@@ -305,12 +306,12 @@ class TransactionTableRow extends React.Component {
                                                     />
                                                     )
                                                 }
-												{!isP2pOnceError && (<a
+												<a
 													className='deleteLink'
 													onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
 												>
 													{status === 'active' ? 'Pause' : 'Resume'}
-												</a>)}
+												</a>
 											</Fragment>): (isAllocation ? (
 										monthlyAllocModal
 									) : (
@@ -340,6 +341,5 @@ class TransactionTableRow extends React.Component {
 TransactionTableRow.defaultProps = {
 	isAllocation: false,
     frequency: '',
-    isP2pOnceError:false,
 };
 export default TransactionTableRow;
