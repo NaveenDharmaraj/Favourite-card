@@ -208,7 +208,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
-                        transactionSign = '-';
+                        transactionSign = isGiftCancelled ? '+' : '-';
                         profileUrl = `groups/${data.attributes.destination.slug}`;
                         informationSharedEntity = data.attributes.hasCampaign ? 'Giving Group and Campaign admins' : 'Giving Group admin';
                     } else if (data.attributes.destination.type.toLowerCase() === 'beneficiary') {
@@ -218,7 +218,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
-                        transactionSign = '-';
+                        transactionSign = isGiftCancelled ? '+' : '-';
                         profileUrl = `charities/${data.attributes.destination.slug}`;
                         informationSharedEntity = 'charity';
                     } else if (data.attributes.destination.type.toLowerCase() === 'campaign') {
@@ -228,7 +228,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReturned : 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
-                        transactionSign = '-';
+                        transactionSign = isGiftCancelled ? '+' : '-';
                         profileUrl = `campaigns/${data.attributes.destination.slug}`;
                         informationSharedEntity = 'campaign';
                     } else if (data.attributes.transactionType.toLowerCase() === 'donation') {
@@ -236,7 +236,7 @@ class DashboradList extends React.Component {
                         rowClass = 'donation';
                         descriptionType = 'Added to ';
                         entity = 'your Impact Account';
-                        transactionSign = '+';
+                        transactionSign = isGiftCancelled ? '-' : '+';
                         transactionTypeDisplay = isGiftCancelled ? giftRefund : 'Deposit';
                         imageCls = 'ui avatar image';
                     } else if (data.attributes.transactionType.toLowerCase() === 'matchallocation') {
@@ -245,7 +245,7 @@ class DashboradList extends React.Component {
                         descriptionType = 'Matched by ';
                         transactionTypeDisplay = isGiftCancelled ? matchReturned : 'Matched';
                         entity = data.attributes.source.name;
-                        transactionSign = '+';
+                        transactionSign = isGiftCancelled ? '-' : '+';
                     } else if (data.attributes.destination.id === Number(id)) {
                         givingType = '';
                         rowClass = 'gift';
