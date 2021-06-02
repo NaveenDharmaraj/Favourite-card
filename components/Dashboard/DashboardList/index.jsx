@@ -271,7 +271,7 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = isGiftCancelled ? giftReturned : newtransactionTypeDisplay;
                         descriptionType = 'Given to ';
                         entity = data.attributes.hasChildAllocations ? `${data.attributes.destination.name} and others` : data.attributes.destination.name;
-                        transactionSign = '-';
+                        transactionSign = isGiftCancelled ? '+' : '-';
                         profileUrl = !isScheduledAllocation ? `users/profile/${data.attributes.destination.id}` : '';
                     }
                 } else if (data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation') {
