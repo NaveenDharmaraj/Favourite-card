@@ -1510,7 +1510,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
 };
 
 const formatDateForP2p = (sendDate) => {
-    if (sendDate && sendDate.getMonth()) {
+    if (sendDate && sendDate.getFullYear()) {
         const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() + 1 : `0${sendDate.getMonth() + 1}`;
         const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
         return `${sendDate.getFullYear()}-${month}-${day}`;
@@ -1597,12 +1597,19 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
     }
     if (sendGift === 'schedule' && sendDate) {
         listingData.push({
-            name: 'reviewP2pSendDate',
+            name: (frequencyObject && frequencyObject.value !== 'once') ? `reviewP2pGiftStartDate` : 'reviewP2pSendDate',
             value: formatDateForGivingTools(sendDate),
         });
     }
+
     if (sendGift === 'schedule' && frequencyObject) {
-        state.isRecurring = frequencyObject.value !== 'once';
+        const formatedDate = new Date(sendDate);
+        const todaysDate = new Date();
+        if ((formatedDate.setHours(0,0,0,0) === todaysDate.setHours(0,0,0,0)) && frequencyObject.value === 'once') {
+            state.isRecurring = false;
+        } else {
+            state.isRecurring = true;
+        }
         const selectedFrequency = frequencyObject.options.find((item) => item.value === frequencyObject.value);
         listingData.push({
             name: 'reviewP2pFrequency',
@@ -1610,12 +1617,12 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         });
     }
 
-    if (reason !== 'Other' || (reason === 'Other' && reasonOther)) {
-        listingData.push({
-            name: 'reviewP2pReasonToGive',
-            value: reason !== 'Other' ? reason : reasonOther,
-        });
-    }
+    // (reason !== 'Other' || (reason === 'Other' && reasonOther))
+    const showingOther = (reasonOther) || 'Other';
+    listingData.push({
+        name: 'reviewP2pReasonToGive',
+        value: reason !== 'Other' ? reason : showingOther,
+    });
     listingData.push({
         name: 'reviewP2pMessage',
         value: (!_.isEmpty(noteToRecipients)) ? noteToRecipients : formatMessage('reviewDefaultMessage'),
@@ -1639,7 +1646,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
  * @return {number} The total amount we are giving
  */
 const calculateP2pTotalGiveAmount = (numberOfRecipients, amountEachRecipient) => (
-    numberOfRecipients * amountEachRecipient
+    formatAmount(numberOfRecipients * amountEachRecipient)
 );
 
 /**
