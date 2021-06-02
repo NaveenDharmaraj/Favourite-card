@@ -32,9 +32,7 @@
     "quaziDonationSuccessMessageTwo": " We're processing your transaction and will add {{amount}} to your Impact Account shortly. We'll send you an email within 24 hours confirming that the amount has been added.",
     "fromToRecipientOnce":"Your gift of charitable dollars will be sent to {{name}} on {{date}}.",
     "fromToRecipientRecurring":"Your gift of charitable dollars will be sent to {{name}} starting on {{date}}. This gift is then scheduled to repeat {{frequency}}.",
-    "scheduleForP2pFirstSection":"If you like, you can also ",
-    "scheduleForP2pSecondSection":"schedule a deposit",
-    "scheduleForP2pThirdSection":" into your account to cover these gifts.",
+    "scheduleForP2p":"If you like, you can also schedule a deposit into your account to cover these gifts.",
     "fromOtherToRecipientOnce":"Your gift of charitable dollars from {{fromName}} will be sent to {{name}} on {{date}}. ",
     "fromOtherRecipientRecurring":"Your gift of charitable dollars from {{fromName}} will be sent to {{name}} starting on {{date}}. This gift is then scheduled to repeat {{frequency}}. "
 }

@@ -39,7 +39,7 @@ const DashboardTransactionDetails = (props) => {
             } else {
                 recepientsList.push(data.attributes.destinationDetails.email);
             }
-            if (data.attributes.hasChildAllocations && !_.isEmpty(data.attributes.destinationDetails)) {
+            if (data.attributes.hasChildAllocations) {
                 data.attributes.destinationDetails.child_allocations.map((user) => {
                     if (user.userExists) {
                         recepientsList.push(user.name);
@@ -152,7 +152,7 @@ const DashboardTransactionDetails = (props) => {
     }
 
     return (
-        <div className="acntActivityContent activityModel">
+        <div className="acntActivityContent">
             <List celled className="acntActivityList">
                 {transactionDetails}
             </List>

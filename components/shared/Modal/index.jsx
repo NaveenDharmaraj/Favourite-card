@@ -16,9 +16,7 @@ import _isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
 import _cloneDeep from 'lodash/cloneDeep';
 import PropTypes from 'prop-types';
-import {
-    triggerUxCritialErrors,
-} from '../../../actions/error';
+
 import {
     validateTaxReceiptProfileForm,
 } from '../../../helpers/give/utils';
@@ -194,32 +192,19 @@ class ModalComponent extends React.Component {
                     });
                     
                 }
-                handleModalOpen(false);
-                const statusMessageProps = {
-                    message: 'Great, your new name and address for tax receipts is ready to use.',
-                    type: 'success',
-                };
-                dispatch({
-                    payload: {
-                        errors: [
-                            statusMessageProps,
-                        ],
-                    },
-                    type: 'TRIGGER_UX_CRITICAL_ERROR',
-                });
+                handleModalOpen(true);
                 this.setState({
                     buttonClicked: true,
                     errorMessage: null,
-                    // statusMessage: true,
+                    statusMessage: true,
                 });
                
             }).catch((err) => {
                 handleModalOpen(true);
-                triggerUxCritialErrors([{detail:'Error in saving the profile.'}], dispatch);
                 this.setState({
                     buttonClicked: true,
-                    // errorMessage: 'Error in saving the profile.',
-                    // statusMessage: true,
+                    errorMessage: 'Error in saving the profile.',
+                    statusMessage: true,
                 })
             });
         } else {
