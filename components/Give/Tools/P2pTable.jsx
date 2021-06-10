@@ -15,12 +15,13 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 
 import TransactionTableRow from './TransactionsTableRow';
 
-function AllocationsTable(props) {
+function P2pTable(props) {
     const {
         upcomingTransactions,
         deleteTransaction,
         monthlyTransactionApiCall,
         activePage,
+        pauseResumeTransaction,
     } = props;
     const {
         i18n: { language },
@@ -33,47 +34,54 @@ function AllocationsTable(props) {
                 const {
                     attributes, id,
                 } = transaction;
-                const transactionDate = attributes.transactionDate.includes(15)
-                    ? '15th'
-                    : '1st';
-                const formattedDate = formatDateForGivingTools(
-                    attributes.createdAt,
-                );
-                const destinationType = attributes.destinationAccount === 'Beneficiary'
-                    ? 'Charity'
-                    : attributes.destinationAccount;
-                const recipientAccount = `${attributes.accountName} (${attributes.campaign ? 'Campaign' : destinationType})`;
+                // changing destinationDetails to an array of objects
+                let destinationDetails = [];
+                const {
+                    // eslint-disable-next-line camelcase
+                    child_allocations, ...parentAllocation
+                } = attributes.destinationDetails || {};
+                destinationDetails.push(parentAllocation);
+                if (!_.isEmpty(attributes.destinationDetails.child_allocations)) {
+                    destinationDetails = [
+                        ...destinationDetails,
+                        // eslint-disable-next-line camelcase
+                        ...child_allocations,
+                    ];
+                }
+                const recipients = _.join(_.map(destinationDetails, (u) => (u.receiverExists ? u.displayName : u.email)), ', ');
                 const formattedAmount = formatCurrency(
                     attributes.amount,
                     language,
                     'USD',
                 );
-                const giftType = {
-                    value: attributes.transactionDate.includes('15') ? 15 : 1,
-                };
+                const modalHeader = `Delete${attributes.frequency === 'once' || !attributes.frequency ? ' '
+                    : ` ${attributes.frequency}`} gift?`;
                 activeIndexs.push(index);
                 tableBody.push(
                     <TransactionTableRow
                         activePage={activePage}
-                        isAllocation
-                        modalHeader="Delete monthly gift?"
-                        firstColoumn={recipientAccount}
+                        modalHeader={modalHeader}
+                        firstColoumn={recipients}
                         secondColoumn={formattedAmount}
-                        thirdColoumn={transactionDate}
-                        fourthColoumn={formattedDate}
+                        thirdColoumn={attributes.frequency ? _.startCase(_.toLower(attributes.frequency)) : ' '}
+                        fourthColoumn={attributes.reason || ' '}
+                        fifthColoumn={formatDateForGivingTools(attributes.createdAt)}
                         deleteTransaction={deleteTransaction}
                         transactionType={attributes.transactionType}
                         transactionId={id}
-                        giftType={giftType}
                         language={language}
                         index={index}
                         destinationType={attributes.destinationAccount}
                         noteToRecipientSaved={attributes.noteToRecipient || ''}
                         noteToSelfSaved={attributes.noteToSelf || ''}
                         activeIndexs={activeIndexs}
-                        isCampaign={attributes.campaign}
-                        hasCampaign={attributes.hasCampaign}
-                        dedicate={attributes.metaInfo ? attributes.metaInfo.dedicate : {}}
+                        isP2p
+                        pauseResumeTransaction={pauseResumeTransaction}
+                        destinationDetails={destinationDetails}
+                        reason={attributes.reason}
+                        frequency={attributes.frequency}
+                        nextTransaction={attributes.nextTransaction}
+                        status={attributes.status}
                     />,
                 );
             });
@@ -87,47 +95,51 @@ function AllocationsTable(props) {
                     <Table padded unstackable className="no-border-table tbl_border_bottom">
                         <Table.Header>
                             <Table.Row>
-                                <Table.HeaderCell className="edit-trxn-name">Recipient </Table.HeaderCell>
+                                <Table.HeaderCell className="edit-trxn-name recipient-width p2p-tab-width">Recipient(s)</Table.HeaderCell>
                                 <Table.HeaderCell textAlign="right">
-									Amount
+                                    Amount
                                 </Table.HeaderCell>
                                 <Table.HeaderCell>
-									Day of month
+                                    Frequency
                                 </Table.HeaderCell>
-                                <Table.HeaderCell className="w-120">
-									Created
+                                <Table.HeaderCell className="w-120 reason-width">
+                                    Reason to give
                                 </Table.HeaderCell>
-                                <Table.HeaderCell>Action</Table.HeaderCell>
+                                <Table.HeaderCell>
+                                    Created
+                                </Table.HeaderCell>
+                                <Table.HeaderCell className="p2p-action-padding">Action</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
-                        {monthlyTransactionApiCall === undefined || false ? (
+                        {(monthlyTransactionApiCall === (undefined || false)) ? (
+                            <Table.Body>{renderTableData()}</Table.Body>
+                        ) : (
+
                             <PlaceholderGrid
                                 row={2}
                                 column={6}
                                 placeholderType="table"
                             />
-                        ) : (
-                            <Table.Body>{renderTableData()}</Table.Body>
                         )}
                     </Table>
                 </div>
             </Responsive>
             <Responsive maxWidth={767}>
                 <div className="mbleAccordionTable">
-                    {monthlyTransactionApiCall === undefined || false ? (
+                    {(monthlyTransactionApiCall === (undefined || false)) ? (
+                        <Accordion fluid exclusive={false}>
+                            {renderTableData()}
+                        </Accordion>
+                    ) : (
                         <PlaceholderGrid
                             row={2}
                             column={6}
                             placeholderType="table"
                         />
-                    ) : (
-                        <Accordion fluid exclusive={false}>
-                            {renderTableData()}
-                        </Accordion>
                     )}
                 </div>
             </Responsive>
         </Fragment>
     );
 }
-export default withTranslation()(AllocationsTable);
+export default withTranslation()(P2pTable);

@@ -261,6 +261,9 @@ const validateDate = (dateStr = '') => {
     }
     return isValid;
 };
+const dateFormatConverter = (date, typeOfSeprator = '/') => (
+    `${date.getFullYear()}${typeOfSeprator}${date.getMonth() + 1}${typeOfSeprator}${date.getDate()}`
+);
 
 const formatDateForYearMonthDate = (date) => {
     const unformattedDate = new Date(date);
@@ -313,4 +316,5 @@ export {
     redirectIfNotUSer,
     isValidBrowser,
     validateDate,
+    dateFormatConverter,
 };

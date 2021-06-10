@@ -10,6 +10,9 @@ import {
     groupDefaultProps,
     p2pDefaultProps,
 } from '../helpers/give/defaultProps';
+import {
+    formatDateForP2p,
+} from '../helpers/give/utils';
 
 import {
     callApiAndGetData,
@@ -244,40 +247,36 @@ const saveGroupAllocation = (allocation) => {
     return initializeAndCallAllocation(allocation, attributes, 'group');
 };
 
-const postP2pAllocations = async (allocations) => {
+const postP2pAllocations = async (allocationData) => {
     const results = [];
     let parentAllocationId = null;
-    for (const allocationData of allocations) {
-        let data = {};
-        if (parentAllocationId) {
-            const parent = {
-                relationships: {
-                    parentAllocation: {
-                        data: {
-                            type: 'fundAllocations',
-                            id: parentAllocationId,
-                        },
+    // for (const allocationData of allocations) {
+    let data = {};
+    if (parentAllocationId) {
+        const parent = {
+            relationships: {
+                parentAllocation: {
+                    data: {
+                        type: 'fundAllocations',
+                        id: parentAllocationId,
                     },
                 },
-            };
-            data = _.merge({}, allocationData, parent);
-        } else {
-            data = allocationData;
-        }
-
-        // const params = {
-        //     data: data,
-        // };
-        const result = await coreApi.post(`/${allocationData.type}`, {
-            data: {
-                ...data,
             },
-        });
-        if (result && result.data) {
-            parentAllocationId = result.data.id;
-        }
-        results.push(result);
+        };
+        data = _.merge({}, allocationData, parent);
+    } else {
+        data = allocationData;
     }
+    const result = await coreApi.post(`/${allocationData.type}`, {
+        data: {
+            ...data,
+        },
+    });
+    if (result && result.data) {
+        parentAllocationId = result.data.id;
+    }
+    results.push(result);
+    //}
 
     return results;
 };
@@ -288,6 +287,7 @@ const initializeP2pAllocations = (
     noteToRecipients,
     noteToSelf,
     giveFrom,
+    reason,
 ) => {
     const allocations = [];
     // _.each(recipients, (recipient) => {
@@ -296,8 +296,8 @@ const initializeP2pAllocations = (
             amount: giveAmount,
             noteToRecipient: noteToRecipients,
             noteToSelf,
+            reason,
             recipientEmails: _.replace(recipients, /[\n\r\t ]+/g, ''),
-            suppressEmail: false,
         },
         relationships: {
             sourceFund: {
@@ -308,11 +308,11 @@ const initializeP2pAllocations = (
             },
         },
     };
-    allocationData.type = 'fundAllocations';
+    // allocationData.type = 'fundAllocations';
     allocations.push(allocationData);
     // });
 
-    return allocations;
+    return allocationData;
 };
 
 /**
@@ -322,24 +322,48 @@ const initializeP2pAllocations = (
 const saveP2pAllocations = (allocation) => {
     const {
         giveData: {
+            frequencyObject,
             giveAmount,
             giveFrom,
             noteToRecipients,
             noteToSelf,
             recipients,
+            reasonOther,
             selectedFriendsList,
+            sendDate,
+            sendGift,
         },
     } = allocation;
+
+    let {
+        giveData: {
+            reason,
+        },
+    } = allocation;
+
+    if (reason === 'Other') {
+        reason = reasonOther;
+    }
     const emailArray = _.concat(selectedFriendsList.map((friend) => friend.email), recipients);
-    const allocations = initializeP2pAllocations(
+    const allocationData = initializeP2pAllocations(
         emailArray,
         giveAmount,
         noteToRecipients,
         noteToSelf,
         giveFrom,
+        reason,
         0,
     );
-    return postP2pAllocations(allocations);
+
+    if (!_.isEmpty(sendGift) && sendGift === 'schedule') {
+        allocationData.type = 'scheduledP2pAllocations';
+        allocationData.attributes.frequency = frequencyObject.value;
+        allocationData.attributes.sendDate = formatDateForP2p(sendDate);
+    } else {
+        allocationData.type = 'fundAllocations';
+        allocationData.attributes.suppressEmail = false;
+    }
+    return postP2pAllocations(allocationData);
 };
 
 /**
