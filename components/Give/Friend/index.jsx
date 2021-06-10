@@ -869,7 +869,8 @@ class Friend extends React.Component {
             giveFrom,
             totalP2pGiveAmount,
             giftType,
-        } = giveData
+        } = giveData;
+        let reviewBtn = reviewBtnFlag;
         const formatMessage = this.props.t;
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(totalP2pGiveAmount) > Number(giveFrom.balance))) {
             if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
@@ -896,9 +897,17 @@ class Friend extends React.Component {
                     today.setHours(0, 0, 0, 0);
                     if(today.getTime() !== giveData.sendDate.getTime()){
                         allocationGiftType = 1;
+                        if(reviewBtnFlag){
+                            reviewBtn = !reviewBtnFlag
+                            this.setState({reviewBtnFlag: reviewBtn})
+                        }
                     }
                 } else if(giveData.sendGift!== 'now' && !giveData.sendDate) {
                     allocationGiftType = 1;
+                    if(reviewBtnFlag){
+                        reviewBtn = !reviewBtnFlag
+                        this.setState({reviewBtnFlag: reviewBtn})
+                    }
                 }
                 return (
                     <ReloadAddAmount
@@ -912,7 +921,7 @@ class Friend extends React.Component {
                         language={language}
                         paymentInstrumentOptions={paymentInstrumentOptions}
                         reloadModalOpen={reloadModalOpen}
-                        reviewBtnFlag={reviewBtnFlag}
+                        reviewBtnFlag={reviewBtn}
                         taxReceiptsOptions={taxReceiptsOptions}
                         handleParentModalState={this.handleReloadModalClose}
                     />
