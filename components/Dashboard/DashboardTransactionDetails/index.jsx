@@ -14,7 +14,10 @@ const DashboardTransactionDetails = (props) => {
         sourceUserId,
     } = props;
     const dataArrayTransaction = [];
+    let recepientsList = [];
     let dataObjectData = {};
+    const isMyAccount = (data.attributes.source && data.attributes.source.id === Number(sourceUserId));
+    let userAccount = '';
     if (data.attributes.transactionType.toLowerCase() === 'donation') {
         dataObjectData = {};
         dataObjectData.labelValue = 'Payment method';
@@ -30,10 +33,38 @@ const DashboardTransactionDetails = (props) => {
     }
     
     if (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'allocation') {
-        if ((_.isEmpty(data.attributes.destination) || (!_.isEmpty(data.attributes.destination) && data.attributes.destination.id !== Number(sourceUserId))) && data.attributes.source.id === Number(sourceUserId)) {
+        if (isMyAccount && data.attributes.destinationDetails.type === 'User') {
+            if (data.attributes.destinationDetails.userExists) {
+                recepientsList.push(data.attributes.destinationDetails.name);
+            } else {
+                recepientsList.push(data.attributes.destinationDetails.email);
+            }
+            if (data.attributes.hasChildAllocations && !_.isEmpty(data.attributes.destinationDetails)) {
+                data.attributes.destinationDetails.child_allocations.map((user) => {
+                    if (user.userExists) {
+                        recepientsList.push(user.name);
+                    } else {
+                        recepientsList.push(user.email);
+                    }
+                });
+            }
+            recepientsList = recepientsList.join(', ');
             dataObjectData = {};
+            dataObjectData.labelValue = 'Given to';
+            dataObjectData.transactionValue = recepientsList;
+            dataArrayTransaction.push(dataObjectData);
+        }
+        if ((_.isEmpty(data.attributes.destination) || (!_.isEmpty(data.attributes.destination) && data.attributes.destination.id !== Number(sourceUserId))) && isMyAccount) {
+            dataObjectData = {};
+            userAccount = !_.isEmpty(data.attributes.source.name) ? `${data.attributes.source.name}'s Impact Account` : 'Impact Account';
             dataObjectData.labelValue = 'Source account';
-            dataObjectData.transactionValue = !_.isEmpty(data.attributes.source.name) ? `${data.attributes.source.name}'s Impact Account` : 'Impact Account';
+            dataObjectData.transactionValue = isMyAccount ? 'Your Impact Account' : userAccount;
+            dataArrayTransaction.push(dataObjectData);
+        }
+        if (!_.isEmpty(data.attributes.reason) && ((data.attributes.reason !== 'Perfer not to Say') || (data.attributes.reason === 'Perfer not to Say' && isMyAccount))) {
+            dataObjectData = {};
+            dataObjectData.labelValue = 'Reason to give';
+            dataObjectData.transactionValue = data.attributes.reason;
             dataArrayTransaction.push(dataObjectData);
         }
     }
@@ -75,14 +106,14 @@ const DashboardTransactionDetails = (props) => {
                 dataObjectData.labelValue = `Message from ${data.attributes.source.name}`;
             }
             if (data.attributes.destination.type.toLowerCase() === 'user' && data.attributes.destination.id !== Number(sourceUserId)) {
-                dataObjectData.labelValue = `Message to friend`;
+                dataObjectData.labelValue = `Message`;
             }
         }
         dataObjectData.transactionValue = data.attributes.noteToRecipient;
         dataArrayTransaction.push(dataObjectData);
     }
     if (!_.isEmpty(data.attributes.noteToSelf) || !_.isEmpty(data.attributes.reason)) {
-        if (!_.isEmpty(data.attributes.destination)) {
+        if (!_.isEmpty(data.attributes.destination) && !_.isEmpty(data.attributes.noteToSelf)) {
             if (data.attributes.destination.id !== Number(sourceUserId)) {
                 dataObjectData = {};
                 dataObjectData.labelValue = 'Note to self';
@@ -121,7 +152,7 @@ const DashboardTransactionDetails = (props) => {
     }
 
     return (
-        <div className="acntActivityContent">
+        <div className="acntActivityContent activityModel">
             <List celled className="acntActivityList">
                 {transactionDetails}
             </List>

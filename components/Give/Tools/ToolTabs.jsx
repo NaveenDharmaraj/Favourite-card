@@ -8,8 +8,12 @@ import {
     Segment,
     Grid,
     Tab,
+    Loader,
 } from 'semantic-ui-react';
 import _ from 'lodash';
+import {
+    bool,
+} from 'prop-types';
 import {
     formatAmount,
 } from '../../../helpers/give/utils';
@@ -22,8 +26,9 @@ import { connect } from 'react-redux';
 import {validateGivingGoal} from '../../../helpers/users/utils';
 import {
     getUpcomingTransactions,
+    getUpcomingP2pAllocations,
     deleteUpcomingTransaction,
-    editUpcommingDeposit,
+    editUpcomingP2p,
 } from '../../../actions/user';
 import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
 import {
@@ -40,6 +45,8 @@ class ToolTabs extends React.Component {
         super(props);
         this.state = {
             activePage: 1,
+            p2pActivePage:1,
+            p2pPausedPage:1,
             showModal: false,
             givingGoal: '',
             validity: this.intializeValidations()
@@ -54,7 +61,6 @@ class ToolTabs extends React.Component {
         if (!_.isEmpty(props.userGivingGoalDetails)) {
             this.state.givingGoal = this.setGivingGoal(props.userGivingGoalDetails);
         }
-
     }
 
     setGivingGoal(userGivingGoalDetails) {
@@ -145,7 +151,7 @@ class ToolTabs extends React.Component {
     }
     panes = [
         {
-            menuItem: 'Scheduled Deposits',
+            menuItem: 'Scheduled deposits',
             render: () => {
                 const {
                     monthlyTransactionApiCall,
@@ -173,32 +179,62 @@ class ToolTabs extends React.Component {
             }
         },
         {
-            menuItem: 'Scheduled Gifts',
+            menuItem: 'Scheduled gifts',
             render: () => {
                 const {
                     monthlyTransactionApiCall,
+                    upcomingP2pTransactionApiCall,
+                    upcomingPausedP2pTransactionApiCall,
                     upcomingTransactions,
-                    upcomingTransactionsMeta
+                    upcomingTransactionsMeta,
+                    upcomingP2pTransactions,
+                    upcomingP2pTransactionsMeta,
+                    upcomingPausedP2pTransactions,
+                    upcomingPausedP2pTransactionsMeta,
+                    showScheduleGiftLoader,
                 } = this.props;
-                const totalPages = (upcomingTransactionsMeta) ? upcomingTransactionsMeta.pageCount : 1;
+                const totalPages = (upcomingTransactionsMeta) ? upcomingTransactionsMeta.pageCount: 1;
+                const totalPagesP2p = (upcomingP2pTransactionsMeta) ? upcomingP2pTransactionsMeta.pageCount: 1;
+                const totalPagesPausedP2p = (upcomingPausedP2pTransactionsMeta) ? upcomingPausedP2pTransactionsMeta.pageCount: 1;
                 const {
-                    activePage
+                    activePage,
+                    p2pActivePage,
+                    p2pPausedPage,
                 } = this.state;
                 return (
-                    <Tab.Pane attached={false}>
-                        <div className="tools-tabpane">
+                <Tab.Pane attached={false}>
+                    <div className="tools-tabpane">
+                        {showScheduleGiftLoader
+                        ? (
+                            <div className='schedule_gift_loader'>
+                                <Loader active inline='centered'/>
+                            </div>
+                        )
+                        : (
                             <AllocationsTab
-                                activePage={activePage}
-                                onPageChange={this.onPageChange}
-                                upcomingTransactions={upcomingTransactions}
-                                deleteTransaction={this.deleteTransaction}
-                                monthlyTransactionApiCall={monthlyTransactionApiCall}
-                                totalPages={totalPages}
-                            />
-                        </div>
-                    </Tab.Pane>
-                )
-            }
+                            activePage={activePage}
+                            onPageChange={this.onPageChange}
+                            upcomingTransactions={upcomingTransactions}
+                            upcomingP2pTransactions={upcomingP2pTransactions}
+                            upcomingPausedP2pTransactions={upcomingPausedP2pTransactions}
+                            deleteTransaction={this.deleteTransaction}
+                            monthlyTransactionApiCall={monthlyTransactionApiCall}
+                            upcomingP2pTransactionApiCall={upcomingP2pTransactionApiCall}
+                            upcomingPausedP2pTransactionApiCall={upcomingPausedP2pTransactionApiCall}
+                            totalPages={totalPages}
+                            totalPagesP2p={totalPagesP2p}
+                            totalPagesPausedP2p={totalPagesPausedP2p}
+                            p2pActivePage={p2pActivePage}
+                            p2pPausedPage={p2pPausedPage}
+                            pauseResumeTransaction={this.pauseResumeTransaction}
+                            showScheduleGiftLoader={showScheduleGiftLoader}
+                        />
+                        )
+                    }
+                    </div>
+                </Tab.Pane>
+            )
+        }
         },
         {
             menuItem: 'Your giving goal',
@@ -289,16 +325,28 @@ class ToolTabs extends React.Component {
             dispatch,
             defaultActiveIndex
         } = this.props;
-        let url = `users/${id}/upcomingTransactions`;
-        if (defaultActiveIndex === "0") {
-            url += `?filter[type]=RecurringDonation&page[size]=10`
-        } else if (defaultActiveIndex === "1") {
-            url += `?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`
+        if(defaultActiveIndex === "0") {
+            dispatch(getUpcomingTransactions(id, 'RecurringDonation'));
+        } else if(defaultActiveIndex === "1") {
+            dispatch({
+                payload: {
+                    status: true,
+                },
+                type: 'SCHEDULED_GIFTS_LOADER',
+            });
+            dispatch(getUpcomingTransactions(id, 'RecurringAllocation,RecurringFundAllocation'));
+            dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation'));
+            dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation', 'inactive')).then(() => {
+                dispatch({
+                    payload: {
+                        status: false,
+                    },
+                    type: 'SCHEDULED_GIFTS_LOADER',
+                });
+            });
         }
-        getUpcomingTransactions(dispatch, url);
-        if (id) {
+        if(id){
             getUserGivingGoal(dispatch, id);
-
         }
     }
 
@@ -329,7 +377,53 @@ class ToolTabs extends React.Component {
         }
     }
 
-    onPageChange(event, data) {
+    pauseResumeTransaction=(transactionId, status) =>{
+        let{
+            currentUser: {
+                id,
+            },
+            upcomingP2pTransactions,
+            upcomingPausedP2pTransactions,
+            dispatch,
+        } = this.props;
+        let {
+            p2pActivePage,
+            p2pPausedPage
+        } = this.state;
+        let selectedTransaction;
+        if (status === 'pause') {
+            selectedTransaction = _.find(upcomingP2pTransactions,{'id':transactionId})
+        } else{
+            selectedTransaction = _.find(upcomingPausedP2pTransactions,{'id':transactionId})
+        }
+        if(!_.isEmpty(selectedTransaction)){
+            let {
+                attributes:{
+                    amount,
+                    reason,
+                    recipientEmails,
+                    nextTransaction,
+                    frequency,
+                    noteToRecipient,
+                    noteToSelf
+                }
+            } = selectedTransaction
+            dispatch(editUpcomingP2p(transactionId,
+                amount,
+                reason,
+                recipientEmails,
+                nextTransaction,
+                frequency,
+                noteToRecipient,
+                noteToSelf,
+                p2pActivePage,
+                id,
+                status,
+                p2pPausedPage));
+        } 
+    }
+
+    onPageChange(event, data, type, status) {
         const {
             currentUser: {
                 id,
@@ -337,15 +431,32 @@ class ToolTabs extends React.Component {
             dispatch,
             defaultActiveIndex
         } = this.props;
-        let url = `users/${id}/upcomingTransactions?page[number]=${data.activePage}&page[size]=10`;
-        if (defaultActiveIndex === "0") {
-            url += `&filter[type]=RecurringDonation`
-        } else if (defaultActiveIndex === "1") {
-            url += `&filter[type]=RecurringAllocation,RecurringFundAllocation`
+        let{
+            activePage,
+            p2pActivePage,
+            p2pPausedPage
+        } = this.state;
+        if(defaultActiveIndex === "0") {
+            dispatch(getUpcomingTransactions(id, 'RecurringDonation', data.activePage));
+            activePage = data.activePage;
+        } else if(defaultActiveIndex === "1") {
+            if(type === 'p2pAllocation'){
+                if(status === 'active'){
+                    dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation', 'active', data.activePage));
+                    p2pActivePage = data.activePage;
+                } else{
+                    dispatch(getUpcomingP2pAllocations(id, 'ScheduledP2pAllocation', 'inactive', data.activePage));
+                    p2pPausedPage = data.activePage;
+                }
+            } else if( type === 'allocation'){
+                dispatch(getUpcomingTransactions(id, 'RecurringAllocation,RecurringFundAllocation', data.activePage));
+                activePage = data.activePage;
+            }
         }
-        getUpcomingTransactions(dispatch, url);
         this.setState({
-            activePage: data.activePage,
+            activePage,
+            p2pActivePage,
+            p2pPausedPage
         });
     }
     onTabChangeFunc(event, data) {
@@ -383,13 +494,29 @@ class ToolTabs extends React.Component {
         );
     }
 }
+
+ToolTabs.defaultProps = {
+    showScheduleGiftLoader: true,
+};
+
+ToolTabs.propTypes = {
+    showScheduleGiftLoader: bool,
+};
+
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         upcomingTransactions: state.user.upcomingTransactions,
         upcomingTransactionsMeta: state.user.upcomingTransactionsMeta,
+        upcomingP2pTransactions: state.user.upcomingP2pTransactions,
+        upcomingP2pTransactionsMeta: state.user.upcomingP2pTransactionsMeta,
+        upcomingPausedP2pTransactions: state.user.upcomingPausedP2pTransactions,
+        upcomingPausedP2pTransactionsMeta: state.user.upcomingPausedP2pTransactionsMeta,
         monthlyTransactionApiCall: state.user.monthlyTransactionApiCall,
+        upcomingP2pTransactionApiCall:state.user.upcomingP2pTransactionApiCall,
+        upcomingPausedP2pTransactionApiCall:state.user.upcomingPausedP2pTransactionApiCall,
         userGivingGoalDetails: state.user.userGivingGoalDetails,
+        showScheduleGiftLoader: state.user.showScheduleGiftLoader,
     };
 }
 export default (connect(mapStateToProps)(ToolTabs));

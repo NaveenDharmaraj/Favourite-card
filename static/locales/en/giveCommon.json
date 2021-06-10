@@ -69,17 +69,24 @@
     "commonOr": "or ",
     "commonMakeChanges" : "make changes. ",
     "doNotMatchLabel": "Do not match ",
-    "automaticDonationPopup": "Adding money monthly is a great way to make sure you always have charitable dollars on hand when you decide to give."
-
-
-
-
-
-
-
-
-
-
-
-
+    "automaticDonationPopup": "Adding money monthly is a great way to make sure you always have charitable dollars on hand when you decide to give.",
+    "creditCardEditMessagePart1": "If you need to change this card's expiry date,",
+    "creditCardEditMessagePart2": "update your payment method",
+    "creditCardEditMessagePart3": "first.",
+    "accountActivity": {
+        "accountActivityHeader": "Account activity",
+        "notransactionText": "No transactions yet.",
+        "giftReversedText": "GIFT CANCELLED",
+        "giftReturnedText": "GIFT RETURNED",
+        "giftRefundText": "REFUND",
+        "matchReturnedText": "MATCH RETURNED",
+        "isGiftCancelledTextOne": "Due to a refund in a previous transaction. ",
+        "isGiftCancelledTextTwo": "If you have questions about this transaction,",
+        "contactUsText": " contact us ",
+        "forHelpText": "for help.",
+        "filterText": "Filter",
+        "allText": "All",
+        "inText": "Deposits",
+        "outText": "Allocations"
+    }
 }
