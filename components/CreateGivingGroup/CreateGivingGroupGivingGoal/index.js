@@ -208,7 +208,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             options,
             value,
         } = data;
-        debugger
         if (_isEmpty(beneficiaryItems) || (beneficiaryItems && beneficiaryItems.length < 5)) {
             const newvalue = _find(options, { value }) || {};
             const beneficiaryItem = {

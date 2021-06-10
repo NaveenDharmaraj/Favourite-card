@@ -13,7 +13,6 @@ const EditGivingGoal = ({
     handleOnDateChange,
     validity
 }) => {
-    debugger
     return (
         <Fragment>
         <p>Making changes to your giving goal will not affect the money raised so far.</p>

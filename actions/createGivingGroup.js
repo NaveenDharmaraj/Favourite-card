@@ -551,7 +551,6 @@ export const searchFriendList = (groupId, searchStr, pageNumber = 1) => (dispatc
             uxCritical: true,
         },
     }).then((result) => {
-        debugger;
         if (!_isEmpty(result) && !_isEmpty(result.data)) {
             fsa.payload = result;
             dispatch(fsa);
