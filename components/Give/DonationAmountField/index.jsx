@@ -48,7 +48,7 @@ function DonationAmountField(props) {
     };
     return (
         <Form.Field>
-            <label htmlFor="donationAmount">
+            <label htmlFor="donationAmount" className="label_top">
                 {formatMessage('giveCommon:amountLabel')}
             </label>
             <Form.Field

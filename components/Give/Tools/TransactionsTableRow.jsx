@@ -4,18 +4,18 @@
 import React, { Fragment } from 'react';
 import {
 	Button,
-	Form,
 	Modal,
 	Table,
-	Input,
-	Dropdown,
 	Responsive,
 	Accordion,
 	TableBody,
 	TableCell,
+	Dropdown,
+    Popup,
 } from 'semantic-ui-react';
 import dynamic from 'next/dynamic';
 import EditMonthlyAllocationModal from './EditMonthlyAllocationModal';
+import EditP2pAllocationModal from './EditP2pAllocationModal';
 
 const EditMonthlyDepositModal = dynamic(
 	() => import('./EditMonthlyDepositModal'),
@@ -84,8 +84,57 @@ class TransactionTableRow extends React.Component {
             isCampaign,
             hasCampaign,
             dedicate,
+            isP2p,
+            pauseResumeTransaction,
+            destinationDetails,
+            reason,
+            frequency,
+            nextTransaction,
+            status
 		} = this.props;
 		const { showDeleteModal, activeIndexs } = this.state;
+        const monthlyAllocModal = (<EditMonthlyAllocationModal
+            recipientName={firstColoumn}
+            currentMonthlyAllocAmount={secondColoumn}
+            paymentInstrumentId={paymentInstrumentId}
+            transactionId={transactionId}
+            activePage={activePage}
+            giftType={giftType}
+            language={language}
+            giveToType={destinationType}
+            noteToSelfSaved={noteToSelfSaved}
+            noteToRecipientSaved={noteToRecipientSaved}
+            isCampaign={isCampaign}
+            hasCampaign={hasCampaign}
+            dedicate={dedicate}
+            nextTransaction={nextTransaction}
+        />);
+        const monthlyDepositModal = (<EditMonthlyDepositModal
+            currentMonthlyDepositAmount={secondColoumn}
+            paymentInstrumentId={paymentInstrumentId}
+            transactionId={transactionId}
+            activePage={activePage}
+        />);
+        const p2pModal = (<EditP2pAllocationModal
+            recipientName={firstColoumn}
+            currentMonthlyAllocAmount={secondColoumn}
+            transactionId={transactionId}
+            activePage={activePage}
+            language={language}
+            giveToType={destinationType}
+            noteToSelfSaved={noteToSelfSaved}
+            noteToRecipientSaved={noteToRecipientSaved}
+            destinationDetails={destinationDetails}
+            reasonToGive={reason}
+            giveFrequency={frequency}
+            nextTransaction={nextTransaction}
+            status={status}
+        />);
+        const deleteModalHeader = isP2p? 
+            `If you delete this transaction, it won't be processed${frequency ==='once' || !frequency ? 
+                    '' : ` each ${frequency.substring(0, frequency.length - 2)}`}.`
+                :`If you delete this transaction, it won't be processed each month.`
+
         const deleteModal = (
             <Modal
                 size="tiny"
@@ -94,19 +143,12 @@ class TransactionTableRow extends React.Component {
                 closeIcon
                 onClose={this.closeModal}
                 open={showDeleteModal}
-                trigger={
-                    <a
-                        className='deleteLink'
-                        onClick={() => this.setState({ showDeleteModal: true })}
-                    >
-                        Delete
-                    </a>
-                }
             >
                 <Modal.Header>{modalHeader}</Modal.Header>
                 <Modal.Content>
                     <span>
-                    If you delete this transaction, it won't be processed each month.
+                        {deleteModalHeader}
+                    
                     </span>
                     <div className="pt-2 pb-1 text-right">
                         <Button
@@ -130,42 +172,63 @@ class TransactionTableRow extends React.Component {
 			<Fragment>
 				{/* Desktop transaction details row start */}
 				<Responsive minWidth={768} as={'tr'}>
-					{firstColoumn && <Table.Cell className="edit-trxn-name">{firstColoumn}</Table.Cell>}
+					{firstColoumn && <Table.Cell className={isP2p? "edit-trxn-name recipient-width p2p-tab-width": "edit-trxn-name recipient-width"}>{firstColoumn}</Table.Cell>}
 					{secondColoumn && (
 						<Table.Cell className="text-right">
 							{secondColoumn}
 						</Table.Cell>
 					)}
 					{thirdColoumn && <Table.Cell>{thirdColoumn}</Table.Cell>}
-					{fourthColoumn && <Table.Cell>{fourthColoumn}</Table.Cell>}
+					{fourthColoumn && <Table.Cell className={isP2p? "w-120 reason-width": ""}>{fourthColoumn}</Table.Cell>}
 					{fifthColoumn && <Table.Cell>{fifthColoumn}</Table.Cell>}
-					<Table.Cell className="tbl-action">
-						{isAllocation ? (
-							<EditMonthlyAllocationModal
-								recipientName={firstColoumn}
-								currentMonthlyAllocAmount={secondColoumn}
-								paymentInstrumentId={paymentInstrumentId}
-								transactionId={transactionId}
-								activePage={activePage}
-                                giftType={giftType}
-                                language={language}
-                                giveToType={destinationType}
-                                noteToSelfSaved={noteToSelfSaved}
-                                noteToRecipientSaved={noteToRecipientSaved}
-                                isCampaign={isCampaign}
-                                hasCampaign={hasCampaign}
-                                dedicate={dedicate}
-							/>
+					<Table.Cell className={isP2p? "tbl-action p2p-action-padding": "tbl-action"}>
+						<div className="btn-ellipsis-full-width">
+                        {
+                            isP2p? (
+                                <Fragment>
+                                    {status === 'active'? p2pModal:
+                                        (
+                                        <Popup 
+											className="invertPopup"
+                                            content='To edit this gift, resume this transaction first.'
+                                            position="bottom center"
+                                            trigger={
+                                                <Button
+                                                    className="blue-bordr-btn-round-def c-small disabled-btn"
+                                                    // disabled
+                                                >
+                                                    Edit
+                                                </Button>
+                                            } 
+                                        />
+                                        )
+                                    }
+                                </Fragment>): (isAllocation ? (
+							monthlyAllocModal
 						) : (
-							<EditMonthlyDepositModal
-								currentMonthlyDepositAmount={secondColoumn}
-								paymentInstrumentId={paymentInstrumentId}
-								transactionId={transactionId}
-								activePage={activePage}
-							/>
-						)}
-
-						{deleteModal}
+						monthlyDepositModal	
+						))
+                        }
+                        {deleteModal}
+						<Dropdown className="dropdown_ellipsis_action " icon="ellipsis horizontal">
+                                <Dropdown.Menu 
+                                    className="left" 
+                                    closeOnChange
+                                > 
+                                <Dropdown.Item
+                                    text="Delete"
+                                    onClick={() => {this.setState({ showDeleteModal: true })}}
+                                />
+                                    {isP2p && (
+                                        <Dropdown.Item
+                                            text={status === 'active' ? 'Pause' : 'Resume'}
+                                            onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
+                                        />
+                                        )
+                                    }
+                                </Dropdown.Menu>
+                            </Dropdown>
+							</div>
 					</Table.Cell>
 				</Responsive>
 				{/* Desktop transaction details row end */}
@@ -207,47 +270,62 @@ class TransactionTableRow extends React.Component {
 										<TableCell>{secondColoumn}</TableCell>
 									</Table.Row>
 									<Table.Row>
-										<TableCell>Day of month</TableCell>
+										<TableCell>{isP2p? 'Frequency':'Day of month'}</TableCell>
 										<TableCell>{thirdColoumn}</TableCell>
 									</Table.Row>
 									<Table.Row>
-										<TableCell>Created</TableCell>
+										<TableCell>{isP2p? 'Reason to give':'Created'}</TableCell>
 										<TableCell>{fourthColoumn}</TableCell>
 									</Table.Row>
+                                    {isP2p && <Table.Row>
+										<TableCell>Created</TableCell>
+										<TableCell>{fifthColoumn}</TableCell>
+									</Table.Row>}
 								</TableBody>
 							)}
 							<Table.Footer>
 								<Table.Row>
-									<Table.Cell colSpan="2">
-										{isAllocation ? (
-											<EditMonthlyAllocationModal
-                                                recipientName={firstColoumn}
-                                                currentMonthlyAllocAmount={secondColoumn}
-                                                paymentInstrumentId={paymentInstrumentId}
-                                                transactionId={transactionId}
-                                                activePage={activePage}
-                                                giftType={giftType}
-                                                language={language}
-                                                giveToType={destinationType}
-                                                noteToSelfSaved={noteToSelfSaved}
-                                                noteToRecipientSaved={noteToRecipientSaved}
-                                                isCampaign={isCampaign}
-                                                hasCampaign={hasCampaign}
-                                                dedicate={dedicate}
-                                            />
-										) : (
-											<EditMonthlyDepositModal
-												currentMonthlyDepositAmount={
-													secondColoumn
-												}
-												paymentInstrumentId={
-													paymentInstrumentId
-												}
-												activePage={activePage}
-												transactionId={transactionId}
-											/>
-										)}
-										{deleteModal}
+									<Table.Cell colSpan="3">
+									{
+										isP2p? (
+											<Fragment>
+												{status === 'active'? p2pModal:
+                                                    (
+                                                    <Popup 
+														className="invertPopup"
+                                                        content='To edit this gift, resume this transaction first.'
+                                                        position="bottom center"
+														basic
+                                                        trigger={
+                                                            <Button
+                                                                className="blue-bordr-btn-round-def c-small disabled-btn"
+                                                            >
+                                                                Edit
+                                                            </Button>
+                                                        } 
+                                                    />
+                                                    )
+                                                }
+												<a
+													className='deleteLink'
+													onClick={()=>{pauseResumeTransaction(transactionId,  status === 'active'? 'pause' : 'resume')}}
+												>
+													{status === 'active' ? 'Pause' : 'Resume'}
+												</a>
+											</Fragment>): (isAllocation ? (
+										monthlyAllocModal
+									) : (
+									monthlyDepositModal	
+									))
+									}
+                                     <a
+                                        className='deleteLink'
+                                        onClick={() => {this.setState({ showDeleteModal: true })}}
+                                        >
+                                        Delete
+                                    </a>
+									{deleteModal}
+                                        
 									</Table.Cell>
 								</Table.Row>
 							</Table.Footer>
@@ -262,5 +340,6 @@ class TransactionTableRow extends React.Component {
 
 TransactionTableRow.defaultProps = {
 	isAllocation: false,
+    frequency: '',
 };
 export default TransactionTableRow;

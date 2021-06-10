@@ -165,6 +165,17 @@ const monthNamesForGivingTools = (monthValue) => {
     ];
     return shortMonths[monthValue - 1];
 };
+const getDayName = (date) => {
+    const weekdays = [];
+    weekdays[0] = "Sunday";
+    weekdays[1] = "Monday";
+    weekdays[2] = "Tuesday";
+    weekdays[3] = "Wednesday";
+    weekdays[4] = "Thursday";
+    weekdays[5] = "Friday";
+    weekdays[6] = "Saturday";
+    return weekdays[date.getDay()];
+}
 const isValidGiftAmount = (validity) => {
     const giftAmountValidity = _.pick(validity, [
         'doesAmountExist',
@@ -1009,8 +1020,9 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
     switch (field) {
         case 'giveAmount':
             validity.doesAmountExist = !isInputBlank(value);
-            validity.isAmountLessThanOneBillion = (giveData.giftType.value > 0)
-                ? isAmountLessThanOneBillion(value) : true;
+            // commented this validation for PM-855
+            // validity.isAmountLessThanOneBillion = (giveData.giftType.value > 0)
+            //     ? isAmountLessThanOneBillion(value) : true;
             validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries')
                 ? isAmountMoreThanOneDollor(value) : isAmountMoreOrEqualToOneDollor(value);
             validity.isValidPositiveNumber = isValidPositiveNumber(value);
@@ -1497,6 +1509,15 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     return (state);
 };
 
+const formatDateForP2p = (sendDate) => {
+    if (sendDate && sendDate.getMonth()) {
+        const month = sendDate.getMonth() + 1 >= 10 ? sendDate.getMonth() + 1 : `0${sendDate.getMonth() + 1}`;
+        const day = sendDate.getDate() >= 10 ? sendDate.getDate() : `0${sendDate.getDate()}`;
+        return `${sendDate.getFullYear()}-${month}-${day}`;
+    }
+    return null;
+};
+
 /**
 * Setup the display parameters for review page
 * @param {object} giveData state object for give page
@@ -1512,12 +1533,17 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
     } = data;
     const {
         emailMasked,
+        frequencyObject,
         giveAmount,
         giveFrom,
         noteToRecipients,
         noteToSelf,
+        reason,
+        reasonOther,
         recipientImage,
         recipientName,
+        sendDate,
+        sendGift,
         selectedFriendsList,
         totalP2pGiveAmount,
     } = giveData;
@@ -1527,7 +1553,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         buttonText: formatMessage('reviewP2pGive'),
         editUrl: toURL,
         headingText: formatMessage('reviewP2pText'),
-        isRecurring: false,
+        isRecurring: (sendGift === 'schedule'),
         mainDisplayAmount: formatCurrency(
             Number(totalP2pGiveAmount),
             language,
@@ -1540,7 +1566,6 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         name: 'reviewGiveFrom',
         value: giveFrom.text,
     });
-
     if (emails || selectedFriendsList) {
         if (emails.length === 1 && _.isEmpty(selectedFriendsList)) {
             state.mainDisplayImage = (recipientImage) || placeholderUser;
@@ -1570,7 +1595,27 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
             });
         }
     }
+    if (sendGift === 'schedule' && sendDate) {
+        listingData.push({
+            name: 'reviewP2pSendDate',
+            value: formatDateForGivingTools(sendDate),
+        });
+    }
+    if (sendGift === 'schedule' && frequencyObject) {
+        state.isRecurring = frequencyObject.value !== 'once';
+        const selectedFrequency = frequencyObject.options.find((item) => item.value === frequencyObject.value);
+        listingData.push({
+            name: 'reviewP2pFrequency',
+            value: selectedFrequency.text,
+        });
+    }
 
+    if (reason !== 'Other' || (reason === 'Other' && reasonOther)) {
+        listingData.push({
+            name: 'reviewP2pReasonToGive',
+            value: reason !== 'Other' ? reason : reasonOther,
+        });
+    }
     listingData.push({
         name: 'reviewP2pMessage',
         value: (!_.isEmpty(noteToRecipients)) ? noteToRecipients : formatMessage('reviewDefaultMessage'),
@@ -1582,6 +1627,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
             value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf'),
         });
     }
+    state.buttonText = (state.isRecurring) ? formatMessage('reviewP2pSendGiftMonthly') : formatMessage('reviewP2pGive');
     state.listingData = listingData;
     return (state);
 };
@@ -1841,6 +1887,66 @@ const findingErrorElement = (validity, type) => {
     }
 };
 
+const populateFrequenyOptions = (date, t) => {
+    if (date) {
+        const months = fullMonthNames(t);
+        const selectedMOnth = months[date.getMonth()];
+        const selectedDate = Number(date.getDate());
+        let monthlyText = '';
+        if ((selectedMOnth === 'February' && (selectedDate === 28 || selectedDate === 29))
+            || (selectedDate === 30 || selectedDate === 31)) {
+            monthlyText = 'Repeat monthly on the last day of the month';
+        } else {
+            let dateText = `${date.getDate()}th`;
+            if (selectedDate > 3 && selectedDate < 21) {
+                dateText = `${date.getDate()}th`;
+            } else {
+                switch (selectedDate % 10) {
+                    case 1:
+                        dateText = `${date.getDate()}st`;
+                        break;
+                    case 2:
+                        dateText = `${date.getDate()}nd`;
+                        break;
+                    case 3:
+                        dateText = `${date.getDate()}rd`;
+                        break;
+                    default:
+                        dateText = `${date.getDate()}th`;
+                        break;
+                }
+            }
+            monthlyText = `Repeat monthly on the ${dateText}`;
+        }
+        return [
+            {
+                text: 'Send once',
+                value: 'once',
+            },
+            {
+                text: `Repeat weekly on ${getDayName(date)}`,
+                value: 'weekly',
+            },
+            {
+                text: monthlyText,
+                value: 'monthly',
+            },
+            {
+                text: `Repeat annually on ${months[date.getMonth()]} ${date.getDate()}`,
+                value: 'yearly',
+            },
+        ];
+    // eslint-disable-next-line no-else-return
+    } else {
+        return [
+            {
+                text: 'Send once',
+                value: 'once',
+            },
+        ];
+    }
+};
+
 export {
     checkMatchPolicy,
     percentage,
@@ -1884,4 +1990,7 @@ export {
     validateForReload,
     validateForMinReload,
     getSelectedFriendList,
+    getDayName,
+    formatDateForP2p,
+    populateFrequenyOptions,
 };

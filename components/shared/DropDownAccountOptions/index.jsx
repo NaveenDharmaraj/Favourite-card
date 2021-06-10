@@ -58,6 +58,7 @@ class DropDownAccountOptions extends React.Component {
             name,
             type,
             reviewBtnFlag,
+            isScheduledP2P,
         } = this.props;
         let dropDownData = null;
         const formatMessage = this.props.t;
@@ -77,8 +78,8 @@ class DropDownAccountOptions extends React.Component {
         const {
             updatePlaceHolder,
         } = this.state;
-        const userGroups = _cloneDeep(userAdminGroups);
-        const userCampaigns = _cloneDeep(userAdminCampaigns);
+        const userGroups = !isScheduledP2P ? _cloneDeep(userAdminGroups) : [];
+        const userCampaigns = !isScheduledP2P ? _cloneDeep(userAdminCampaigns) : [];
         const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
         const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
         const newPlaceholder = updatePlaceHolder ? formatMessage('searchPlaceholder') : giveFromPlaceHolder;
@@ -226,6 +227,7 @@ const mapStateToProps = (state, props) => {
 };
 
 DropDownAccountOptions.defaultProps = {
+    isScheduledP2P: false,
     type: '',
 };
 

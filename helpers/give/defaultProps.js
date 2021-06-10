@@ -163,6 +163,7 @@ export const p2pDefaultProps = {
         giveData: {
             formatedP2PAmount: '',
             friendsList: [],
+            frequencyObject: {},
             // P2P gift type is always 0
             giftType: {
                 value: 0,
@@ -180,12 +181,16 @@ export const p2pDefaultProps = {
             noteToRecipients: '',
             noteToSelf: '',
             recipients: [],
+            reason: 'Birthday',
+            reasonOther: '',
             totalP2pGiveAmount: 0,
             userInteracted: false,
             emailMasked: false,
             recipientName: '',
             recipientImage: '',
             selectedFriendsList: [],
+            sendGift: 'now',
+            sendDate: '',
         },
         nextSteptoProceed: {},
         stepsCompleted: false,

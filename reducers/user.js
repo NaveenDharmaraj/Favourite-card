@@ -128,10 +128,36 @@ const user = (state = {}, action) => {
                 upcomingTransactionsMeta: action.payload.upcomingTransactionsMeta,
             };
             break;
+        case 'GET_UPCOMING_P2P_TRANSACTIONS':
+            newState = {
+                ...state,
+                upcomingP2pTransactions: action.payload.upcomingP2pTransactions,
+                upcomingP2pTransactionsMeta: action.payload.upcomingP2pTransactionsMeta,
+            };
+            break;
+        case 'GET_UPCOMING_PAUSED_P2P_TRANSACTIONS':
+            newState = {
+                ...state,
+                upcomingPausedP2pTransactions: action.payload.upcomingP2pTransactions,
+                upcomingPausedP2pTransactionsMeta: action.payload.upcomingP2pTransactionsMeta,
+            };
+            break;
         case 'MONTHLY_TRANSACTION_API_CALL':
             newState = {
                 ...state,
                 monthlyTransactionApiCall: action.payload.apiCallStats,
+            };
+            break;
+        case 'RECURRING_P2P_TRANSACTION_API_CALL':
+            newState = {
+                ...state,
+                upcomingP2pTransactionApiCall: action.payload.apiCallStats,
+            };
+            break;
+        case 'RECURRING_PAUSED_P2P_RANSACTION_API_CALL':
+            newState = {
+                ...state,
+                upcomingPausedP2pTransactionApiCall: action.payload.apiCallStats,
             };
             break;
         case 'USER_INITIAL_FAVORITES':
@@ -227,6 +253,12 @@ const user = (state = {}, action) => {
             newState = {
                 ...state,
                 claimCharityErrorMessage: action.payload.claimCharityErrorMessage,
+            };
+            break;
+        case 'SCHEDULED_GIFTS_LOADER':
+            newState = {
+                ...state,
+                showScheduleGiftLoader: action.payload.status,
             };
             break;
         default:
