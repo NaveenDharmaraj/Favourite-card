@@ -899,14 +899,26 @@ class Friend extends React.Component {
                         allocationGiftType = 1;
                         if(reviewBtnFlag){
                             reviewBtn = !reviewBtnFlag
-                            this.setState({reviewBtnFlag: reviewBtn})
+                            this.setState({
+                                reviewBtnFlag: reviewBtn,
+                                validity:{
+                                    ...this.state.validity,
+                                    isReloadRequired:true
+                                }
+                            })
                         }
                     }
                 } else if(giveData.sendGift!== 'now' && !giveData.sendDate) {
                     allocationGiftType = 1;
                     if(reviewBtnFlag){
                         reviewBtn = !reviewBtnFlag
-                        this.setState({reviewBtnFlag: reviewBtn})
+                        this.setState({
+                            reviewBtnFlag: reviewBtn,
+                            validity:{
+                                ...this.state.validity,
+                                isReloadRequired:true
+                            }
+                        })
                     }
                 }
                 return (
