@@ -18,6 +18,7 @@ import {
     resendInvite,
     cancelInvite,
     removeGroupMember,
+    sendEmailInvite,
 } from '../../../actions/createGivingGroup';
 
 import ManageModal from './ManageModal';
@@ -29,6 +30,7 @@ const MemberListCard = (props) => {
     const [showResendInviteModal,setshowResendInviteModal] = useState(false);
     const [showCancelInviteModal, setshowCancelInviteModal] = useState(false);
     const [showLoader, setshowLoader] = useState(false);
+    const [isInviteSent, setisInviteSent] = useState(false);
     const dispatch = useDispatch();
     const {
         memberData: {
@@ -38,15 +40,13 @@ const MemberListCard = (props) => {
                 displayName,
                 email,
                 isGroupAdmin,
-                location : {
-                    city,
-                    province,
-                },
+                location,
             }
         },
         groupId,
         isInvite,
         isSingleAdmin,
+        isFriendList,
     } = props;
 
     const handleOnClick = (type) => {
@@ -102,6 +102,24 @@ const MemberListCard = (props) => {
         });
     };
 
+    const handleInvite = () => {
+        const payload = {
+            data: {
+                attributes: {
+                    group_id: groupId,
+                    invites: email,
+                    notes: '',
+                },
+                type: 'groups',
+            },
+        };
+        setshowLoader(true);
+        dispatch(sendEmailInvite(payload)).finally(() => {
+            setisInviteSent(true);
+            setshowLoader(false);
+        });
+    };
+
     return (
         <Fragment>
             <Table.Row className="ManageWappeer">
@@ -128,7 +146,7 @@ const MemberListCard = (props) => {
                                 </List.Header>
                                 <List.Description>
                                     <p>
-                                        {city
+                                        {location && location.city
                                         && (
                                             city, province
                                         )}
@@ -139,37 +157,50 @@ const MemberListCard = (props) => {
                     </List>
                 </Table.Cell>
                 <Table.Cell className="Managebtn">
-                    <a role="listitem" className="item">
-                        <Dropdown
-                            icon="ellipsis horizontal"
-                            className="dropdown_ellipsisnew"
-                            closeOnBlur
-                        >
-                            <Dropdown.Menu className="left">
-                                {!isInvite
-                                    ? (
-                                        <Fragment>
-                                            {isGroupAdmin
-                                                ? (
-                                                    <Dropdown.Item text="Remove as admin " onClick={() => setshowAdminmodel(true)} />
-                                                ) : (
-                                                    <Dropdown.Item text="Make admin " onClick={() => setshowMemberModal(true)} />
-                                                )}
-                                            {!isSingleAdmin
-                                            && (
-                                                <Dropdown.Item text="Remove from group " onClick={() => setshowGroupModel(true)} />
+                    {!isFriendList
+                        ? (
+                            <a role="listitem" className="item">
+                                <Dropdown
+                                    icon="ellipsis horizontal"
+                                    className="dropdown_ellipsisnew"
+                                    closeOnBlur
+                                >
+                                    <Dropdown.Menu className="left">
+                                        {!isInvite
+                                            ? (
+                                                <Fragment>
+                                                    {isGroupAdmin
+                                                        ? (
+                                                            <Dropdown.Item text="Remove as admin " onClick={() => setshowAdminmodel(true)} />
+                                                        ) : (
+                                                            <Dropdown.Item text="Make admin " onClick={() => setshowMemberModal(true)} />
+                                                        )}
+                                                    {!isSingleAdmin
+                                                    && (
+                                                        <Dropdown.Item text="Remove from group " onClick={() => setshowGroupModel(true)} />
+                                                    )}
+                                                </Fragment>
+                                            )
+                                            : (
+                                                <Fragment>
+                                                    <Dropdown.Item text="Resend invite" onClick={() => setshowResendInviteModal(true)} />
+                                                    <Dropdown.Item text="Cancel invite" onClick={() => setshowCancelInviteModal(true)} />
+                                                </Fragment>
                                             )}
-                                        </Fragment>
-                                    )
-                                    : (
-                                        <Fragment>
-                                            <Dropdown.Item text="Resend invite" onClick={() => setshowResendInviteModal(true)} />
-                                            <Dropdown.Item text="Cancel invite" onClick={() => setshowCancelInviteModal(true)} />
-                                        </Fragment>
-                                    )}
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </a>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </a>
+                        )
+                        : (
+                            <Button
+                                className={` ${isInviteSent ? 'blue-btn-rounded-def' : 'blue-bordr-btn-round-def'} c-small`} // {`${buttonClass} c-small`}
+                                onClick={handleInvite}
+                                disabled={isInviteSent}
+                                loading={showLoader}
+                            >
+                                {isInviteSent ? 'Sent' : 'Invite'}
+                            </Button>
+                        )}
                 </Table.Cell>
             </Table.Row>
             {showAdminmodel

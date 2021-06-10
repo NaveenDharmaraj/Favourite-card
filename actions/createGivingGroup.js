@@ -4,6 +4,7 @@ import _isEmpty from 'lodash/isEmpty';
 import searchApi from '../services/searchApi';
 import coreApi from '../services/coreApi';
 import { dateFormatConverter } from '../helpers/createGrouputils';
+import { groupPendingInvites } from './data';
 
 export const actionTypes = {
     GET_PROVINCE_LIST: 'GET_PROVINCE_LIST',
@@ -20,6 +21,7 @@ export const actionTypes = {
     SHOW_GROUP_MEMBERS_PLACEHOLDER: 'SHOW_GROUP_MEMBERS_PLACEHOLDER',
     TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
     GET_GROUP_WIDGET_CODE: 'GET_GROUP_WIDGET_CODE',
+    GET_GROUP_FRIEND_LIST: 'GET_GROUP_FRIEND_LIST',
 };
 export const upadateEditGivingGroupObj = (editGivingGroupObject = {}) => dispatch =>
     dispatch({
@@ -510,4 +512,49 @@ export const removeGroupMember = (userId, groupId) => (dispatch) => {
     return coreApi.patch(`/members/removeMember`, params).then(() => {
         dispatch(getGroupMembers(groupId));
     });
+};
+
+export const getMyfriendsList = (groupId, pageNumber = 1) => (dispatch) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.GET_GROUP_FRIEND_LIST,
+    };
+    return coreApi.get(`/groups/${groupId}/nonGroupFriends`, {
+        params: {
+            dispatch,
+            'page[number]': pageNumber,
+            'page[size]': 10,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (!_isEmpty(result) && !_isEmpty(result.data)) {
+            fsa.payload = result;
+            dispatch(fsa);
+        }
+    }).catch((error) => {
+        console.log('Error');
+    }).finally();
+};
+
+export const searchFriendList = (groupId, searchStr, pageNumber = 1) => (dispatch) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.GET_GROUP_FRIEND_LIST,
+    };
+    return coreApi.get(`/groups/${groupId}/nonGroupFriends`, {
+        params: {
+            dispatch,
+            'filter[groupMembers]': searchStr,
+            'page[number]': pageNumber,
+            'page[size]': 10,
+            sort: 'first_name',
+            uxCritical: true,
+        },
+    }).then((result) => {
+        debugger;
+        if (!_isEmpty(result) && !_isEmpty(result.data)) {
+            fsa.payload = result;
+            dispatch(fsa);
+        }
+    }).finally();
 };

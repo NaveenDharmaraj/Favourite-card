@@ -85,6 +85,14 @@ const createGivingGroup = (state = {}, action) => {
                 widgetCode: action.payload,
             };
             break;
+        case actionTypes.GET_GROUP_FRIEND_LIST:
+            newState = {
+                ...state,
+                friendsList: action.payload.data,
+                friendsListCount: action.payload.meta.recordCount,
+                friendsListPageCount: action.payload.meta.pageCount,
+            };
+            break;
         default:
             break;
     }

@@ -1,3 +1,4 @@
+import React, { Fragment, useState, useRef, useEffect } from 'react';
 import { Icon } from 'semantic-ui-react';
 
 import ModalContent from '../../Give/Tools/modalContent';
@@ -12,7 +13,10 @@ const EditGivingGoal = ({
     handleOnDateChange,
     validity
 }) => {
+    debugger
     return (
+        <Fragment>
+        <p>Making changes to your giving goal will not affect the money raised so far.</p>
         <div className='givingGoalForm'>
             <div className="field">
                 <label>{formatMessage('createGivingGroupGivingGoal.givingGoalAmount')}</label>
@@ -54,8 +58,8 @@ const EditGivingGoal = ({
                 }
             </div>
         </div>
-    )
-
+        </Fragment>
+    );
 }
 
 EditGivingGoal.defaultProps = {
@@ -67,5 +71,6 @@ EditGivingGoal.defaultProps = {
     handleInputOnBlurGivingGoal: () => { },
     handleOnDateChange: () => { },
     validity: {}
-}
+};
+
 export default React.memo(EditGivingGoal);

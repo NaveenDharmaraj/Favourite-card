@@ -40,12 +40,10 @@ const GroupProfileEdit = (props) => {
             Router.push('/search');
         } else if (redirectToPrivateGroupErrorPage) {
             Router.pushRoute('/group/error');
-            return;
         } else if (_isEmpty(manageGivingGroupAccordianOptions[step]) && _isEmpty(substep)) {
-            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions['edit'].route}`);
-            return;
+            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions.edit.route}`);
         } else if (substep && _isEmpty(manageGivingGroupAccordianMenuOptions[substep])) {
-            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions['edit'].route}/${manageGivingGroupAccordianMenuOptions['basic'].route}`)
+            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions.edit.route}/${manageGivingGroupAccordianMenuOptions.basic.route}`);
         } else if (!isAdmin) {
             Router.pushRoute(`/groups/${slug}`);
         }
@@ -79,20 +77,17 @@ GroupProfileEdit.getInitialProps = async ({
             step: query.step,
             substep: query.substep,
         };
-    }
-    catch (err) {
+    } catch (err) {
         //handle error
     }
-    return {}
-}
-
-const mapStateToProps = (state) => {
-    return {
-        groupDetails: state.group.groupDetails,
-        redirectToDashboard: state.group.redirectToDashboard,
-        redirectToPrivateGroupErrorPage: state.group.redirectToPrivateGroupErrorPage,
-    };
+    return {};
 };
+
+const mapStateToProps = (state) => ({
+    groupDetails: state.group.groupDetails,
+    redirectToDashboard: state.group.redirectToDashboard,
+    redirectToPrivateGroupErrorPage: state.group.redirectToPrivateGroupErrorPage,
+});
 
 GroupProfileEdit.defaultProps = {
     dispatch: () => { },
@@ -115,5 +110,3 @@ export {
     GroupProfileEdit,
     mapStateToProps,
 };
-
-

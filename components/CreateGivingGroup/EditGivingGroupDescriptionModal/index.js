@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Button, Card, Form, Icon, Modal, TextArea } from "semantic-ui-react";
+import { Button, Card, Form, Icon, Modal, TextArea, Segment, Header } from "semantic-ui-react";
 
 import { editGivingGroupApiCall } from "../../../actions/createGivingGroup";
 import { aboutDescriptionLimit, intializeCreateGivingGroup } from "../../../helpers/createGrouputils";
@@ -18,7 +18,7 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
     const [disableSave, setDisableSave] = useState(true)
     const [doesDescriptionPresent, setDoesDescriptionPresent] = useState(true);
     const handleReset = () => {
-        setShowModal(false)
+        setShowModal(false);
         setDisableSave(true);
         setDoesDescriptionPresent(true);
     }
@@ -36,12 +36,12 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
         }, groupId))
             .then(() => {
                 handleReset();
-                setEditDescription(editDescription)
+                setEditDescription(editDescription);
             })
             .catch(() => {
                 //handle error
-            })
-    }
+            });
+    };
 
     return (
         <Modal
@@ -51,10 +51,10 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
             open={showModal}
             onClose={() => handleReset()}
             trigger={
-                <Card as='div' onClick={() => setShowModal(true)}>
-                    <Card.Header>Group description</Card.Header>
-                    <Card.Content>{short}</Card.Content>
-                </Card>
+                <div className="group_box" onClick={() => setShowModal(true)}>
+                    <h3>Group description</h3>
+                    <p>{short}</p>
+                </div>
             }
             dimmer="inverted"
         >

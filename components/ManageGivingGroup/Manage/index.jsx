@@ -150,9 +150,11 @@ const Manage = () => {
             </div>
             {(!_isEmpty(pendingList) || pendingPlaceholderStatus)
             && (
-                <Header className="titleHeader">
-                Invites sent
-                </Header>
+                <div className="invite-heading">
+                    <h3>
+                        Invites sent
+                    </h3>
+                </div>
             )}
             {pendingPlaceholderStatus
                 ? (
@@ -171,9 +173,11 @@ const Manage = () => {
                         </Table.Body>
                     </Table>
                 )}
-            <Header className="titleHeader">
+            <div className="invite-heading">
+                <h3>
                 Members
-            </Header>
+                </h3>
+            </div>
             <div className="memberswapper">
                 {(memberCount)
                 && (

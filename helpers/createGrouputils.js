@@ -50,7 +50,7 @@ export const intializeCreateGivingGroup = {
     type: "groups",
     attributes: {
         name: "",
-        prefersInviteOnly: "0",
+        prefersInviteOnly: false,
         prefersRecurringEnabled: "0",
         city: "",
         province: "",

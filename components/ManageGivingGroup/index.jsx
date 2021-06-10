@@ -1,5 +1,4 @@
 import React, {
-    Fragment,
     useRef,
 } from 'react';
 import {
@@ -29,7 +28,10 @@ import {
 
 import ManageGivingGroupAccordian from './ManageGivingGroupAccordian';
 
-const ManageGivingGroup = ({ step, substep }) => {
+const ManageGivingGroup = ({
+    step,
+    substep,
+}) => {
     const editGivingGroupStoreFlowObject = useSelector((state) => (
         state.createGivingGroup.editGivingGroupStoreFlowObject || intializeCreateGivingGroup
     ));
@@ -132,7 +134,7 @@ const ManageGivingGroup = ({ step, substep }) => {
                             <Grid.Column mobile={16} tablet={6} computer={5} className="returnBtnWrap">
                                 <Link route={`/groups/${slug}`}>
                                     <Button
-                                        className='blue-bordr-btn-round-def'
+                                        className="blue-bordr-btn-round-def"
                                     >
                                     Return to profile
                                     </Button>

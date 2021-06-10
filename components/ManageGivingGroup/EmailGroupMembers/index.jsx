@@ -52,15 +52,16 @@ const EmailGroupMembers = () => {
                         value={emailMessage}
                         onChange={updateMessage}
                     />
-                    <Button
-                        className="blue-btn-rounded-def emailmessagebtn"
-                        disabled={_isEmpty(emailMessage) || showLoader}
-                        onClick={sendEmail}
-                        floated="right"
-                        loading={showLoader}
-                    >
-                            Send message
-                    </Button>
+                    <div className="email-group-members">
+                        <Button
+                            className="blue-btn-rounded-def emailmessagebtn"
+                            disabled={_isEmpty(emailMessage) || showLoader}
+                            onClick={sendEmail}
+                            loading={showLoader}
+                        >
+                                Send message
+                        </Button>
+                    </div>
                 </div>
             </Form>
         </div>

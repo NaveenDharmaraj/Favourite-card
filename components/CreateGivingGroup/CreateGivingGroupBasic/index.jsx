@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+    useState,
+    useEffect,
+} from 'react';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Container,
@@ -11,19 +14,32 @@ import {
     Icon,
     Checkbox,
 } from 'semantic-ui-react';
-import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, intializeCreateGivingGroup, intializeValidity, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import {
+    useDispatch,
+    useSelector,
+} from 'react-redux';
 import {
     PropTypes,
 } from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
 
+import {
+    createGivingGroupBreadCrum,
+    CreateGivingGroupFlowSteps,
+    intializeCreateGivingGroup,
+    intializeValidity,
+    ValidateCreateGivingGroup,
+} from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
-import { actionTypes, editGivingGroupApiCall, getUniqueCities, getProvincesList, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import {
+    actionTypes,
+    editGivingGroupApiCall,
+    getUniqueCities,
+    getProvincesList,
+    updateCreateGivingGroupObj,
+} from '../../../actions/createGivingGroup';
 import { withTranslation } from '../../../i18n';
 import CreateGivingGroupHeader from '../CreateGivingGroupHeader';
-
-
 
 const CreateGivingGroupBasic = ({
     createGivingGroupStoreFlowObject,
@@ -33,7 +49,7 @@ const CreateGivingGroupBasic = ({
     showBasic,
     showButton,
     showMonthly,
-    t
+    t,
 }) => {
     const formatMessage = t;
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
@@ -41,26 +57,55 @@ const CreateGivingGroupBasic = ({
     const whoCanSeeOptions = [
         {
             key: 'CreateGivingGroupBasic.whoCanSeeDropdownPublic',
-            text: <span className='text'><Icon className='globe' />{formatMessage('createGivingGroupBasic.whoCanSeeDropdownPublic')}</span>,
+            text: (
+                <span className="text">
+                    <Icon className="globe" />
+                    {formatMessage('createGivingGroupBasic.whoCanSeeDropdownPublic')}
+                </span>),
             value: 'Public',
         },
         {
             key: 'CreateGivingGroupBasic.whoCanSeeDropdownPrivate',
-            text: <span className='text'><Icon className='lock' />{formatMessage('createGivingGroupBasic.whoCanSeeDropdownPrivate')}</span>,
+            text: (
+                <span className="text">
+                    <Icon className="lock" />
+                    {formatMessage('createGivingGroupBasic.whoCanSeeDropdownPrivate')}
+                </span>),
             value: 'Private',
         },
     ];
     const dispatch = useDispatch();
-    const createGivingGroupStoreFlowObjectValues = fromCreate ? createGivingGroupStoreFlowObject : editGivingGroupStoreFlowObject;
-    const [createGivingGroupObject, setCreateGivingGroupObject] = useState(createGivingGroupStoreFlowObjectValues);
-    const [validity, setValidity] = useState(intializeValidity);
-    const provinceOptions = useSelector(state => state.createGivingGroup.provinceOptions || []);
-    const provincesListLoader = useSelector(state => state.createGivingGroup.provincesListLoader || false);
-    const uniqueCities = useSelector(state => state.createGivingGroup.uniqueCities || []);
-    const uniqueCitiesLoader = useSelector(state => state.createGivingGroup.uniqueCitiesLoader || false);
-    const [showCitiesDropdown, setShowCitiesDropdown] = useState(false);
-    const [disableContinue, setDisableContinue] = useState(_isEmpty(createGivingGroupObject.attributes.name));
-    const [enableCitySearchOption, setEnableCitySearchOption] = useState(false);
+    const createGivingGroupStoreFlowObjectValues = fromCreate
+        ? createGivingGroupStoreFlowObject : editGivingGroupStoreFlowObject;
+    const provinceOptions = useSelector((state) => state.createGivingGroup.provinceOptions || []);
+    const provincesListLoader = useSelector(
+        (state) => state.createGivingGroup.provincesListLoader || false,
+    );
+    const uniqueCities = useSelector((state) => state.createGivingGroup.uniqueCities || []);
+    const uniqueCitiesLoader = useSelector(
+        (state) => state.createGivingGroup.uniqueCitiesLoader || false,
+    );
+    const [
+        createGivingGroupObject,
+        setCreateGivingGroupObject,
+    ] = useState(createGivingGroupStoreFlowObjectValues);
+    const [
+        validity,
+        setValidity,
+    ] = useState(intializeValidity);
+    const [
+        showCitiesDropdown,
+        setShowCitiesDropdown,
+    ] = useState(false);
+    const [
+        disableContinue,
+        setDisableContinue,
+    ] = useState(_isEmpty(createGivingGroupObject.attributes.name));
+    const [
+        enableCitySearchOption,
+        setEnableCitySearchOption,
+    ] = useState(false);
+
     const {
         attributes: {
             city,
@@ -68,47 +113,50 @@ const CreateGivingGroupBasic = ({
             prefersInviteOnly,
             prefersRecurringEnabled,
             province,
-        }
+        },
     } = createGivingGroupObject;
+
     useEffect(() => {
-        scrollTo(0, 0);
+        // scrollTo(0, 0);
         _isEmpty(provinceOptions) && dispatch(getProvincesList(1, 50));
         if (city !== '') {
             dispatch({
+                payload: [
+                    {
+                        key: city,
+                        text: city,
+                        value: city,
+                    },
+                ],
                 type: actionTypes.GET_UNIQUE_CITIES,
-                payload: [{
-                    key: city,
-                    value: city,
-                    text: city,
-                }],
             });
         }
     }, []);
 
     const handleOnChange = (event, data) => {
         let {
+            checked,
             name,
             value,
-            checked,
         } = data || event.target;
         switch (name) {
             case 'prefersInviteOnly':
-                value = value === 'Public' ? "0" : "1";
+                value = (value === 'Public') ? '0' : '1';
                 break;
             case 'prefersRecurringEnabled':
-                value = checked ? "1" : "0";
+                value = checked ? '1' : '0';
                 break;
             case 'name':
                 setDisableContinue(false);
                 break;
             case 'province':
-                if (value === "defaultProvince") {
-                    value = ""
+                if (value === 'defaultProvince') {
+                    value = '';
                     createGivingGroupObject.attributes.city = '';
                 } else {
                     dispatch(getUniqueCities(1, 50, value));
                 }
-                createGivingGroupObject.attributes.city = ''
+                createGivingGroupObject.attributes.city = '';
                 break;
             case 'city':
                 setShowCitiesDropdown(false);
@@ -120,7 +168,7 @@ const CreateGivingGroupBasic = ({
             ...createGivingGroupObject,
             attributes: {
                 ...createGivingGroupObject.attributes,
-                [name]: value
+                [name]: value,
             },
         });
         setValidity(ValidateCreateGivingGroup(validity, name, value));
@@ -154,57 +202,68 @@ const CreateGivingGroupBasic = ({
         if (name === 'prefersRecurringEnabled') {
             value = checked ? "1" : "0";
             dispatch(editGivingGroupApiCall({
-                'attributes': {
-                    'prefersRecurringEnabled': value
-                }
+                attributes: {
+                    prefersRecurringEnabled: value,
+                },
             }, groupId))
                 .then(() => {
                     setCreateGivingGroupObject({
                         ...createGivingGroupObject,
                         attributes: {
                             ...createGivingGroupObject.attributes,
-                            [name]: value
+                            [name]: value,
                         },
                     });
                 })
                 .catch(() => {
                     //handle error
-                })
+                });
             return;
         }
         dispatch(editGivingGroupApiCall({
-            'attributes': {
-                'province': createGivingGroupObject.attributes.province,
-                'name': createGivingGroupObject.attributes.name,
-                'city': createGivingGroupObject.attributes.city,
-                'prefersInviteOnly': createGivingGroupObject.attributes.prefersInviteOnly === "0" ? "Public" : "Private",
-            }
+            attributes: {
+                city: createGivingGroupObject.attributes.city,
+                name: createGivingGroupObject.attributes.name,
+                prefersInviteOnly: createGivingGroupObject.attributes.prefersInviteOnly === '0' ? 'Public' : 'Private',
+                province: createGivingGroupObject.attributes.province,
+            },
         }, groupId))
             .then(() => {
                 setDisableContinue(true);
             })
             .catch(() => {
                 // handle error
-            })
-    }
+            });
+    };
+    debugger
     return (
         <Container>
             <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
-                {fromCreate && <CreateGivingGroupHeader
-                    breakCrumArray={breakCrumArray}
-                    currentActiveStepCompleted={currentActiveStepCompleted}
-                    header={formatMessage('createGivingGroupHeader')}
-                />
+                {fromCreate
+                && (
+                    <CreateGivingGroupHeader
+                        breakCrumArray={breakCrumArray}
+                        currentActiveStepCompleted={currentActiveStepCompleted}
+                        header={formatMessage('createGivingGroupHeader')}
+                    />
+                )
                 }
-                <div className='mainContent'>
-                    <div className='basicsettings'>
-                        {showBasic && <Header className='titleHeader'>{formatMessage('createGivingGroupBasic.basicHeader')}</Header>}
+                <div className="mainContent">
+                    <div className="basicsettings">
+                        {showBasic
+                        && (
+                            <Header className="titleHeader">
+                                {formatMessage('createGivingGroupBasic.basicHeader')}
+                            </Header>
+                        )
+                        }
                         <Form>
-                            {showBasic &&
-                                <div className='createnewSec'>
+                            {showBasic
+                            && (
+                                <div className="createnewSec">
                                     <div className="requiredfield field">
                                         <Form.Field
-                                            id='form-input-control-group-name'
+                                            id="form-input-control-group-name"
                                             name="name"
                                             control={Input}
                                             label={formatMessage('createGivingGroupBasic.groupLabel')}
@@ -214,8 +273,13 @@ const CreateGivingGroupBasic = ({
                                             onBlur={handleOnBlur}
                                             error={!validity.doesNameExist}
                                         />
-                                        {!validity.doesNameExist &&
-                                            <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
+                                        {!validity.doesNameExist
+                                        && (
+                                            <p className="error-message">
+                                                <Icon name="exclamation circle" />
+                                                The field is required
+                                            </p>
+                                        )
                                         }
                                     </div>
                                     <Form.Group widths='equal'>
@@ -249,7 +313,7 @@ const CreateGivingGroupBasic = ({
                                                     key: formatMessage('createGivingGroupBasic.cityPlaceholder'),
                                                     text: formatMessage('createGivingGroupBasic.cityPlaceholder'),
                                                     value: "",
-                                                }].concat(uniqueCities)
+                                                }].concat(uniqueCities),
                                             })}
                                             value={city}
                                             onChange={handleOnChange}
@@ -267,81 +331,89 @@ const CreateGivingGroupBasic = ({
                                         <Dropdown
                                             inline
                                             options={whoCanSeeOptions}
-                                            value={whoCanSeeOptions[prefersInviteOnly].value}
+                                            value={(!editGivingGroupStoreFlowObject.attributes.prefersInviteOnly ? 'Public' : 'Private')} // {whoCanSeeOptions[prefersInviteOnly].value}
                                             icon='chevron down'
                                             className='whocanseeDropdown'
                                             name='prefersInviteOnly'
                                             onChange={handleOnChange}
                                         />
                                     </div>
-                                </div>
-                            }
-                            {showMonthly && <div className='createnewSec'>
-                                <Header className='sectionHeader'>{formatMessage('createGivingGroupBasic.monthlyGiftsHeader')}</Header>
-                                <p>{formatMessage('createGivingGroupBasic.monthlyGiftsDescription')}</p>
-                                <Checkbox
-                                    checked={prefersRecurringEnabled === "1"}
-                                    toggle
-                                    className="c-chkBox left"
-                                    id="discoverability"
-                                    name="prefersRecurringEnabled"
-                                    label={formatMessage('createGivingGroupBasic.monthlyGiftsLabel')}
-                                    onChange={
-                                        (event, data) => {
-                                            fromCreate ? handleOnChange(event, data) : handleEditSave(event, data)
-                                        }
+                                    {showButton
+                                        && (
+                                            <div className="buttonsWrap">
+                                                <Button
+                                                    className="blue-btn-rounded-def"
+                                                    disabled={disableContinue || !validity.doesNameExist}
+                                                    onClick={
+                                                        (event, data) => (
+                                                            fromCreate ? handleContinue() : handleEditSave(event, data)
+                                                        )}
+                                                >
+                                                    {fromCreate ? formatMessage('continueButton') : 'Save'}
+                                                </Button>
+                                            </div>
+                                        )
                                     }
-                                />
-                            </div>
+                                </div>
+                            )
+                            }
+                            {showMonthly
+                            && (
+                                <div className="createnewSec">
+                                    <Header className="sectionHeader">{formatMessage('createGivingGroupBasic.monthlyGiftsHeader')}</Header>
+                                    <p>{formatMessage('createGivingGroupBasic.monthlyGiftsDescription')}</p>
+                                    <Checkbox
+                                        checked={prefersRecurringEnabled === '1'}
+                                        toggle
+                                        className="c-chkBox left"
+                                        id="discoverability"
+                                        name="prefersRecurringEnabled"
+                                        label={formatMessage('createGivingGroupBasic.monthlyGiftsLabel')}
+                                        onChange={
+                                            (event, data) => (fromCreate ? handleOnChange(event, data) : handleEditSave(event, data))
+                                        }
+                                    />
+                                </div>
+                            )
                             }
                         </Form>
-                        {showButton && (<div className='buttonsWrap'>
-                            <Button
-                                className='blue-btn-rounded-def'
-                                disabled={disableContinue || !validity.doesNameExist}
-                                onClick={(event, data) => { fromCreate ? handleContinue() : handleEditSave(event, data) }}
-                            >
-                                {fromCreate ? formatMessage('continueButton') : 'Save'}
-                            </Button>
-                        </div>)
-                        }
                     </div>
                 </div>
-            </div >
-        </Container >
+            </div>
+        </Container>
     );
-}
+};
 
 CreateGivingGroupBasic.defaultProps = {
     createGivingGroupStoreFlowObject: { ...intializeCreateGivingGroup },
     editGivingGroupStoreFlowObject: { ...intializeCreateGivingGroup },
+    fromCreate: true,
     groupId: '',
     showBasic: true,
     showButton: true,
-    fromCreate: true,
     showMonthly: true,
 };
 
 CreateGivingGroupBasic.prototype = {
     createGivingGroupStoreFlowObject: PropTypes.shape({
-        type: PropTypes.string,
         attributes: PropTypes.shape({
+            city: PropTypes.string,
+            fundraisingCreated: PropTypes.string,
+            fundraisingDate: PropTypes.string,
+            fundraisingGoal: PropTypes.string,
+            logo: PropTypes.string,
             name: PropTypes.string.isRequired,
             prefersInviteOnly: PropTypes.string,
             prefersRecurringEnabled: PropTypes.string,
-            city: PropTypes.string,
             province: PropTypes.string,
             short: PropTypes.string.isRequired,
-            fundraisingGoal: PropTypes.string,
-            fundraisingDate: PropTypes.string,
-            fundraisingCreated: PropTypes.string,
-            logo: PropTypes.string,
             videoUrl: PropTypes.string,
         }),
-        groupPurposeDescriptions: PropTypes.array,
         beneficiaryItems: PropTypes.array,
         galleryImages: PropTypes.array,
-    })
+        groupPurposeDescriptions: PropTypes.array,
+        type: PropTypes.string,
+    }),
 };
 
 export default withTranslation('givingGroup')(CreateGivingGroupBasic);

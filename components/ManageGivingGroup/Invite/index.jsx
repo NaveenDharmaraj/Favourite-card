@@ -1,5 +1,6 @@
 import React, {
     useState,
+    useEffect,
 } from 'react';
 import {
     useDispatch,
@@ -16,16 +17,54 @@ import {
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
+import Pagination from '../../shared/Pagination';
 import {
     sendEmailInvite,
+    getMyfriendsList,
+    searchFriendList,
 } from '../../../actions/createGivingGroup';
+import MemberListCard from '../Manage/MemberListCard';
 
 const Invite = () => {
     const groupDetails = useSelector((state) => state.group.groupDetails);
+    const friendsList = useSelector((state) => state.createGivingGroup.friendsList);
+    const friendsListPageCount = useSelector((state) => state.createGivingGroup.friendsListPageCount);
     const dispatch = useDispatch();
     const [emails, setemails] = useState('');
     const [message, setmessage] = useState('');
     const [showLoader, setshowLoader] = useState(false);
+    const [inviteData, setinviteData] = useState([]);
+    const [searchStr, setsearchStr] = useState('');
+    const [
+        currentActivePage,
+        setcurrentActivePage,
+    ] = useState(1);
+
+    useEffect(() => {
+        dispatch(getMyfriendsList(groupDetails.id));
+    }, []);
+
+    useEffect(() => {
+        const tempArr = [];
+        if (!_isEmpty(friendsList)) {
+            friendsList.map((data) => {
+                tempArr.push(
+                    <MemberListCard
+                        memberData={data}
+                        groupId={groupDetails.id}
+                        isInvite={false}
+                        isSingleAdmin={false}
+                        isFriendList
+                    />,
+                );
+            });
+            setinviteData(tempArr);
+        }
+
+    }, [
+        friendsList,
+    ]);
+
     const handleEmail = (event) => {
         setemails(event.target.value);
     };
@@ -51,6 +90,23 @@ const Invite = () => {
         });
     };
 
+    const onPageChanged = (event, data) => {
+        setcurrentActivePage(data.activePage);
+        // if (!_isEmpty(searchText)) {
+        //     dispatch(searchFriendList(groupDetails.id, searchText, data.activePage));
+        // } else {
+        dispatch(getMyfriendsList(groupDetails.id, data.activePage));
+        // }
+    };
+
+    const updateSearch = (event) => {
+        setsearchStr(event.target.value);
+    };
+
+    const handleSearch = () => {
+        dispatch(searchFriendList(groupDetails.id, searchStr));
+    };
+
     return (
         <div className="basicsettings">
             <Header className="titleHeader">
@@ -63,195 +119,37 @@ const Invite = () => {
                         <Input
                             fluid
                             placeholder="Search friends"
+                            onChange={updateSearch}
+                            value={searchStr}
                         />
                         <div className="search-btn campaignSearch">
                             <a>
-                                <Icon name="search" />
+                                <Icon
+                                    name="search"
+                                    onClick={handleSearch}
+                                />
                             </a>
                         </div>
                     </div>
                 </div>
                 <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
                     <Table.Body>
-                        {/* <Table.Row className="ManageWappeer">
-                            <Table.Cell className="ManageGroup">
-                                <List verticalAlign="middle">
-                                    <List.Item>
-                                        <Image src={imageManage} className="imgManage" />
-                                        <List.Content>
-                                            <List.Header className="ManageAdmin">
-                                                Name Here
-                                            </List.Header>
-                                            <List.Description>
-                                                <p>
-                                                    Vancouver, BC
-                                                </p>
-                                            </List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </Table.Cell>
-                            <Table.Cell className="Managebtn">
-                                <Button
-                                    className="blue-btn-rounded-def disabled btnFrinend">
-                                    Sent
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                        <Table.Row className="ManageWappeer">
-                            <Table.Cell className="ManageGroup">
-                                <List verticalAlign="middle">
-                                    <List.Item>
-                                        <Image src={imageManage} className="imgManage" />
-                                        <List.Content>
-                                            <List.Header className="ManageAdmin">
-                                                Name Here
-                                            </List.Header>
-                                            <List.Description>
-                                                <p>
-                                                    Vancouver, BC
-                                                </p>
-                                            </List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </Table.Cell>
-                            <Table.Cell className="Managebtn">
-                                <Button
-                                    className="btnFrinend blue-bordr-btn-round-def">
-                                    Invite
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                        <Table.Row className="ManageWappeer">
-                            <Table.Cell className="ManageGroup">
-                                <List verticalAlign="middle">
-                                    <List.Item>
-                                        <Image src={imageManage} className="imgManage" />
-                                        <List.Content>
-                                            <List.Header className="ManageAdmin">
-                                                Name Here
-                                            </List.Header>
-                                            <List.Description>
-                                                <p>
-                                                    Vancouver, BC
-                                                </p>
-                                            </List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </Table.Cell>
-                            <Table.Cell className="Managebtn">
-                                <Button
-                                    className="btnFrinend blue-bordr-btn-round-def">
-                                    Invite
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                        <Table.Row className="ManageWappeer">
-                            <Table.Cell className="ManageGroup">
-                                <List verticalAlign="middle">
-                                    <List.Item>
-                                        <Image src={imageManage} className="imgManage" />
-                                        <List.Content>
-                                            <List.Header className="ManageAdmin">
-                                                Name Here
-                                            </List.Header>
-                                            <List.Description>
-                                                <p>
-                                                    Vancouver, BC
-                                                </p>
-                                            </List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </Table.Cell>
-                            <Table.Cell className="Managebtn">
-                                <Button
-                                    className="btnFrinend blue-bordr-btn-round-def">
-                                    Invite
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                        <Table.Row className="ManageWappeer">
-                            <Table.Cell className="ManageGroup">
-                                <List verticalAlign="middle">
-                                    <List.Item>
-                                        <Image src={imageManage} className="imgManage" />
-                                        <List.Content>
-                                            <List.Header className="ManageAdmin">
-                                                Name Here
-                                            </List.Header>
-                                            <List.Description>
-                                                <p>
-                                                    Vancouver, BC
-                                                </p>
-                                            </List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </Table.Cell>
-                            <Table.Cell className="Managebtn">
-                                <Button
-                                    className="btnFrinend blue-bordr-btn-round-def">
-                                    Invite
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                        <Table.Row className="ManageWappeer">
-                            <Table.Cell className="ManageGroup">
-                                <List verticalAlign="middle">
-                                    <List.Item>
-                                        <Image src={imageManage} className="imgManage" />
-                                        <List.Content>
-                                            <List.Header className="ManageAdmin">
-                                                Name Here
-                                            </List.Header>
-                                            <List.Description>
-                                                <p>
-                                                    Vancouver, BC
-                                                </p>
-                                            </List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </Table.Cell>
-                            <Table.Cell className="Managebtn">
-                                <Button
-                                    className="btnFrinend blue-bordr-btn-round-def">
-                                    Invite
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
-                        <Table.Row className="ManageWappeer">
-                            <Table.Cell className="ManageGroup">
-                                <List verticalAlign="middle">
-                                    <List.Item>
-                                        <Image src={imageManage} className="imgManage" />
-                                        <List.Content>
-                                            <List.Header className="ManageAdmin">
-                                                Name Here
-                                            </List.Header>
-                                            <List.Description>
-                                                <p>
-                                                    Vancouver, BC
-                                                </p>
-                                            </List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </Table.Cell>
-                            <Table.Cell className="Managebtn">
-                                <Button
-                                    className="btnFrinend blue-bordr-btn-round-def">
-                                    Invite
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row> */}
-
+                        {inviteData}
                     </Table.Body>
                 </Table>
-
+                <div className="paginationWraper group_pagination">
+                    <div className="db-pagination">
+                        {
+                            !_isEmpty(inviteData) && friendsListPageCount > 1 && (
+                                <Pagination
+                                    activePage={currentActivePage}
+                                    totalPages={friendsListPageCount}
+                                    onPageChanged={onPageChanged}
+                                />
+                            )
+                        }
+                    </div>
+                </div>
             </div>
             <div className="Invitepeople">
                 <Header as="h3" className="message_bottom">Invite people with a personal message</Header>
@@ -270,18 +168,19 @@ const Invite = () => {
                         onChange={handleMessage}
                         value={message}
                     />
-                    <Button
-                        className="blue-btn-rounded-def Invitagebtn"
-                        floated="right"
-                        onClick={sendInvite}
-                        disabled={_isEmpty(emails) || _isEmpty(message) || showLoader}
-                        loading={showLoader}
-                    >
-                    Send invite
-                    </Button>
+                    <div className="email-group-members">
+                        <Button
+                            className="blue-btn-rounded-def Invitagebtn"
+                            onClick={sendInvite}
+                            disabled={_isEmpty(emails) || _isEmpty(message) || showLoader}
+                            loading={showLoader}
+                        >
+                        Send invite
+                        </Button>
+                    </div>
                 </Form>
             </div>
-            {/* <div className="Invitepeople">
+            <div className="Invitepeople">
                 <Header as='h3'>Or share link</Header>
                 <div className="linkhtp">
                     <Input type="text" value="https://charitableimpact.com/share-this-awesome-link" />
@@ -292,7 +191,7 @@ const Invite = () => {
                 <div className="Shared_ShareProfile">
                     <i aria-hidden="true" class="facebook icon"></i>
                 </div>
-            </div> */}
+            </div>
         </div>
 
     );
