@@ -342,24 +342,15 @@ class DashboradList extends React.Component {
                                             {transactionSign}
                                             {amount}
                                             <Header.Subheader>
-                                                {isGiftCancelled
-                                                    ? (
-                                                        transactionTypeDisplay
-                                                    )
-                                                    : (
-                                                        <Fragment>
-                                                            {descriptionType}
-                                                            {(profileUrl) ? (
-                                                                <span>
-                                                                    {entity}
-                                                                </span>
-                                                            ) : (
-                                                                <span>
-                                                                    {entity}
-                                                                </span>
-                                                            )}
-                                                        </Fragment>
-                                                    )}
+                                                <Fragment>
+                                                    {descriptionType}
+                                                    <span>
+                                                        {entity}
+                                                    </span>
+                                                    {isGiftCancelled && (
+                                                        <div className='mt-1'>{transactionTypeDisplay}</div>
+                                                    ) }
+                                                </Fragment>
                                             </Header.Subheader>
                                         </Header>
                                     </div>
