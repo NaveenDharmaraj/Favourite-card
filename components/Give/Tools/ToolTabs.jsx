@@ -151,7 +151,7 @@ class ToolTabs extends React.Component {
     }
     panes = [
         {
-            menuItem: 'Scheduled Deposits',
+            menuItem: 'Scheduled deposits',
             render: () => {
                 const {
                     monthlyTransactionApiCall,
@@ -179,7 +179,7 @@ class ToolTabs extends React.Component {
             }
         },
         {
-            menuItem: 'Scheduled Gifts',
+            menuItem: 'Scheduled gifts',
             render: () => {
                 const {
                     monthlyTransactionApiCall,

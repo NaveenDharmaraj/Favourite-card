@@ -168,6 +168,13 @@ const testCardList = [
     { behaviour: '3D secure not supported or required', number: '378282246310005', type: '-' },
 ];
 
+const p2pScheduleOptions = {
+    once: 'Once',
+    monthly: 'Monthly',
+    weekly: 'Weekly',
+    yearly: 'Annually',
+};
+
 export {
     countryOptions,
     countryOptionsFrench,
@@ -175,5 +182,6 @@ export {
     canadaProvinceOptionsFrench,
     usStateOptions,
     usStateOptionsFrench,
-    testCardList
+    testCardList,
+    p2pScheduleOptions
 };

@@ -1882,6 +1882,7 @@ h4{
       .btn-ellipsis-full-width{
         display: flex;
         align-items: center;
+        justify-content: flex-end;
         .ui{
           &.dropdown{
               &.dropdown_ellipsis_action{
@@ -9917,5 +9918,63 @@ body{
     &::before{
       background-color: #000;
     }
+  }
+}
+.chimp-modal{
+  &.acntActivityModel{
+    .acntActivityContent{
+      &.activityModel{
+        @media only screen and (max-width:768px) {
+        padding: 15px 0px 15px 0px !important;
+        }
+      }
+    }
+  }
+  .ui{
+    &.icon{
+      &.positive{
+        &.message{
+          &.mdlMessage{
+            margin-left: auto;
+            margin-right: auto;
+            position: absolute;
+            z-index: 99;
+            right: 0;
+            left: 0;
+          }
+        }
+      }
+    }
+  }
+}
+.responsiveTable{
+  .tbl_border_bottom{
+    tbody{
+      tr{
+        &.error-msg-row-for-p2p-once{
+         td{
+           border-bottom: none !important;
+           padding-bottom: 0px !important;
+         }
+        }
+        &.error-msg-p2p-once{
+          td{
+            padding-top: 10px !important;
+            padding-bottom: 0px !important;
+            p{
+              &.error-message{
+                padding-bottom: 15px;
+                padding-bottom: 16px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.error-message{
+  @media only screen and (max-width:768px) {
+  padding: 0px 15px 20px 15px !important;
   }
 }
