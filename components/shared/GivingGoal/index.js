@@ -43,29 +43,29 @@ const GivingGoal = ({
         previousGivingGroupObject.current = createGivingGroupObjectClone;
     }, [])
     const toolTopPos = (goalValue) => {
-
         if (goalValue < 20) {
             return 'top left';
-        }
-        else if (goalValue > 80) {
+        } else if (goalValue > 80) {
             return 'top right';
-        }
-        else if (goalValue > 20 && goalValue < 80) {
+        } else if (goalValue > 20 && goalValue < 80) {
             return 'top center';
         }
-    }
+    };
+
     const handleClose = () => {
         setShowEditModal(false);
         setCreateGivingGroupObject(previousGivingGroupObject.current);
-    }
+    };
+
     const handleSaveGivingGoal = () => {
         setShowEditModal(false);
         handleCreateGroup()
-    }
+    };
+
     const handleDeleteGivingGoal = () => {
         dispatch(editGivingGroupApiCall({
             attributes: {
-                fundraisingGoal: "",
+                fundraisingGoal: '',
                 fundraisingCreated: null,
                 fundraisingDate: null,
             },

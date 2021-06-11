@@ -224,7 +224,7 @@ const CreateGivingGroupBasic = ({
             attributes: {
                 city: createGivingGroupObject.attributes.city,
                 name: createGivingGroupObject.attributes.name,
-                prefersInviteOnly: createGivingGroupObject.attributes.prefersInviteOnly === '0' ? 'Public' : 'Private',
+                prefersInviteOnly: createGivingGroupObject.attributes.prefersInviteOnly !== '0',
                 province: createGivingGroupObject.attributes.province,
             },
         }, groupId))
@@ -235,7 +235,6 @@ const CreateGivingGroupBasic = ({
                 // handle error
             });
     };
-    debugger
     return (
         <Container>
             <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
@@ -331,7 +330,7 @@ const CreateGivingGroupBasic = ({
                                         <Dropdown
                                             inline
                                             options={whoCanSeeOptions}
-                                            value={(!editGivingGroupStoreFlowObject.attributes.prefersInviteOnly ? 'Public' : 'Private')} // {whoCanSeeOptions[prefersInviteOnly].value}
+                                            value={whoCanSeeOptions[prefersInviteOnly].value}
                                             icon='chevron down'
                                             className='whocanseeDropdown'
                                             name='prefersInviteOnly'

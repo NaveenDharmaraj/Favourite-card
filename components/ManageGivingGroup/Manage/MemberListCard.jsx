@@ -24,14 +24,6 @@ import {
 import ManageModal from './ManageModal';
 
 const MemberListCard = (props) => {
-    const [showAdminmodel, setshowAdminmodel] = useState(false);
-    const [showGroupModel, setshowGroupModel] = useState(false);
-    const [showMemberModal, setshowMemberModal] = useState(false);
-    const [showResendInviteModal,setshowResendInviteModal] = useState(false);
-    const [showCancelInviteModal, setshowCancelInviteModal] = useState(false);
-    const [showLoader, setshowLoader] = useState(false);
-    const [isInviteSent, setisInviteSent] = useState(false);
-    const dispatch = useDispatch();
     const {
         memberData: {
             id,
@@ -41,6 +33,7 @@ const MemberListCard = (props) => {
                 email,
                 isGroupAdmin,
                 location,
+                isGroupInviteSent,
             }
         },
         groupId,
@@ -48,6 +41,35 @@ const MemberListCard = (props) => {
         isSingleAdmin,
         isFriendList,
     } = props;
+    const [
+        showAdminmodel,
+        setshowAdminmodel,
+    ] = useState(false);
+    const [
+        showGroupModel,
+        setshowGroupModel,
+    ] = useState(false);
+    const [
+        showMemberModal,
+        setshowMemberModal,
+    ] = useState(false);
+    const [
+        showResendInviteModal,
+        setshowResendInviteModal,
+    ] = useState(false);
+    const [
+        showCancelInviteModal,
+        setshowCancelInviteModal,
+    ] = useState(false);
+    const [
+        showLoader,
+        setshowLoader,
+    ] = useState(false);
+    const [
+        isInviteSent,
+        setisInviteSent,
+    ] = useState(isGroupInviteSent);
+    const dispatch = useDispatch();
 
     const handleOnClick = (type) => {
         setshowLoader(true);
@@ -193,7 +215,7 @@ const MemberListCard = (props) => {
                         )
                         : (
                             <Button
-                                className={` ${isInviteSent ? 'blue-btn-rounded-def' : 'blue-bordr-btn-round-def'} c-small`} // {`${buttonClass} c-small`}
+                                className={` ${isInviteSent ? 'blue-btn-rounded-def' : 'blue-bordr-btn-round-def'} c-small`}
                                 onClick={handleInvite}
                                 disabled={isInviteSent}
                                 loading={showLoader}

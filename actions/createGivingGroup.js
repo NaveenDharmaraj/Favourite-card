@@ -22,6 +22,9 @@ export const actionTypes = {
     TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
     GET_GROUP_WIDGET_CODE: 'GET_GROUP_WIDGET_CODE',
     GET_GROUP_FRIEND_LIST: 'GET_GROUP_FRIEND_LIST',
+    GET_GROUP_MESSAGE_HISTORY: 'GET_GROUP_MESSAGE_HISTORY',
+    SHOW_GROUP_MESSAGE_HISTORY_LOADER: 'SHOW_GROUP_MESSAGE_HISTORY_LOADER',
+    SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER: 'SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER',
 };
 export const upadateEditGivingGroupObj = (editGivingGroupObject = {}) => dispatch =>
     dispatch({
@@ -364,6 +367,34 @@ export const toggleAdmin = (memberId, groupId, type, displayName) => (dispatch) 
     });
 };
 
+export const getMessageHistory = (groupId) => (dispatch) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.GET_GROUP_MESSAGE_HISTORY,
+    };
+    const placeholderfsa = {
+        payload: {
+            showplaceholder: true,
+        },
+        type: actionTypes.SHOW_GROUP_MESSAGE_HISTORY_LOADER,
+    };
+    dispatch(placeholderfsa);
+    return coreApi.get(`/groups/${groupId}/messageHistories`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (!_isEmpty(result) && !_isEmpty(result.data)) {
+            fsa.payload = result;
+            dispatch(fsa);
+        }
+    }).finally(() => {
+        placeholderfsa.payload.showplaceholder = false;
+        dispatch(placeholderfsa);
+    });
+};
+
 export const emailMembers = (groupId, data) => (dispatch) => {
     const toastMessageProps = {
         message: 'Your message has been sent!',
@@ -383,6 +414,7 @@ export const emailMembers = (groupId, data) => (dispatch) => {
             },
             type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
         });
+        dispatch(getMessageHistory(groupId));
     });
 };
 
@@ -519,6 +551,13 @@ export const getMyfriendsList = (groupId, pageNumber = 1) => (dispatch) => {
         payload: {},
         type: actionTypes.GET_GROUP_FRIEND_LIST,
     };
+    const placeholderfsa = {
+        payload: {
+            showplaceholder: true,
+        },
+        type: actionTypes.SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER,
+    };
+    dispatch(placeholderfsa);
     return coreApi.get(`/groups/${groupId}/nonGroupFriends`, {
         params: {
             dispatch,
@@ -531,9 +570,10 @@ export const getMyfriendsList = (groupId, pageNumber = 1) => (dispatch) => {
             fsa.payload = result;
             dispatch(fsa);
         }
-    }).catch((error) => {
-        console.log('Error');
-    }).finally();
+    }).finally(() => {
+        placeholderfsa.payload.showplaceholder = false;
+        dispatch(placeholderfsa);
+    });
 };
 
 export const searchFriendList = (groupId, searchStr, pageNumber = 1) => (dispatch) => {

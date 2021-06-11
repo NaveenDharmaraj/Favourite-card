@@ -13,7 +13,10 @@ import {
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
-import { Link } from '../../../routes';
+import {
+    Link,
+    Router,
+} from '../../../routes';
 import {
     getGroupMembers,
     getPendingInvites,
@@ -124,6 +127,10 @@ const Manage = () => {
     const handleSearch = () => {
         dispatch(searchMember(groupDetails.id, searchText));
     };
+
+    const handleEmailClick = () => {
+        Router.pushRoute(`/groups/${groupDetails.attributes.slug}/email_members`);
+    };
     return (
         <div className="basicsettings">
             <Header className="titleHeader">
@@ -191,14 +198,18 @@ const Manage = () => {
                     </div>
                 )}
                 <div className="Emailmembers">
-                    <Link route={`/groups/${groupDetails.attributes.slug}/email_members`}>
+                    {/* <Link route={`/groups/${groupDetails.attributes.slug}/email_members`}> */}
                         <p>
                             <span>
-                                <i aria-hidden="true" className="icon icon-mail" />
+                                <i
+                                    aria-hidden="true"
+                                    className="icon icon-mail"
+                                    onClick={handleEmailClick}
+                                />
                             </span>
                             Email members
                         </p>
-                    </Link>
+                    {/* </Link> */}
                 </div>
             </div>
             {groupMemberPlaceholderStatus

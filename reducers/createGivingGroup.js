@@ -93,6 +93,24 @@ const createGivingGroup = (state = {}, action) => {
                 friendsListPageCount: action.payload.meta.pageCount,
             };
             break;
+        case actionTypes.GET_GROUP_MESSAGE_HISTORY:
+            newState = {
+                ...state,
+                groupMessageHistory: action.payload.data,
+            };
+            break;
+        case actionTypes.SHOW_GROUP_MESSAGE_HISTORY_LOADER:
+            newState = {
+                ...state,
+                groupMessageHistoryPlaceholder: action.payload.showplaceholder,
+            };
+            break;
+        case actionTypes.SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER:
+            newState = {
+                ...state,
+                groupFriendListLoader: action.payload.showplaceholder,
+            };
+            break;
         default:
             break;
     }

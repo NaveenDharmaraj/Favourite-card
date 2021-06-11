@@ -21,6 +21,7 @@ import '../../static/less/create_manage_group.less';
 import groupImg from '../../static/images/no-data-avatar-giving-group-profile.png';
 import { intializeCreateGivingGroup } from '../../helpers/createGrouputils';
 import { getBase64 } from '../../helpers/chat/utils';
+import { getLocation } from '../../helpers/profiles/utils';
 import {
     deleteGroupLogo,
     editGivingGroupApiCall,
@@ -39,8 +40,9 @@ const ManageGivingGroup = ({
         attributes: {
             avatar,
             causes,
-            location,
+            city,
             name,
+            province,
             slug,
         },
         id: groupId,
@@ -48,6 +50,7 @@ const ManageGivingGroup = ({
     const uploadLogoImageRef = useRef(null);
     const groupDisplayImage = avatar || groupImg;
     const dispatch = useDispatch();
+    const location = getLocation(city, province);
 
     const handleUpload = (event, mode = '') => {
         try {
