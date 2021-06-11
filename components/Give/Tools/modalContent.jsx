@@ -16,7 +16,6 @@ function ModalContent(props) {
         givingGoal,
         validity,
         currentYear,
-        placeholder,
         showDollarIcon,
         showLabel,
     } = props;
@@ -32,7 +31,7 @@ function ModalContent(props) {
                     error={!validity.isValidGiveAmount}
                     onChange={handleInputChange}
                     onBlur={handleInputOnBlurGivingGoal}
-                    placeholder={placeholder}
+                    placeholder="Amount"
                     fluid
                     icon={showDollarIcon && (
                         <Icon
@@ -50,7 +49,7 @@ function ModalContent(props) {
                 condition={validity.doesAmountExist && !validity.isAmountMoreThanOneDollor}
                 errorMessage="Please input a value more than 1$"
             /> */}
-            <FormValidationErrorMessage
+             <FormValidationErrorMessage
                 condition={!validity.isValidPositiveNumber}
                 errorMessage="Please input a valid amount"
             />
@@ -64,11 +63,10 @@ function ModalContent(props) {
             /> */}
         </Form>
     );
-}
+};
 
 ModalContent.defaultProps = {
-    placeholder: 'Amount',
     showLabel: true,
     showDollarIcon: true
-};
+}
 export default ModalContent;
