@@ -8,8 +8,10 @@ import { // eslint-disable-line import/order
     Header,
 } from 'semantic-ui-react';
 import _includes from 'lodash/includes';
+import _isEmpty from 'lodash/isEmpty';
 
-import auth0 from '../../services/auth';
+import { handleInvitationAccepts } from '../../actions/user';
+import auth0, { invitationParameters } from '../../services/auth';
 import Layout from '../../components/shared/Layout';
 import { Router } from '../../routes';
 import ModalStatusMessage from '../../components/shared/ModalStatusMessage';
@@ -22,18 +24,29 @@ class UserAuthView extends React.Component {
             code: query.code,
             message: query.message,
             redirectUrl: query.returnTo,
+            reqParams: {
+                invitationType: query.invitationType,
+                sourceId: query.sourceId,
+            },
             success: query.success,
         };
     }
 
     componentDidMount() {
         const {
+            currentUser,
+            dispatch,
             isAuthenticated,
             redirectUrl,
+            reqParams,
         } = this.props;
         if (isAuthenticated) {
+            if (!_isEmpty(reqParams) && currentUser && currentUser.id) {
+                dispatch(handleInvitationAccepts(reqParams, currentUser.id));
+            }
             Router.pushRoute(redirectUrl || '/dashboard');
         } else {
+            invitationParameters.reqParameters = reqParams;
             auth0.returnProps = querystring.parse(
                 window.location.search.slice(1), // must skip the '?' prefix
             );
@@ -144,6 +157,7 @@ class UserAuthView extends React.Component {
 }
 function mapStateToProps(state) {
     return {
+        currentUser: state.user.info,
         isAuthenticated: state.auth.isAuthenticated,
     };
 }

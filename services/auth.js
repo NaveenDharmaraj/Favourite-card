@@ -16,6 +16,7 @@ import {
 import {
     chimpLogin,
     getUser,
+    handleInvitationAccepts,
 } from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
 import { addToDataLayer } from '../helpers/users/googleTagManager';
@@ -395,6 +396,41 @@ const auth0 = {
             : storage.unset('auth0UserId', 'local');
     },
 };
+const invitationParameters = {
+
+    get reqParameters() {
+        const invitationType = storage.get('invitationType', 'local');
+        const sourceId = storage.get('sourceId', 'local');
+        return {
+            invitationType,
+            sourceId,
+        };
+    },
+    /**
+     * ⚠️ When this value needs to be "read" within the same process tick, use `await` (possibly
+     * with try/catch) to avoid a race condition.
+     * @param {object} invObj - The object to cache.
+     * @return {promise} - The promise returned by Storage.
+     *
+     * @example
+     * await (auth0.reqParameters = reqParameters);
+     */
+    set reqParameters(invObj) {
+        let invitationType;
+        let sourceId;
+        if (invObj && invObj.invitationType && invObj.sourceId) {
+            invitationType = storage.set('invitationType', invObj.invitationType, 'local');
+            sourceId = storage.set('sourceId', invObj.sourceId, 'local');
+        } else {
+            invitationType = storage.unset('invitationType', 'local');
+            sourceId = storage.unset('sourceId', 'local');
+        }
+        return {
+            invitationType,
+            sourceId,
+        };
+    },
+};
 
 const _logLabel = () => {
     let label = '[Auth]';
@@ -442,6 +478,7 @@ const _handleLockSuccess = async ({
         await (auth0.accessToken = accessToken);
         await (storage.set('chimpUserId', userId, 'cookie'));
         const dispatch = auth0.storeDispatch;
+        const reqPar = invitationParameters.reqParameters;
         await (getUser(dispatch, userId));
         const tagManagerArgs = {
             dataLayer: {
@@ -450,6 +487,12 @@ const _handleLockSuccess = async ({
             dataLayerName: 'dataLayer',
         };
         addToDataLayer(tagManagerArgs);
+        if (reqPar.invitationType && reqPar.sourceId) {
+            dispatch(handleInvitationAccepts(
+                reqPar,
+                userId,
+            ));
+        }
         if (beneficiarySlug) {
             await (storage.unset('claimToken','local'));
             await (storage.unset('signup_source_id','local'));
@@ -626,5 +669,6 @@ function resendVerificationEmail(event) {
 export {
     auth0 as default,
     activateUserEmail,
+    invitationParameters,
     resendVerificationEmail,
 };
