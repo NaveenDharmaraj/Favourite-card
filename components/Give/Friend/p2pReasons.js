@@ -1,7 +1,7 @@
 import {
     Form, Select, Input
 } from 'semantic-ui-react';
-const reasonValueArray = ['Birthday', 'Thank you', 'Charitable Allowance', 'Prefer not to Say'];
+const reasonValueArray = ['Birthday', 'Thank you', 'Charitable Allowance', 'Prefer not to say'];
 const P2pReasons = ({ handleSendMoneyInputChange, reason, reasonOther }) => {
     const reasonOptions = [
         {
@@ -21,8 +21,8 @@ const P2pReasons = ({ handleSendMoneyInputChange, reason, reasonOther }) => {
             value: 'Other',
         },
         {
-            text: 'Prefer not to Say',
-            value: 'Prefer not to Say',
+            text: 'Prefer not to say',
+            value: 'Prefer not to say',
         },
     ];
 

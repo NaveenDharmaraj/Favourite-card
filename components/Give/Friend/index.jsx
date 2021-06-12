@@ -555,18 +555,18 @@ class Friend extends React.Component {
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     giveData['formatedP2PAmount'] = newValue;
-                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), giveData.giveAmount);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + _.compact(giveData.recipients).length), giveData.giveAmount);
                     break;
                 case 'recipients':
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     giveData[name] = Friend.parseRecipients(newValue);
-                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), giveData.giveAmount);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + _.compact(giveData.recipients).length), giveData.giveAmount);
                     break;
                 case 'friendsList':
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
-                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), giveData.giveAmount);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + _.compact(giveData.recipients).length), giveData.giveAmount);
                     validity = validateGiveForm(
                         'recipients',
                         giveData.recipients,
@@ -705,7 +705,7 @@ class Friend extends React.Component {
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         const formatedP2PAmount = _replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         giveData.giveAmount = inputValue;
-        giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), inputValue);
+        giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + _.compact(giveData.recipients).length), inputValue);
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
         reviewBtnFlag = false;
         this.setState({
@@ -869,7 +869,8 @@ class Friend extends React.Component {
             giveFrom,
             totalP2pGiveAmount,
             giftType,
-        } = giveData
+        } = giveData;
+        let reviewBtn = reviewBtnFlag;
         const formatMessage = this.props.t;
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(totalP2pGiveAmount) > Number(giveFrom.balance))) {
             if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
@@ -896,9 +897,29 @@ class Friend extends React.Component {
                     today.setHours(0, 0, 0, 0);
                     if(today.getTime() !== giveData.sendDate.getTime()){
                         allocationGiftType = 1;
+                        if(reviewBtnFlag){
+                            reviewBtn = !reviewBtnFlag
+                            this.setState({
+                                reviewBtnFlag: reviewBtn,
+                                validity:{
+                                    ...this.state.validity,
+                                    isReloadRequired:true
+                                }
+                            })
+                        }
                     }
                 } else if(giveData.sendGift!== 'now' && !giveData.sendDate) {
                     allocationGiftType = 1;
+                    if(reviewBtnFlag){
+                        reviewBtn = !reviewBtnFlag
+                        this.setState({
+                            reviewBtnFlag: reviewBtn,
+                            validity:{
+                                ...this.state.validity,
+                                isReloadRequired:true
+                            }
+                        })
+                    }
                 }
                 return (
                     <ReloadAddAmount
@@ -912,7 +933,7 @@ class Friend extends React.Component {
                         language={language}
                         paymentInstrumentOptions={paymentInstrumentOptions}
                         reloadModalOpen={reloadModalOpen}
-                        reviewBtnFlag={reviewBtnFlag}
+                        reviewBtnFlag={reviewBtn}
                         taxReceiptsOptions={taxReceiptsOptions}
                         handleParentModalState={this.handleReloadModalClose}
                     />
