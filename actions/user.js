@@ -7,9 +7,11 @@ import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
 import securityApi from '../services/securityApi';
 import wpApi from '../services/wpApi';
+import { invitationParameters } from '../services/auth';
 import {
-    Router
+    Router,
 } from '../routes';
+
 import getConfig from 'next/config';
 import {
     formatDateForP2p,
@@ -1347,4 +1349,48 @@ export const getParamStoreConfig = (params = []) => async (dispatch) => {
         });
         return paramStoreConfigObj;
     } catch (err) {}
+};
+
+export const handleInvitationAccepts = (reqParams, currentUserId, type = 'loggedIn') => (dispatch) => {
+    const {
+        invitationType,
+        profileType,
+        sourceId,
+    } = reqParams;
+    const payloadObj = {
+        relationship: 'IS_CHIMP_FRIEND_OF',
+        relationshipdata: {
+            source: sourceId,
+            status: 'PENDING',
+            target: Number(currentUserId),
+        },
+        source: {
+            entity: 'user',
+            filters: {
+                user_id: Number(sourceId),
+            },
+        },
+        target: {
+            entity: 'user',
+            filters: {
+                user_id: Number(currentUserId),
+            },
+        },
+    };
+    let paramsObj = {
+        params: {
+            dispatch,
+        },
+    };
+    if (type === 'signUp') {
+        paramsObj = {
+            ...BASIC_AUTH_HEADER,
+            ...paramsObj,
+        };
+    }
+    return graphApi.post(`core/create/relationship`, payloadObj, paramsObj).then((data) => {
+        invitationParameters.reqParameters = {};
+    }).catch((error) => {
+        console.log(error);
+    });
 };

@@ -5,7 +5,9 @@ import getConfig from 'next/config';
 import securityApi from '../services/securityApi';
 import graphApi from '../services/graphApi';
 import coreApi from '../services/coreApi';
+import { invitationParameters } from '../services/auth';
 
+import { handleInvitationAccepts } from './user';
 import {
     triggerUxCritialErrors,
 } from './error';
@@ -38,6 +40,17 @@ export const saveUser = (dispatch, userDetails) => {
     return securityApi.post('/create/user', {
         ...userDetails,
     }, BASIC_AUTH_HEADER).then((result) => {
+        const {
+            reqParameters: reqPar,
+        } = invitationParameters;
+
+        if (reqPar.invitationType && reqPar.sourceId) {
+            dispatch(handleInvitationAccepts(
+                reqPar,
+                result.user_id,
+                'signUp',
+            ));
+        }
         return dispatch({
             payload: {
                 newUserDetails: result,
