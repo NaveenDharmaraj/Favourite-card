@@ -16,7 +16,7 @@ const SharedModal = ({
 }) => {
     return (
         <Modal
-            className="chimp-modal addAbout-Modal"
+            className="chimp-modal addAbout-Modal edit-goal-modal"
             closeIcon
             size="small"
             open={showModal}
@@ -27,8 +27,7 @@ const SharedModal = ({
             <Modal.Header>{modalHeader}</Modal.Header>
             <Modal.Content className="createnewSec">
                 {modalContent}
-            </Modal.Content>
-            <div className='buttonsWrap'>
+                <div className='buttonsWrap'>
                 <Button
                     className='blue-btn-rounded-def'
                     onClick={() => handleSave()}
@@ -44,6 +43,7 @@ const SharedModal = ({
                     {modalFooterCancel}
                 </Button>
             </div>
+            </Modal.Content>
         </Modal>
     )
 }

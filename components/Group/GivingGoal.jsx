@@ -99,7 +99,7 @@ const GivingGoal = (props) => {
         if (!_isEmpty(fundraisingEndDate) && (parseInt(goalAmountRaised, 10) < parseInt(goal, 10))) {
             goalText = `${formatMessage('groupProfile:goalExpiredOnText')} ${formatDateForGivingTools(fundraisingEndDate)}`;
         } else if (parseInt(goalAmountRaised, 10) >= parseInt(goal, 10)) {
-            goalText = formatMessage('groupProfile:reachedGoalText');
+            goalText = formatMessage('groupProfile:reachedGoalText');   
             canSetGoal = isAdmin;
         }
     }
@@ -109,9 +109,9 @@ const GivingGoal = (props) => {
             {canSetGoal
                 && (
                     <div>
-                        <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit?accordion=goals-settings`)}>
+                        <Link route={`/groups/${slug}/edit/givinggoals`}>
                             {formatMessage('groupProfile:saveNewGoalText')}
-                        </a>
+                        </Link>
                     </div>
                 )}
         </span>

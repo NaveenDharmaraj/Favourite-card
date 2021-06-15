@@ -78,6 +78,7 @@ class ProfilePageHead extends React.Component {
             isGiveFromModalOpen,
         } = this.state;
         let buttonLink = null;
+        let buttonText = null;
         let profileType = '';
         let linkAddress;
         let profileButtonText = '';
@@ -96,36 +97,44 @@ class ProfilePageHead extends React.Component {
             linkAddress = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
             profileButtonText = formatMessage('campaignProfile:campaignButtonText');
             profileTooltipText = formatMessage('campaignProfile:campaignButtonText');
-        };
+        }
         let popUpContent = '';
         if (hasActiveMatch) {
             popUpContent = formatMessage('campaignProfile:popupMatchingText', {
                 Profile: profileButtonText,
                 Profiletype: profileTooltipText,
-            })
-        }
-        else if (!_isEmpty(moneyManage) && moneyManage === 'Campaign Admin') {
+            });
+        } else if (!_isEmpty(moneyManage) && moneyManage === 'Campaign Admin') {
             popUpContent = formatMessage('campaignProfile:popupMoneyManageText')
-        }
-        else if (balance <= 0) {
+        } else if (balance <= 0) {
             popUpContent = formatMessage('campaignProfile:popupCurrentBalanceText', {
                 balance: formatCurrency(balance, language, currency),
                 Profiletype: profileButtonText,
-            })
+            });
         }
         if (pageDetails.attributes) {
             if (isAuthenticated) {
                 if ((type === 'groups' || type === 'campaigns') && isAdmin) {
+                    buttonText = (
+                        <Button className={`blue-bordr-btn-round-def CampaignBtn ${(type === 'campaigns') ? 'campaign_btn_padding' : ''}`}>
+                            <span>
+                                <i aria-hidden="true" className="edit icon" />
+                            </span>
+                            {`${formatMessage('campaignProfile:editBtn')} ${profileButtonText}`}
+                        </Button>
+                    );
                     buttonLink = (
                         <span className="btn_wrapperTop">
-                            <a href={(linkAddress)}>
-                                <Button className={`blue-bordr-btn-round-def CampaignBtn ${(type === 'campaigns') ? 'campaign_btn_padding' : ''}`}>
-                                    <span>
-                                        <i aria-hidden="true" className="edit icon" />
-                                    </span>
-                                    {`${formatMessage('campaignProfile:editBtn')} ${profileButtonText}`}
-                                </Button>
-                            </a>
+                            {(type === 'groups')
+                                ? (
+                                    <Link route={linkAddress}>
+                                        {buttonText}
+                                    </Link>
+                                ) : (
+                                    <a href={(linkAddress)}>
+                                        {buttonText}
+                                    </a>
+                                )}
                             {balance > 0 && !hasActiveMatch && (_isEmpty(moneyManage) || (!_isEmpty(moneyManage) && moneyManage === 'Group Admin'))
                                 ? (
                                     // <Link route={(`/give/to/${profileType}/${slug}/new`)}>

@@ -1,210 +1,259 @@
-import React, { Fragment } from 'react';
+import React, {
+    Fragment, useState, useEffect,
+} from 'react';
+import {
+    useDispatch, useSelector,
+} from 'react-redux';
 import {
     Header,
-    Button,
     Icon,
-    List,
-    Image, Table, Input, Dropdown, Modal,
-}
-    from 'semantic-ui-react';
-import { Link } from '../../../routes';
-import imageManage from '../../../static/images/no-data-avatar-group-chat-profile.png';
+    Table,
+    Input,
+    Grid,
+} from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
-class Manage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showmodel: false,
-            showGroupModel: false,
+import {
+    Link,
+    Router,
+} from '../../../routes';
+import {
+    getGroupMembers,
+    getPendingInvites,
+    searchMember,
+} from '../../../actions/createGivingGroup';
+import Pagination from '../../shared/Pagination';
+import PlaceholderGrid from '../../shared/PlaceHolder';
+
+import MemberListCard from './MemberListCard';
+
+const Manage = () => {
+    const [
+        searchText,
+        setsearchText,
+    ] = useState('');
+    const groupDetails = useSelector((state) => state.group.groupDetails);
+    const memberCount = useSelector((state) => state.createGivingGroup.groupMemberCount);
+    const membersData = useSelector((state) => state.createGivingGroup.groupMemberRoles);
+    const pendingPlaceholderStatus = useSelector((state) => state.createGivingGroup.pendingPlaceholderStatus);
+    const groupMemberPlaceholderStatus = useSelector((state) => state.createGivingGroup.groupMemberPlaceholderStatus);
+    const groupPendingInvites = useSelector((state) => state.createGivingGroup.groupPendingInvites);
+    const memberPageCount = useSelector((state) => state.createGivingGroup.groupMemberPageCount);
+    const dispatch = useDispatch();
+    const [
+        currentActivePage,
+        setcurrentActivePage,
+    ] = useState(1);
+    const [
+        memberList,
+        setmemberList,
+    ] = useState([]);
+    const [
+        pendingList,
+        setpendingList,
+    ] = useState([]);
+    let isSingleAdmin = (memberCount === 1);
+    let adminCount = 0;
+
+    useEffect(() => {
+        if (groupDetails) {
+            dispatch(getGroupMembers(groupDetails.id));
+            dispatch(getPendingInvites(groupDetails.id));
         }
-    }
-    render() {
-        const {
-            showmodel, showGroupModel,
-        } = this.state
-        return (
-            <Fragment>
-                <div className='basicsettings'>
-                    <Header className='titleHeader'>Manage
-                </Header>
-                    <div className=" campaignSearchBanner ManageSearch">
-                        <div className="searchbox">
-                            <Input
-                                fluid
-                                placeholder="Find a group member"
+    }, [
+        groupDetails,
+    ]);
+
+    useEffect(() => {
+        const tempArr = [];
+        if (!_isEmpty(membersData) && !isSingleAdmin) {
+            membersData.map((member) => {
+                if (member.isGroupAdmin) {
+                    adminCount = adminCount++;
+                }
+            });
+            if (adminCount === 1) {
+                isSingleAdmin = true;
+            }
+        }
+        if (!_isEmpty(membersData)) {
+            membersData.map((member) => (
+                tempArr.push(
+                    <MemberListCard
+                        memberData={member}
+                        groupId={groupDetails.id}
+                        isInvite={false}
+                        isSingleAdmin={isSingleAdmin}
+                    />,
+                )
+            ));
+            setmemberList(tempArr);
+        }
+    }, [
+        membersData,
+    ]);
+
+    useEffect(() => {
+        const tempArr = [];
+        if (!_isEmpty(groupPendingInvites)) {
+            groupPendingInvites.map((invite) => (
+                tempArr.push(
+                    <MemberListCard
+                        memberData={invite}
+                        groupId={groupDetails.id}
+                        isInvite
+                    />,
+                )
+            ));
+            setpendingList(tempArr);
+        }
+    }, [
+        groupPendingInvites,
+    ]);
+
+    const onPageChanged = (event, data) => {
+        setcurrentActivePage(data.activePage);
+        if (!_isEmpty(searchText)) {
+            dispatch(searchMember(groupDetails.id, searchText, data.activePage));
+        } else {
+            dispatch(getGroupMembers(groupDetails.id, data.activePage));
+        }
+    };
+
+    const updateSearch = (event) => {
+        setsearchText(event.target.value);
+    };
+
+    const handleSearch = () => {
+        dispatch(searchMember(groupDetails.id, searchText));
+    };
+
+    const handleEmailClick = () => {
+        Router.pushRoute(`/groups/${groupDetails.attributes.slug}/email_members`);
+    };
+    return (
+        <div className="basicsettings">
+            <Header className="titleHeader">
+                Manage
+            </Header>
+            <div className=" campaignSearchBanner ManageSearch">
+                <div className="searchbox">
+                    <Input
+                        fluid
+                        className="searchInput"
+                        placeholder="Find a group member"
+                        onChange={updateSearch}
+                        value={searchText}
+                    />
+                    <div className="search-btn campaignSearch">
+                        <a>
+                            <Icon
+                                name="search"
+                                onClick={handleSearch}
                             />
-                            <div className="search-btn campaignSearch">
-                                <a>
-                                    <Icon name="search" />
-                                </a>
-                            </div>
-                        </div>
+                        </a>
                     </div>
-                    <div className="memberswapper">
-                        <div className="membersadmin">
-                            <p><span><i aria-hidden="true" class="users icon"></i></span>1022 members</p>
-                        </div>
-                        <div className="Emailmembers">
-                            <p><span> <i aria-hidden="true" className="icon icon-mail" /></span>Email members</p>
-                        </div>
-                    </div>
+                </div>
+            </div>
+            {(!_isEmpty(pendingList) || pendingPlaceholderStatus)
+            && (
+                <div className="invite-heading">
+                    <h3>
+                        Invites sent
+                    </h3>
+                </div>
+            )}
+            {pendingPlaceholderStatus
+                ? (
+                    <Grid className="no-margin">
+                        <Grid.Row>
+                            <Grid.Column width={16}>
+                                <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                )
+                : (
                     <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
                         <Table.Body>
-                            <Table.Row className="ManageWappeer">
-                                <Table.Cell className="ManageGroup">
-                                    <List verticalAlign="middle">
-                                        <List.Item>
-                                            <Image src={imageManage} className="imgManage" />
-                                            <List.Content>
-                                                <List.Header className="ManageAdmin">
-                                                    Chimp • Admin
-                                                <span>
-                                                        <i aria-hidden="true" className="icon star outline" />
-                                                    </span>
-                                                </List.Header>
-                                                <List.Description>
-                                                    <p>
-                                                        Vancouver, BC
-                                                    </p>
-                                                </List.Description>
-                                            </List.Content>
-                                        </List.Item>
-                                    </List>
-                                </Table.Cell>
-                                <Table.Cell className="Managebtn">
-                                    <a role="listitem" className="item">
-                                        <Dropdown
-                                            icon="ellipsis horizontal"
-                                            className="dropdown_ellipsisnew"
-                                            closeOnBlur
-                                        >
-                                            <Dropdown.Menu className="left">
-                                                <Dropdown.Item text="Remove as admin " onClick={() => this.setState({ showmodel: true })} />
-                                                <Dropdown.Item text="Remove from group " onClick={() => this.setState({ showGroupModel: true })} />
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </a>
-                                </Table.Cell>
-                            </Table.Row>
-                            <Table.Row className="ManageWappeer">
-                                <Table.Cell className="ManageGroup">
-                                    <List verticalAlign="middle">
-                                        <List.Item>
-                                            <Image src={imageManage} className="imgManage" />
-                                            <List.Content>
-                                                <List.Header className="ManageAdmin">
-                                                    Chimp • Admin
-                                                <span>
-                                                        <i aria-hidden="true" className="icon star outline" />
-                                                    </span>
-                                                </List.Header>
-                                                <List.Description>
-                                                    <p>
-                                                        Vancouver, BC
-                                                    </p>
-                                                </List.Description>
-                                            </List.Content>
-                                        </List.Item>
-                                    </List>
-                                </Table.Cell>
-                                <Table.Cell className="Managebtn">
-                                    <a role="listitem" className="item">
-                                        <Dropdown
-                                            icon="ellipsis horizontal"
-                                            className="dropdown_ellipsisnew"
-                                            closeOnBlur>
-                                            <Dropdown.Menu className="left">
-                                                <Dropdown.Item text="Remove as admin " />
-                                                <Dropdown.Item text="Remove from group " />
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </a>
-                                </Table.Cell>
-                            </Table.Row>
+                            {pendingList}
                         </Table.Body>
                     </Table>
+                )}
+            <div className="invite-heading">
+                <h3>
+                Members
+                </h3>
+            </div>
+            <div className="memberswapper">
+                {(memberCount)
+                && (
+                    <div className="membersadmin">
+                        <p>
+                            <span>
+                                <i aria-hidden="true" className="users icon" />
+                            </span>
+                            {`${memberCount} members`}
+                        </p>
+                    </div>
+                )}
+                <div className="Emailmembers">
+                    <Link route={`/groups/${groupDetails.attributes.slug}/email_members`}>
+                        <p>
+                            <span>
+                                <i
+                                    aria-hidden="true"
+                                    className="icon icon-mail"
+                                    onClick={handleEmailClick}
+                                />
+                            </span>
+                            Email members
+                        </p>
+                    </Link>
                 </div>
-                {
-                    showmodel && (
-                        <Modal
-                            size="tiny"
-                            dimmer="inverted"
-                            className="chimp-modal"
-                            closeIcon
-                            closeOnEscape={false}
-                            closeOnDimmerClick={false}
-                            open={showmodel}
-                            onClose={() => { this.setState({ showmodel: false }); }}
-                        >
-                            <Modal.Header>
-                                Remove Emily Bath as group admin?
-                        </Modal.Header>
-                            <Modal.Content>
-                                <Modal.Description className="font-s-14 ">
-                                    Emily Bath will no longer be able to message group members, send money to charities, and make changes to the group's profile.
-                            </Modal.Description>
-                                <div className="btn-wraper pt-3 text-right">
-                                    <Button
-                                        className="danger-btn-rounded-def w-120"
-                                    // onClick={() => this.handleBlockUser(userData.user_id)}
-                                    // disabled={blockButtonClicked}
-                                    >
-                                        Block
-                                </Button>
-                                    <Button
-                                        className="blue-bordr-btn-round-def w-120"
-                                    // onClick={this.handleBlockCancelClick}
-                                    // disabled={blockButtonClicked}
-                                    >
-                                        Cancel
-                                </Button>
-                                </div>
-                            </Modal.Content>
-                        </Modal>
-                    )
-                }
-                {
-                    showGroupModel && (
-                        <Modal
-                            size="tiny"
-                            dimmer="inverted"
-                            className="chimp-modal"
-                            closeIcon
-                            closeOnEscape={false}
-                            closeOnDimmerClick={false}
-                            open={showGroupModel}
-                            onClose={() => { this.setState({ showGroupModel: false }); }}
-                        >
-                            <Modal.Header>
-                                Remove María Paula Morterero?
-                        </Modal.Header>
-                            <Modal.Content>
-                                <Modal.Description className="font-s-14">
-                                    María Paula Morterero will no longer be a member of this group.
-                            </Modal.Description>
-                                <div className="btn-wraper pt-3 text-right">
-                                    <Button
-                                        className="danger-btn-rounded-def w-120"
-                                    // onClick={() => this.handleBlockUser(userData.user_id)}
-                                    // disabled={blockButtonClicked}
-                                    >
-                                        Block
-                                </Button>
-                                    <Button
-                                        className="blue-bordr-btn-round-def w-120"
-                                    // onClick={this.handleBlockCancelClick}
-                                    // disabled={blockButtonClicked}
-                                    >
-                                        Cancel
-                                </Button>
-                                </div>
-                            </Modal.Content>
-                        </Modal>
-                    )
-                }
-            </Fragment>
-        );
-    }
-}
+            </div>
+            {groupMemberPlaceholderStatus
+                ? (
+                    <Grid className="no-margin">
+                        <Grid.Row>
+                            <Grid.Column width={16}>
+                                <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                )
+                : (
+                    <Fragment>
+                        <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
+                            <Table.Body>
+                                {memberList}
+                            </Table.Body>
+                        </Table>
+                        <div className="paginationWraper group_pagination">
+                            <div className="db-pagination">
+                                {
+                                    !_isEmpty(memberList) && memberPageCount > 1 && (
+                                        <Pagination
+                                            activePage={currentActivePage}
+                                            totalPages={memberPageCount}
+                                            onPageChanged={onPageChanged}
+                                        />
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </Fragment>
+                )}
+        </div>
+    );
+};
 
+Manage.defaultProps = {
+    groupDetails: {
+        attributes: {
+            slug: '',
+        },
+        id: '',
+    },
+};
 export default Manage;

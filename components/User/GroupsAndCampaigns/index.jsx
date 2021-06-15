@@ -33,7 +33,6 @@ const { publicRuntimeConfig } = getConfig();
 
 const {
     HELP_CENTRE_URL,
-    RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
 class GroupsAndCampaigns extends React.Component {
@@ -131,9 +130,9 @@ class GroupsAndCampaigns extends React.Component {
                                                 </Header.Content>
                                             </Header>
                                             <div>
-                                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}>
+                                                <Link route={`/groups/step/one`}>
                                                     <Button className="success-btn-rounded-def">Create a Giving Group</Button>
-                                                </a>
+                                                </Link>
                                             </div>
                                         </div>
                                     </Grid.Column>
@@ -188,9 +187,9 @@ class GroupsAndCampaigns extends React.Component {
                                                 </Header.Content>
                                             </Header>
                                             <div>
-                                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}>
+                                                <Link route={`/groups/step/one`}>
                                                     <Button className="success-btn-rounded-def">Create a Giving Group</Button>
-                                                </a>
+                                                </Link>
                                             </div>
                                         </div>
                                     </Grid.Column>

@@ -521,7 +521,7 @@
           border-radius: 5px
         }
         .ui.header{
-          margin: 0 0 0 10px;
+          margin: 0 18px 0 10px;
           font-size: 14px;
         }
       }
@@ -530,7 +530,7 @@
       line-height: 17px;
     }
     .ui.dropdown.whocanseeDropdown{
-      margin: 15px 0 10px;
+      margin: 15px 0 43px;
       width: 100%;
       display: flex;
       align-items: center;
@@ -668,9 +668,24 @@
       }
     }
     .about_descCardWrap{
-      margin-bottom: 10px;
-      .ui.card{
+      .group_box{
+        padding: 27.5px 23.5px 28.5px 23.5px;
+        border: 1px solid #EBEBEB;
+        border-radius: 7px;
         cursor: pointer;
+        h3{
+          font-size: 14px;
+          line-height: 14px;
+          .primeFont-semi-bold();
+          color: #263238;
+          margin-bottom: 15px;
+        }
+        p{
+          color: #263238;
+          font-size: 14px;
+          .primeFont();
+          color: #263238;
+        }
       }
     }
    .groupPrflWrap {
@@ -1366,7 +1381,7 @@ body{
           }
           .Invitepeople{
             border-top: 1px solid #eee;
-            margin-top: 80px;
+            margin-top: 30px;
             h3{
               &.ui{
                 &.header{
@@ -1416,7 +1431,7 @@ body{
               margin-bottom: 30px;
             }
             .Invitagebtn{
-              margin-bottom: 41px;
+              margin-bottom: 10px;
               max-height: 40px;
               max-width: 130px;
               width: 100%;
@@ -1531,6 +1546,7 @@ body{
               clear:both;
             }
             .membersadmin{
+              margin-top: 12px;
               flex: 1;
               p{
                 color: #263238;
@@ -2067,4 +2083,93 @@ body{
   }
 
 }
-
+.group_pagination{
+  &.paginationWraper{
+    text-align: right;
+  }
+}
+.edit-goal-modal{
+  max-width: 432px !important;
+  .createnewSec{
+    &.content{
+      padding: 30px 35px 26px !important;
+    }
+  }
+  .field{
+    margin-bottom: 10px;
+    >label{
+      color: #263238;
+      font-size: 14px;
+      margin-bottom: 10px;
+      +.label-info{
+        margin: 10px 0 0px;
+        font-size: 12px;
+      }
+    }
+  }
+  .givingGoalForm{
+    margin-top: 30px;
+    max-width: 230px;
+    width: 100%;
+    .ui.input{
+      margin-top: 10px;
+      width: 100%;
+      &::placeholder{
+        color: red;
+      }
+      .icon{
+        opacity: 1;
+      }
+      .calendar.icon{
+        cursor: pointer !important;
+        filter: invert(50%) sepia(6%) saturate(0%) hue-rotate(172deg) brightness(98%) contrast(93%);
+        pointer-events: all;
+         &::before{
+          content: "" !important;
+          position: absolute;
+          width: 24px;
+          height: 24px;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          margin: auto;
+          background-image: url(../images//icons/icon_gray_calendar.svg) !important;
+          background-position: center !important;
+          background-size: contain !important;
+          background-repeat: no-repeat !important;
+        }
+      }
+    }
+    .inline.field{
+      margin-bottom: 0;
+    }
+    .error-message{
+      font-size: 12px;
+      margin-top: 5px;
+    }
+  }
+}
+.invite-heading{
+  margin-top: 43px;
+  margin-bottom: 20px;
+  h3{
+    font-size: 17px;
+  }
+}
+.email-group-members{
+  text-align: right;
+}
+.charitysearch{
+  .searchInput{
+    .selection{
+      &.dropdown{
+        border-radius: 30px;
+        padding: 12px 15px;
+        input{
+          padding: 12px 15px;
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,14 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import _isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
 
 import { Router } from '../routes';
 import Layout from '../components/shared/Layout';
-import { CreateGivingGroupFlowSteps, getStore, intializeCreateGivingGroup } from '../helpers/createGrouputils';
+import {
+    CreateGivingGroupFlowSteps,
+    getStore,
+    intializeCreateGivingGroup,
+} from '../helpers/createGrouputils';
 import { updateCreateGivingGroupObj } from '../actions/createGivingGroup';
 const CreateGivingGroupBasic = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupBasic'));
 const CreateGivingGroupAbout = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupAbout'));
@@ -28,6 +32,7 @@ const GroupProfileCreate = ({ createGivingGroupStoreFlowObject, dispatch, slug }
             dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
         })
     }, []);
+
     const renderCreateGivingGroupCreate = () => {
         switch (slug) {
             case 'one':
@@ -60,12 +65,14 @@ const GroupProfileCreate = ({ createGivingGroupStoreFlowObject, dispatch, slug }
                 break;
         }
     }
+
     return (
         <Layout authRequired={true}>
             {renderCreateGivingGroupCreate()}
         </Layout>
     )
 }
+
 GroupProfileCreate.getInitialProps = async ({
     query,
     reduxStore,
@@ -86,9 +93,11 @@ GroupProfileCreate.getInitialProps = async ({
     }
     return {}
 }
+
 GroupProfileCreate.defaultProps = {
     createGivingGroupStoreFlowObject: intializeCreateGivingGroup,
     dispatch: () => { },
     slug: '',
 };
+
 export default GroupProfileCreate;

@@ -5,14 +5,11 @@ import {
     Header,
     Button,
 } from 'semantic-ui-react';
-import getConfig from 'next/config';
 
+import {
+    Link,
+} from '../../routes';
 import noDataImg from '../../static/images/noresults.png';
-
-const { publicRuntimeConfig } = getConfig();
-const {
-    RAILS_APP_URL_ORIGIN,
-} = publicRuntimeConfig;
 
 const GroupNoDataState = (props) => {
     const {
@@ -65,12 +62,12 @@ const GroupNoDataState = (props) => {
                             </Header.Subheader>
                             {manageButton
                                 && (
-                                    <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`)}>
+                                    <Link route={`/groups/${slug}/edit`}>
                                         <Button
                                             className="success-btn-rounded-def mt-1"
                                             content="Manage Giving Group"
                                         />
-                                    </a>
+                                    </Link>
                                 )}
                         </Header.Content>
                     </Header>

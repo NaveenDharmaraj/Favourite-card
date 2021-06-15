@@ -1,11 +1,14 @@
 import React, {
     Fragment,
+    useEffect,
+    useState,
 } from 'react';
 import { connect } from 'react-redux';
 import {
     string,
     PropTypes,
     func,
+    array,
 } from 'prop-types';
 import {
     Grid,
@@ -21,20 +24,40 @@ import ImageGallery from '../shared/ImageGallery';
 import GroupNoDataState from './GroupNoDataState';
 
 const AboutGroup = (props) => {
+    const [
+        aboutValues,
+        setaboutValues,
+    ] = useState([]);
     const {
         galleryImages,
         groupDetails: {
             attributes: {
                 formattedShort,
                 videoPlayerLink,
-                formattedImpact,
-                formattedHelping,
-                formattedAbout,
+                groupDescriptionsValues,
             },
         },
         t: formatMessage,
     } = props;
     const imageArray = [];
+
+    useEffect(() => {
+        const tempArr = [];
+        if (!_isEmpty(groupDescriptionsValues)) {
+            groupDescriptionsValues.map((data) => {
+                tempArr.push(
+                    <div className="GroupPurpose">
+                        <Header as="h3">{data.purpose}</Header>
+                        <p>
+                            {ReactHtmlParser(data.description)}
+                        </p>
+                    </div>,
+                );
+            });
+            setaboutValues(tempArr);
+        }
+    }, []);
+
     if (!_isEmpty(galleryImages)) {
         galleryImages.forEach((singleImage) => {
             const singleImagePropObj = {};
@@ -46,8 +69,7 @@ const AboutGroup = (props) => {
         });
     }
     let showNoData = false;
-    if (_isEmpty(imageArray) && !formattedShort && !videoPlayerLink && !formattedImpact
-        && !formattedHelping && !formattedAbout) {
+    if (_isEmpty(imageArray) && !formattedShort && !videoPlayerLink && _isEmpty(aboutValues)) {
         showNoData = true;
     }
     return (
@@ -86,33 +108,7 @@ const AboutGroup = (props) => {
                                             </Grid>
                                         </div>
                                     )}
-                                {formattedImpact
-                                && (
-                                    <div className="GroupPurpose">
-                                        <Header as="h3">{formatMessage('groupProfile:groupPurpose')}</Header>
-                                        <p>
-                                            {ReactHtmlParser(formattedImpact)}
-                                        </p>
-                                    </div>
-                                )}
-                                {formattedHelping
-                                && (
-                                    <div className="GroupPurpose">
-                                        <Header as="h3">{formatMessage('groupProfile:groupHelpText')}</Header>
-                                        <p>
-                                            { ReactHtmlParser(formattedHelping) }
-                                        </p>
-                                    </div>
-                                )}
-                                {formattedAbout
-                                && (
-                                    <div className="GroupPurpose">
-                                        <Header as="h3">{formatMessage('groupProfile:groupAboutOrg')}</Header>
-                                        <p>
-                                            { ReactHtmlParser(formattedAbout) }
-                                        </p>
-                                    </div>
-                                )}
+                                {!_isEmpty(aboutValues) && aboutValues}
                                 {!_isEmpty(imageArray)
                                 && (
                                     <div className="fullwidth_v_G">
@@ -149,10 +145,8 @@ AboutGroup.defaultProps = {
     galleryImages: [],
     groupDetails: {
         attributes: {
-            formattedAbout: '',
-            formattedHelping: '',
-            formattedImpact: '',
             formattedShort: '',
+            groupDescriptionsValues: [],
             videoPlayerLink: '',
         },
     },
@@ -165,10 +159,8 @@ AboutGroup.propTypes = {
     ),
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
-            formattedAbout: string,
-            formattedHelping: string,
-            formattedImpact: string,
             formattedShort: string,
+            groupDescriptionsValues: array,
             videoPlayerLink: string,
         }),
     }),

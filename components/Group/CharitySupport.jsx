@@ -17,18 +17,15 @@ import {
     func,
     bool,
 } from 'prop-types';
-import getConfig from 'next/config';
 
 import { withTranslation } from '../../i18n';
+import {
+    Link,
+} from '../../routes';
 import { getDetails } from '../../actions/group';
 import PlaceholderGrid from '../shared/PlaceHolder';
 
 import GroupSupportCard from './GroupSupportCard';
-
-const { publicRuntimeConfig } = getConfig();
-const {
-    RAILS_APP_URL_ORIGIN,
-} = publicRuntimeConfig;
 
 class CharitySupport extends React.Component {
     constructor(props) {
@@ -118,10 +115,9 @@ class CharitySupport extends React.Component {
             data = (
                 <div>
                     <p>{formatMessage('groupProfile:charitySupportNoDataText')}</p>
-                    {isAdmin && (
-                        <a
-                            href={`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`}
-                        >
+                    {isAdmin
+                    && (
+                        <Link route={`/groups/${slug}/edit`}>
                             <Button
                                 className="success-btn-rounded-def fluid"
                                 style={{
@@ -130,7 +126,7 @@ class CharitySupport extends React.Component {
                             >
                                 Select a charity
                             </Button>
-                        </a>
+                        </Link>
                     )
                     }
                 </div>

@@ -1,3 +1,6 @@
+import React, {
+    useRef,
+} from 'react';
 import {
     Container,
     Grid,
@@ -6,32 +9,40 @@ import {
     Button,
     Dropdown,
 } from 'semantic-ui-react';
+import {
+    useDispatch,
+    useSelector,
+} from 'react-redux';
+import _isEmpty from 'lodash/isEmpty';
 
-import { Router } from '../../routes';
+import { Link } from '../../routes';
 import Layout from '../shared/Layout';
 import '../../static/less/charityProfile.less';
 import '../../static/less/create_manage_group.less';
 import groupImg from '../../static/images/no-data-avatar-giving-group-profile.png';
-import ManageGivingGroupAccordian from './ManageGivingGroupAccordian';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRef } from 'react';
 import { intializeCreateGivingGroup } from '../../helpers/createGrouputils';
-import { deleteGroupLogo, editGivingGroupApiCall } from '../../actions/createGivingGroup';
 import { getBase64 } from '../../helpers/chat/utils';
+import {
+    deleteGroupLogo,
+    editGivingGroupApiCall,
+} from '../../actions/createGivingGroup';
 
-const ManageGivingGroup = ({ step, substep }) => {
-    const handleReturnToProfile = (slug) => {
-        Router.pushRoute(`/groups/${slug}`)
-        return;
-    };
-    const editGivingGroupStoreFlowObject = useSelector(state => state.createGivingGroup.editGivingGroupStoreFlowObject || intializeCreateGivingGroup);
+import ManageGivingGroupAccordian from './ManageGivingGroupAccordian';
+
+const ManageGivingGroup = ({
+    step,
+    substep,
+}) => {
+    const editGivingGroupStoreFlowObject = useSelector((state) => (
+        state.createGivingGroup.editGivingGroupStoreFlowObject || intializeCreateGivingGroup
+    ));
     const {
         attributes: {
             avatar,
             causes,
             location,
             name,
-            slug
+            slug,
         },
         id: groupId,
     } = editGivingGroupStoreFlowObject;
@@ -43,26 +54,25 @@ const ManageGivingGroup = ({ step, substep }) => {
         try {
             if (mode === 'remove') {
                 dispatch(deleteGroupLogo(editGivingGroupStoreFlowObject, groupId));
-                return
+                return;
             }
             getBase64(event.target.files[0], (result) => {
                 const editObject = {
-                    'attributes': {
-                        'logo': result
+                    attributes: {
+                        logo: result,
                     },
                 };
                 dispatch(editGivingGroupApiCall(editObject, groupId));
             });
-        }
-        catch (err) {
+        } catch (err) {
             //handle error
         }
+    };
 
-    }
     return (
         <Layout authRequired>
             <Container>
-                <div className='manage_giving_group_wrap'>
+                <div className="manage_giving_group_wrap">
                     <div className="ch_headerImage greenBg greenBgnew" />
                     <Grid.Row>
                         <Grid>
@@ -70,7 +80,7 @@ const ManageGivingGroup = ({ step, substep }) => {
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column mobile={16} tablet={4} computer={4} className="ch_profileWrap">
-                                            <div className='GG_profileWrap'>
+                                            <div className="GG_profileWrap">
                                                 <div className="ch_profileImage">
                                                     <Image src={groupDisplayImage} />
                                                 </div>
@@ -82,33 +92,35 @@ const ManageGivingGroup = ({ step, substep }) => {
                                                     style={{ display: 'none' }}
                                                     onChange={(event) => handleUpload(event, 'add')}
                                                 />
-                                                <Dropdown className='' icon='camera' direction='right'>
-                                                    <Dropdown.Menu >
+                                                <Dropdown icon="camera" direction="right">
+                                                    <Dropdown.Menu>
                                                         <Dropdown.Item
                                                             onClick={(event) => handleUpload(event, 'remove')}
-                                                            text='Delete photo'
+                                                            text="Delete photo"
                                                         />
                                                         <Dropdown.Item
-                                                            text='Change photo'
+                                                            text="Change photo"
                                                             onClick={() => uploadLogoImageRef.current.click()}
                                                         />
                                                     </Dropdown.Menu>
                                                 </Dropdown>
-                                                {/* <Icon name='camera'/> */}
                                             </div>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={12} computer={12}>
                                             <div className="ch_profileDetails">
-                                                <Header as="h5" className='textGreen'>
+                                                <Header as="h5" className="textGreen">
                                                     Giving group
                                                 </Header>
                                                 <Header as="h3">
                                                     {name}
                                                     <br />
                                                 </Header>
-                                                <Header as="p">
-                                                    {location}
-                                                </Header>
+                                                {!_isEmpty(location)
+                                                && (
+                                                    <Header as="p">
+                                                        {location}
+                                                    </Header>
+                                                )}
                                                 <div className="ch_badge-group">
                                                     {
                                                         causes && causes.map((cause) => (
@@ -123,13 +135,14 @@ const ManageGivingGroup = ({ step, substep }) => {
                                     </Grid.Row>
                                 </Grid>
                             </Grid.Column>
-                            <Grid.Column mobile={16} tablet={6} computer={5} className='returnBtnWrap'>
-                                <Button
-                                    className='blue-bordr-btn-round-def'
-                                    onClick={() => handleReturnToProfile(slug)}
-                                >
+                            <Grid.Column mobile={16} tablet={6} computer={5} className="returnBtnWrap">
+                                <Link route={`/groups/${slug}`}>
+                                    <Button
+                                        className="blue-bordr-btn-round-def"
+                                    >
                                     Return to profile
                                     </Button>
+                                </Link>
                             </Grid.Column>
                         </Grid>
                     </Grid.Row>
@@ -145,8 +158,9 @@ const ManageGivingGroup = ({ step, substep }) => {
                 </div>
             </Container>
         </Layout>
-    )
+    );
 };
+
 ManageGivingGroup.defaultProps = {
     dispatch: () => { },
     step: '',

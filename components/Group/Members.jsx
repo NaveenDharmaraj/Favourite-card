@@ -16,8 +16,10 @@ import {
     func,
     bool,
 } from 'prop-types';
-import getConfig from 'next/config';
 
+import {
+    Link,
+} from '../../routes';
 import { withTranslation } from '../../i18n';
 import PlaceholderGrid from '../shared/PlaceHolder';
 import {
@@ -26,11 +28,6 @@ import {
 import Pagination from '../shared/Pagination';
 
 import MemberCard from './MemberCard';
-
-const { publicRuntimeConfig } = getConfig();
-const {
-    RAILS_APP_URL_ORIGIN,
-} = publicRuntimeConfig;
 
 class Members extends React.Component {
     constructor(props) {
@@ -139,16 +136,17 @@ class Members extends React.Component {
                                             {(isAdmin && !_isEmpty(membersData))
                                             && (
                                                 <Grid.Column mobile={8} tablet={8} computer={8}>
-                                                    <Button
-                                                        className="success-btn-rounded-def"
-                                                        floated="right"
-                                                        href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/invites`)}
-                                                    >
-                                                        <span>
-                                                            <i aria-hidden="true" className="addmember icon" />
-                                                        </span>
-                                                        {formatMessage('groupProfile:inviteFriends')}
-                                                    </Button>
+                                                    <Link route={`/groups/${slug}/invites`}>
+                                                        <Button
+                                                            className="success-btn-rounded-def"
+                                                            floated="right"
+                                                        >
+                                                            <span>
+                                                                <i aria-hidden="true" className="addmember icon" />
+                                                            </span>
+                                                            {formatMessage('groupProfile:inviteFriends')}
+                                                        </Button>
+                                                    </Link>
                                                 </Grid.Column>
                                             )}
                                         </Grid.Row>

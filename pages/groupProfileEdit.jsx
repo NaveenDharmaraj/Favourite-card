@@ -1,15 +1,21 @@
-import { Fragment, useEffect } from 'react';
+import React, {
+    Fragment,
+    useEffect,
+} from 'react';
 import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 
-import { actionTypes, getGroupFromSlug } from "../actions/group";
-import storage from "../helpers/storage";
+import { getGroupFromSlug } from '../actions/group';
+import storage from '../helpers/storage';
 import { withTranslation } from '../i18n';
 import {
     Router,
 } from '../routes';
 import ManageGivingGroup from '../components/ManageGivingGroup';
-import { manageGivingGroupAccordianMenuOptions, manageGivingGroupAccordianOptions } from '../helpers/createGrouputils';
+import {
+    manageGivingGroupAccordianMenuOptions,
+    manageGivingGroupAccordianOptions,
+} from '../helpers/createGrouputils';
 
 
 const GroupProfileEdit = (props) => {
@@ -26,6 +32,7 @@ const GroupProfileEdit = (props) => {
         step,
         substep,
     } = props;
+
     useEffect(() => {
         if (isCampaign) {
             Router.pushRoute(`/campaigns/${slug}`);
@@ -33,24 +40,23 @@ const GroupProfileEdit = (props) => {
             Router.push('/search');
         } else if (redirectToPrivateGroupErrorPage) {
             Router.pushRoute('/group/error');
-            return;
         } else if (_isEmpty(manageGivingGroupAccordianOptions[step]) && _isEmpty(substep)) {
-            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions['edit'].route}`);
-            return;
+            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions.edit.route}`);
         } else if (substep && _isEmpty(manageGivingGroupAccordianMenuOptions[substep])) {
-            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions['edit'].route}/${manageGivingGroupAccordianMenuOptions['basic'].route}`)
+            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions.edit.route}/${manageGivingGroupAccordianMenuOptions.basic.route}`);
         } else if (!isAdmin) {
             Router.pushRoute(`/groups/${slug}`);
         }
     }, []);
+
     return (
         <Fragment>
-            {(isAdmin && !isCampaign && !redirectToDashboard && !redirectToPrivateGroupErrorPage) &&
-                <ManageGivingGroup {...props} />
+            {(isAdmin && !isCampaign && !redirectToDashboard && !redirectToPrivateGroupErrorPage)
+            && <ManageGivingGroup {...props} />
             }
         </Fragment>
     );
-}
+};
 
 GroupProfileEdit.getInitialProps = async ({
     reduxStore,
@@ -71,20 +77,18 @@ GroupProfileEdit.getInitialProps = async ({
             step: query.step,
             substep: query.substep,
         };
-    }
-    catch (err) {
+    } catch (err) {
         //handle error
     }
-    return {}
-}
+    return {};
+};
 
-const mapStateToProps = (state) => {
-    return {
-        groupDetails: state.group.groupDetails,
-        redirectToDashboard: state.group.redirectToDashboard,
-        redirectToPrivateGroupErrorPage: state.group.redirectToPrivateGroupErrorPage,
-    };
-}
+const mapStateToProps = (state) => ({
+    groupDetails: state.group.groupDetails,
+    redirectToDashboard: state.group.redirectToDashboard,
+    redirectToPrivateGroupErrorPage: state.group.redirectToPrivateGroupErrorPage,
+});
+
 GroupProfileEdit.defaultProps = {
     dispatch: () => { },
     groupDetails: {
@@ -106,5 +110,3 @@ export {
     GroupProfileEdit,
     mapStateToProps,
 };
-
-
