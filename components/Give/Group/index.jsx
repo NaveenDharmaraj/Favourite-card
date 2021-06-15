@@ -1140,7 +1140,8 @@ class Group extends React.Component {
                 className="blue-btn-rounded btn_right rivewbtnp2p"
                 content={formatMessage('giveCommon:reviewButton')}
                 disabled={!this.props.userAccountsFetched}
-                type="submit"
+                type="button"
+                onClick={this.handleSubmit}
             />);
         let giveBannerHeader;
         if (!!groupFromUrl) {
