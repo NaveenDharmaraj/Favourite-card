@@ -308,7 +308,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     const renderSelectedCharities = () => beneficiaryItems.map((item) => {
         return (
             <div className="charity">
-                <Icon className='remove' onClick={() => handleRemoveCharity(item.id)} />
+                <Icon className="remove" onClick={() => handleRemoveCharity(item.id)} />
                 <Image src={item.avatar || groupImg} />
                 <Header>{item.name}</Header>
             </div>
@@ -394,47 +394,44 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                             {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
                                         </span>
                                     </p>
-                                    {(beneficiaryItems && beneficiaryItems.length < 5)
-                                    && (
-                                        <div className="searchBox charitysearch">
-                                            <Form.Field
-                                                single
-                                                control={Select}
-                                                open={showCharityDropdown}
-                                                className="searchInput"
-                                                style={{ minHeight: 'auto' }}
-                                                id="beneficiaryItems"
-                                                name="beneficiaryItems"
-                                                onChange={handleCharityChange}
-                                                onSearchChange={handleCharitySearchWordChange}
-                                                options={charitiesQueryBasedOptions}
-                                                search={(options) => options}
-                                                selection
-                                                searchQuery={charitySearchQuery}
-                                                placeholder={formatMessage('createGivingGroupGivingGoal.chairtiesToSupportPlaceholder')}
-                                                loading={charitiesSearchQueryBasedLoader}
-                                                onClick={() => {
-                                                    charitiesQueryBasedOptions.length > 0
-                                                        && setShowCharityDropdown(true)
-                                                }}
-                                                onClose={() => { setShowCharityDropdown(false) }}
-                                            />
-                                        </div>
-                                    )}
-                                    {!showLoader
-                                        ? (
-                                            (beneficiaryItems && beneficiaryItems.length > 0)
-                                            && (
-                                                <div className="charityWrap">
-                                                    {renderSelectedCharities()}
-                                                </div>
-                                            ))
-                                        : (
-                                            <Dimmer active inverted>
-                                                <Loader />
-                                            </Dimmer>
-                                        )}
-                                    
+                                    <div className="searchBox charitysearch">
+                                        <Form.Field
+                                            single
+                                            control={Select}
+                                            disabled={!_isEmpty(beneficiaryItems) && beneficiaryItems.length > 5}
+                                            open={showCharityDropdown}
+                                            className="searchInput"
+                                            style={{ minHeight: 'auto' }}
+                                            id="beneficiaryItems"
+                                            name="beneficiaryItems"
+                                            onChange={handleCharityChange}
+                                            onSearchChange={handleCharitySearchWordChange}
+                                            options={charitiesQueryBasedOptions}
+                                            search={(options) => options}
+                                            selection
+                                            searchQuery={charitySearchQuery}
+                                            placeholder={formatMessage('createGivingGroupGivingGoal.chairtiesToSupportPlaceholder')}
+                                            loading={charitiesSearchQueryBasedLoader}
+                                            onClick={() => {
+                                                charitiesQueryBasedOptions.length > 0
+                                                    && setShowCharityDropdown(true);
+                                            }}
+                                            onClose={() => { setShowCharityDropdown(false); }}
+                                        />
+                                        {!showLoader
+                                            ? (
+                                                (!_isEmpty(beneficiaryItems))
+                                                && (
+                                                    <div className="charityWrap">
+                                                        {renderSelectedCharities()}
+                                                    </div>
+                                                ))
+                                            : (
+                                                <Dimmer active inverted>
+                                                    <Loader />
+                                                </Dimmer>
+                                            )}
+                                    </div>
                                 </div>
                             )
                             }

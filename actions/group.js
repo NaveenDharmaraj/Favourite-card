@@ -78,48 +78,53 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
                     fsa.payload.groupDetails = result.data;
                     dispatch(fsa);
                     if (fromEdit) {
-                        let galleryImages = [];
+                        const galleryImages = [];
                         if (result.data.attributes.galleryImagesList) {
                             result.data.attributes.galleryImagesList.map(({ display }) => {
-                                galleryImages.push(display)
-                            })
-                        };
-                        let groupDescriptions = [];
+                                galleryImages.push(display);
+                            });
+                        }
+                        const groupDescriptions = [];
                         if (result.data.attributes.groupDescriptionsValues) {
-                            result.data.attributes.groupDescriptionsValues.map(item => {
+                            result.data.attributes.groupDescriptionsValues.map((item) => {
                                 groupDescriptions.push({
                                     ...item,
-                                    id: `${item.purpose}${result.data.attributes.groupDescriptionsValues.length}`
+                                    id: `${item.purpose}${result.data.attributes.groupDescriptionsValues.length}`,
                                 });
-                            })
-                        };
+                            });
+                        }
                         await dispatch(upadateEditGivingGroupObj({
                             ...intializeCreateGivingGroup,
                             attributes: {
                                 ...intializeCreateGivingGroup.attributes,
                                 avatar: result.data.attributes.avatar,
-                                logo: result.data.attributes.avatar,
                                 causes: result.data.attributes.causes,
                                 city: result.data.attributes.city,
-                                fundraisingDaysRemaining: result.data.attributes.fundraisingDaysRemaining,
-                                fundraisingDate: result.data.attributes.fundraisingEndDate,
-                                fundraisingPercentage: result.data.attributes.fundraisingPercentage,
                                 fundraisingCreated: result.data.attributes.fundraisingStartDate,
+                                fundraisingDate: result.data.attributes.fundraisingEndDate,
+                                fundraisingDaysRemaining: result.data.attributes.fundraisingDaysRemaining,
                                 fundraisingGoal: result.data.attributes.goal,
+                                fundraisingPercentage: result.data.attributes.fundraisingPercentage,
                                 goalAmountRaised: result.data.attributes.goalAmountRaised,
+                                location: result.data.attributes.location,
+                                logo: result.data.attributes.avatar,
                                 name: result.data.attributes.name,
-                                prefersInviteOnly: result.data.attributes.isPrivate ? "1" : "0",
-                                prefersRecurringEnabled: result.data.attributes.recurringEnabled ? "1" : "0",
+                                prefersInviteOnly: result.data.attributes.isPrivate ? '1' : '0',
+                                prefersRecurringEnabled: result.data.attributes.recurringEnabled ? '1' : '0',
                                 province: result.data.attributes.province,
                                 short: result.data.attributes.description,
                                 slug: result.data.attributes.slug,
                                 videoUrl: result.data.attributes.videoPlayerLink,
                             },
                             beneficiaryItems: result.data.attributes.groupCharities,
-                            groupPurposeDescriptions: [...groupDescriptions],
-                            galleryImages: [...galleryImages],
+                            galleryImages: [
+                                ...galleryImages,
+                            ],
+                            groupPurposeDescriptions: [
+                                ...groupDescriptions,
+                            ],
                             id: result.data.id,
-                        }))
+                        }));
                     }
                 }
             },

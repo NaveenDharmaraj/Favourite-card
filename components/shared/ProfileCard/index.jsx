@@ -62,7 +62,7 @@ const ProfileCard = (props) => {
     const currency = 'USD';
     const language = 'en';
     const dispatch = useDispatch();
-    let editLink = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
+    let editLink = `/groups/${slug}/edit`;
     if (Profiletype === 'group') {
         route = (isCampaign) ? 'campaigns' : 'groups';
         editLink = (isCampaign) ? `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics` : editLink;
@@ -113,7 +113,11 @@ const ProfileCard = (props) => {
             </Link>
             {(isMyProfile && (Profiletype === 'group') && !isPreviewMode && canEdit)
                 && (
-                    <a className="edit" href={editLink}>Edit</a>
+                    <div className="edit">
+                        <Link route={editLink}>
+                            Edit
+                        </Link>
+                    </div>
                 )}
             {isFavourite && isMyProfile
                 && (

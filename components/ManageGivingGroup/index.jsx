@@ -13,6 +13,7 @@ import {
     useDispatch,
     useSelector,
 } from 'react-redux';
+import _isEmpty from 'lodash/isEmpty';
 
 import { Link } from '../../routes';
 import Layout from '../shared/Layout';
@@ -21,7 +22,6 @@ import '../../static/less/create_manage_group.less';
 import groupImg from '../../static/images/no-data-avatar-giving-group-profile.png';
 import { intializeCreateGivingGroup } from '../../helpers/createGrouputils';
 import { getBase64 } from '../../helpers/chat/utils';
-import { getLocation } from '../../helpers/profiles/utils';
 import {
     deleteGroupLogo,
     editGivingGroupApiCall,
@@ -40,9 +40,8 @@ const ManageGivingGroup = ({
         attributes: {
             avatar,
             causes,
-            city,
+            location,
             name,
-            province,
             slug,
         },
         id: groupId,
@@ -50,7 +49,6 @@ const ManageGivingGroup = ({
     const uploadLogoImageRef = useRef(null);
     const groupDisplayImage = avatar || groupImg;
     const dispatch = useDispatch();
-    const location = getLocation(city, province);
 
     const handleUpload = (event, mode = '') => {
         try {
@@ -66,11 +64,11 @@ const ManageGivingGroup = ({
                 };
                 dispatch(editGivingGroupApiCall(editObject, groupId));
             });
-        }
-        catch (err) {
+        } catch (err) {
             //handle error
         }
     };
+
     return (
         <Layout authRequired>
             <Container>
@@ -117,9 +115,12 @@ const ManageGivingGroup = ({
                                                     {name}
                                                     <br />
                                                 </Header>
-                                                <Header as="p">
-                                                    {location}
-                                                </Header>
+                                                {!_isEmpty(location)
+                                                && (
+                                                    <Header as="p">
+                                                        {location}
+                                                    </Header>
+                                                )}
                                                 <div className="ch_badge-group">
                                                     {
                                                         causes && causes.map((cause) => (

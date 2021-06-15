@@ -4,7 +4,7 @@ import _isEmpty from 'lodash/isEmpty';
 import searchApi from '../services/searchApi';
 import coreApi from '../services/coreApi';
 import { dateFormatConverter } from '../helpers/createGrouputils';
-import { groupPendingInvites } from './data';
+import { adminActionType } from '../helpers/constants';
 
 export const actionTypes = {
     GET_PROVINCE_LIST: 'GET_PROVINCE_LIST',
@@ -349,7 +349,7 @@ export const toggleAdmin = (memberId, groupId, type, displayName) => (dispatch) 
         message: '',
         type: 'success',
     };
-    if (type === 'make_admin') {
+    if (type === adminActionType.make_admin) {
         toastMessageProps.message = `${displayName} is an admin now.`;
     } else {
         toastMessageProps.message = `${displayName} has been removed as admin.`;
@@ -536,12 +536,14 @@ export const getWidgetCode = (groupId) => (dispatch) => {
 
 export const removeGroupMember = (userId, groupId) => (dispatch) => {
     const params = {
-        dispatch,
-        group_id: groupId,
-        user_id: userId,
-        uxCritical: true,
+        data: {
+            attributes: {
+                group_id: groupId,
+            },
+            type: 'groups',
+        },
     };
-    return coreApi.patch(`/members/removeMember`, params).then(() => {
+    return coreApi.patch(`/members/${userId}/removeMember`, params).then(() => {
         dispatch(getGroupMembers(groupId));
     });
 };

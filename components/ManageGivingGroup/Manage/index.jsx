@@ -198,7 +198,7 @@ const Manage = () => {
                     </div>
                 )}
                 <div className="Emailmembers">
-                    {/* <Link route={`/groups/${groupDetails.attributes.slug}/email_members`}> */}
+                    <Link route={`/groups/${groupDetails.attributes.slug}/email_members`}>
                         <p>
                             <span>
                                 <i
@@ -209,7 +209,7 @@ const Manage = () => {
                             </span>
                             Email members
                         </p>
-                    {/* </Link> */}
+                    </Link>
                 </div>
             </div>
             {groupMemberPlaceholderStatus

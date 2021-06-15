@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {
+    useState,
+    useEffect,
+} from 'react';
+import {
+    useDispatch,
+    useSelector,
+} from 'react-redux';
 import {
     Header,
     Form,
@@ -17,18 +23,28 @@ const AddDonationWidget = () => {
     const dispatch = useDispatch();
     const groupDetails = useSelector((state) => state.group.groupDetails || {});
     const widgetCode = useSelector((state) => state.createGivingGroup.widgetCode);
-    const [scriptValue, setscriptValue] = useState('');
-    const [selectedValue, setselectedValue] = useState('');
+    const [
+        scriptValue,
+        setscriptValue,
+    ] = useState('');
+    const [
+        selectedValue,
+        setselectedValue,
+    ] = useState('');
+
     useEffect(() => {
         if (!_isEmpty(groupDetails)) {
             dispatch(getWidgetCode(groupDetails.id));
         }
-    }, [groupDetails]);
+    }, [
+        groupDetails,
+    ]);
 
     const handleOnChange = (type) => {
         setscriptValue(widgetCode[type]);
         setselectedValue(type);
     };
+
     return (
         <div className="basicsettings">
             <Header className="titleHeader transaction">

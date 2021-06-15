@@ -20,6 +20,7 @@ import {
     removeGroupMember,
     sendEmailInvite,
 } from '../../../actions/createGivingGroup';
+import { adminActionType } from '../../../helpers/constants';
 
 import ManageModal from './ManageModal';
 
@@ -73,12 +74,12 @@ const MemberListCard = (props) => {
 
     const handleOnClick = (type) => {
         setshowLoader(true);
-        dispatch(toggleAdmin(id, groupId, type, displayName)).finally(() => {
+        dispatch(toggleAdmin(id, groupId, type, displayName)).then(() => {
             setshowLoader(false);
-            if (type === 'make_admin') {
+            if (type === adminActionType.make_admin) {
                 setshowMemberModal(false);
             }
-            if (type === 'remove_admin') {
+            if (type === adminActionType.remove_admin) {
                 setshowAdminmodel(false);
             }
         });
@@ -86,7 +87,7 @@ const MemberListCard = (props) => {
 
     const handleRemoveMember = () => {
         setshowLoader(true);
-        dispatch(removeGroupMember(id, groupId)).finally(() => {
+        dispatch(removeGroupMember(id, groupId)).then(() => {
             setshowLoader(false);
             setshowGroupModel(false);
         });
@@ -102,7 +103,7 @@ const MemberListCard = (props) => {
             },
         };
         setshowLoader(true);
-        dispatch(resendInvite(payload, id)).finally(() => {
+        dispatch(resendInvite(payload, id)).then(() => {
             setshowResendInviteModal(false);
             setshowLoader(false);
         });
@@ -118,7 +119,7 @@ const MemberListCard = (props) => {
             },
         };
         setshowLoader(true);
-        dispatch(cancelInvite(payload, id)).finally(() => {
+        dispatch(cancelInvite(payload, id)).then(() => {
             setshowCancelInviteModal(false);
             setshowLoader(false);
         });
@@ -136,7 +137,7 @@ const MemberListCard = (props) => {
             },
         };
         setshowLoader(true);
-        dispatch(sendEmailInvite(payload)).finally(() => {
+        dispatch(sendEmailInvite(payload)).then(() => {
             setisInviteSent(true);
             setshowLoader(false);
         });
