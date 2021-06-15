@@ -1019,7 +1019,7 @@ class ReloadAddAmount extends React.Component {
         if (currentModalStep === 1) {
             modalContent = (
                 <>
-                    <Form onSubmit={this.handleReloadSubmit}>
+                    <Form>
                         <label htmlFor="donationAmount">
                             {formatMessage('giveCommon:amountLabel')}
                         </label>

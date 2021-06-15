@@ -1170,7 +1170,7 @@ class Group extends React.Component {
                                             flowType={type} />
                                     </div>
                                     <div className="flowFirst">
-                                        <Form onSubmit={this.handleSubmit}>
+                                        <Form>
                                             <Grid>
                                                 <Grid.Row>
                                                     <Grid.Column mobile={16} tablet={12} computer={10}>
