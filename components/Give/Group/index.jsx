@@ -1140,7 +1140,8 @@ class Group extends React.Component {
                 className="blue-btn-rounded btn_right rivewbtnp2p"
                 content={formatMessage('giveCommon:reviewButton')}
                 disabled={!this.props.userAccountsFetched}
-                type="submit"
+                type="button"
+                onClick={this.handleSubmit}
             />);
         let giveBannerHeader;
         if (!!groupFromUrl) {
@@ -1170,7 +1171,7 @@ class Group extends React.Component {
                                             flowType={type} />
                                     </div>
                                     <div className="flowFirst">
-                                        <Form onSubmit={this.handleSubmit}>
+                                        <Form>
                                             <Grid>
                                                 <Grid.Row>
                                                     <Grid.Column mobile={16} tablet={12} computer={10}>
