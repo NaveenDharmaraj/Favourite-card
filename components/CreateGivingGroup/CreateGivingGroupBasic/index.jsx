@@ -337,7 +337,7 @@ const CreateGivingGroupBasic = ({
                                             onChange={handleOnChange}
                                         />
                                     </div>
-                                    {showButton
+                                    {/* {showButton
                                         && (
                                             <div className="buttonsWrap">
                                                 <Button
@@ -352,7 +352,7 @@ const CreateGivingGroupBasic = ({
                                                 </Button>
                                             </div>
                                         )
-                                    }
+                                    } */}
                                 </div>
                             )
                             }
@@ -374,6 +374,22 @@ const CreateGivingGroupBasic = ({
                                     />
                                 </div>
                             )
+                            }
+                            {showButton
+                                        && (
+                                            <div className="buttonsWrap">
+                                                <Button
+                                                    className="blue-btn-rounded-def"
+                                                    disabled={disableContinue || !validity.doesNameExist}
+                                                    onClick={
+                                                        (event, data) => (
+                                                            fromCreate ? handleContinue() : handleEditSave(event, data)
+                                                        )}
+                                                >
+                                                    {fromCreate ? formatMessage('continueButton') : 'Save'}
+                                                </Button>
+                                            </div>
+                                        )
                             }
                         </Form>
                     </div>
