@@ -342,9 +342,12 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                 }
                 <div className="mainContent">
                     <div>
-                        <Header className="titleHeader">
-                            {formatMessage('createGivingGroupGivingGoal.givingGoalHeader')}
-                        </Header>
+                        {fromCreate
+                        && (
+                            <Header className="titleHeader">
+                                {formatMessage('createGivingGroupGivingGoal.givingGoalHeader')}
+                            </Header>
+                        )}
                         <Form>
                             {showGivingGoal
                             && (
@@ -418,19 +421,16 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                             }}
                                             onClose={() => { setShowCharityDropdown(false); }}
                                         />
-                                        {!showLoader
-                                            ? (
-                                                (!_isEmpty(beneficiaryItems))
-                                                && (
-                                                    <div className="charityWrap">
-                                                        {renderSelectedCharities()}
-                                                    </div>
-                                                ))
-                                            : (
-                                                <Dimmer active inverted>
-                                                    <Loader />
-                                                </Dimmer>
-                                            )}
+                                        <div className="charityWrap">
+                                            {!showLoader
+                                                ? (
+                                                    !_isEmpty(beneficiaryItems) && renderSelectedCharities()
+                                                ) : (
+                                                    <Dimmer className="charity_support_loader" active inverted>
+                                                        <Loader />
+                                                    </Dimmer>
+                                                )}
+                                        </div>
                                     </div>
                                 </div>
                             )

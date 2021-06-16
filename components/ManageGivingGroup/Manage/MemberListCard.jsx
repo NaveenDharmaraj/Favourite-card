@@ -11,6 +11,7 @@ import {
     Dropdown,
     Modal,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
 import imageManage from '../../../static/images/no-data-avatar-user-profile.png';
 import {
@@ -21,6 +22,7 @@ import {
     sendEmailInvite,
 } from '../../../actions/createGivingGroup';
 import { adminActionType } from '../../../helpers/constants';
+import { getLocation } from '../../../helpers/profiles/utils';
 
 import ManageModal from './ManageModal';
 
@@ -30,10 +32,12 @@ const MemberListCard = (props) => {
             id,
             attributes: {
                 avatar,
+                city,
                 displayName,
                 email,
                 isGroupAdmin,
                 location,
+                province,
                 isGroupInviteSent,
             }
         },
@@ -42,6 +46,7 @@ const MemberListCard = (props) => {
         isSingleAdmin,
         isFriendList,
     } = props;
+    const formatedLocation = getLocation(city, province);
     const [
         showAdminmodel,
         setshowAdminmodel,
@@ -167,14 +172,14 @@ const MemberListCard = (props) => {
                                             email
                                         )}
                                 </List.Header>
-                                <List.Description>
-                                    <p>
-                                        {location && location.city
-                                        && (
-                                            city, province
-                                        )}
-                                    </p>
-                                </List.Description>
+                                {!_isEmpty(formatedLocation)
+                                && (
+                                    <List.Description>
+                                        <p>
+                                            {formatedLocation}
+                                        </p>
+                                    </List.Description>
+                                )}
                             </List.Content>
                         </List.Item>
                     </List>
