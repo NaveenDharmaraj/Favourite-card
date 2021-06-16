@@ -259,7 +259,7 @@ const CreateGivingGroupBasic = ({
                         <Form>
                             {showBasic
                             && (
-                                <div className="createnewSec">
+                                <div className={`createnewSec ${fromCreate ? 'bottom_space' : ''}`}>
                                     <div className="requiredfield field">
                                         <Form.Field
                                             id="form-input-control-group-name"

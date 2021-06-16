@@ -325,6 +325,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                 handleInputOnBlurGivingGoal={handleInputOnBlurGivingGoal}
                 handleOnDateChange={handleOnDateChange}
                 validity={validity}
+                fromCreate={fromCreate}
             />
         );
     };
@@ -348,12 +349,13 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                 {formatMessage('createGivingGroupGivingGoal.givingGoalHeader')}
                             </Header>
                         )}
+                        <div className="Charities_goal_width">
                         <Form>
                             {showGivingGoal
                             && (
                                 <Fragment>
                                     {fromCreate || Number(editGivingGroupStoreFlowObject.attributes.fundraisingGoal) <= 0 ? (
-                                        <div className="createnewSec">
+                                        <div className={`createnewSec ${fromCreate ? 'bottom_space' : ''}`}>
                                             <Header className="sectionHeader">
                                                 {formatMessage('createGivingGroupGivingGoal.givingGoalTitle')}
                                                 <span className="optional">&nbsp;{formatMessage('optional')}</span>
@@ -435,38 +437,43 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                 </div>
                             )
                             }
+                            {!showLoader
+                            && (
+                                <div className="buttonsWrap">
+                                {fromCreate
+                                && (
+                                    <Button
+                                        className="blue-bordr-btn-round-def"
+                                        onClick={() => {
+                                            dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
+                                            Router.pushRoute(CreateGivingGroupFlowSteps.stepThree);
+                                        }}
+                                        disabled={disableContinueButton}
+                                    >
+                                        {formatMessage('backButton')}
+                                    </Button>
+                                )
+                                }
+                                {(fromCreate
+                                || ((Number(editGivingGroupStoreFlowObject.attributes.fundraisingGoal) <= 0) && showGivingGoal))
+                                && (
+                                    <Button
+                                        className="blue-btn-rounded-def"
+                                        onClick={handleCreateGroup}
+                                        disabled={
+                                            disableContinueButton || !validationCreateGivingGroup()
+                                            || !validity.isEndDateGreaterThanStartDate
+                                        }
+                                        loading={createGivingButtonLoader}
+                                    >
+                                        {fromCreate ? formatMessage('createGivingGroupGivingGoal.createGivingGroupButton') : 'Save'}
+                                    </Button>
+                                )
+                                }
+                            </div>
+                            )
+                            }
                         </Form>
-                        <div className="buttonsWrap">
-                            {fromCreate
-                            && (
-                                <Button
-                                    className="blue-bordr-btn-round-def"
-                                    onClick={() => {
-                                        dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
-                                        Router.pushRoute(CreateGivingGroupFlowSteps.stepThree);
-                                    }}
-                                    disabled={disableContinueButton}
-                                >
-                                    {formatMessage('backButton')}
-                                </Button>
-                            )
-                            }
-                            {(fromCreate
-                            || ((Number(editGivingGroupStoreFlowObject.attributes.fundraisingGoal) <= 0) && showGivingGoal))
-                            && (
-                                <Button
-                                    className="blue-btn-rounded-def"
-                                    onClick={handleCreateGroup}
-                                    disabled={
-                                        disableContinueButton || !validationCreateGivingGroup()
-                                        || !validity.isEndDateGreaterThanStartDate
-                                    }
-                                    loading={createGivingButtonLoader}
-                                >
-                                    {fromCreate ? formatMessage('createGivingGroupGivingGoal.createGivingGroupButton') : 'Save'}
-                                </Button>
-                            )
-                            }
                         </div>
                     </div>
                 </div>

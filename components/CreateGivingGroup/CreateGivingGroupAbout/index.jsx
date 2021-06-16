@@ -247,9 +247,9 @@ class CreateGivingGroupAbout extends React.Component {
                         <div className='about-group'>
                             <Header className='titleHeader'>{formatMessage('createGivingGroupAbout.aboutHeader')}</Header>
                             <Form>
-                                <div className='createnewSec'>
-                                    <label>{formatMessage('createGivingGroupAbout.aboutDescriptionLabel')}</label>
-                                    <p className='label-info'>{formatMessage('createGivingGroupAbout.aboutDescription')}</p>
+                                <div className={`createnewSec ${fromCreate ? 'bottom_space' : ''}`}>
+                                    <label className="describe">{formatMessage('createGivingGroupAbout.aboutDescriptionLabel')}</label>
+                                    <p className='label-info aboutDescription'>{formatMessage('createGivingGroupAbout.aboutDescription')}</p>
                                     {fromCreate ? (
                                         <div className='requiredfield field'>
                                             <Form.Field
