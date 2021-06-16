@@ -259,7 +259,7 @@ const CreateGivingGroupBasic = ({
                         <Form>
                             {showBasic
                             && (
-                                <div className="createnewSec">
+                                <div className={`createnewSec ${fromCreate ? 'bottom_space' : 'no_border'}`}>
                                     <div className="requiredfield field">
                                         <Form.Field
                                             id="form-input-control-group-name"
@@ -377,7 +377,7 @@ const CreateGivingGroupBasic = ({
                             }
                             {showButton
                                         && (
-                                            <div className="buttonsWrap">
+                                            <div className={`buttonsWrap ${fromCreate ? '' : 'buttons_space'}`}>
                                                 <Button
                                                     className="blue-btn-rounded-def"
                                                     disabled={disableContinue || !validity.doesNameExist}

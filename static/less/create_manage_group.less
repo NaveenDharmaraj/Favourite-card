@@ -246,7 +246,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 61px;
+    margin-bottom: 46px;
     h2.ui.header{
       margin: 0;
       font-size: 24px;
@@ -296,7 +296,7 @@
     .sectionHeader{
       font-size: 17px;
       color: #263238;
-      margin: 0 0 10px;
+      margin: 5px 0 10px;
       +p{
         line-height: 22px;
         span{
@@ -326,6 +326,21 @@
       padding: 40px 0;
       &:first-child{
         padding-top: 0;
+      }
+      &.bottom_space{
+        padding-bottom: 10px;
+      }
+      .describe{
+        margin-bottom: 4px;
+        display: block;
+        font-size: 14px;
+        line-height: 22px;
+      }
+      .label-info{
+        &.aboutDescription{
+          font-size: 12px;
+          margin-bottom: 8px;
+        }
       }
     }
     .fields{
@@ -508,12 +523,12 @@
       }
       .charity{
         display: flex;
-        align-items: flex-start;
+        align-items:center;
         position: relative;
         max-width: 235px;
         width: 100%;
         border: 1px solid #dedede;
-        padding: 5px;
+        padding: 13px 10px;
         border-radius: 5px;
         margin: 15px 0px 0px 0;
         .icon.remove{
@@ -521,7 +536,7 @@
           top: 0px;
         }
         .ui.image{
-          max-width: 48px;
+          max-width: 40px;
           border-radius: 5px
         }
         .ui.header{
@@ -827,6 +842,11 @@ body{
 .buttonsWrap{
   margin-top: 30px;
   text-align: right;
+  &.buttons_space{
+    margin-top: 0px;
+    max-width: 470px;
+    width: 100%;
+  }
   .ui.button{
     margin: 0 0 0 10px !important;
   }
@@ -1155,6 +1175,10 @@ body{
             max-width: 100%;
             .createnewSec{
               max-width: 480px;
+              &.no_border{
+                border-bottom: none;
+                padding-bottom: 0px;
+              }
             }
             p{
               &.SubHeader{
@@ -2176,4 +2200,11 @@ body{
       }
     }
   }
+}
+.Charities_goal_width{
+  max-width: 619px;
+  width: 100%;
+}
+.createNewGroupWrap .mainContent .ui.form .field input{
+  padding: 11.1px 15px;
 }

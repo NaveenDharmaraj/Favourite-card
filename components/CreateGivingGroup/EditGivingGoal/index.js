@@ -11,11 +11,15 @@ const EditGivingGoal = ({
     handleInputChange,
     handleInputOnBlurGivingGoal,
     handleOnDateChange,
-    validity
+    validity,
+    fromCreate
 }) => {
     return (
         <Fragment>
-        <p>Making changes to your giving goal will not affect the money raised so far.</p>
+       {!fromCreate
+        && (
+            <p>Making changes to your giving goal will not affect the money raised so far.</p>
+        )}
         <div className='givingGoalForm'>
             <div className="field">
                 <label>{formatMessage('createGivingGroupGivingGoal.givingGoalAmount')}</label>
