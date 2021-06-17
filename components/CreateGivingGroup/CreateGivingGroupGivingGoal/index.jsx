@@ -94,10 +94,10 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         let givingGoalValidity = true;
         let dateCheck = true;
         if (fundraisingGoal !== '') {
-            givingGoalValidity = _every(validateGivingGoal(fundraisingGoal, validity))
+            givingGoalValidity = _every(validateGivingGoal(parseFloat(fundraisingGoal.replace(/,/g, '')), validity));
         }
         if (fundraisingDate) {
-            dateCheck = fundraisingDate > fundraisingCreated
+            dateCheck = fundraisingDate > fundraisingCreated;
         }
         return (
             givingGoalValidity && name !== '' && short !== '' && dateCheck
@@ -175,7 +175,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
         if (!_isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
-            inputValue = _replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');;
+            inputValue = _replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
             setCreateGivingGroupObject({
                 ...createGivingGroupObject,
                 attributes: {
