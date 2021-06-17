@@ -350,130 +350,130 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                             </Header>
                         )}
                         <div className="Charities_goal_width">
-                        <Form>
-                            {showGivingGoal
-                            && (
-                                <Fragment>
-                                    {fromCreate || Number(editGivingGroupStoreFlowObject.attributes.fundraisingGoal) <= 0 ? (
-                                        <div className={`createnewSec ${fromCreate ? 'bottom_space' : ''}`}>
-                                            <Header className="sectionHeader">
-                                                {formatMessage('createGivingGroupGivingGoal.givingGoalTitle')}
-                                                <span className="optional">&nbsp;{formatMessage('optional')}</span>
-                                            </Header>
-                                            {renderEditModalContentComponent()}
-                                        </div>
-                                    )
-                                        : (
-                                            <div className="createnewSec">
-                                                <GivingGoal
-                                                    createGivingButtonLoader={createGivingButtonLoader}
-                                                    createGivingGroupObject={createGivingGroupObject}
-                                                    dispatch={dispatch}
-                                                    fundraisingGoal={fundraisingGoal}
-                                                    fundraisingDate={fundraisingDate}
-                                                    fundraisingDaysRemaining={fundraisingDaysRemaining}
-                                                    fundraisingCreated={fundraisingCreated}
-                                                    fundraisingPercentage={fundraisingPercentage}
-                                                    goalAmountRaised={goalAmountRaised}
-                                                    groupId={groupId}
-                                                    handleCreateGroup={handleCreateGroup}
-                                                    modalContent={renderEditModalContentComponent()}
-                                                    validity={validity}
-                                                    setCreateGivingGroupObject={setCreateGivingGroupObject}
-                                                />
+                            <Form>
+                                {showGivingGoal
+                                && (
+                                    <Fragment>
+                                        {fromCreate || Number(editGivingGroupStoreFlowObject.attributes.fundraisingGoal) <= 0 ? (
+                                            <div className={`createnewSec ${fromCreate ? 'bottom_space' : ''}`}>
+                                                <Header className="sectionHeader">
+                                                    {formatMessage('createGivingGroupGivingGoal.givingGoalTitle')}
+                                                    <span className="optional">&nbsp;{formatMessage('optional')}</span>
+                                                </Header>
+                                                {renderEditModalContentComponent()}
                                             </div>
                                         )
-                                    }
-                                </Fragment>
-                            )}
-                            {showCharity
-                            && (
-                                <div className="createnewSec">
-                                    <Header className="sectionHeader">
-                                        {formatMessage('createGivingGroupGivingGoal.charitiesToSupport')}
-                                        <span className="optional">&nbsp;{formatMessage('optional')}</span>
-                                    </Header>
-                                    <p>
-                                        {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc1')}
-                                        <span>
-                                            {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
-                                        </span>
-                                    </p>
-                                    <div className="searchBox charitysearch">
-                                        <Form.Field
-                                            single
-                                            control={Select}
-                                            disabled={!_isEmpty(beneficiaryItems) && beneficiaryItems.length > 5}
-                                            open={showCharityDropdown}
-                                            className="searchInput"
-                                            style={{ minHeight: 'auto' }}
-                                            id="beneficiaryItems"
-                                            name="beneficiaryItems"
-                                            onChange={handleCharityChange}
-                                            onSearchChange={handleCharitySearchWordChange}
-                                            options={charitiesQueryBasedOptions}
-                                            search={(options) => options}
-                                            selection
-                                            searchQuery={charitySearchQuery}
-                                            placeholder={formatMessage('createGivingGroupGivingGoal.chairtiesToSupportPlaceholder')}
-                                            loading={charitiesSearchQueryBasedLoader}
-                                            onClick={() => {
-                                                charitiesQueryBasedOptions.length > 0
-                                                    && setShowCharityDropdown(true);
-                                            }}
-                                            onClose={() => { setShowCharityDropdown(false); }}
-                                        />
-                                        <div className="charityWrap">
-                                            {!showLoader
-                                                ? (
-                                                    !_isEmpty(beneficiaryItems) && renderSelectedCharities()
-                                                ) : (
-                                                    <Dimmer className="charity_support_loader" active inverted>
-                                                        <Loader />
-                                                    </Dimmer>
-                                                )}
+                                            : (
+                                                <div className="createnewSec">
+                                                    <GivingGoal
+                                                        createGivingButtonLoader={createGivingButtonLoader}
+                                                        createGivingGroupObject={createGivingGroupObject}
+                                                        dispatch={dispatch}
+                                                        fundraisingGoal={fundraisingGoal}
+                                                        fundraisingDate={fundraisingDate}
+                                                        fundraisingDaysRemaining={fundraisingDaysRemaining}
+                                                        fundraisingCreated={fundraisingCreated}
+                                                        fundraisingPercentage={fundraisingPercentage}
+                                                        goalAmountRaised={goalAmountRaised}
+                                                        groupId={groupId}
+                                                        handleCreateGroup={handleCreateGroup}
+                                                        modalContent={renderEditModalContentComponent()}
+                                                        validity={validity}
+                                                        setCreateGivingGroupObject={setCreateGivingGroupObject}
+                                                    />
+                                                </div>
+                                            )
+                                        }
+                                    </Fragment>
+                                )}
+                                {showCharity
+                                && (
+                                    <div className="createnewSec">
+                                        <Header className="sectionHeader">
+                                            {formatMessage('createGivingGroupGivingGoal.charitiesToSupport')}
+                                            <span className="optional">&nbsp;{formatMessage('optional')}</span>
+                                        </Header>
+                                        <p>
+                                            {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc1')}
+                                            <span>
+                                                {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
+                                            </span>
+                                        </p>
+                                        <div className="searchBox charitysearch">
+                                            <Form.Field
+                                                single
+                                                control={Select}
+                                                disabled={!_isEmpty(beneficiaryItems) && beneficiaryItems.length > 5}
+                                                open={showCharityDropdown}
+                                                className="searchInput"
+                                                style={{ minHeight: 'auto' }}
+                                                id="beneficiaryItems"
+                                                name="beneficiaryItems"
+                                                onChange={handleCharityChange}
+                                                onSearchChange={handleCharitySearchWordChange}
+                                                options={charitiesQueryBasedOptions}
+                                                search={(options) => options}
+                                                selection
+                                                searchQuery={charitySearchQuery}
+                                                placeholder={formatMessage('createGivingGroupGivingGoal.chairtiesToSupportPlaceholder')}
+                                                loading={charitiesSearchQueryBasedLoader}
+                                                onClick={() => {
+                                                    charitiesQueryBasedOptions.length > 0
+                                                        && setShowCharityDropdown(true);
+                                                }}
+                                                onClose={() => { setShowCharityDropdown(false); }}
+                                            />
+                                            <div className="charityWrap">
+                                                {!showLoader
+                                                    ? (
+                                                        !_isEmpty(beneficiaryItems) && renderSelectedCharities()
+                                                    ) : (
+                                                        <Dimmer className="charity_support_loader" active inverted>
+                                                            <Loader />
+                                                        </Dimmer>
+                                                    )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            )
-                            }
-                            {!showLoader
-                            && (
-                                <div className="buttonsWrap">
-                                {fromCreate
-                                && (
-                                    <Button
-                                        className="blue-bordr-btn-round-def"
-                                        onClick={() => {
-                                            dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
-                                            Router.pushRoute(CreateGivingGroupFlowSteps.stepThree);
-                                        }}
-                                        disabled={disableContinueButton}
-                                    >
-                                        {formatMessage('backButton')}
-                                    </Button>
                                 )
                                 }
-                                {(fromCreate
-                                || ((Number(editGivingGroupStoreFlowObject.attributes.fundraisingGoal) <= 0) && showGivingGoal))
+                                {!showLoader
                                 && (
-                                    <Button
-                                        className="blue-btn-rounded-def"
-                                        onClick={handleCreateGroup}
-                                        disabled={
-                                            disableContinueButton || !validationCreateGivingGroup()
-                                            || !validity.isEndDateGreaterThanStartDate
+                                    <div className="buttonsWrap">
+                                        {fromCreate
+                                        && (
+                                            <Button
+                                                className="blue-bordr-btn-round-def"
+                                                onClick={() => {
+                                                    dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
+                                                    Router.pushRoute(CreateGivingGroupFlowSteps.stepThree);
+                                                }}
+                                                disabled={disableContinueButton}
+                                            >
+                                                {formatMessage('backButton')}
+                                            </Button>
+                                        )
                                         }
-                                        loading={createGivingButtonLoader}
-                                    >
-                                        {fromCreate ? formatMessage('createGivingGroupGivingGoal.createGivingGroupButton') : 'Save'}
-                                    </Button>
+                                        {(fromCreate
+                                        || ((Number(editGivingGroupStoreFlowObject.attributes.fundraisingGoal) <= 0) && showGivingGoal))
+                                        && (
+                                            <Button
+                                                className="blue-btn-rounded-def"
+                                                onClick={handleCreateGroup}
+                                                disabled={
+                                                    disableContinueButton || !validationCreateGivingGroup()
+                                                    || !validity.isEndDateGreaterThanStartDate
+                                                }
+                                                loading={createGivingButtonLoader}
+                                            >
+                                                {fromCreate ? formatMessage('createGivingGroupGivingGoal.createGivingGroupButton') : 'Save'}
+                                            </Button>
+                                        )
+                                        }
+                                    </div>
                                 )
                                 }
-                            </div>
-                            )
-                            }
-                        </Form>
+                            </Form>
                         </div>
                     </div>
                 </div>
