@@ -26,21 +26,13 @@ export const actionTypes = {
     SHOW_GROUP_MESSAGE_HISTORY_LOADER: 'SHOW_GROUP_MESSAGE_HISTORY_LOADER',
     SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER: 'SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER',
 };
-export const upadateEditGivingGroupObj = (editGivingGroupObject = {}) => dispatch =>
-    dispatch({
-        type: actionTypes.UPDATE_EDIT_GIVING_GROUP_OBJECT,
-        payload: editGivingGroupObject,
-    });
-export const updateCreateGivingGroupObj = (createGivingGroupObject = {}) => dispatch =>
-    dispatch({
-        type: actionTypes.UPDATE_CREATE_GIVING_GROUP_OBJECT,
-        payload: createGivingGroupObject,
-    });
 
 const getPaginatedCitiesCalls = (pageNumber = 1, pageSize = 50, value = '') => {
     const params = {
+        dispatch,
         'page[number]': pageNumber,
         'page[size]': pageSize,
+        uxCritical: true,
     };
     const bodyData = {
         "text": "",
@@ -52,7 +44,20 @@ const getPaginatedCitiesCalls = (pageNumber = 1, pageSize = 50, value = '') => {
         ]
     };
     return searchApi.post('/uniquecities', { ...bodyData }, { params });
-}
+};
+
+export const upadateEditGivingGroupObj = (editGivingGroupObject = {}) => (dispatch) =>
+    dispatch({
+        type: actionTypes.UPDATE_EDIT_GIVING_GROUP_OBJECT,
+        payload: editGivingGroupObject,
+    });
+
+export const updateCreateGivingGroupObj = (createGivingGroupObject = {}) => (dispatch) =>
+    dispatch({
+        type: actionTypes.UPDATE_CREATE_GIVING_GROUP_OBJECT,
+        payload: createGivingGroupObject,
+    });
+
 export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => async (dispatch) => {
     dispatch({
         type: actionTypes.GET_UNIQUE_CITIES_LOADER,
@@ -103,14 +108,16 @@ export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => as
         });
     return getUniqueCitiesPromise;
 };
-export const getProvincesList = (pageNumber = 1, pageSize = 50) => dispatch => {
+export const getProvincesList = (pageNumber = 1, pageSize = 50) => (dispatch) => {
     dispatch({
         type: actionTypes.GET_PROVINCES_LIST_LOADER,
         payload: true
     });
     const params = {
+        dispatch,
         'page[number]': pageNumber,
         'page[size]': pageSize,
+        uxCritical: true,
     };
     const getProvincesListPromise = searchApi.post('/province', {
         'text': '',
@@ -142,15 +149,17 @@ export const getProvincesList = (pageNumber = 1, pageSize = 50) => dispatch => {
         });
     return getProvincesListPromise;
 };
-export const getCharityBasedOnSearchQuery = (query = '', pageNumber = '', pageSize = '') => dispatch => {
+export const getCharityBasedOnSearchQuery = (query = '', pageNumber = '', pageSize = '') => (dispatch) => {
     dispatch({
         type: actionTypes.GET_CHARITY_BASED_ON_SERACH_QUERY_LOADER,
         payload: true
     });
     const params = {
-        query,
+        dispatch,
         'page[number]': pageNumber,
         'page[size]': pageSize,
+        query,
+        uxCritical: true,
     }
     const GetCharityBasedOnSearchQueryPromise = searchApi.get('/autocomplete/charities', { params });
     GetCharityBasedOnSearchQueryPromise.then(({ data }) => {
@@ -181,12 +190,12 @@ export const getCharityBasedOnSearchQuery = (query = '', pageNumber = '', pageSi
     return GetCharityBasedOnSearchQueryPromise;
 };
 
-export const createGivingGroupApiCall = (createGivingGroupObj) => dispatch => {
+export const createGivingGroupApiCall = (createGivingGroupObj) => (dispatch) => {
     const cloneCreateGivingGroupObject = _cloneDeep(createGivingGroupObj);
     const {
         attributes: {
             fundraisingCreated,
-            fundraisingDate
+            fundraisingDate,
         },
         galleryImages,
     } = cloneCreateGivingGroupObject;
@@ -199,54 +208,68 @@ export const createGivingGroupApiCall = (createGivingGroupObj) => dispatch => {
     let newGalleryImage = [];
     if (galleryImages && galleryImages.length > 0) {
         galleryImages.map((item) => {
-            newGalleryImage.push(item.src)
-        })
+            newGalleryImage.push(item.src);
+        });
     };
     cloneCreateGivingGroupObject.galleryImages = [...newGalleryImage];
     const bodyData = cloneCreateGivingGroupObject;
-    return coreApi.post('/groups', { data: bodyData });
+    return coreApi.post('/groups', {
+        data: bodyData,
+    }, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    });
 };
 
 
-export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => dispatch => {
+export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => (dispatch) => {
     const editGroupObject = {
         type: 'groups',
         id: groupId,
-        ...editGivingGroupObj
+        ...editGivingGroupObj,
     };
-    const EditGivingGroupApiCallPromise = coreApi.patch(`/groups/${groupId}`, { data: editGroupObject });
+    const EditGivingGroupApiCallPromise = coreApi.patch(`/groups/${groupId}`, {
+        data: editGroupObject,
+    }, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    });
     EditGivingGroupApiCallPromise
         .then((result) => {
             delete result.data.links;
             delete result.data.relationships;
             const editGivingGroupObjResponse = result.data;
-            let galleryImages = [];
+            const galleryImages = [];
             if (editGivingGroupObjResponse.attributes.galleryImagesList) {
                 editGivingGroupObjResponse.attributes.galleryImagesList.map(({ display }) => {
                     galleryImages.push(display)
-                })
+                });
             }
-            let groupDescriptions = [];
+            const groupDescriptions = [];
             if (editGivingGroupObjResponse.attributes.groupDescriptionsValues) {
-                editGivingGroupObjResponse.attributes.groupDescriptionsValues.map(item => {
+                editGivingGroupObjResponse.attributes.groupDescriptionsValues.map((item) => {
                     groupDescriptions.push({
                         ...item,
                         id: `${item.purpose}${editGivingGroupObjResponse.attributes.groupDescriptionsValues.length}`
                     });
-                })
-            };
+                });
+            }
             editGivingGroupObjResponse.attributes = {
                 ...editGivingGroupObjResponse.attributes,
                 fundraisingCreated: editGivingGroupObjResponse.attributes.fundraisingStartDate,
                 fundraisingDate: editGivingGroupObjResponse.attributes.fundraisingEndDate,
                 fundraisingGoal: editGivingGroupObjResponse.attributes.goal,
                 logo: editGivingGroupObjResponse.attributes.avatar,
-                prefersInviteOnly: editGivingGroupObjResponse.attributes.isPrivate ? "1" : "0",
-                prefersRecurringEnabled: editGivingGroupObjResponse.attributes.recurringEnabled ? "1" : "0",
+                prefersInviteOnly: editGivingGroupObjResponse.attributes.isPrivate ? '1' : '0',
+                prefersRecurringEnabled: editGivingGroupObjResponse.attributes.recurringEnabled ? '1' : '0',
                 short: editGivingGroupObjResponse.attributes.description,
-                videoUrl: editGivingGroupObjResponse.attributes.videoPlayerLink
+                videoUrl: editGivingGroupObjResponse.attributes.videoPlayerLink,
             };
-            editGivingGroupObjResponse.beneficiaryItems = editGivingGroupObjResponse.attributes.groupCharities
+            editGivingGroupObjResponse.beneficiaryItems = editGivingGroupObjResponse.attributes.groupCharities;
             editGivingGroupObjResponse.groupPurposeDescriptions = [...groupDescriptions];
             editGivingGroupObjResponse.galleryImages = [...galleryImages];
             dispatch(upadateEditGivingGroupObj({ ...editGivingGroupObjResponse }));
@@ -257,21 +280,24 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => disp
     return EditGivingGroupApiCallPromise;
 };
 
-export const deleteGroupLogo = (editGivingGroupObj, groupId = '') => dispatch => {
-    coreApi.delete(`/groups/${groupId}/delete_logo`)
-        .then(() => {
-            dispatch(upadateEditGivingGroupObj({
-                ...editGivingGroupObj,
-                attributes: {
-                    ...editGivingGroupObj.attributes,
-                    logo: '',
-                    avatar: '',
-                }
-            }));
-        })
-        .catch(() => {
-            //handle error
-        })
+export const deleteGroupLogo = (editGivingGroupObj, groupId = '') => (dispatch) => {
+    coreApi.delete(`/groups/${groupId}/delete_logo`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then(() => {
+        dispatch(upadateEditGivingGroupObj({
+            ...editGivingGroupObj,
+            attributes: {
+                ...editGivingGroupObj.attributes,
+                logo: '',
+                avatar: '',
+            }
+        }));
+    }).catch(() => {
+        //handle error
+    });
 };
 
 export const getGroupMembers = (groupId, pageNumber = 1) => (dispatch) => {
@@ -337,7 +363,7 @@ export const getPendingInvites = (groupId, pageNumber = 1) => (dispatch) => {
 };
 
 export const toggleAdmin = (memberId, groupId, type, displayName) => (dispatch) => {
-    const params = {
+    const queryData = {
         data: {
             attributes: {
                 group_id: groupId,
@@ -354,7 +380,12 @@ export const toggleAdmin = (memberId, groupId, type, displayName) => (dispatch) 
     } else {
         toastMessageProps.message = `${displayName} has been removed as admin.`;
     }
-    return coreApi.patch(`/members/${memberId}/toggleAdmin`, params).then(() => {
+    return coreApi.patch(`/members/${memberId}/toggleAdmin`, queryData, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then(() => {
         dispatch(getGroupMembers(groupId));
         dispatch({
             payload: {
@@ -423,7 +454,12 @@ export const sendEmailInvite = (data) => (dispatch) => {
         message: 'Your invitation has been sent.',
         type: 'success',
     };
-    return coreApi.post(`/members`, data).then(() => {
+    return coreApi.post(`/members`, data, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then(() => {
         dispatch({
             payload: {
                 errors: [
@@ -440,7 +476,12 @@ export const resendInvite = (data, inviteId) => (dispatch) => {
         message: 'Invite resent.',
         type: 'success',
     };
-    return coreApi.patch(`/members/${inviteId}/resendInvite`, data).then(() => {
+    return coreApi.patch(`/members/${inviteId}/resendInvite`, data, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then(() => {
         dispatch({
             payload: {
                 errors: [
@@ -457,7 +498,12 @@ export const cancelInvite = (modifiedpayload, inviteId) => (dispatch) => {
         message: 'Invite cancelled.',
         type: 'success',
     };
-    return coreApi.patch(`/members/${inviteId}/cancelInvite`, modifiedpayload).then(() => {
+    return coreApi.patch(`/members/${inviteId}/cancelInvite`, modifiedpayload, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then(() => {
         dispatch({
             payload: {
                 errors: [
@@ -534,8 +580,8 @@ export const getWidgetCode = (groupId) => (dispatch) => {
     });
 };
 
-export const removeGroupMember = (userId, groupId) => (dispatch) => {
-    const params = {
+export const removeGroupMember = (userId, groupId, displayName) => (dispatch) => {
+    const queryData = {
         data: {
             attributes: {
                 group_id: groupId,
@@ -543,8 +589,25 @@ export const removeGroupMember = (userId, groupId) => (dispatch) => {
             type: 'groups',
         },
     };
-    return coreApi.patch(`/members/${userId}/removeMember`, params).then(() => {
+    const toastMessageProps = {
+        message: `${displayName} has been removed from the group.`,
+        type: 'success',
+    };
+    return coreApi.patch(`/members/${userId}/removeMember`, queryData, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then(() => {
         dispatch(getGroupMembers(groupId));
+        dispatch({
+            payload: {
+                errors: [
+                    toastMessageProps,
+                ],
+            },
+            type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+        });
     });
 };
 

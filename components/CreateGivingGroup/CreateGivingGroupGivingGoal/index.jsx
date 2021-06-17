@@ -26,7 +26,7 @@ import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import { formatAmount, formatCurrency } from '../../../helpers/give/utils';
 import { validateGivingGoal } from '../../../helpers/users/utils';
-import groupImg from '../../../static/images/no-data-avatar-giving-group-profile.png';
+import groupImg from '../../../static/images/no-data-avatar-charity-profile.png';
 import { actionTypes, createGivingGroupApiCall, editGivingGroupApiCall, getCharityBasedOnSearchQuery, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
 import { isFalsy } from '../../../helpers/utils';
 import GivingGoal from '../../shared/GivingGoal';
