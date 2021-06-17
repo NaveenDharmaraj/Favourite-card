@@ -27,7 +27,7 @@ export const actionTypes = {
     SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER: 'SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER',
 };
 
-const getPaginatedCitiesCalls = (pageNumber = 1, pageSize = 50, value = '') => {
+const getPaginatedCitiesCalls = (pageNumber = 1, pageSize = 50, value = '', dispatch) => {
     const params = {
         dispatch,
         'page[number]': pageNumber,
@@ -63,7 +63,7 @@ export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => as
         type: actionTypes.GET_UNIQUE_CITIES_LOADER,
         payload: true
     });
-    const getUniqueCitiesPromise = getPaginatedCitiesCalls(pageNumber, pageSize, value, false);
+    const getUniqueCitiesPromise = getPaginatedCitiesCalls(pageNumber, pageSize, value, false, dispatch);
     let citiesOption = []
     let citiesOptionsPromisesData = [];
     getUniqueCitiesPromise
@@ -78,7 +78,7 @@ export const getUniqueCities = (pageNumber = 1, pageSize = 50, value = '') => as
             if (data.meta.pageCount > 1) {
                 const citiesPromise = [];
                 for (let i = 2; i <= data.meta.pageCount; i++) {
-                    citiesPromise.push(getPaginatedCitiesCalls(i, 50, value, false));
+                    citiesPromise.push(getPaginatedCitiesCalls(i, 50, value, false, dispatch));
                 }
                 await Promise.all(citiesPromise).then((data) => {
                     data.map(({ data }) => {
@@ -196,22 +196,35 @@ export const createGivingGroupApiCall = (createGivingGroupObj) => (dispatch) => 
         attributes: {
             fundraisingCreated,
             fundraisingDate,
+            fundraisingGoal,
         },
+        beneficiaryItems,
         galleryImages,
     } = cloneCreateGivingGroupObject;
-    if (fundraisingDate != '') {
-        cloneCreateGivingGroupObject.attributes.fundraisingDate = dateFormatConverter(fundraisingDate, '/');
-    };
-    if (fundraisingCreated != '') {
-        cloneCreateGivingGroupObject.attributes.fundraisingCreated = dateFormatConverter(fundraisingCreated, '/')
-    };
-    let newGalleryImage = [];
-    if (galleryImages && galleryImages.length > 0) {
-        galleryImages.map((item) => {
-            newGalleryImage.push(item.src);
+    const beneficiaryIds = [];
+    if (!_isEmpty(fundraisingGoal)) {
+        cloneCreateGivingGroupObject.attributes.fundraisingGoal = parseFloat(fundraisingGoal.replace(/,/g, ''));
+    }
+    if (!_isEmpty(beneficiaryItems)) {
+        beneficiaryItems.map((beneficiary) => {
+            beneficiaryIds.push(beneficiary.id.toString());
         });
-    };
-    cloneCreateGivingGroupObject.galleryImages = [...newGalleryImage];
+        cloneCreateGivingGroupObject.beneficiaryIds = beneficiaryIds;
+        delete cloneCreateGivingGroupObject.beneficiaryItems;
+    }
+    if (!_isEmpty(fundraisingDate)) {
+        cloneCreateGivingGroupObject.attributes.fundraisingDate = dateFormatConverter(fundraisingDate, '/');
+    }
+    if (!_isEmpty(fundraisingCreated)) {
+        cloneCreateGivingGroupObject.attributes.fundraisingCreated = dateFormatConverter(fundraisingCreated, '/');
+    }
+    // const newGalleryImage = [];
+    // if (galleryImages && galleryImages.length > 0) {
+    //     galleryImages.map((item) => {
+    //         newGalleryImage.push(item.src);
+    //     });
+    // }
+    // cloneCreateGivingGroupObject.galleryImages = [...newGalleryImage];
     const bodyData = cloneCreateGivingGroupObject;
     return coreApi.post('/groups', {
         data: bodyData,
@@ -229,6 +242,10 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => (dis
         type: 'groups',
         id: groupId,
         ...editGivingGroupObj,
+    };
+    const toastMessageProps = {
+        message: 'Changes saved.',
+        type: 'success',
     };
     const EditGivingGroupApiCallPromise = coreApi.patch(`/groups/${groupId}`, {
         data: editGroupObject,
@@ -273,6 +290,14 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => (dis
             editGivingGroupObjResponse.groupPurposeDescriptions = [...groupDescriptions];
             editGivingGroupObjResponse.galleryImages = [...galleryImages];
             dispatch(upadateEditGivingGroupObj({ ...editGivingGroupObjResponse }));
+            dispatch({
+                payload: {
+                    errors: [
+                        toastMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
         })
         .catch(() => {
             //handle error
