@@ -105,6 +105,10 @@ const CreateGivingGroupBasic = ({
         enableCitySearchOption,
         setEnableCitySearchOption,
     ] = useState(false);
+    const [
+        showLoader,
+        setshowLoader,
+    ] = useState(false);
 
     const {
         attributes: {
@@ -220,6 +224,7 @@ const CreateGivingGroupBasic = ({
                 });
             return;
         }
+        setshowLoader(true);
         dispatch(editGivingGroupApiCall({
             attributes: {
                 city: createGivingGroupObject.attributes.city,
@@ -229,6 +234,7 @@ const CreateGivingGroupBasic = ({
             },
         }, groupId))
             .then(() => {
+                setshowLoader(false);
                 setDisableContinue(true);
             })
             .catch(() => {
@@ -381,6 +387,7 @@ const CreateGivingGroupBasic = ({
                                                 <Button
                                                     className="blue-btn-rounded-def"
                                                     disabled={disableContinue || !validity.doesNameExist}
+                                                    loading={showLoader}
                                                     onClick={
                                                         (event, data) => (
                                                             fromCreate ? handleContinue() : handleEditSave(event, data)

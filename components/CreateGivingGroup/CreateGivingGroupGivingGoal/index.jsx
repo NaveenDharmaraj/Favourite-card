@@ -26,7 +26,7 @@ import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import { formatAmount, formatCurrency } from '../../../helpers/give/utils';
 import { validateGivingGoal } from '../../../helpers/users/utils';
-import groupImg from '../../../static/images/no-data-avatar-giving-group-profile.png';
+import groupImg from '../../../static/images/no-data-avatar-charity-profile.png';
 import { actionTypes, createGivingGroupApiCall, editGivingGroupApiCall, getCharityBasedOnSearchQuery, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
 import { isFalsy } from '../../../helpers/utils';
 import GivingGoal from '../../shared/GivingGoal';
@@ -94,10 +94,10 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         let givingGoalValidity = true;
         let dateCheck = true;
         if (fundraisingGoal !== '') {
-            givingGoalValidity = _every(validateGivingGoal(fundraisingGoal, validity))
+            givingGoalValidity = _every(validateGivingGoal(parseFloat(fundraisingGoal.replace(/,/g, '')), validity));
         }
         if (fundraisingDate) {
-            dateCheck = fundraisingDate > fundraisingCreated
+            dateCheck = fundraisingDate > fundraisingCreated;
         }
         return (
             givingGoalValidity && name !== '' && short !== '' && dateCheck
@@ -175,7 +175,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
         if (!_isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
-            inputValue = _replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');;
+            inputValue = _replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
             setCreateGivingGroupObject({
                 ...createGivingGroupObject,
                 attributes: {

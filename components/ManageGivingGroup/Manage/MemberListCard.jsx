@@ -92,7 +92,7 @@ const MemberListCard = (props) => {
 
     const handleRemoveMember = () => {
         setshowLoader(true);
-        dispatch(removeGroupMember(id, groupId)).then(() => {
+        dispatch(removeGroupMember(id, groupId, displayName)).finally(() => {
             setshowLoader(false);
             setshowGroupModel(false);
         });
@@ -108,7 +108,7 @@ const MemberListCard = (props) => {
             },
         };
         setshowLoader(true);
-        dispatch(resendInvite(payload, id)).then(() => {
+        dispatch(resendInvite(payload, id)).finally(() => {
             setshowResendInviteModal(false);
             setshowLoader(false);
         });
@@ -124,7 +124,7 @@ const MemberListCard = (props) => {
             },
         };
         setshowLoader(true);
-        dispatch(cancelInvite(payload, id)).then(() => {
+        dispatch(cancelInvite(payload, id)).finally(() => {
             setshowCancelInviteModal(false);
             setshowLoader(false);
         });
@@ -142,7 +142,7 @@ const MemberListCard = (props) => {
             },
         };
         setshowLoader(true);
-        dispatch(sendEmailInvite(payload)).then(() => {
+        dispatch(sendEmailInvite(payload)).finally(() => {
             setisInviteSent(true);
             setshowLoader(false);
         });
