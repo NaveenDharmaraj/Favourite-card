@@ -218,13 +218,6 @@ export const createGivingGroupApiCall = (createGivingGroupObj) => (dispatch) => 
     if (!_isEmpty(fundraisingCreated)) {
         cloneCreateGivingGroupObject.attributes.fundraisingCreated = dateFormatConverter(fundraisingCreated, '/');
     }
-    // const newGalleryImage = [];
-    // if (galleryImages && galleryImages.length > 0) {
-    //     galleryImages.map((item) => {
-    //         newGalleryImage.push(item.src);
-    //     });
-    // }
-    // cloneCreateGivingGroupObject.galleryImages = [...newGalleryImage];
     const bodyData = cloneCreateGivingGroupObject;
     return coreApi.post('/groups', {
         data: bodyData,
@@ -246,6 +239,11 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => (dis
     const toastMessageProps = {
         message: 'Changes saved.',
         type: 'success',
+    };
+    const statusMessageProps = {
+        heading: 'We’re sorry, something went wrong.',
+        message: 'Please try again',
+        type: 'error',
     };
     const EditGivingGroupApiCallPromise = coreApi.patch(`/groups/${groupId}`, {
         data: editGroupObject,
@@ -300,7 +298,14 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => (dis
             });
         })
         .catch(() => {
-            //handle error
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
         });
     return EditGivingGroupApiCallPromise;
 };
