@@ -297,6 +297,12 @@
       font-size: 17px;
       color: #263238;
       margin: 5px 0 10px;
+      &.gifts_bottom_border{
+        border-bottom: 1px solid #EEEEEE;
+        padding-bottom: 30px;
+        margin-bottom: 30px;
+        font-size: 20px;
+      }
       +p{
         line-height: 22px;
         span{
@@ -335,12 +341,19 @@
         display: block;
         font-size: 14px;
         line-height: 22px;
+        &.Describe_about{
+          font-size: 17px;
+        }
       }
       .label-info{
         &.aboutDescription{
           font-size: 12px;
           margin-bottom: 8px;
         }
+      }
+      &.no_border{
+        border: none !important;
+        padding-bottom: 0px;
       }
     }
     .fields{
@@ -434,6 +447,7 @@
     .videoWrap{
       position: relative;
       margin-top: 40px;
+      margin-bottom: 30px;
       iframe{
         border: 0;
       }
@@ -537,7 +551,7 @@
         }
         .ui.image{
           max-width: 40px;
-          border-radius: 5px
+          border-radius: 100px
         }
         .ui.header{
           margin: 0 18px 0 10px;
@@ -732,6 +746,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 100%;
           }
         }
       }
@@ -845,6 +860,10 @@ body{
   &.buttons_space{
     margin-top: 0px;
     max-width: 470px;
+    width: 100%;
+  }
+  &.btn_wrap_width{
+    max-width: 230px;
     width: 100%;
   }
   .ui.button{
@@ -1176,8 +1195,11 @@ body{
             .createnewSec{
               max-width: 480px;
               &.no_border{
-                border-bottom: none;
+                border-bottom: none ;
                 padding-bottom: 0px;
+              }
+              &.full_width{
+                max-width: 100%;
               }
             }
             p{
@@ -2054,7 +2076,7 @@ body{
                     top: 22px;
                       .item{
                           margin: 0px !important;
-                          padding: 20px 20px 12px !important;
+                          padding: 20px 20px 20px !important;
                           .primeFont-semi-bold();
                       }
                   }
@@ -2194,6 +2216,14 @@ body{
       &.dropdown{
         border-radius: 30px;
         padding: 12px 15px;
+        .text{
+          &.filtered{
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
         input{
           padding: 12px 15px;
         }
@@ -2207,4 +2237,12 @@ body{
 }
 .createNewGroupWrap .mainContent .ui.form .field input{
   padding: 11.1px 15px;
+}
+.p_wrapper{
+  margin-bottom: 20px;
+  img{
+    margin-right: 6px;
+    float: left;
+    margin-top: 0px;
+  }
 }
