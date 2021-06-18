@@ -10,7 +10,7 @@
     border-radius: 5px;
     box-shadow: 0 13px 40px 0 rgba(0, 0, 0, 0.13);
     background-color: #F8EBFB;
-    background-image: url('../images/bg_givinggroup_banner.png');
+    background-image: url("@{img_url}/images/bg_givinggroup_banner.png");
     background-size: cover;
     background-position: center bottom;
     background-repeat: no-repeat;
@@ -48,7 +48,7 @@
       left: 53px;
       top: 40px;
       bottom: 0px;
-      background-image: url(../images/givinggroup_banner.png);
+      background-image: url("@{img_url}/images/givinggroup_banner.png");
       width: 287px;
       background-size: contain;
       background-repeat: no-repeat;
@@ -122,7 +122,7 @@
     cursor: pointer;
       &::before{
         content: "";
-        background-image: url('../images/icons/icon-search.svg');
+        background-image: url("@{img_url}/images/icons/icon-search.svg");
         background-repeat: no-repeat !important;
         background-size: contain !important;
         background-position: center !important;
@@ -257,7 +257,7 @@
         position: absolute;
         left: -140px;
         top: 0px;
-        background-image: url(../images/givinggroup_banner.png);
+        background-image: url("@{img_url}/images/givinggroup_banner.png");
         width: 101px;
         height: 80px;
         background-size: contain;
@@ -276,7 +276,7 @@
           color: @font-color
         }
         &.active{
-          color: @purple;
+          color: @purple !important;
         }
       }
       i.right.chevron.icon.divider::before{
@@ -407,7 +407,7 @@
             left: 0;
             right: 0;
             margin: auto;
-            background-image: url(../images//icons/icon_gray_calendar.svg) !important;
+            background-image: url("@{img_url}/images/icons/calendar.svg") !important;
             background-position: center !important;
             background-size: contain !important;
             background-repeat: no-repeat !important;
@@ -476,7 +476,7 @@
         width: 8px;
         height: 8px;
         margin: auto;
-        background-image: url(../images/icons/close.svg) !important;
+        background-image: url("@{img_url}/images/icons/close.svg") !important;
         background-position: center !important;
         background-size: contain !important;
         background-repeat: no-repeat !important;
@@ -596,12 +596,12 @@
           }
           &.globe{
             &::before{
-              background-image: url(../images/icons/icon_globe.svg) !important;
+              background-image: url("@{img_url}/images/icons/icon_globe.svg") !important;
             }
           }
           &.lock{
             &::before{
-              background-image: url(../images/icons/privacy.svg) !important;
+              background-image: url("@{img_url}/images/icons/privacy.svg") !important;
             }
           }
         }
@@ -611,7 +611,7 @@
           position: relative;
           &::before{
             content: '';
-            background-image: url(../images/icons/icon-arrow-down.svg) !important;
+            background-image: url("@{img_url}/images/icons/icon-arrow-down.svg") !important;
             height: 8px;
             width: 13.5px;
             position: absolute;
@@ -769,7 +769,7 @@
           left: 0;
           right: 0;
           margin: auto;
-          background-image: url(../images//icons/icon-upload.svg) !important;
+          background-image: url("@{img_url}/images/icons/icon-upload.svg") !important;
           background-position: center !important;
           background-size: contain !important;
           background-repeat: no-repeat !important;
@@ -934,7 +934,7 @@ body{
       left: 0;
       right: 0;
       margin: auto;
-      background-image: url(../images//icons/icon_normal_dragdrop.svg) !important;
+      background-image: url("@{img_url}/images/icons/icon_normal_dragdrop.svg") !important;
       background-position: center !important;
       background-size: contain !important;
       background-repeat: no-repeat !important;
@@ -954,7 +954,7 @@ body{
         left: 0;
         right: 0;
         margin: auto;
-        background-image: url(../images//icons/ellipsis.svg) !important;
+        background-image: url("@{img_url}/images/icons/ellipsis.svg") !important;
         background-position: center !important;
         background-size: contain !important;
         background-repeat: no-repeat !important;
@@ -1038,7 +1038,7 @@ body{
                 cursor: pointer;
                 &::before{
                   content: "";
-                  background-image: url('../images/icons/icon-camera.svg') !important;
+                  background-image: url("@{img_url}/images/icons/icon-camera.svg") !important;
                   background-repeat: no-repeat !important;
                   background-size: contain !important;
                   height: 18px;
@@ -1106,28 +1106,28 @@ body{
               }
               &.edit{
                 &:before{
-                  background-image: url('../images/icons/edit.svg') !important;
+                  background-image: url("@{img_url}/images/icons/edit.svg") !important;
                   height: 24px;
                   width: 24px;  
                 }
               }
               &.users{
                 &:before{
-                  background-image: url('../images/icons/group.svg') !important;
+                  background-image: url("@{img_url}/images/icons/group.svg") !important;
                   height:22px;
                   width: 30px;  
                 }
               }
               &.donation{
                 &:before{
-                  background-image: url('../images/icons/icon_gray_donation.svg') !important;
+                  background-image: url("@{img_url}/images/icons/icon_gray_donation.svg") !important;
                   height: 22px;
                   width: 22px;  
                 }
               }
               &.landing{
                 &:before{
-                  background-image: url('../images/icons/icon_gray_landing-page.svg') !important;
+                  background-image: url("@{img_url}/images/icons/icon_gray_landing-page.svg") !important;
                   height: 23px;
                   width: 25px;  
                 }
@@ -1348,7 +1348,7 @@ body{
                   position: relative;
                   &::after{
                     content: '';
-                    background-image: url(../images/icons/icon-download.svg);
+                    background-image: url("@{img_url}/images/icons/icon-download.svg");
                     height: 17px;
                     width: 23px;
                     position: absolute;
@@ -1605,7 +1605,7 @@ body{
                 line-height: 22px;
                 i.icon{ 
                   float: left;
-                  margin: 0 15px 0 0;
+                  margin: 2px 15px 0 0;
                   position: relative;
                   &::before{
                     position: absolute;
@@ -1620,7 +1620,7 @@ body{
                   }
                   &.users{
                     &:before{
-                      background-image: url('../images/icons/group.svg') !important;
+                      background-image: url("@{img_url}/images/icons/group.svg") !important;
                       height:20px;
                       width: 26px;  
                     }
@@ -1640,7 +1640,7 @@ body{
                 display: flex;
                 i.icon{ 
                   float: left;
-                  margin: 0 15px 0 0;
+                  margin: 2px 15px 0 0;
                   position: relative;
                   &::before{
                     position: absolute;
@@ -1654,8 +1654,9 @@ body{
                     background-size: contain !important;
                   }
                   &.icon-mail{
+                    margin-top: 2px;
                     &:before{
-                      background-image: url('../images/icons/icon-mail.svg') !important;
+                      background-image:url("@{img_url}/images/icons/mail.svg") !important;
                       height:19.5px;
                       width: 25px; 
                       filter: invert(20%) sepia(97%) saturate(4496%) hue-rotate(213deg) brightness(96%) contrast(96%);
@@ -1691,8 +1692,9 @@ body{
                       background-size: contain !important;
                     }
                     &.icon-mail{
+                      margin-top: 2px;
                       &:before{
-                        background-image: url('../images/icons/icon-mail.svg') !important;
+                        background-image:url("@{img_url}/images/icons/mail.svg") !important;
                         height:19.5px;
                         width: 25px; 
                         filter: invert(28%) sepia(1%) saturate(0%) hue-rotate(163deg) brightness(98%) contrast(88%);
@@ -1908,7 +1910,7 @@ body{
                 margin: 0;
                 transform: rotateZ(-90deg);
                 &.edit:before,&.users::before,&.donation::before,&.landing::before{
-                  background-image: url('../images/icons/icon-arrow-down.svg') !important;
+                  background-image: url("@{img_url}/images/icons/icon-arrow-down.svg") !important;
                   height: 12px;
                   width: 21px;  
                 }
@@ -1970,7 +1972,7 @@ body{
                 position: relative;
                 &::before{
                   content: '';
-                  background-image: url(../images/icons/icon-arrow-down.svg) !important;
+                  background-image: url("@{img_url}/images/icons/icon-arrow-down.svg") !important;
                   height: 11px;
                   width: 21px;
                   position: absolute;
@@ -2184,7 +2186,7 @@ body{
           left: 0;
           right: 0;
           margin: auto;
-          background-image: url(../images//icons/icon_gray_calendar.svg) !important;
+          background-image: url("@{img_url}/images/icons/calendar.svg") !important;
           background-position: center !important;
           background-size: contain !important;
           background-repeat: no-repeat !important;
@@ -2240,9 +2242,20 @@ body{
 }
 .p_wrapper{
   margin-bottom: 20px;
-  img{
-    margin-right: 6px;
-    float: left;
-    margin-top: 0px;
+  display: flex;
+  align-items: center;
+  p{
+    padding-left: 26px;
   }
-}
+   .iconred{
+     position: absolute;
+    width: 17px;
+    height: 17px;
+    margin: auto;
+    background-image: url("@{img_url}/images/icons/red.svg") !important;
+    background-position: center !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+   }
+ }
+

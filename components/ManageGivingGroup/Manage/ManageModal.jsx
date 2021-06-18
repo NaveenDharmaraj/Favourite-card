@@ -5,7 +5,6 @@ import {
     Button,
     Modal,
 } from 'semantic-ui-react';
-import iconred from '../../../static/images/icons/red.svg';
 
 const ManageModal = (props) => {
     const {
@@ -40,7 +39,8 @@ const ManageModal = (props) => {
                         : (
                             <Fragment>
                                 <div className="p_wrapper">
-                                    <p><span><img src={iconred}/></span>A Giving Group needs at least one admin.</p>
+                                    <div className="iconred"></div>
+                                    <p>A Giving Group needs at least one admin.</p>
                                 </div>
                                 <p>You are the only admin in this group. Please make another group member as admin first.</p>
                             </Fragment>
