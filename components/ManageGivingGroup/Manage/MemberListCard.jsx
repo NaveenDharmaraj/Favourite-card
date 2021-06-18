@@ -147,7 +147,7 @@ const MemberListCard = (props) => {
             setshowLoader(false);
         });
     };
-
+    const name = !_isEmpty(displayName) ? displayName : email;
     return (
         <Fragment>
             <Table.Row className="ManageWappeer">
@@ -169,7 +169,7 @@ const MemberListCard = (props) => {
                                                 )}
                                             </Fragment>
                                         ) : (
-                                            email
+                                            name
                                         )}
                                 </List.Header>
                                 {!_isEmpty(formatedLocation)

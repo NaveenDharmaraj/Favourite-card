@@ -91,18 +91,19 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     } = createGivingGroupObject;
 
     const validationCreateGivingGroup = () => {
-        let givingGoalValidity = true;
+        let givingGoalValidity = false;
         let dateCheck = true;
-        if (fundraisingGoal !== '') {
+        if (!_isEmpty(fundraisingGoal)) {
             givingGoalValidity = _every(validateGivingGoal(parseFloat(fundraisingGoal.replace(/,/g, '')), validity));
         }
         if (fundraisingDate) {
-            dateCheck = fundraisingDate > fundraisingCreated;
+            dateCheck = new Date(fundraisingDate) > new Date(fundraisingCreated);
         }
         return (
             givingGoalValidity && name !== '' && short !== '' && dateCheck
         );
-    }
+    };
+
     const handleCreateGroup = () => {
         setDisableContinueButton(true);
         setCreateGivingButtonLoader(true);
@@ -110,18 +111,18 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             if (!fromCreate) {
                 dispatch(editGivingGroupApiCall({
                     attributes: {
-                        fundraisingGoal,
                         fundraisingCreated,
                         fundraisingDate,
-                    }
+                        fundraisingGoal: parseFloat(fundraisingGoal.replace(/,/g, '')),
+                    },
                 }, groupId))
                     .then(() => {
-                        setCreateGivingButtonLoader(false)
+                        setCreateGivingButtonLoader(false);
                     })
                     .catch(() => {
                         //handle error
-                        setCreateGivingButtonLoader(false)
-                    })
+                        setCreateGivingButtonLoader(false);
+                    });
             } else {
                 dispatch(createGivingGroupApiCall(createGivingGroupObject))
                     .then(({ data }) => {
