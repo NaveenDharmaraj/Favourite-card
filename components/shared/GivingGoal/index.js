@@ -59,7 +59,7 @@ const GivingGoal = ({
 
     const handleSaveGivingGoal = () => {
         setShowEditModal(false);
-        handleCreateGroup()
+        handleCreateGroup();
     };
 
     const handleDeleteGivingGoal = () => {
