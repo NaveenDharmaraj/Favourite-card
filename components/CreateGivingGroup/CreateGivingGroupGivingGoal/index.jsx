@@ -73,9 +73,23 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         if (!fromCreate) {
             editGivingGroupStoreFlowObject && setCreateGivingGroupObject(editGivingGroupStoreFlowObjectClone)
         }
+        if (!_isEmpty(editGivingGroupStoreFlowObject.beneficiaryItems) && editGivingGroupStoreFlowObject.beneficiaryItems.length >= 5) {
+            setCharitySearchQuery('');
+            setShowCharityDropdown(false);
+        }
     }, [
         editGivingGroupStoreFlowObject,
     ]);
+
+    useEffect(() => {
+        if (showCharity) {
+            dispatch({
+                payload: [],
+                type: 'GET_CHARITY_BASED_ON_SERACH_QUERY',
+            });
+        }
+    }, []);
+
     let {
         attributes: {
             fundraisingGoal,
@@ -289,6 +303,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             }
         });
         setDisableContinueButton(false);
+        setshowLoader(true);
         beneficiaryItems.splice(index, 1);
         if (fromCreate) {
             setCreateGivingGroupObject({
@@ -303,7 +318,9 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             dispatch(editGivingGroupApiCall({
                 attributes: {},
                 beneficiaryIds:[...beneficiaryIds]
-            }, groupId));
+            }, groupId)).finally(() => {
+                setshowLoader(false);
+            });
         }
     };
     const renderSelectedCharities = () => beneficiaryItems.map((item) => {
@@ -401,29 +418,32 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                             </span>
                                         </p>
                                         <div className="searchBox charitysearch">
-                                            <Form.Field
-                                                single
-                                                control={Select}
-                                                disabled={!_isEmpty(beneficiaryItems) && beneficiaryItems.length > 5}
-                                                open={showCharityDropdown}
-                                                className="searchInput"
-                                                style={{ minHeight: 'auto' }}
-                                                id="beneficiaryItems"
-                                                name="beneficiaryItems"
-                                                onChange={handleCharityChange}
-                                                onSearchChange={handleCharitySearchWordChange}
-                                                options={charitiesQueryBasedOptions}
-                                                search={(options) => options}
-                                                selection
-                                                searchQuery={charitySearchQuery}
-                                                placeholder={formatMessage('createGivingGroupGivingGoal.chairtiesToSupportPlaceholder')}
-                                                loading={charitiesSearchQueryBasedLoader}
-                                                onClick={() => {
-                                                    charitiesQueryBasedOptions.length > 0
-                                                        && setShowCharityDropdown(true);
-                                                }}
-                                                onClose={() => { setShowCharityDropdown(false); }}
-                                            />
+                                            {(!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5)
+                                            && (
+                                                <Form.Field
+                                                    single
+                                                    control={Select}
+                                                    disabled={!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5}
+                                                    open={showCharityDropdown}
+                                                    className="searchInput"
+                                                    style={{ minHeight: 'auto' }}
+                                                    id="beneficiaryItems"
+                                                    name="beneficiaryItems"
+                                                    onChange={handleCharityChange}
+                                                    onSearchChange={handleCharitySearchWordChange}
+                                                    options={charitiesQueryBasedOptions}
+                                                    search={(options) => options}
+                                                    selection
+                                                    searchQuery={charitySearchQuery}
+                                                    placeholder={formatMessage('createGivingGroupGivingGoal.chairtiesToSupportPlaceholder')}
+                                                    loading={charitiesSearchQueryBasedLoader}
+                                                    onClick={() => {
+                                                        charitiesQueryBasedOptions.length > 0
+                                                            && setShowCharityDropdown(true);
+                                                    }}
+                                                    onClose={() => { setShowCharityDropdown(false); }}
+                                                />
+                                            )}
                                             <div className="charityWrap">
                                                 {!showLoader
                                                     ? (

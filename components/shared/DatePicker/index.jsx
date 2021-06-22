@@ -16,6 +16,7 @@ function ChimpDatePicker({ handleonDateChange, dateValue, name }) {
             onChange={onChange}
             value={value}
             icon={<i aria-hidden="true" class="calendar icon" onClick={onClick}></i>}
+            readOnly
         />
     );
 

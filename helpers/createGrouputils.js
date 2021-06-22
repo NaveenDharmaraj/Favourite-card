@@ -190,7 +190,7 @@ export const manageGivingGroupAccordianOptions = {
     edit: {
         key: 'edit',
         route: 'edit',
-        text: 'Edit',
+        text: 'Edit group',
         value: 0,
         component: <CreateGivingGroupBasic
             showBasic={true}
@@ -227,9 +227,9 @@ export const manageGivingGroupAccordianOptions = {
         value: 4,
         component: <EmailGroupMembers />
     },
-    downloaddoantion: {
-        key: 'downloaddoantion',
-        route: 'downloaddoantion',
+    downloaddonation: {
+        key: 'downloaddonation',
+        route: 'downloaddonation',
         text: 'Download transaction data',
         value: 5,
         component: <DownloadTransaction />

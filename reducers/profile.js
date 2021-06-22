@@ -99,6 +99,12 @@ const profile = (state = {}, action) => {
                 searchData: action.payload.searchData,
             };
             break;
+        case 'STORED_CAMPAIGN_FOR_GROUP':
+            newState = {
+                ...state,
+                supportedCampaignGroup: action.payload.campaignId,
+            };
+            break;
         default:
             break;
     }

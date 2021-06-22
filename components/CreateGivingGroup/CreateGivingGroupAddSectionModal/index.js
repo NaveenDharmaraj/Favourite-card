@@ -8,6 +8,7 @@ const CreateGivingGroupAddSectionModal = ({
     handleParentModalClick,
     addModalSectionObject,
     formatMessage,
+    isEdit,
 }) => {
     //initialzing the add modal object 
     const [addModalObj, setAddModalObj] = useState(addModalSectionObject);
@@ -62,12 +63,17 @@ const CreateGivingGroupAddSectionModal = ({
                     className='light-blue-btn-bordered addBtn'
                     onClick={() => handleOnModalClick(true, '')}
                 >
-                    <span><Icon className='plus' />{formatMessage('createGivingGroupAbout.addSectionModalAddButton')}</span>
+                    <span><Icon className='plus' />{formatMessage('createGivingGroupAbout.addSectionModalHeader')}</span>
                 </Button>
             }
             dimmer="inverted"
         >
-            <Modal.Header>{formatMessage('createGivingGroupAbout.addSectionModalHeader')}</Modal.Header>
+            {isEdit
+            ? (
+                <Modal.Header>Edit section</Modal.Header>
+            ): (
+                <Modal.Header>{formatMessage('createGivingGroupAbout.addSectionModalHeader')}</Modal.Header>
+            )}
             <Modal.Content>
                 <p>{formatMessage('createGivingGroupAbout.addSectionModalDescription')}</p>
                 <Form>

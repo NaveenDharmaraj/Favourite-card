@@ -5,7 +5,9 @@ import {
     Form,
     Button,
     Icon,
+    Popup,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
 const DownloadTransaction = () => {
     const groupDetails = useSelector((state) => state.group.groupDetails);
@@ -17,15 +19,30 @@ const DownloadTransaction = () => {
             </Header>
             <Form>
                 <div className="TransactionText">
-                    <p className="Transactioncontent">This report includes any information that the donor has chosen to share with Giving Group administrators, such as their name, email, mailing address, and a custom message.</p>
-                    <a href={`/groups/${groupDetails.attributes.slug}.csv`} target="_blank">
-                        <Button
-                            className="success-btn-rounded-def transactionBtn"
-                        >
-                            <Icon className="transaction" />
-                            Download transaction data
-                        </Button>
-                    </a>
+                    <p className="Transactioncontent">
+                        This report includes any information that the donor has chosen to share with Giving Group administrators, such as their name, email, mailing address, and a custom message.
+                    </p>
+                    <Popup
+                        disabled={!_isEmpty(groupDetails) && groupDetails.attributes.transactionsCount}
+                        position="bottom center"
+                        inverted
+                        content="You don’t have transaction data to download."
+                        trigger={
+                            (
+                                <span>
+                                    <Button
+                                        className="success-btn-rounded-def transactionBtn"
+                                        disabled={!_isEmpty(groupDetails) && !groupDetails.attributes.transactionsCount}
+                                        href={`/groups/${groupDetails.attributes.slug}.csv`}
+                                        target="_blank"
+                                    >
+                                        <Icon className="transaction" />
+                                        Download transaction data
+                                    </Button>
+                                </span>
+                            )
+                        }
+                    />
                 </div>
             </Form>
         </div>

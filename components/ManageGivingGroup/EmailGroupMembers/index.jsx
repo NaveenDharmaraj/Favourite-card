@@ -41,6 +41,10 @@ const EmailGroupMembers = () => {
         historyList,
         sethistoryList,
     ] = useState([]);
+    const [
+        limitError,
+        setlimitError
+    ] = useState(false);
     const groupDetails = useSelector((state) => state.group.groupDetails);
     const groupMessageHistory = useSelector((state) => state.createGivingGroup.groupMessageHistory || {});
     const showPlaceholder = useSelector((state) => state.createGivingGroup.groupMessageHistoryPlaceholder || false);
@@ -87,6 +91,9 @@ const EmailGroupMembers = () => {
 
     const updateMessage = (event) => {
         setemailMessage(event.target.value);
+        if (!_isEmpty(event.target.value) && event.target.value.length >= 20000) {
+            setlimitError(true);
+        }
     };
 
     const sendEmail = () => {
@@ -104,6 +111,7 @@ const EmailGroupMembers = () => {
             setshowLoader(false);
         });
     };
+
     return (
         <div className="basicsettings">
             <Header className="titleHeader">Email</Header>
@@ -115,10 +123,14 @@ const EmailGroupMembers = () => {
                         value={emailMessage}
                         onChange={updateMessage}
                     />
+                    {limitError
+                    && (
+                        <p>maximum 20,000 characters can enter</p>
+                    )}
                     <div className="email-group-members">
                         <Button
                             className="blue-btn-rounded-def emailmessagebtn"
-                            disabled={_isEmpty(emailMessage) || showLoader}
+                            disabled={_isEmpty(emailMessage) || showLoader || limitError}
                             onClick={sendEmail}
                             loading={showLoader}
                         >

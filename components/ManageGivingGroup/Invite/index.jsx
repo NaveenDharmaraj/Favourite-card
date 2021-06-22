@@ -79,11 +79,12 @@ const Invite = () => {
                         isInvite={false}
                         isSingleAdmin={false}
                         isFriendList
+                        groupSlug={groupDetails.attributes.slug}
                     />,
                 );
             });
-            setinviteData(tempArr);
         }
+        setinviteData(tempArr);
     }, [
         friendsList,
     ]);
@@ -178,7 +179,12 @@ const Invite = () => {
                         <Fragment>
                             <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
                                 <Table.Body>
-                                    {inviteData}
+                                    {!_isEmpty(inviteData)
+                                        ? (
+                                            inviteData
+                                        ) : (
+                                            <p> No friends found</p>
+                                        )}
                                 </Table.Body>
                             </Table>
                             <div className="paginationWraper group_pagination">
