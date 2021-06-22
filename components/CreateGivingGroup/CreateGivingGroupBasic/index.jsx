@@ -364,8 +364,8 @@ const CreateGivingGroupBasic = ({
                             }
                             {showMonthly
                             && (
-                                <div className="createnewSec">
-                                    <Header className="sectionHeader">{formatMessage('createGivingGroupBasic.monthlyGiftsHeader')}</Header>
+                                <div className={`createnewSec ${!fromCreate ? 'full_width' : ''}`}>
+                                    <Header className={`sectionHeader ${!fromCreate ? 'gifts_bottom_border' : ''}`}>{formatMessage('createGivingGroupBasic.monthlyGiftsHeader')}</Header>
                                     <p>{formatMessage('createGivingGroupBasic.monthlyGiftsDescription')}</p>
                                     <Checkbox
                                         checked={prefersRecurringEnabled === '1'}
