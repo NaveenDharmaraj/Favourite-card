@@ -73,7 +73,7 @@ EditGivingGoal.defaultProps = {
     handleInputChange: () => { },
     handleInputOnBlurGivingGoal: () => { },
     handleOnDateChange: () => { },
-    validity: {}
+    validity: {},
 };
 
 export default React.memo(EditGivingGoal);
