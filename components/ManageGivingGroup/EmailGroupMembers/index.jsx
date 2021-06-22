@@ -43,7 +43,7 @@ const EmailGroupMembers = () => {
     ] = useState([]);
     const [
         limitError,
-        setlimitError
+        setlimitError,
     ] = useState(false);
     const groupDetails = useSelector((state) => state.group.groupDetails);
     const groupMessageHistory = useSelector((state) => state.createGivingGroup.groupMessageHistory || {});
@@ -91,7 +91,7 @@ const EmailGroupMembers = () => {
 
     const updateMessage = (event) => {
         setemailMessage(event.target.value);
-        if (!_isEmpty(event.target.value) && event.target.value.length >= 20000) {
+        if (!_isEmpty(event.target.value) && event.target.value.length >= 3000) {
             setlimitError(true);
         }
     };

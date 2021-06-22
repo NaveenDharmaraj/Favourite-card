@@ -418,7 +418,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                             </span>
                                         </p>
                                         <div className="searchBox charitysearch">
-                                            {(!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5)
+                                            {(_isEmpty(beneficiaryItems) || (!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5))
                                             && (
                                                 <Form.Field
                                                     single
