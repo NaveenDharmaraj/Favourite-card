@@ -11,11 +11,14 @@ import {
 import _cloneDeep from 'lodash/cloneDeep';
 import _every from 'lodash/every';
 
-import { formatDateForGivingTools } from '../../../helpers/give/utils';
+import {
+    formatDateForGivingTools,
+    formatCurrency,
+} from '../../../helpers/give/utils';
 import { validateGivingGoal } from '../../../helpers/users/utils';
 import SharedModal from '../SharedModal';
 import { editGivingGroupApiCall } from '../../../actions/createGivingGroup';
-
+import ManageModal from '../../ManageGivingGroup/Manage/ManageModal';
 
 const GivingGoal = ({
     createGivingButtonLoader,
@@ -36,20 +39,28 @@ const GivingGoal = ({
     const createGivingGroupObjectClone = _cloneDeep(createGivingGroupObject);
     const previousGivingGroupObject = useRef();
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setshowDeleteModal] = useState(false);
+    const [showLoader, setshowLoader] = useState(false);
     const endDate = fundraisingDate ? formatDateForGivingTools(fundraisingDate) : null;
     const currentDate = formatDateForGivingTools(new Date());
     let BarWidth = fundraisingPercentage || 0;
+    const currency = 'USD';
+    const language = 'en';
+    const formattedfundraisingGoal = formatCurrency(fundraisingGoal, language, currency);
+    const formattedgoalAmountRaised = formatCurrency(goalAmountRaised, language, currency);
     useEffect(() => {
         previousGivingGroupObject.current = createGivingGroupObjectClone;
     }, [])
     const toolTopPos = (goalValue) => {
+        let position = '';
         if (goalValue < 20) {
-            return 'top left';
+            position = 'top left';
         } else if (goalValue > 80) {
-            return 'top right';
+            position = 'top right';
         } else if (goalValue > 20 && goalValue < 80) {
-            return 'top center';
+            position = 'top center';
         }
+        return position;
     };
 
     const handleClose = () => {
@@ -63,16 +74,20 @@ const GivingGoal = ({
     };
 
     const handleDeleteGivingGoal = () => {
+        setshowLoader(true);
+        const messageText = 'Goal deleted.';
         dispatch(editGivingGroupApiCall({
             attributes: {
                 fundraisingGoal: '',
                 fundraisingCreated: null,
                 fundraisingDate: null,
             },
-        }, groupId))
+        }, groupId, messageText)).finally(() => {
+            setshowLoader(false);
+        });
     };
     return (
-        <>
+        <Fragment>
             {showEditModal ?
                 <SharedModal
                     handleClose={handleClose}
@@ -101,7 +116,7 @@ const GivingGoal = ({
                                     <div className='headerContent'>
                                         {Number(fundraisingPercentage) === 100 ?
                                             <>
-                                                <p>Congratulations! The group has reached its goal!</p>
+                                                <p><b>Congratulations! The group has reached its goal!</b></p>
                                                 <p>Keep going. You can set a new goal by selecting 'Edit' and add a new goal amount.</p>
                                             </>
                                             :
@@ -118,7 +133,7 @@ const GivingGoal = ({
                                         }
                                     </div>
                                 </Grid.Column>
-                                {Number(fundraisingDaysRemaining > 0) ?
+                                {(Number(fundraisingDaysRemaining > 0) && (Number(fundraisingPercentage) < 100)) ?
                                     <Grid.Column computer={5} mobile={16} >
                                         <p className='daysleftText'>{fundraisingDaysRemaining} days left to reach goal</p>
                                     </Grid.Column>
@@ -131,11 +146,11 @@ const GivingGoal = ({
                             <Grid>
                                 <Grid.Column computer={4} mobile={8}>
                                     <p>Goal</p>
-                                    <Header as='h3'>${fundraisingGoal}</Header>
+                                    <Header as='h3'>{formattedfundraisingGoal}</Header>
                                 </Grid.Column>
                                 <Grid.Column computer={4} mobile={8}>
                                     <p>Money raised</p>
-                                    <Header as='h3'>${goalAmountRaised}</Header>
+                                    <Header as='h3'>{formattedgoalAmountRaised}</Header>
                                 </Grid.Column>
                                 <Grid.Column computer={8} mobile={16}>
                                     <div class="ui progress">
@@ -173,7 +188,7 @@ const GivingGoal = ({
                                 </Button>
                                     <Button
                                         className='blue-bordr-btn-round-def'
-                                        onClick={() => handleDeleteGivingGoal()}
+                                        onClick={() => setshowDeleteModal(true)}
                                     >
                                         Delete
                                         </Button>
@@ -183,7 +198,21 @@ const GivingGoal = ({
                     </div>
                 </div>
             }
-        </>
+            {showDeleteModal
+            && (
+                <ManageModal
+                    showModal={showDeleteModal}
+                    closeModal={() => setshowDeleteModal(false)}
+                    modalHeader="Delete giving goal?"
+                    modalDescription="If you delete this goal, it will reset to $0.00.Deleting your giving goal will not affect the money raised so far."
+                    onButtonClick={handleDeleteGivingGoal}
+                    loader={showLoader}
+                    isSingleAdmin={false}
+                    buttonText="Delete"
+                    isRemove={false}
+                />
+            )}
+        </Fragment>
     );
 }
 

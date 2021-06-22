@@ -5,6 +5,7 @@ import {
     Grid,
     Icon,
     Menu,
+    Responsive,
 } from 'semantic-ui-react';
 
 import { Router } from '../../../routes';
@@ -70,9 +71,10 @@ const ManageGivingGroupAccordian = ({
         setActiveMenuIndex(newMenuIndex);
         setCurrentComponentSelectedState(manageGivingGroupAccordianMenuOptions[subStepValue]);
         Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions[stepState].route}/${manageGivingGroupAccordianMenuOptions[subStepValue].route}`, { shallow: true });
-    };
+    }; // minWidth={768}
     return (
         <Grid className="menuContentWrap">
+            {/* <Responsive minWidth={320} maxWidth={767}> */}
             <Grid.Column computer={5} tablet={5} mobile={16}>
                 <Accordion as={Menu} fluid vertical tabular>
                     <Menu.Item className="itemAccordion" active={activeAccordionIndex === 0}>
@@ -183,12 +185,12 @@ const ManageGivingGroupAccordian = ({
                     </Menu.Item>
                     <Menu.Item
                         accordionIndex={5}
-                        stepValue={manageGivingGroupAccordianOptions.downloaddoantion.key}
-                        active={activeAccordionIndex === manageGivingGroupAccordianOptions.downloaddoantion.value}
+                        stepValue={manageGivingGroupAccordianOptions.downloaddonation.key}
+                        active={activeAccordionIndex === manageGivingGroupAccordianOptions.downloaddonation.value}
                         onClick={handleAccordionClick}
                     >
                         <Icon name="donation" />
-                        {manageGivingGroupAccordianOptions.downloaddoantion.text}
+                        {manageGivingGroupAccordianOptions.downloaddonation.text}
                     </Menu.Item>
                     <Menu.Item
                         accordionIndex={6}
@@ -201,6 +203,8 @@ const ManageGivingGroupAccordian = ({
                     </Menu.Item>
                 </Accordion>
             </Grid.Column>
+            {/* </Responsive> */}
+            {/* <Responsive minWidth={768}> */}
             <Grid.Column computer={11} tablet={11} mobile={16} className="active">
                 <div className="createNewGroupWrap manageGroupWrap">
                     <div className="mainContent">
@@ -214,6 +218,7 @@ const ManageGivingGroupAccordian = ({
                     </div>
                 </div>
             </Grid.Column>
+            {/* </Responsive> */}
         </Grid>
     );
 };

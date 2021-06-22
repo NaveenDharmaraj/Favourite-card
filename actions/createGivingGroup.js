@@ -1,6 +1,7 @@
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEmpty from 'lodash/isEmpty';
 
+import { Router } from '../routes';
 import searchApi from '../services/searchApi';
 import coreApi from '../services/coreApi';
 import { dateFormatConverter } from '../helpers/createGrouputils';
@@ -230,13 +231,13 @@ export const createGivingGroupApiCall = (createGivingGroupObj) => (dispatch) => 
 };
 
 
-export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => (dispatch) => {
+export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '', messageText = '') => (dispatch) => {
     const editGroupObject = {
         type: 'groups',
         id: groupId,
         ...editGivingGroupObj,
     };
-    const toastMessageProps = {
+    let toastMessageProps = {
         message: 'Changes saved.',
         type: 'success',
     };
@@ -245,6 +246,9 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '') => (dis
         message: 'Please try again',
         type: 'error',
     };
+    if (!_isEmpty(messageText)) {
+        toastMessageProps.message = messageText;
+    }
     const EditGivingGroupApiCallPromise = coreApi.patch(`/groups/${groupId}`, {
         data: editGroupObject,
     }, {
@@ -351,7 +355,7 @@ export const getGroupMembers = (groupId, pageNumber = 1) => (dispatch) => {
         },
     }).then(
         (result) => {
-            if (!_isEmpty(result) && !_isEmpty(result.data)) {
+            if (!_isEmpty(result)) {
                 fsa.payload = result;
                 dispatch(fsa);
             }
@@ -382,7 +386,7 @@ export const getPendingInvites = (groupId, pageNumber = 1) => (dispatch) => {
             uxCritical: true,
         },
     }).then((result) => {
-        if (!_isEmpty(result) && !_isEmpty(result.data)) {
+        if (!_isEmpty(result)) {
             fsa.payload = result.data;
             dispatch(fsa);
         }
@@ -392,7 +396,7 @@ export const getPendingInvites = (groupId, pageNumber = 1) => (dispatch) => {
     });
 };
 
-export const toggleAdmin = (memberId, groupId, type, displayName) => (dispatch) => {
+export const toggleAdmin = (memberId, groupId, type, displayName, isCurrentUser = false, slug = '') => (dispatch) => {
     const queryData = {
         data: {
             attributes: {
@@ -405,10 +409,11 @@ export const toggleAdmin = (memberId, groupId, type, displayName) => (dispatch) 
         message: '',
         type: 'success',
     };
+    const removeToastMessage = isCurrentUser ? `You have` : `${displayName} has`;
     if (type === adminActionType.make_admin) {
         toastMessageProps.message = `${displayName} is an admin now.`;
     } else {
-        toastMessageProps.message = `${displayName} has been removed as admin.`;
+        toastMessageProps.message = `${removeToastMessage} been removed as admin.`;
     }
     return coreApi.patch(`/members/${memberId}/toggleAdmin`, queryData, {
         params: {
@@ -416,7 +421,11 @@ export const toggleAdmin = (memberId, groupId, type, displayName) => (dispatch) 
             uxCritical: true,
         },
     }).then(() => {
-        dispatch(getGroupMembers(groupId));
+        if (isCurrentUser && type === adminActionType.remove_admin) {
+            Router.pushRoute(`groups/${slug}`);
+        } else {
+            dispatch(getGroupMembers(groupId));
+        }
         dispatch({
             payload: {
                 errors: [
@@ -568,7 +577,7 @@ export const searchMember = (groupId, searchStr, pageNumber = 1) => (dispatch) =
             uxCritical: true,
         },
     }).then((result) => {
-        if (!_isEmpty(result) && !_isEmpty(result.data)) {
+        if (!_isEmpty(result)) {
             fsa.payload = result;
             dispatch(fsa);
         }
@@ -686,7 +695,7 @@ export const searchFriendList = (groupId, searchStr, pageNumber = 1) => (dispatc
             uxCritical: true,
         },
     }).then((result) => {
-        if (!_isEmpty(result) && !_isEmpty(result.data)) {
+        if (!_isEmpty(result)) {
             fsa.payload = result;
             dispatch(fsa);
         }

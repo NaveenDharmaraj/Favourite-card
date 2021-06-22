@@ -39,6 +39,7 @@ const Manage = () => {
     const groupMemberPlaceholderStatus = useSelector((state) => state.createGivingGroup.groupMemberPlaceholderStatus);
     const groupPendingInvites = useSelector((state) => state.createGivingGroup.groupPendingInvites);
     const memberPageCount = useSelector((state) => state.createGivingGroup.groupMemberPageCount);
+    const currentUser = useSelector((state) => state.user.info);
     const dispatch = useDispatch();
     const [
         currentActivePage,
@@ -68,8 +69,8 @@ const Manage = () => {
         const tempArr = [];
         if (!_isEmpty(membersData) && !isSingleAdmin) {
             membersData.map((member) => {
-                if (member.isGroupAdmin) {
-                    adminCount = adminCount++;
+                if (member.attributes.isGroupAdmin) {
+                    adminCount += 1;
                 }
             });
             if (adminCount === 1) {
@@ -84,11 +85,13 @@ const Manage = () => {
                         groupId={groupDetails.id}
                         isInvite={false}
                         isSingleAdmin={isSingleAdmin}
+                        isCurrentUser={member.id === currentUser.id}
+                        groupSlug={groupDetails.attributes.slug}
                     />,
                 )
             ));
-            setmemberList(tempArr);
         }
+        setmemberList(tempArr);
     }, [
         membersData,
     ]);
@@ -102,11 +105,12 @@ const Manage = () => {
                         memberData={invite}
                         groupId={groupDetails.id}
                         isInvite
+                        groupSlug={groupDetails.attributes.slug}
                     />,
                 )
             ));
-            setpendingList(tempArr);
         }
+        setpendingList(tempArr);
     }, [
         groupPendingInvites,
     ]);
@@ -180,11 +184,14 @@ const Manage = () => {
                         </Table.Body>
                     </Table>
                 )}
-            <div className="invite-heading">
-                <h3>
-                Members
-                </h3>
-            </div>
+            {!_isEmpty(pendingList)
+            && (
+                <div className="invite-heading">
+                    <h3>
+            Members
+                    </h3>
+                </div>
+            )}
             <div className="memberswapper">
                 {(memberCount)
                 && (
@@ -198,18 +205,18 @@ const Manage = () => {
                     </div>
                 )}
                 <div className="Emailmembers">
-                    <Link route={`/groups/${groupDetails.attributes.slug}/email_members`}>
-                        <p>
-                            <span>
-                                <i
-                                    aria-hidden="true"
-                                    className="icon icon-mail"
-                                    onClick={handleEmailClick}
-                                />
-                            </span>
-                            Email members
-                        </p>
-                    </Link>
+                    {/* <Link route={`/groups/${groupDetails.attributes.slug}/email_members`}> */}
+                    <p>
+                        <span>
+                            <i
+                                aria-hidden="true"
+                                className="icon icon-mail"
+                                onClick={handleEmailClick}
+                            />
+                        </span>
+                        Email members
+                    </p>
+                    {/* </Link> */}
                 </div>
             </div>
             {groupMemberPlaceholderStatus
@@ -226,7 +233,11 @@ const Manage = () => {
                     <Fragment>
                         <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
                             <Table.Body>
-                                {memberList}
+                                {!_isEmpty(memberList)
+                                    ? memberList
+                                    : (
+                                        <p> No Members Found</p>
+                                    )}
                             </Table.Body>
                         </Table>
                         <div className="paginationWraper group_pagination">

@@ -40,6 +40,7 @@ class CreateGivingGroupAbout extends React.Component {
             showModal: false,
             createGivingGroupObjectState: props.fromCreate ? props.createGivingGroupStoreFlowObject : cloneEditGivingGroupObject,
             doesDescriptionPresent: true,
+            isEdit: false,
         }
         breakCrumArray = createGivingGroupBreadCrum(props.t);
     }
@@ -126,7 +127,8 @@ class CreateGivingGroupAbout extends React.Component {
                     ...this.state.createGivingGroupObjectState,
                     groupPurposeDescriptions: [...groupPurposeDescriptions],
                 },
-                showModal: modalState
+                showModal: modalState,
+                isEdit: false,
             });
             if (!fromCreate) {
                 const editObject = {
@@ -146,14 +148,16 @@ class CreateGivingGroupAbout extends React.Component {
         } else {
             this.setState({
                 addModalSectionObject: initializeAddSectionModalObject,
-                showModal: modalState
+                showModal: modalState,
+                isEdit: false,
             })
         }
     };
     handleOnSortableItemClick = (modalState, currentSelectedCard = initializeAddSectionModalObject) => {
         this.setState({
             addModalSectionObject: currentSelectedCard,
-            showModal: modalState
+            showModal: modalState,
+            isEdit: true,
         });
     };
     handleOnSortableItemDelete = (event, addSectionObject = {}) => {
@@ -227,6 +231,7 @@ class CreateGivingGroupAbout extends React.Component {
             disableContinue,
             doesDescriptionPresent,
             showModal,
+            isEdit,
         } = this.state;
         const {
             dispatch,
@@ -310,6 +315,7 @@ class CreateGivingGroupAbout extends React.Component {
                                             handleParentModalClick={this.handleParentModalClick}
                                             showModal={showModal}
                                             formatMessage={formatMessage}
+                                            isEdit={isEdit}
                                         />
                                     }
                                 </div>

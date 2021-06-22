@@ -45,8 +45,13 @@ const MemberListCard = (props) => {
         isInvite,
         isSingleAdmin,
         isFriendList,
+        isCurrentUser,
+        groupSlug,
     } = props;
     const formatedLocation = getLocation(city, province);
+    const userTextHeader = isCurrentUser ? 'yourself' : displayName;
+    const userText = isCurrentUser ? 'You' : displayName;
+    const name = !_isEmpty(displayName) ? displayName : email;
     const [
         showAdminmodel,
         setshowAdminmodel,
@@ -79,7 +84,7 @@ const MemberListCard = (props) => {
 
     const handleOnClick = (type) => {
         setshowLoader(true);
-        dispatch(toggleAdmin(id, groupId, type, displayName)).then(() => {
+        dispatch(toggleAdmin(id, groupId, type, displayName, isCurrentUser, groupSlug)).then(() => {
             setshowLoader(false);
             if (type === adminActionType.make_admin) {
                 setshowMemberModal(false);
@@ -147,7 +152,6 @@ const MemberListCard = (props) => {
             setshowLoader(false);
         });
     };
-    const name = !_isEmpty(displayName) ? displayName : email;
     return (
         <Fragment>
             <Table.Row className="ManageWappeer">
@@ -160,7 +164,7 @@ const MemberListCard = (props) => {
                                     {!isInvite
                                         ? (
                                             <Fragment>
-                                                {`${displayName} ${isGroupAdmin ? '• Admin' : ''}`}
+                                                {`${displayName} ${isCurrentUser ? '(you)' : ''} ${isGroupAdmin ? '• Admin' : ''}`}
                                                 {isGroupAdmin
                                                 && (
                                                     <span>
@@ -203,7 +207,7 @@ const MemberListCard = (props) => {
                                                         ) : (
                                                             <Dropdown.Item text="Make admin " onClick={() => setshowMemberModal(true)} />
                                                         )}
-                                                    {!isSingleAdmin
+                                                    {!isSingleAdmin && !isCurrentUser
                                                     && (
                                                         <Dropdown.Item text="Remove from group " onClick={() => setshowGroupModel(true)} />
                                                     )}
@@ -238,8 +242,8 @@ const MemberListCard = (props) => {
                         <ManageModal
                             showModal={showAdminmodel}
                             closeModal={() => setshowAdminmodel(false)}
-                            modalHeader={`Remove ${displayName} as group admin?`}
-                            modalDescription={`${displayName} will no longer be able to message group members, send money to charities, and make changes to the group's profile.`}
+                            modalHeader={`Remove ${userTextHeader} as group admin?`}
+                            modalDescription={`${userText} will no longer be able to message group members, send money to charities, and make changes to the group's profile.`}
                             onButtonClick={() => handleOnClick('remove_admin')}
                             loader={showLoader}
                             isSingleAdmin={false}

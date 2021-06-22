@@ -305,7 +305,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                 <Button
                                     className='success-btn-rounded-def uploadBtn'
                                     onClick={() => uploadGalleryImageRef.current.click()}
-                                    disabled={newGalleryImages.length > 10}
+                                    disabled={newGalleryImages.length >= 10}
                                 >
                                     <Icon className='upload' />
                                     {formatMessage('createGivingGroupPicsVideo.photoGalleryUploadButton')}
