@@ -131,7 +131,7 @@ const CreateGivingGroupAddSectionModal = ({
                             }
                             onClick={() => handleOnModalClick(false, 'add')}
                         >
-                            {formatMessage('addButton')}
+                            {isEdit ? 'Save' : formatMessage('addButton')}
                         </Button>
                         <Button
                             className='blue-bordr-btn-round-def'
