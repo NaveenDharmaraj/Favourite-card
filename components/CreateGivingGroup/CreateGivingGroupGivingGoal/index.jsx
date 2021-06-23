@@ -105,7 +105,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     } = createGivingGroupObject;
 
     const validationCreateGivingGroup = () => {
-        let givingGoalValidity = false;
+        let givingGoalValidity = true;
         let dateCheck = true;
         if (!_isEmpty(fundraisingGoal)) {
             givingGoalValidity = _every(validateGivingGoal(parseFloat(fundraisingGoal.replace(/,/g, '')), validity));
@@ -161,7 +161,8 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                     .catch((err) => {
                         //handle error
                         setCreateGivingButtonLoader(false);
-                    })
+                        setDisableContinueButton(false);
+                    });
             }
         }
     };
@@ -367,13 +368,13 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                 {formatMessage('createGivingGroupGivingGoal.givingGoalHeader')}
                             </Header>
                         )}
-                        <div className="Charities_goal_width">
+                        <div className={`${fromCreate ? 'Charities_goal_width' : ''}`}>
                             <Form>
                                 {showGivingGoal
                                 && (
                                     <Fragment>
                                         {fromCreate || Number(editGivingGroupStoreFlowObject.attributes.fundraisingGoal) <= 0 ? (
-                                            <div className={`createnewSec ${fromCreate ? 'bottom_space' : ''}`}>
+                                            <div className={`createnewSec ${fromCreate ? 'bottom_space' : 'no_border'}`}>
                                                 <Header className="sectionHeader">
                                                     {formatMessage('createGivingGroupGivingGoal.givingGoalTitle')}
                                                     <span className="optional">&nbsp;{formatMessage('optional')}</span>
@@ -382,7 +383,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                             </div>
                                         )
                                             : (
-                                                <div className="createnewSec">
+                                                <div className={`createnewSec ${!fromCreate ? 'no_border' : ''}`}>
                                                     <GivingGoal
                                                         createGivingButtonLoader={createGivingButtonLoader}
                                                         createGivingGroupObject={createGivingGroupObject}
@@ -406,8 +407,8 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                 )}
                                 {showCharity
                                 && (
-                                    <div className="createnewSec">
-                                        <Header className="sectionHeader">
+                                    <div className={`createnewSec ${!fromCreate ? 'no_border' : ''}`}>
+                                        <Header className={`sectionHeader ${!fromCreate ? 'gifts_bottom_border' : ''}`}>
                                             {formatMessage('createGivingGroupGivingGoal.charitiesToSupport')}
                                             <span className="optional">&nbsp;{formatMessage('optional')}</span>
                                         </Header>
@@ -460,7 +461,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                 }
                                 {!showLoader
                                 && (
-                                    <div className="buttonsWrap">
+                                    <div className={`buttonsWrap ${!fromCreate ? 'btn_wrap_width' : ''}`}>
                                         {fromCreate
                                         && (
                                             <Button
@@ -481,10 +482,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                             <Button
                                                 className="blue-btn-rounded-def"
                                                 onClick={handleCreateGroup}
-                                                disabled={
-                                                    disableContinueButton || !validationCreateGivingGroup()
-                                                    || !validity.isEndDateGreaterThanStartDate
-                                                }
+                                                disabled={disableContinueButton || !validationCreateGivingGroup()}
                                                 loading={createGivingButtonLoader}
                                             >
                                                 {fromCreate ? formatMessage('createGivingGroupGivingGoal.createGivingGroupButton') : 'Save'}
