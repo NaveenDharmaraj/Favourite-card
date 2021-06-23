@@ -83,7 +83,7 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
                             && (
                                 <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
                             )}
-                            <div class="field-info">{editDescription.length} {formatMessage('ofText')} 300</div>
+                            <div class="field-info">{`${editDescription.length}/300`}</div>
                         </div>
                     </div>
                     <div className='buttonsWrap'>
