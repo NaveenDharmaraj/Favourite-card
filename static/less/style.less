@@ -9266,27 +9266,89 @@ body .userEllips{
     margin: auto;
   }
 }
-.app_logo{
-  border-top: 1px solid #C0C3D4;
-  margin-top: -24px;
-  padding-top: 20px;
-  h5{
-    &.ui{
-      &.header{
-        font-size: 16px !important;
-      font-weight: 700 !important;
-      font-family: 'ProximaNova-Regular' !important;
-      line-height: 22px !important;
-      color: #393939 !important;
+/************/
+.footer_wrapper {
+  display: flex;
+  @media only screen and (max-width: 767px) {
+      flex-direction: column;
+  }
+  .chimp_footer_links {
+      flex: 0 0 auto;
+      width: 70.8333333333%;
+      display: flex;
+      @media only screen and (max-width: 767px) {
+          flex-direction: column;
+          width: 100%;
       }
-    }
-    }
-  img{
-    width: 120px;
+      >div {
+          flex: 1 0 0%;
+          margin-left: 10px;
+          margin-right: 10px;
+          @media only screen and (max-width: 1199px) {
+              margin-left:0px;
+              margin-right: 0px;
+          }
+          @media only screen and (max-width: 992px) {
+              margin-left: 5px;
+              margin-right: 5px;
+          }
+      }
+  }
+  .app_links_wrapper {
+      flex: 0 0 auto;
+      width: 29.1666666667%;
       @media only screen and (max-width: 768px) {
-        padding: 0px;
-        margin: auto;
-        text-align: center;
+          width: 100%;
+      }
+      .solutionsLinks {
+          margin-bottom: 0px !important;
+          border-bottom: 1px solid #C0C3D4;
+          width: 75%;
+          @media only screen and (max-width: 768px) {
+              width: 100%;
+          }
+      }
+      .app_logo {
+          padding-top: 20px;
+          @media only screen and (max-width: 768px) {
+              text-align: center;
+          }
+          h5 {
+              &.ui {
+                  &.header {
+                      font-size: 16px !important;
+                      font-weight: 700 !important;
+                      font-family: 'ProximaNova-Regular' !important;
+                      line-height: 22px !important;
+                      color: #393939 !important;
+                  }
+              }
+          }
+          .ui {
+              &.image {
+                  width: auto !important;
+                  max-width: unset !important;
+                  height: auto !important;
+                  @media only screen and (max-width: 992px) {
+                      margin-bottom: 10px !important;
+                  }
+                  img {
+                      height:100%;
+                      max-height: 35px;
+                      margin-right: 5px;
+                      @media only screen and (max-width: 1199px) {
+                          max-height: 30px;
+                      }
+                      @media only screen and (max-width: 768px) {
+                          max-height: 35px;
+                          padding: 0px;
+                          margin: auto;
+                          text-align: center;
+                          margin-right: 5px;
+                      }
+                  }
+              }
+          }
       }
   }
 }
