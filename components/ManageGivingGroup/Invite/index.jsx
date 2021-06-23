@@ -149,6 +149,12 @@ const Invite = () => {
                 break;
         }
     };
+
+    const handleClearSearch = () => {
+        setsearchStr('');
+        dispatch(getMyfriendsList(groupDetails.id));
+    };
+
     return (
         <div className="basicsettings">
             <Header className="titleHeader">
@@ -165,6 +171,9 @@ const Invite = () => {
                             value={searchStr}
                         />
                         <div className="search-btn campaignSearch">
+                            {(!_isEmpty(searchStr) && searchStr.length >= 1)
+                                && <Icon name="close" onClick={handleClearSearch} />
+                            }
                             <a>
                                 <Icon
                                     name="search"
