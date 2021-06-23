@@ -67,6 +67,10 @@ const Invite = () => {
         isValidEmail,
         setisValidEmail,
     ] = useState(true);
+    const [
+        validMessage,
+        setvalidMessage,
+    ] = useState(true);
 
     useEffect(() => {
         const url = `deeplink?profileType=groupprofile&profileId=${groupDetails.id}&sourceId=${currentUser.id}`;
@@ -102,6 +106,11 @@ const Invite = () => {
     };
     const handleMessage = (event) => {
         setmessage(event.target.value);
+        if (event.target.value.length > 300) {
+            setvalidMessage(false);
+        } else {
+            setvalidMessage(true);
+        }
     };
     const sendInvite = () => {
         const payload = {
@@ -254,11 +263,15 @@ const Invite = () => {
                         onChange={handleMessage}
                         value={message}
                     />
+                    <FormValidationErrorMessage
+                        condition={!validMessage}
+                        errorMessage="maximum 300 characters can enter"
+                    />
                     <div className="email-group-members">
                         <Button
                             className="blue-btn-rounded-def Invitagebtn"
                             onClick={sendInvite}
-                            disabled={_isEmpty(emails) || _isEmpty(message) || showLoader || !isValidEmail}
+                            disabled={_isEmpty(emails) || _isEmpty(message) || showLoader || !isValidEmail || !validMessage}
                             loading={showLoader}
                         >
                         Send invite
