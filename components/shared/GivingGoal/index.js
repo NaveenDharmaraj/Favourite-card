@@ -127,7 +127,7 @@ const GivingGoal = ({
                                                         <p>You can set a new goal by selecting 'Edit' to add a new goal amount or extend its end date.</p>
                                                     </>
                                                     :
-                                                    <p>Your group has set a goal to raise ${fundraisingGoal} by {endDate}.</p>
+                                                    <p>Your group has set a goal to raise ${formattedfundraisingGoal} by {endDate}.</p>
                                                 }
                                             </Fragment>
                                         }
@@ -204,12 +204,13 @@ const GivingGoal = ({
                     showModal={showDeleteModal}
                     closeModal={() => setshowDeleteModal(false)}
                     modalHeader="Delete giving goal?"
-                    modalDescription="If you delete this goal, it will reset to $0.00.Deleting your giving goal will not affect the money raised so far."
+                    modalDescription="If you delete this goal, it will reset to $0.00."
+                    modalDescription2="Deleting your giving goal will not affect the money raised so far."
                     onButtonClick={handleDeleteGivingGoal}
                     loader={showLoader}
                     isSingleAdmin={false}
                     buttonText="Delete"
-                    isRemove={false}
+                    isRemove={true}
                 />
             )}
         </Fragment>

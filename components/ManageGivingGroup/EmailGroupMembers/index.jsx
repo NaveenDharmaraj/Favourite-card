@@ -93,6 +93,8 @@ const EmailGroupMembers = () => {
         setemailMessage(event.target.value);
         if (!_isEmpty(event.target.value) && event.target.value.length >= 3000) {
             setlimitError(true);
+        } else {
+            setlimitError(false);
         }
     };
 
@@ -125,7 +127,7 @@ const EmailGroupMembers = () => {
                     />
                     {limitError
                     && (
-                        <p>maximum 20,000 characters can enter</p>
+                        <p>maximum 3000 characters can enter</p>
                     )}
                     <div className="email-group-members">
                         <Button

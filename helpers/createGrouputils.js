@@ -29,6 +29,8 @@ export const addModalDescriptionLimit = 10000;
 export const intializeValidity = {
     doesNameExist: true,
     doesDescriptionNotExist: true,
+    isNotEmpty: true,
+    hasAlphabet: true,
 };
 
 // initialinzing the flow steps for create giving group
@@ -85,7 +87,10 @@ export const generateBreadCrum = (breakCrumArray = [], currentActiveStepArray = 
                                 >
                                     {item}
                                 </Breadcrumb.Section>
-                                <Breadcrumb.Divider icon='right chevron' />
+                                {(breakCrumArray.length - 1 !== i)
+                                && (
+                                    <Breadcrumb.Divider icon='right chevron' />
+                                )}
                             </>
                         )
                     })
@@ -103,13 +108,21 @@ export const generateBreadCrum = (breakCrumArray = [], currentActiveStepArray = 
  * @returns {object} returns the validation object after validating.
  */
 export const ValidateCreateGivingGroup = (validity, name, value) => {
+    let modofiedValue = '';
+    if (value) {
+        modofiedValue =  value.trim();
+    }
     switch (name) {
         case 'name':
+            validity.doesNameExist = !_isEmpty(value) ? true : false;
+            validity.isNotEmpty = !(!modofiedValue || modofiedValue.length === 0);
+            validity.hasAlphabet = hasAlphabet(modofiedValue);
+            break;
         case 'purpose':
-            validity.doesNameExist = !_isEmpty(value) ? true : false
-            break
+            validity.doesNameExist = !_isEmpty(value) ? true : false;
+            break;
         case 'description':
-            validity.doesDescriptionNotExist = !_isEmpty(value) ? true : false
+            validity.doesDescriptionNotExist = !_isEmpty(value) ? true : false;
             break;
         case 'givingGoal':
             validity = validateGivingGoal(value, validity);
@@ -131,6 +144,11 @@ export const youTubeVimeoValidator = (url) => /^(http(s)?:\/\/)?((w){3}.)?(vimeo
  * @param {string} typeOfSeprator type of seprator .
  * @returns {string} date after appending seperators
  */
+export const hasAlphabet = (str) => {
+    const stringRegex = /[A-Za-z]/;
+    const res = stringRegex.test(str);
+    return res;
+}
 export const dateFormatConverter = (date, typeOfSeprator = '/') => (
     date ? `${date.getFullYear()}${typeOfSeprator}${date.getMonth() + 1}${typeOfSeprator}${date.getDate()}` : null
 );

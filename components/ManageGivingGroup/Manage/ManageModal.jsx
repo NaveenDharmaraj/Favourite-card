@@ -5,6 +5,7 @@ import {
     Button,
     Modal,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
 const ManageModal = (props) => {
     const {
@@ -12,6 +13,7 @@ const ManageModal = (props) => {
         closeModal,
         modalHeader,
         modalDescription,
+        modalDescription2,
         onButtonClick,
         loader,
         isSingleAdmin,
@@ -35,7 +37,15 @@ const ManageModal = (props) => {
             <Modal.Content>
                 <Modal.Description className="font-s-14 mb-1 ">
                     {!isSingleAdmin
-                        ? modalDescription
+                        ? (
+                            <Fragment>
+                                <p className="goal-modal-text">{modalDescription}</p>
+                                {!_isEmpty(modalDescription2)
+                                && (
+                                    <p>{modalDescription2}</p>
+                                )}
+                            </Fragment>
+                        )
                         : (
                             <Fragment>
                                 <div className="p_wrapper">

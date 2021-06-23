@@ -207,7 +207,7 @@ const MemberListCard = (props) => {
                                                         ) : (
                                                             <Dropdown.Item text="Make admin " onClick={() => setshowMemberModal(true)} />
                                                         )}
-                                                    {!isSingleAdmin && !isCurrentUser
+                                                    {!isCurrentUser
                                                     && (
                                                         <Dropdown.Item text="Remove from group " onClick={() => setshowGroupModel(true)} />
                                                     )}

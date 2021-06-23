@@ -105,7 +105,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     } = createGivingGroupObject;
 
     const validationCreateGivingGroup = () => {
-        let givingGoalValidity = false;
+        let givingGoalValidity = true;
         let dateCheck = true;
         if (!_isEmpty(fundraisingGoal)) {
             givingGoalValidity = _every(validateGivingGoal(parseFloat(fundraisingGoal.replace(/,/g, '')), validity));
@@ -161,7 +161,8 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                     .catch((err) => {
                         //handle error
                         setCreateGivingButtonLoader(false);
-                    })
+                        setDisableContinueButton(false);
+                    });
             }
         }
     };
@@ -481,10 +482,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                             <Button
                                                 className="blue-btn-rounded-def"
                                                 onClick={handleCreateGroup}
-                                                disabled={
-                                                    disableContinueButton || !validationCreateGivingGroup()
-                                                    || !validity.isEndDateGreaterThanStartDate
-                                                }
+                                                disabled={disableContinueButton || !validationCreateGivingGroup()}
                                                 loading={createGivingButtonLoader}
                                             >
                                                 {fromCreate ? formatMessage('createGivingGroupGivingGoal.createGivingGroupButton') : 'Save'}
