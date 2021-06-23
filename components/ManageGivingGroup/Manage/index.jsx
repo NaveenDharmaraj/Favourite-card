@@ -135,6 +135,11 @@ const Manage = () => {
     const handleEmailClick = () => {
         Router.pushRoute(`/groups/${groupDetails.attributes.slug}/email_members`);
     };
+
+    const handleClearSearch = () => {
+        setsearchText('');
+        dispatch(getGroupMembers(groupDetails.id));
+    }
     return (
         <div className="basicsettings">
             <Header className="titleHeader">
@@ -150,6 +155,9 @@ const Manage = () => {
                         value={searchText}
                     />
                     <div className="search-btn campaignSearch">
+                        {(!_isEmpty(searchText) && searchText.length >= 1)
+                            && <Icon name="close" onClick={handleClearSearch} />
+                        }
                         <a>
                             <Icon
                                 name="search"

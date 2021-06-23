@@ -204,12 +204,13 @@ const GivingGoal = ({
                     showModal={showDeleteModal}
                     closeModal={() => setshowDeleteModal(false)}
                     modalHeader="Delete giving goal?"
-                    modalDescription="If you delete this goal, it will reset to $0.00.Deleting your giving goal will not affect the money raised so far."
+                    modalDescription="If you delete this goal, it will reset to $0.00."
+                    modalDescription2="Deleting your giving goal will not affect the money raised so far."
                     onButtonClick={handleDeleteGivingGoal}
                     loader={showLoader}
                     isSingleAdmin={false}
                     buttonText="Delete"
-                    isRemove={false}
+                    isRemove={true}
                 />
             )}
         </Fragment>
