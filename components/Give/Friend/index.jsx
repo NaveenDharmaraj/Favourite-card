@@ -1009,7 +1009,8 @@ class Friend extends React.Component {
                 className="blue-btn-rounded btn_right rivewbtnp2p"
                 content={formatMessage('giveCommon:reviewButton')}
                 disabled={!this.props.userAccountsFetched}
-                type="submit"
+                type="button"
+                onClick={this.handleSubmit}
             />)
         const giveFromType = (!_isEmpty(giveFrom.type)) ? giveFrom.type : 'user';
         return (
@@ -1035,7 +1036,7 @@ class Friend extends React.Component {
                                         />
                                     </div>
                                     <div className="flowFirst">
-                                        <Form onSubmit={this.handleSubmit}>
+                                        <Form>
                                             <Grid>
                                                 <Grid.Row>
                                                     {
