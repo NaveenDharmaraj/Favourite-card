@@ -201,7 +201,7 @@ const Manage = () => {
                 </div>
             )}
             <div className="memberswapper">
-                {(memberCount)
+                {(memberCount > 1)
                 && (
                     <div className="membersadmin">
                         <p>
