@@ -117,7 +117,7 @@ class CharitySupport extends React.Component {
                     <p>{formatMessage('groupProfile:charitySupportNoDataText')}</p>
                     {isAdmin
                     && (
-                        <Link route={`/groups/${slug}/edit`}>
+                        <Link route={`/groups/${slug}/edit/charitysupport`}>
                             <Button
                                 className="success-btn-rounded-def fluid"
                                 style={{
