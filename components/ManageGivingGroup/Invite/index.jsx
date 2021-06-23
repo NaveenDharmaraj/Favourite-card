@@ -21,6 +21,8 @@ import _isEmpty from 'lodash/isEmpty';
 
 import Pagination from '../../shared/Pagination';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import { isValidEmailList } from '../../../helpers/give/giving-form-validation';
 import {
     sendEmailInvite,
     getMyfriendsList,
@@ -61,6 +63,10 @@ const Invite = () => {
         currentActivePage,
         setcurrentActivePage,
     ] = useState(1);
+    const [
+        isValidEmail,
+        setisValidEmail,
+    ] = useState(true);
 
     useEffect(() => {
         const url = `deeplink?profileType=groupprofile&profileId=${groupDetails.id}&sourceId=${currentUser.id}`;
@@ -155,6 +161,11 @@ const Invite = () => {
         dispatch(getMyfriendsList(groupDetails.id));
     };
 
+    const handleOnBlur = () => {
+        const isValid = isValidEmailList(emails);
+        setisValidEmail(isValid);
+    };
+
     return (
         <div className="basicsettings">
             <Header className="titleHeader">
@@ -230,7 +241,12 @@ const Invite = () => {
                         className="fulllWidth"
                         placeholder="Email address"
                         onChange={handleEmail}
+                        onBlur={handleOnBlur}
                         value={emails}
+                    />
+                    <FormValidationErrorMessage
+                        condition={!isValidEmail}
+                        errorMessage="Enter valid email addresses, separated by commas"
                     />
                     <label>Message</label>
                     <TextArea
@@ -242,7 +258,7 @@ const Invite = () => {
                         <Button
                             className="blue-btn-rounded-def Invitagebtn"
                             onClick={sendInvite}
-                            disabled={_isEmpty(emails) || _isEmpty(message) || showLoader}
+                            disabled={_isEmpty(emails) || _isEmpty(message) || showLoader || !isValidEmail}
                             loading={showLoader}
                         >
                         Send invite
