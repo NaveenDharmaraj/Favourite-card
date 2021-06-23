@@ -21,6 +21,7 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
         setShowModal(false);
         setDisableSave(true);
         setDoesDescriptionPresent(true);
+        setEditDescription(short);
     }
     const handleSave = () => {
         setDisableSave(true)
@@ -77,11 +78,13 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
                             error={!doesDescriptionPresent}
                             maxLength={aboutDescriptionLimit}
                         />
-                        {!doesDescriptionPresent && <div className='fieldInfoWrap'>
-                            <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
+                        <div className='fieldInfoWrap'>
+                            {!doesDescriptionPresent
+                            && (
+                                <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
+                            )}
                             <div class="field-info">{editDescription.length} {formatMessage('ofText')} 300</div>
                         </div>
-                        }
                     </div>
                     <div className='buttonsWrap'>
                         <Button
