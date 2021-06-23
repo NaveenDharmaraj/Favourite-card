@@ -62,7 +62,8 @@
         "charitiesToSupportDesc1": "Choose which charities this group plans to support.",
         "charitiesToSupportDesc2": "You can select up to 5 charities and you can change these anytime.",
         "chairtiesToSupportPlaceholder": "Search for charity",
-        "createGivingGroupButton": "Create Giving Group"
+        "createGivingGroupButton": "Create Giving Group",
+        "modalContentGivingGoalPlaceholder": "Enter a custom amount"
     },
     "optional": "(optional)",
     "ofText": "of",
