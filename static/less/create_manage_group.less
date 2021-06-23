@@ -579,6 +579,7 @@
         }
       }
       .icon{
+        position: relative;
         &:not(.down){
           filter: invert(35%) sepia(90%) saturate(7495%) hue-rotate(213deg) brightness(97%) contrast(96%);
           margin-right: 10px;
@@ -2258,3 +2259,34 @@ body{
     background-repeat: no-repeat !important;
    }
  }
+.goal-modal-text{
+  margin-bottom: 4px;
+}
+
+.icon{
+  &.close_icons_campaignSearch{
+   position: absolute;
+   right: 40px;
+   top: 0;
+   bottom: 0;
+   margin: auto;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   &::before{
+     content: '' !important;
+     background-image: url("@{img_url}/images/icons/close.svg") !important;
+     background-size: contain !important;
+     width: 12px;
+     height: 12px;
+     position: absolute;
+     right: 0px;
+     top: 0px;
+     background-repeat: no-repeat !important;
+     margin: auto;
+     bottom: 0;
+     left: 0;
+   }
+ }
+}
