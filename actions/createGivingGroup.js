@@ -455,7 +455,7 @@ export const getMessageHistory = (groupId) => (dispatch) => {
             uxCritical: true,
         },
     }).then((result) => {
-        if (!_isEmpty(result) && !_isEmpty(result.data)) {
+        if (!_isEmpty(result)) {
             fsa.payload = result;
             dispatch(fsa);
         }
@@ -670,7 +670,7 @@ export const getMyfriendsList = (groupId, pageNumber = 1) => (dispatch) => {
             uxCritical: true,
         },
     }).then((result) => {
-        if (!_isEmpty(result) && !_isEmpty(result.data)) {
+        if (!_isEmpty(result)) {
             fsa.payload = result;
             dispatch(fsa);
         }
