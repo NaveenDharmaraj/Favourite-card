@@ -184,7 +184,7 @@ const CreateGivingGroupBasic = ({
             name,
             value,
         } = data || event.target;
-        setValidity(ValidateCreateGivingGroup(validity, name, value))
+        setValidity(ValidateCreateGivingGroup(validity, name, value));
     };
 
     const handleContinue = () => {
@@ -286,6 +286,20 @@ const CreateGivingGroupBasic = ({
                                             </p>
                                         )
                                         }
+                                        {!validity.isNotEmpty
+                                        && (
+                                            <p className="error-message">
+                                                <Icon name="exclamation circle" />
+                                                Group name should not be empty space
+                                            </p>
+                                        )}
+                                        {!validity.hasAlphabet
+                                        && (
+                                            <p className="error-message">
+                                                <Icon name="exclamation circle" />
+                                                Group name should have atleast one alphabet
+                                            </p>
+                                        )}
                                     </div>
                                     <Form.Group widths='equal'>
                                         <Form.Field
@@ -386,7 +400,7 @@ const CreateGivingGroupBasic = ({
                                             <div className={`buttonsWrap ${fromCreate ? '' : 'buttons_space'}`}>
                                                 <Button
                                                     className="blue-btn-rounded-def"
-                                                    disabled={disableContinue || !validity.doesNameExist}
+                                                    disabled={disableContinue || !validity.doesNameExist || !validity.isNotEmpty || !validity.hasAlphabet}
                                                     loading={showLoader}
                                                     onClick={
                                                         (event, data) => (
