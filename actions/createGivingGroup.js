@@ -387,7 +387,7 @@ export const getPendingInvites = (groupId, pageNumber = 1) => (dispatch) => {
         },
     }).then((result) => {
         if (!_isEmpty(result)) {
-            fsa.payload = result.data;
+            fsa.payload = result;
             dispatch(fsa);
         }
     }).finally(() => {

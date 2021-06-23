@@ -64,7 +64,9 @@ const createGivingGroup = (state = {}, action) => {
         case actionTypes.GET_GROUP_PENDING_INVITES:
             newState = {
                 ...state,
-                groupPendingInvites: action.payload,
+                groupPendingInvites: action.payload.data,
+                groupPendingInvitesCount: action.payload.meta.recordCount,
+                groupPendingInvitesPageCount: action.payload.meta.pageCount,
             };
             break;
         case actionTypes.SHOW_PENDING_INVITES_PLACEHOLDER:
