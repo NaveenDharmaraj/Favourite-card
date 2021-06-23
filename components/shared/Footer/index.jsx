@@ -21,6 +21,7 @@ import { Link } from '../../../routes';
 import '../../../static/less/footer.less';
 import flogo from '../../../static/images/CharitableImpact.svg';
 import appimg from '../../../static/images/footer_appstore.svg';
+import android from '../../../static/images/google-play-badge.png';
 import facebook from '../../../static/images/icons/icon_social_facebook.svg';
 import instagram from '../../../static/images/icons/icon_social_instagram.svg';
 import linkedin from '../../../static/images/icons/icon_social_linkedin.svg';
@@ -94,15 +95,15 @@ const Footer = (props) => {
                                     </div>
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={12} computer={12}>
-                                    <Grid>
-                                        <Grid.Row columns={4}>
-                                            <Grid.Column mobile={16} tablet={4} computer={4}>
+                                    <div className="footer_wrapper">
+                                        <div className="chimp_footer_links">
+                                            <div>
                                                 <div className="footer-main-links">
                                                     <Header as="h4"><a href={`${CORP_DOMAIN}/how-it-works/`}>How it works</a></Header>
                                                 </div>
-                                            </Grid.Column>
-                                            <Grid.Column mobile={16} tablet={4} computer={4}>
-                                                <Header as="h4" content="About" />
+                                            </div>
+                                            <div>
+                                                <Header as="h4" content="About"/>
                                                 <List link>
                                                     <List.Item as="a" href={`${CORP_DOMAIN}/who-we-are/`}>Who we are</List.Item>
                                                     <List.Item as="a" href={`${CORP_DOMAIN}/foundation/`}>Charitable Impact Foundation</List.Item>
@@ -111,27 +112,21 @@ const Footer = (props) => {
                                                     <List.Item as="a" href={`${CORP_DOMAIN}/press/`}>Press</List.Item>
                                                     <List.Item as="a" href={`${CORP_DOMAIN}/blog/`}>Blog</List.Item>
                                                 </List>
-                                            </Grid.Column>
-                                            <Grid.Column mobile={16} tablet={4} computer={4}>
-                                                <Header as="h4" content="Support" />
+                                            </div>
+                                            <div>
+                                                <Header as="h4" content="Support"/>
                                                 <List link>
                                                     <List.Item as="a" href={`${HELP_CENTRE_URL}`}>Help Centre</List.Item>
                                                     <List.Item as="a" href={`${CORP_DOMAIN}/contact/`}>Contact us</List.Item>
                                                     { isAuthenticated && (
                                                         <Fragment>
-                                                            <Link
-                                                                route='/privacy'
-                                                            >
+                                                            <Link route='/privacy'>
                                                                 <List.Item as="a">Privacy </List.Item>
                                                             </Link>
-                                                            <Link
-                                                                route='/terms'
-                                                            >
+                                                            <Link route='/terms'>
                                                                 <List.Item as="a">Terms</List.Item>
                                                             </Link>
-                                                            <Link
-                                                                route='/account-agreement'
-                                                            >
+                                                            <Link route='/account-agreement'>
                                                                 <List.Item as="a">Account Agreement</List.Item>
                                                             </Link>
                                                         </Fragment>
@@ -144,8 +139,9 @@ const Footer = (props) => {
                                                         </Fragment>
                                                     )}
                                                 </List>
-                                            </Grid.Column>
-                                            <Grid.Column mobile={16} tablet={4} computer={4}>
+                                            </div>
+                                        </div>
+                                            <div className="app_links_wrapper">
                                                 <Header as="h4" content="Solutions" />
                                                 <List link className="solutionsLinks">
                                                     <List.Item as="a" href={`${CORP_DOMAIN}/advisors/`}>For Advisors</List.Item>
@@ -154,14 +150,18 @@ const Footer = (props) => {
                                                 <div className="app_logo">
                                                     <Header as="h5">Get the app</Header>
                                                     <Image
+                                                        src={android}
+                                                        href="https://play.google.com/store/apps/details?id=com.chimp.charitableimpact.android"
+                                                        target="_blank"
+                                                    />
+                                                    <Image
                                                         src={appimg}
                                                         href="https://charitableimpact.app.link/ios-corpweb"
                                                         target="_blank"
                                                     />
                                                 </div>
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    </Grid>
+                                            </div>
+                                        </div>
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
