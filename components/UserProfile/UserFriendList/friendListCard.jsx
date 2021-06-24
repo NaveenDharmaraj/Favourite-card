@@ -50,6 +50,7 @@ class FriendListCard extends React.Component {
             updatedStatus = '';
         }
         this.state = {
+            buttonClicked: false,
             updatedStatus,
         };
     }
@@ -68,7 +69,19 @@ class FriendListCard extends React.Component {
             dispatch,
         } = this.props;
         if (!_isEmpty(email)) {
-            acceptFriendRequest(dispatch, id, email, avatar, firstName, displayName, destinationEmail, destinationUserId, 1, 'MYFRIENDS', null)
+            this.setState({
+                buttonClicked: true,
+            });
+            acceptFriendRequest(dispatch, id, email, avatar, firstName, displayName, destinationEmail, destinationUserId, 1, 'MYFRIENDS', null).then(() => {
+                this.setState({
+                    buttonClicked: false,
+                    updatedStatus: 'ACCEPTED',
+                });
+            }).catch(() => {
+                this.setState({
+                    buttonClicked: false,
+                });
+            });
         }
     }
 
@@ -82,7 +95,19 @@ class FriendListCard extends React.Component {
             },
             dispatch,
         } = this.props;
-        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, type, rejectType));
+        this.setState({
+            buttonClicked: true,
+        });
+        dispatch(ingnoreFriendRequest(currentUserId, friendUserId, email, type, rejectType)).then(() => {
+            this.setState({
+                buttonClicked: false,
+                updatedStatus: '',
+            });
+        }).catch(() => {
+            this.setState({
+                buttonClicked: false,
+            });
+        });
     }
 
     handleAddFriendClick(userEmail, userId) {
@@ -107,9 +132,17 @@ class FriendListCard extends React.Component {
             requesterFirstName: firstName,
             requesterUserId: currentUserId,
         };
+        this.setState({
+            buttonClicked: true,
+        });
         dispatch(sendFriendRequest(requestObj)).then(() => {
             this.setState({
+                buttonClicked: false,
                 updatedStatus: 'PENDING_OUT',
+            });
+        }).catch(() => {
+            this.setState({
+                buttonClicked: false,
             });
         });
     }
@@ -132,6 +165,7 @@ class FriendListCard extends React.Component {
         } = this.props;
         const {
             updatedStatus,
+            buttonClicked,
         } = this.state;
         let buttonText = '';
         let buttonClass = 'blue-btn-rounded-def';
@@ -183,6 +217,7 @@ class FriendListCard extends React.Component {
                                 <Button
                                     className={`${buttonClass} c-small`}
                                     onClick={() => this.handleAcceptRequest(email_hash, user_id)}
+                                    disabled={buttonClicked}
                                 >
                                     {buttonText}
                                 </Button>
@@ -199,6 +234,7 @@ class FriendListCard extends React.Component {
                                     trigger={(
                                         <Button
                                             className="blue-bordr-btn-round-def"
+                                            disabled={buttonClicked}
                                         >
                                             Pending
                                         </Button>
@@ -217,6 +253,7 @@ class FriendListCard extends React.Component {
                             <Button
                                 className={`${buttonClass} c-small`}
                                 onClick={() => this.handleAddFriendClick(email_hash, user_id)}
+                                disabled={buttonClicked}
                             >
                                 {buttonText}
                             </Button>
