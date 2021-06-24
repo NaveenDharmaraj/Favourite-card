@@ -431,7 +431,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                 <Form.Field
                                                     single
                                                     control={Select}
-                                                    disabled={!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5}
+                                                    disabled={(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5) || showLoader}
                                                     open={showCharityDropdown}
                                                     className="searchInput"
                                                     style={{ minHeight: 'auto' }}
