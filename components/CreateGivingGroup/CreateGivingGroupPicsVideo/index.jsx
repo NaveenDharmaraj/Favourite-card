@@ -334,7 +334,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                             />
                                             {(newGalleryImages.length < 10)
                                             && (
-                                                <p> You can still add {10 - newGalleryImages.length} more photos.</p>
+                                                <p> {`You can still add ${10 - newGalleryImages.length} more ${newGalleryImages.length === 1 ? 'photo.' : 'photos.'}`}</p>
                                             )}
                                         </Fragment>
                                         )

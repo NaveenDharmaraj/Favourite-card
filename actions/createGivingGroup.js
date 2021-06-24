@@ -364,7 +364,7 @@ export const getGroupMembers = (groupId, pageNumber = 1) => (dispatch) => {
         type: actionTypes.SHOW_GROUP_MEMBERS_PLACEHOLDER,
     };
     dispatch(placeholder);
-    return coreApi.get(`/groups/${groupId}/groupMembers`, {
+    return coreApi.get(`/groups/${groupId}/groupUsers`, {
         params: {
             dispatch,
             'page[number]': pageNumber,
@@ -585,7 +585,7 @@ export const searchMember = (groupId, searchStr, pageNumber = 1) => (dispatch) =
         type: actionTypes.SHOW_GROUP_MEMBERS_PLACEHOLDER,
     };
     dispatch(placeholder);
-    return coreApi.get(`/groups/${groupId}/groupMembers`, {
+    return coreApi.get(`/groups/${groupId}/groupUsers`, {
         params: {
             dispatch,
             'filter[groupMembers]': searchStr,
