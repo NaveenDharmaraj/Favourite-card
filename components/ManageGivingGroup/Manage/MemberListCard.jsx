@@ -39,6 +39,7 @@ const MemberListCard = (props) => {
                 location,
                 province,
                 isGroupInviteSent,
+                friendStatus,
             }
         },
         groupId,
@@ -49,9 +50,11 @@ const MemberListCard = (props) => {
         groupSlug,
     } = props;
     const formatedLocation = getLocation(city, province);
-    const userTextHeader = isCurrentUser ? 'yourself' : displayName;
-    const userText = isCurrentUser ? 'You' : displayName;
-    const name = !_isEmpty(displayName) ? displayName : email;
+    const isUserBlocked = (friendStatus && friendStatus === 'BLOCKED_IN');
+    const userDisplayName = isUserBlocked ? 'Anonymous user' : displayName;
+    const userTextHeader = isCurrentUser ? 'yourself' : userDisplayName;
+    const userText = isCurrentUser ? 'You' : userDisplayName;
+    const name = !_isEmpty(userDisplayName) ? userDisplayName : email;
     const [
         showAdminmodel,
         setshowAdminmodel,
@@ -84,7 +87,7 @@ const MemberListCard = (props) => {
 
     const handleOnClick = (type) => {
         setshowLoader(true);
-        dispatch(toggleAdmin(id, groupId, type, displayName, isCurrentUser, groupSlug)).then(() => {
+        dispatch(toggleAdmin(id, groupId, type, userDisplayName, isCurrentUser, groupSlug)).then(() => {
             setshowLoader(false);
             if (type === adminActionType.make_admin) {
                 setshowMemberModal(false);
@@ -97,7 +100,7 @@ const MemberListCard = (props) => {
 
     const handleRemoveMember = () => {
         setshowLoader(true);
-        dispatch(removeGroupMember(id, groupId, displayName)).finally(() => {
+        dispatch(removeGroupMember(id, groupId, userDisplayName)).finally(() => {
             setshowLoader(false);
             setshowGroupModel(false);
         });
@@ -164,7 +167,7 @@ const MemberListCard = (props) => {
                                     {!isInvite
                                         ? (
                                             <Fragment>
-                                                {`${displayName} ${isCurrentUser ? '(you)' : ''} ${isGroupAdmin ? '• Admin' : ''}`}
+                                                {`${userDisplayName} ${isCurrentUser ? '(you)' : ''} ${isGroupAdmin ? '• Admin' : ''}`}
                                                 {isGroupAdmin
                                                 && (
                                                     <span>
@@ -268,8 +271,8 @@ const MemberListCard = (props) => {
                     <ManageModal
                         showModal={showGroupModel}
                         closeModal={() => setshowGroupModel(false)}
-                        modalHeader={`Remove ${displayName}?`}
-                        modalDescription={`${displayName} will no longer be a member of this group.`}
+                        modalHeader={`Remove ${userDisplayName}?`}
+                        modalDescription={`${userDisplayName} will no longer be a member of this group.`}
                         onButtonClick={handleRemoveMember}
                         loader={showLoader}
                         isSingleAdmin={false}
@@ -283,8 +286,8 @@ const MemberListCard = (props) => {
                     <ManageModal
                         showModal={showMemberModal}
                         closeModal={() => setshowMemberModal(false)}
-                        modalHeader={`Make ${displayName} a group admin?`}
-                        modalDescription={`${displayName} will become an admin for the Giving Group.`}
+                        modalHeader={`Make ${userDisplayName} a group admin?`}
+                        modalDescription={`${userDisplayName} will become an admin for the Giving Group.`}
                         onButtonClick={() => handleOnClick('make_admin')}
                         loader={showLoader}
                         isSingleAdmin={false}
