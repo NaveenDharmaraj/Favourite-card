@@ -41,6 +41,7 @@ class CreateGivingGroupAbout extends React.Component {
             createGivingGroupObjectState: props.fromCreate ? props.createGivingGroupStoreFlowObject : cloneEditGivingGroupObject,
             doesDescriptionPresent: true,
             isEdit: false,
+            isWhiteSpace: true,
         }
         breakCrumArray = createGivingGroupBreadCrum(props.t);
     }
@@ -93,9 +94,14 @@ class CreateGivingGroupAbout extends React.Component {
         let {
             value,
         } = data || event.target;
+        let modofiedValue = '';
+        if (value) {
+            modofiedValue =  value.trim();
+        }
         this.setState({
-            doesDescriptionPresent: value ? true : false
-        })
+            doesDescriptionPresent: value ? true : false,
+            isWhiteSpace: !(!modofiedValue || modofiedValue.length === 0)
+        });
     };
 
     handleParentModalClick = (modalState, addSectionObject = {}) => {
@@ -232,6 +238,7 @@ class CreateGivingGroupAbout extends React.Component {
             doesDescriptionPresent,
             showModal,
             isEdit,
+            isWhiteSpace,
         } = this.state;
         const {
             dispatch,
@@ -277,6 +284,13 @@ class CreateGivingGroupAbout extends React.Component {
                                                         </>
                                                         )
                                                     }
+                                                    {!isWhiteSpace
+                                                    && (
+                                                        <>
+                                                                <Icon name="exclamation circle" />
+                                                                This field should not be empty space
+                                                        </>
+                                                    )}
                                                 </p>
                                                 <div class="field-info">{short.length} {formatMessage('ofText')} 300</div>
                                             </div>
@@ -332,7 +346,7 @@ class CreateGivingGroupAbout extends React.Component {
                                 </Button>
                                 <Button
                                     className='blue-btn-rounded-def'
-                                    disabled={disableContinue || !doesDescriptionPresent}
+                                    disabled={disableContinue || !doesDescriptionPresent || !isWhiteSpace}
                                     onClick={this.handleContinue}
                                 >
                                     {formatMessage('continueButton')}
