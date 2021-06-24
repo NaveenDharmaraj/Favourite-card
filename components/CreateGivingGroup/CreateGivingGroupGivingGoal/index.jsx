@@ -304,7 +304,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             }
         });
         setDisableContinueButton(false);
-        setshowLoader(true);
         beneficiaryItems.splice(index, 1);
         if (fromCreate) {
             setCreateGivingGroupObject({
@@ -312,6 +311,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                 beneficiaryItems: [...beneficiaryItems],
             });
         } else {
+            setshowLoader(true);
             let beneficiaryIds = [];
             beneficiaryItems && beneficiaryItems.map(({id})=>{
                 beneficiaryIds.push(id);
