@@ -16,7 +16,7 @@ const EditGivingGoal = ({
 }) => {
     return (
         <Fragment>
-        <div className='givingGoalForm'>
+        <div className={`givingGoalForm ${!fromCreate && 'edit_goal_modal'}`}>
             <div className="field">
                 <label>{formatMessage('createGivingGroupGivingGoal.givingGoalAmount')}</label>
                 {!fromCreate
