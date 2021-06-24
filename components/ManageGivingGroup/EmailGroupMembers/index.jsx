@@ -52,7 +52,9 @@ const EmailGroupMembers = () => {
 
     useEffect(() => {
         dispatch(getMessageHistory(groupDetails.id));
-    }, []);
+    }, [
+        groupDetails,
+    ]);
 
     useEffect(() => {
         if (!_isEmpty(groupMessageHistory)) {

@@ -64,7 +64,9 @@ const createGivingGroup = (state = {}, action) => {
         case actionTypes.GET_GROUP_PENDING_INVITES:
             newState = {
                 ...state,
-                groupPendingInvites: action.payload,
+                groupPendingInvites: action.payload.data,
+                groupPendingInvitesCount: action.payload.meta.recordCount,
+                groupPendingInvitesPageCount: action.payload.meta.pageCount,
             };
             break;
         case actionTypes.SHOW_PENDING_INVITES_PLACEHOLDER:
@@ -109,6 +111,12 @@ const createGivingGroup = (state = {}, action) => {
             newState = {
                 ...state,
                 groupFriendListLoader: action.payload.showplaceholder,
+            };
+            break;
+        case actionTypes.SHOW_GROUP_GALLERY_LOADER:
+            newState = {
+                ...state,
+                groupGalleryLoader: action.payload.showloader,
             };
             break;
         default:

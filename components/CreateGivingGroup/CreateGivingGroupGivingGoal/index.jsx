@@ -304,7 +304,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             }
         });
         setDisableContinueButton(false);
-        setshowLoader(true);
         beneficiaryItems.splice(index, 1);
         if (fromCreate) {
             setCreateGivingGroupObject({
@@ -312,6 +311,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                 beneficiaryItems: [...beneficiaryItems],
             });
         } else {
+            setshowLoader(true);
             let beneficiaryIds = [];
             beneficiaryItems && beneficiaryItems.map(({id})=>{
                 beneficiaryIds.push(id);
@@ -418,13 +418,20 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                 {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
                                             </span>
                                         </p>
+                                        {(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5)
+                                        && (
+                                            <Fragment>
+                                                <p>Groups can support up to 5 charities at a time. </p>
+                                                <p>To add another charity, remove one of the charities listed below.</p>
+                                            </Fragment>
+                                        )}
                                         <div className="searchBox charitysearch">
                                             {(_isEmpty(beneficiaryItems) || (!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5))
                                             && (
                                                 <Form.Field
                                                     single
                                                     control={Select}
-                                                    disabled={!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5}
+                                                    disabled={(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5) || showLoader}
                                                     open={showCharityDropdown}
                                                     className="searchInput"
                                                     style={{ minHeight: 'auto' }}
@@ -443,7 +450,17 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                             && setShowCharityDropdown(true);
                                                     }}
                                                     onClose={() => { setShowCharityDropdown(false); }}
-                                                />
+                                                >
+                                                    {/* <Icon
+                                                        name="close"
+                                                        // onClick={handleClearSearch}
+                                                    />
+                                                    <Icon
+                                                        color="blue"
+                                                        name="search"
+                                                        size="large"
+                                                    /> */}
+                                                </Form.Field>
                                             )}
                                             <div className="charityWrap">
                                                 {!showLoader

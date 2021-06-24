@@ -21,6 +21,8 @@ import _isEmpty from 'lodash/isEmpty';
 
 import Pagination from '../../shared/Pagination';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import { isValidEmailList } from '../../../helpers/give/giving-form-validation';
 import {
     sendEmailInvite,
     getMyfriendsList,
@@ -61,6 +63,14 @@ const Invite = () => {
         currentActivePage,
         setcurrentActivePage,
     ] = useState(1);
+    const [
+        isValidEmail,
+        setisValidEmail,
+    ] = useState(true);
+    const [
+        validMessage,
+        setvalidMessage,
+    ] = useState(true);
 
     useEffect(() => {
         const url = `deeplink?profileType=groupprofile&profileId=${groupDetails.id}&sourceId=${currentUser.id}`;
@@ -96,6 +106,11 @@ const Invite = () => {
     };
     const handleMessage = (event) => {
         setmessage(event.target.value);
+        if (event.target.value.length > 300) {
+            setvalidMessage(false);
+        } else {
+            setvalidMessage(true);
+        }
     };
     const sendInvite = () => {
         const payload = {
@@ -153,6 +168,11 @@ const Invite = () => {
     const handleClearSearch = () => {
         setsearchStr('');
         dispatch(getMyfriendsList(groupDetails.id));
+    };
+
+    const handleOnBlur = () => {
+        const isValid = isValidEmailList(emails);
+        setisValidEmail(isValid);
     };
 
     return (
@@ -230,7 +250,12 @@ const Invite = () => {
                         className="fulllWidth"
                         placeholder="Email address"
                         onChange={handleEmail}
+                        onBlur={handleOnBlur}
                         value={emails}
+                    />
+                    <FormValidationErrorMessage
+                        condition={!isValidEmail}
+                        errorMessage="Enter valid email addresses, separated by commas"
                     />
                     <label>Message</label>
                     <TextArea
@@ -238,11 +263,15 @@ const Invite = () => {
                         onChange={handleMessage}
                         value={message}
                     />
+                    <FormValidationErrorMessage
+                        condition={!validMessage}
+                        errorMessage="maximum 300 characters can enter"
+                    />
                     <div className="email-group-members">
                         <Button
                             className="blue-btn-rounded-def Invitagebtn"
                             onClick={sendInvite}
-                            disabled={_isEmpty(emails) || _isEmpty(message) || showLoader}
+                            disabled={_isEmpty(emails) || _isEmpty(message) || showLoader || !isValidEmail || !validMessage}
                             loading={showLoader}
                         >
                         Send invite

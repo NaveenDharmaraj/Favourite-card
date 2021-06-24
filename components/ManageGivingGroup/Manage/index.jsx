@@ -35,6 +35,8 @@ const Manage = () => {
     const groupDetails = useSelector((state) => state.group.groupDetails);
     const memberCount = useSelector((state) => state.createGivingGroup.groupMemberCount);
     const membersData = useSelector((state) => state.createGivingGroup.groupMemberRoles);
+    const invitesCount = useSelector((state) => state.createGivingGroup.groupPendingInvitesCount);
+    const invitesPageCount = useSelector((state) => state.createGivingGroup.groupPendingInvitesPageCount);
     const pendingPlaceholderStatus = useSelector((state) => state.createGivingGroup.pendingPlaceholderStatus);
     const groupMemberPlaceholderStatus = useSelector((state) => state.createGivingGroup.groupMemberPlaceholderStatus);
     const groupPendingInvites = useSelector((state) => state.createGivingGroup.groupPendingInvites);
@@ -53,6 +55,10 @@ const Manage = () => {
         pendingList,
         setpendingList,
     ] = useState([]);
+    const [
+        currentInviteActivePage,
+        setcurrentInviteActivePage,
+    ] = useState(1);
     let isSingleAdmin = (memberCount === 1);
     let adminCount = 0;
 
@@ -124,6 +130,11 @@ const Manage = () => {
         }
     };
 
+    const onInvitePageChanged = (event, data) => {
+        setcurrentInviteActivePage(data.activePage);
+        dispatch(getPendingInvites(groupDetails.id, data.activePage));
+    };
+
     const updateSearch = (event) => {
         setsearchText(event.target.value);
     };
@@ -186,11 +197,26 @@ const Manage = () => {
                     </Grid>
                 )
                 : (
-                    <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
-                        <Table.Body>
-                            {pendingList}
-                        </Table.Body>
-                    </Table>
+                    <Fragment>
+                        <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
+                            <Table.Body>
+                                {pendingList}
+                            </Table.Body>
+                        </Table>
+                        <div className="paginationWraper group_pagination">
+                            <div className="db-pagination">
+                                {
+                                    !_isEmpty(groupPendingInvites) && invitesPageCount > 1 && (
+                                        <Pagination
+                                            activePage={currentInviteActivePage}
+                                            totalPages={invitesPageCount}
+                                            onPageChanged={onInvitePageChanged}
+                                        />
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </Fragment>
                 )}
             {!_isEmpty(pendingList)
             && (
@@ -201,7 +227,7 @@ const Manage = () => {
                 </div>
             )}
             <div className="memberswapper">
-                {(memberCount)
+                {(memberCount > 1)
                 && (
                     <div className="membersadmin">
                         <p>

@@ -300,6 +300,13 @@ const CreateGivingGroupBasic = ({
                                                 Group name should have atleast one alphabet
                                             </p>
                                         )}
+                                        {!validity.hasValidLength
+                                        && (
+                                            <p className="error-message">
+                                                <Icon name="exclamation circle" />
+                                                Group name should not exceed 211 characters
+                                            </p>
+                                        )}
                                     </div>
                                     <Form.Group widths='equal'>
                                         <Form.Field
@@ -400,7 +407,7 @@ const CreateGivingGroupBasic = ({
                                             <div className={`buttonsWrap ${fromCreate ? '' : 'buttons_space'}`}>
                                                 <Button
                                                     className="blue-btn-rounded-def"
-                                                    disabled={disableContinue || !validity.doesNameExist || !validity.isNotEmpty || !validity.hasAlphabet}
+                                                    disabled={disableContinue || !validity.doesNameExist || !validity.isNotEmpty || !validity.hasAlphabet || !validity.hasValidLength}
                                                     loading={showLoader}
                                                     onClick={
                                                         (event, data) => (

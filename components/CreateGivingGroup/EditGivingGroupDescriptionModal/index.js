@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import _isEmpty from 'lodash/isEmpty';
 import { Button, Card, Form, Icon, Modal, TextArea, Segment, Header } from "semantic-ui-react";
 
 import { editGivingGroupApiCall } from "../../../actions/createGivingGroup";
@@ -17,10 +18,12 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
     const [editDescription, setEditDescription] = useState(short);
     const [disableSave, setDisableSave] = useState(true)
     const [doesDescriptionPresent, setDoesDescriptionPresent] = useState(true);
+    const [isWhiteSpace, setisWhiteSpace] = useState(true);
     const handleReset = () => {
         setShowModal(false);
         setDisableSave(true);
         setDoesDescriptionPresent(true);
+        setEditDescription(short);
     }
     const handleSave = () => {
         setDisableSave(true)
@@ -41,6 +44,24 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
             .catch(() => {
                 //handle error
             });
+    };
+
+    const handleOnBlur = (event) => {
+        let {
+            value,
+        } = event.target;
+        let modofiedValue = '';
+        let isValid = true;
+        if (value) {
+            modofiedValue = value.trim();
+        }
+        if (!_isEmpty(value)) {
+            isValid = !(modofiedValue.length === 0);
+            setDoesDescriptionPresent(true);
+            setisWhiteSpace(isValid);
+        } else {
+            setDoesDescriptionPresent(false);
+        }
     };
 
     return (
@@ -72,22 +93,31 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
                                 setDoesDescriptionPresent(true)
                                 setEditDescription(event.target.value)
                             }}
-                            onBlur={(event) => { event.target.value ? setDoesDescriptionPresent(true) : setDoesDescriptionPresent(false) }}
+                            onBlur={handleOnBlur}
                             name="short"
                             error={!doesDescriptionPresent}
                             maxLength={aboutDescriptionLimit}
                         />
-                        {!doesDescriptionPresent && <div className='fieldInfoWrap'>
-                            <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
-                            <div class="field-info">{editDescription.length} {formatMessage('ofText')} 300</div>
+                        <div className='fieldInfoWrap'>
+                            {!doesDescriptionPresent
+                            && (
+                                <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
+                            )}
+                            {!isWhiteSpace
+                                && (
+                                    <>
+                                            <Icon name="exclamation circle" />
+                                            This field should not be empty space
+                                    </>
+                                )}
+                            <div class="field-info">{`${editDescription.length}/300`}</div>
                         </div>
-                        }
                     </div>
                     <div className='buttonsWrap'>
                         <Button
                             className='blue-btn-rounded-def'
                             onClick={() => handleSave()}
-                            disabled={disableSave || !doesDescriptionPresent}
+                            disabled={disableSave || !doesDescriptionPresent || !isWhiteSpace}
                         >
                             Save
                         </Button>
