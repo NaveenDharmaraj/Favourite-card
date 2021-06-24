@@ -251,7 +251,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                     </div>
                                 </div>
                             }
-                            <div className='createnewSec'>
+                            <div className="createnewSec bottom_space">
                                 <Header className='sectionHeader'>{formatMessage('createGivingGroupPicsVideo.uploadVideo')}
                                     <span className='optional'>&nbsp;{formatMessage('optional')}</span>
                                 </Header>

@@ -780,7 +780,8 @@ class ReloadAddAmount extends React.Component {
             let convertedPolicyPeriod = formatMessage('policyPeriodYear');
             const currentDate = new Date();
             let donationMonth = currentDate.getFullYear();
-            if (!_.isEmpty(this.props.donationMatchData) && !formData.donationMatch.value) {
+            if (!_.isEmpty(this.props.donationMatchData) && formData.donationMatch.value === null) {
+
                 const [
                     defaultMatch,
                 ] = populateDonationMatch(donationMatchData, formatMessage, language);
@@ -1019,7 +1020,7 @@ class ReloadAddAmount extends React.Component {
         if (currentModalStep === 1) {
             modalContent = (
                 <>
-                    <Form onSubmit={this.handleReloadSubmit}>
+                    <Form>
                         <label htmlFor="donationAmount">
                             {formatMessage('giveCommon:amountLabel')}
                         </label>

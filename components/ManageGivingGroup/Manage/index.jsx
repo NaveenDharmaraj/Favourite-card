@@ -167,7 +167,7 @@ const Manage = () => {
                     />
                     <div className="search-btn campaignSearch">
                         {(!_isEmpty(searchText) && searchText.length >= 1)
-                            && <Icon name="close" onClick={handleClearSearch} />
+                            && <Icon name="close_icons_campaignSearch" onClick={handleClearSearch} />
                         }
                         <a>
                             <Icon

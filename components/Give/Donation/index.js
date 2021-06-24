@@ -995,7 +995,7 @@ class Donation extends React.Component {
                                             flowType={type} />
                                     </div>
                                     <div className="flowFirst">
-                                        <Form onSubmit={this.handleSubmit}>
+                                        <Form>
                                             <Grid>
                                                 <Grid.Row>
                                                     <Grid.Column mobile={16} tablet={12} computer={10}>
@@ -1142,7 +1142,8 @@ class Donation extends React.Component {
                                                             content={formatMessage('giveCommon:reviewButton')}
                                                             disabled={disableButton}
                                                             // fluid={isMobile}
-                                                            type="submit"
+                                                            type="button"
+                                                            onClick={this.handleSubmit}
                                                         />
                                                     </Grid.Column>
                                                 </Grid.Row>
