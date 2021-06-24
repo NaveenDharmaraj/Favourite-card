@@ -80,8 +80,14 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
                     if (fromEdit) {
                         const galleryImages = [];
                         if (result.data.attributes.galleryImagesList) {
-                            result.data.attributes.galleryImagesList.map(({ display }) => {
-                                galleryImages.push(display);
+                            result.data.attributes.galleryImagesList.map(({
+                                display, assetId,
+                            }) => {
+                                const imgObj = {
+                                    assetId,
+                                    display,
+                                };
+                                galleryImages.push(imgObj);
                             });
                         }
                         const groupDescriptions = [];

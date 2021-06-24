@@ -113,6 +113,12 @@ const createGivingGroup = (state = {}, action) => {
                 groupFriendListLoader: action.payload.showplaceholder,
             };
             break;
+        case actionTypes.SHOW_GROUP_GALLERY_LOADER:
+            newState = {
+                ...state,
+                groupGalleryLoader: action.payload.showloader,
+            };
+            break;
         default:
             break;
     }

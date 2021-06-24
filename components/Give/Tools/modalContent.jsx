@@ -6,6 +6,7 @@ import {
     Icon,
     Input,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
@@ -18,6 +19,7 @@ function ModalContent(props) {
         currentYear,
         showDollarIcon,
         showLabel,
+        placeholder,
     } = props;
     return (
         <Form>
@@ -31,7 +33,7 @@ function ModalContent(props) {
                     error={!validity.isValidGiveAmount}
                     onChange={handleInputChange}
                     onBlur={handleInputOnBlurGivingGoal}
-                    placeholder="Amount"
+                    placeholder={!_isEmpty(placeholder) ? placeholder : 'Amount'}
                     fluid
                     icon={showDollarIcon && (
                         <Icon

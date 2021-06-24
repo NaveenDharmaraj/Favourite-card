@@ -26,6 +26,7 @@ export const actionTypes = {
     GET_GROUP_MESSAGE_HISTORY: 'GET_GROUP_MESSAGE_HISTORY',
     SHOW_GROUP_MESSAGE_HISTORY_LOADER: 'SHOW_GROUP_MESSAGE_HISTORY_LOADER',
     SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER: 'SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER',
+    SHOW_GROUP_GALLERY_LOADER: 'SHOW_GROUP_GALLERY_LOADER',
 };
 
 const getPaginatedCitiesCalls = (pageNumber = 1, pageSize = 50, value = '', dispatch) => {
@@ -246,6 +247,13 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '', message
         message: 'Please try again',
         type: 'error',
     };
+    const loaderfsa = {
+        payload: {
+            showloader: true,
+        },
+        type: actionTypes.SHOW_GROUP_GALLERY_LOADER,
+    };
+    dispatch(loaderfsa);
     if (!_isEmpty(messageText)) {
         toastMessageProps.message = messageText;
     }
@@ -264,8 +272,15 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '', message
             const editGivingGroupObjResponse = result.data;
             const galleryImages = [];
             if (editGivingGroupObjResponse.attributes.galleryImagesList) {
-                editGivingGroupObjResponse.attributes.galleryImagesList.map(({ display }) => {
-                    galleryImages.push(display)
+                editGivingGroupObjResponse.attributes.galleryImagesList.map(({
+                    assetId,
+                    display,
+                }) => {
+                    const imgObj = {
+                        assetId,
+                        display,
+                    };
+                    galleryImages.push(imgObj);
                 });
             }
             const groupDescriptions = [];
@@ -310,6 +325,9 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '', message
                 },
                 type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
             });
+        }).finally(() => {
+            loaderfsa.payload.showloader = false;
+            dispatch(loaderfsa);
         });
     return EditGivingGroupApiCallPromise;
 };
@@ -700,4 +718,38 @@ export const searchFriendList = (groupId, searchStr, pageNumber = 1) => (dispatc
             dispatch(fsa);
         }
     }).finally();
+};
+
+export const removeImage = (assetId, editObj) => (dispatch) => {
+    const toastMessageProps = {
+        message: 'Changes saved.',
+        type: 'success',
+    };
+    const loaderfsa = {
+        payload: {
+            showloader: true,
+        },
+        type: actionTypes.SHOW_GROUP_GALLERY_LOADER,
+    };
+    dispatch(loaderfsa);
+    return coreApi.delete(`/groups/${assetId}/delete_gallery_images`, {
+        params: {
+            dispatch,
+            group_id: editObj.id,
+            uxCritical: true,
+        },
+    }).then(() => {
+        dispatch(upadateEditGivingGroupObj(editObj));
+        dispatch({
+            payload: {
+                errors: [
+                    toastMessageProps,
+                ],
+            },
+            type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+        });
+    }).finally(() => {
+        loaderfsa.payload.showloader = false;
+        dispatch(loaderfsa);
+    });
 };

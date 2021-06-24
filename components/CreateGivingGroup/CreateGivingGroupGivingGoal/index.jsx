@@ -450,7 +450,17 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                             && setShowCharityDropdown(true);
                                                     }}
                                                     onClose={() => { setShowCharityDropdown(false); }}
-                                                />
+                                                >
+                                                    {/* <Icon
+                                                        name="close"
+                                                        // onClick={handleClearSearch}
+                                                    />
+                                                    <Icon
+                                                        color="blue"
+                                                        name="search"
+                                                        size="large"
+                                                    /> */}
+                                                </Form.Field>
                                             )}
                                             <div className="charityWrap">
                                                 {!showLoader
