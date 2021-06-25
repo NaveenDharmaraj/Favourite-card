@@ -26,7 +26,7 @@ const DownloadTransaction = () => {
                         disabled={!_isEmpty(groupDetails) && groupDetails.attributes.transactionsCount}
                         position="bottom center"
                         inverted
-                        content="You don’t have transaction data to download."
+                        content="There’s no transaction data to download yet."
                         trigger={
                             (
                                 <span>
