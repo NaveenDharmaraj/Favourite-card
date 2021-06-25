@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import { Button, Card, Form, Icon, Modal, TextArea, Segment, Header } from "semantic-ui-react";
 
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import { editGivingGroupApiCall } from "../../../actions/createGivingGroup";
 import { aboutDescriptionLimit, intializeCreateGivingGroup } from "../../../helpers/createGrouputils";
 
@@ -98,18 +99,15 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
                             error={!doesDescriptionPresent}
                             maxLength={aboutDescriptionLimit}
                         />
+                        <FormValidationErrorMessage
+                            condition={!doesDescriptionPresent}
+                            errorMessage="The field is required"
+                        />
+                        <FormValidationErrorMessage
+                            condition={!isWhiteSpace}
+                            errorMessage="This field should not be empty space"
+                        />
                         <div className='fieldInfoWrap'>
-                            {!doesDescriptionPresent
-                            && (
-                                <p className="error-message"><Icon name="exclamation circle" />The field is required</p>
-                            )}
-                            {!isWhiteSpace
-                                && (
-                                    <>
-                                            <Icon name="exclamation circle" />
-                                            This field should not be empty space
-                                    </>
-                                )}
                             <div class="field-info">{`${editDescription.length}/300`}</div>
                         </div>
                     </div>

@@ -420,10 +420,10 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                         </p>
                                         {(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5)
                                         && (
-                                            <Fragment>
+                                            <div className="manage_charities_max">
                                                 <p>Groups can support up to 5 charities at a time. </p>
                                                 <p>To add another charity, remove one of the charities listed below.</p>
-                                            </Fragment>
+                                            </div>
                                         )}
                                         <div className="searchBox charitysearch">
                                             {(_isEmpty(beneficiaryItems) || (!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5))

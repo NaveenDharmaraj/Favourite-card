@@ -16,13 +16,15 @@ const EditGivingGoal = ({
 }) => {
     return (
         <Fragment>
-       {!fromCreate
-        && (
-            <p>Making changes to your giving goal will not affect the money raised so far.</p>
-        )}
-        <div className='givingGoalForm'>
+        <div className={`givingGoalForm ${!fromCreate && 'edit_goal_modal'}`}>
             <div className="field">
                 <label>{formatMessage('createGivingGroupGivingGoal.givingGoalAmount')}</label>
+                {!fromCreate
+                    && (
+                        <p className='label-info'>
+                            Editing changes to your giving goal will not affect the total money raised so far.
+                        </p>
+                    )}
                 <ModalContent
                     showDollarIcon={true}
                     showLabel={false}

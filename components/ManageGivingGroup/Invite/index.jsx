@@ -192,7 +192,7 @@ const Invite = () => {
                         />
                         <div className="search-btn campaignSearch">
                             {(!_isEmpty(searchStr) && searchStr.length >= 1)
-                                && <Icon name="close" onClick={handleClearSearch} />
+                                && <Icon name="close_icons_campaignSearch invite_search" onClick={handleClearSearch} />
                             }
                             <a>
                                 <Icon
@@ -246,27 +246,31 @@ const Invite = () => {
                 <p className="InvitepeopleText">Send an invitation to friends, family, or anyone who might be interested in joining your Giving Group. You can also include a personal note with your invitation.</p>
                 <label>Enter as many email addresses as you like, separated by comma</label>
                 <Form>
-                    <Input
-                        className="fulllWidth"
-                        placeholder="Email address"
-                        onChange={handleEmail}
-                        onBlur={handleOnBlur}
-                        value={emails}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!isValidEmail}
-                        errorMessage="Enter valid email addresses, separated by commas"
-                    />
+                    <div className="group_email_invite">
+                        <Input
+                            className="fulllWidth"
+                            placeholder="Email address"
+                            onChange={handleEmail}
+                            onBlur={handleOnBlur}
+                            value={emails}
+                        />
+                        <FormValidationErrorMessage
+                            condition={!isValidEmail}
+                            errorMessage="Enter valid email addresses, separated by commas"
+                        />
+                    </div>
                     <label>Message</label>
-                    <TextArea
-                        placeholder="Include a personal message in your invitation."
-                        onChange={handleMessage}
-                        value={message}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!validMessage}
-                        errorMessage="maximum 300 characters can enter"
-                    />
+                    <div className="group_invite_message">
+                        <TextArea
+                            placeholder="Include a personal message in your invitation."
+                            onChange={handleMessage}
+                            value={message}
+                        />
+                        <FormValidationErrorMessage
+                            condition={!validMessage}
+                            errorMessage="Maximum 300 characters can enter"
+                        />
+                    </div>
                     <div className="email-group-members">
                         <Button
                             className="blue-btn-rounded-def Invitagebtn"

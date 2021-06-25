@@ -98,6 +98,7 @@ const GivingGoal = ({
                     modalFooterCancel={'Cancel'}
                     showModal={showEditModal}
                     showLoader={createGivingButtonLoader}
+                    hasModified={false}
                 /> :
                 <div className='basicsettings'>
                     <Header className='titleHeader'>
@@ -127,7 +128,7 @@ const GivingGoal = ({
                                                         <p>You can set a new goal by selecting 'Edit' to add a new goal amount or extend its end date.</p>
                                                     </>
                                                     :
-                                                    <p>Your group has set a goal to raise ${formattedfundraisingGoal} by {endDate}.</p>
+                                                    <p>Your group has set a goal to raise {formattedfundraisingGoal} by {endDate}.</p>
                                                 }
                                             </Fragment>
                                         }

@@ -3,6 +3,8 @@ import { Button, Form, Icon, Input, Modal, TextArea } from "semantic-ui-react";
 import { addModalDescriptionLimit, initializeAddSectionModalObject, intializeValidity, ValidateCreateGivingGroup } from "../../../helpers/createGrouputils";
 import _isEmpty from 'lodash/isEmpty';
 
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+
 const CreateGivingGroupAddSectionModal = ({
     showModal,
     handleParentModalClick,
@@ -89,12 +91,14 @@ const CreateGivingGroupAddSectionModal = ({
                             onBlur={handleOnBlur}
                             error={!validity.doesNameExist}
                         />
-                        {!validity.doesNameExist &&
-                            <p className="error-message">
-                                <Icon name="exclamation circle" />
-                             The field is required
-                        </p>
-                        }
+                        <FormValidationErrorMessage
+                            condition={!validity.hasValidLength}
+                            errorMessage='Group name should not exceed 300 characters'
+                        />
+                        <FormValidationErrorMessage
+                            condition={!validity.doesNameExist}
+                            errorMessage='The field is required'
+                        />
                     </div>
                     <div className='requiredfield field'>
                         <label>{formatMessage('createGivingGroupAbout.addSectionModalSectionDescription')}</label>
@@ -107,17 +111,11 @@ const CreateGivingGroupAddSectionModal = ({
                             error={!validity.doesDescriptionNotExist}
                             maxLength={addModalDescriptionLimit}
                         />
+                        <FormValidationErrorMessage
+                            condition={!validity.doesDescriptionNotExist}
+                            errorMessage='The field is required'
+                        />
                         <div className='fieldInfoWrap'>
-                            <p className="error-message">
-                                {!validity.doesDescriptionNotExist &&
-                                    (
-                                        <>
-                                            <Icon name="exclamation circle" />
-                                            The field is required
-                                        </>
-                                    )
-                                }
-                            </p>
                             <div class="field-info">{addModalObj.description.length}/10,000</div>
                         </div>
                     </div>
@@ -126,6 +124,7 @@ const CreateGivingGroupAddSectionModal = ({
                             className='blue-btn-rounded-def'
                             disabled={
                                 disableContinue || !validity.doesNameExist || !validity.doesDescriptionNotExist
+                                || !validity.hasValidLength
                                 || (addModalObj.purpose !== '' && addModalObj.description === '')
                                 || (addModalObj.purpose === '' && addModalObj.description !== '')
                             }

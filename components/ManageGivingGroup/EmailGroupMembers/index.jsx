@@ -19,6 +19,7 @@ import {
     useSelector,
 } from 'react-redux';
 
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import {
     formatDateForGivingTools,
@@ -127,10 +128,10 @@ const EmailGroupMembers = () => {
                         value={emailMessage}
                         onChange={updateMessage}
                     />
-                    {limitError
-                    && (
-                        <p>maximum 3000 characters can enter</p>
-                    )}
+                    <FormValidationErrorMessage
+                        condition={limitError}
+                        errorMessage="Maximum 3000 characters can enter"
+                    />
                     <div className="email-group-members">
                         <Button
                             className="blue-btn-rounded-def emailmessagebtn"

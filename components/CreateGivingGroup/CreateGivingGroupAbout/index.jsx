@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import { aboutDescriptionLimit, createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, initializeAddSectionModalObject, intializeCreateGivingGroup } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import CreateGivingGroupAddSectionModal from '../CreateGivingGroupAddSectionModal';
 import { editGivingGroupApiCall, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
 import { withTranslation } from '../../../i18n';
@@ -273,25 +274,15 @@ class CreateGivingGroupAbout extends React.Component {
                                                 error={!doesDescriptionPresent}
                                                 maxLength={aboutDescriptionLimit}
                                             />
+                                            <FormValidationErrorMessage
+                                                condition={!doesDescriptionPresent}
+                                                errorMessage="The field is required"
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition={!isWhiteSpace}
+                                                errorMessage="This field should not be empty space"
+                                            />
                                             <div className='fieldInfoWrap'>
-                                                <p className="error-message">
-                                                    {!doesDescriptionPresent
-                                                        &&
-                                                        (
-                                                            <>
-                                                                <Icon name="exclamation circle" />
-                                                            The field is required
-                                                        </>
-                                                        )
-                                                    }
-                                                    {!isWhiteSpace
-                                                    && (
-                                                        <>
-                                                                <Icon name="exclamation circle" />
-                                                                This field should not be empty space
-                                                        </>
-                                                    )}
-                                                </p>
                                                 <div class="field-info">{short.length} {formatMessage('ofText')} 300</div>
                                             </div>
                                         </div>)
