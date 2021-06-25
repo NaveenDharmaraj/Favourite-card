@@ -317,27 +317,30 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                     <Icon className='upload' />
                                     {formatMessage('createGivingGroupPicsVideo.photoGalleryUploadButton')}
                                 </Button>
-                                {groupGalleryLoader
-                                ? (
-                                    <Dimmer className="charity_support_loader" active inverted>
-                                        <Loader />
-                                    </Dimmer>
-                                ) : (
-                                        !_isEmpty(newGalleryImages) && newGalleryImages.length > 0 && newGalleryImages[0].src
+                                {(!_isEmpty(newGalleryImages) && newGalleryImages.length > 0 && newGalleryImages[0].src)
                                         && (
-                                            <Fragment>
-                                            <ImageGallery
-                                                imagesArray={newGalleryImages}
-                                                enableImageSelection={false}
-                                                rowHeight={80}
-                                                renderSingleImage={false}
-                                            />
-                                            {(newGalleryImages.length < 10)
-                                            && (
-                                                <p> {`You can still add ${10 - newGalleryImages.length} more ${newGalleryImages.length === 1 ? 'photo.' : 'photos.'}`}</p>
-                                            )}
-                                        </Fragment>
-                                        )
+                                            <div className="manage_group_image_loader">
+                                                {groupGalleryLoader
+                                                ? (
+                                                    <Dimmer className="charity_support_loader" active inverted>
+                                                        <Loader />
+                                                    </Dimmer>
+                                                ) :
+                                                (
+                                                    <Fragment>
+                                                        <ImageGallery
+                                                            imagesArray={newGalleryImages}
+                                                            enableImageSelection={false}
+                                                            rowHeight={80}
+                                                            renderSingleImage={false}
+                                                        />
+                                                        {newGalleryImages.length < 10
+                                                            && (
+                                                                <p> {`You can still add ${10 - newGalleryImages.length} more ${newGalleryImages.length === 1 ? 'photo.' : 'photos.'}`}</p>
+                                                            )}
+                                                    </Fragment>
+                                                )}
+                                                </div>
                                 )}
                             </div>
                         </Form>

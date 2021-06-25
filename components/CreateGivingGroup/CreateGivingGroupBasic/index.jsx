@@ -352,7 +352,7 @@ const CreateGivingGroupBasic = ({
                                             onBlur={() => setShowCitiesDropdown(false)}
                                         />
                                     </Form.Group>
-                                    <div className='field'>
+                                    <div className='field manage_group_privacy_setting'>
                                         <label>{formatMessage('createGivingGroupBasic.whoCanSeeHeader')}</label>
                                         <Dropdown
                                             inline
