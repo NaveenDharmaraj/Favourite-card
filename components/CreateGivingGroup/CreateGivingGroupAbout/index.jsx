@@ -127,6 +127,7 @@ class CreateGivingGroupAbout extends React.Component {
             groupId,
         } = this.props;
         const tempArr = [];
+        const tempAboutArr = [];
         if (!_isEmpty(addSectionObject)) {
             let index;
             groupPurposeDescriptions.find((item, i) => {
@@ -136,13 +137,13 @@ class CreateGivingGroupAbout extends React.Component {
                 }
             });
             Number(index) >= 0 ? groupPurposeDescriptions.splice(index, 1, addSectionObject) :
-                groupPurposeDescriptions.push(
+            tempAboutArr.push(
                     { ...addSectionObject, id: `${addSectionObject.purpose}${groupPurposeDescriptions.length}` }
                 );
             this.setState({
                 createGivingGroupObjectState: {
                     ...this.state.createGivingGroupObjectState,
-                    groupPurposeDescriptions: [...groupPurposeDescriptions],
+                    groupPurposeDescriptions: [...groupPurposeDescriptions, ...tempAboutArr],
                 },
                 showModal: modalState,
                 isEdit: false,
