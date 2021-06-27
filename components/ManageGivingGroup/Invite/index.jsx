@@ -16,9 +16,12 @@ import {
     Input,
     TextArea,
     Grid,
+    Image,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
+import { Link } from '../../../routes';
+import noDataImg from '../../../static/images/dashboard_nodata_illustration.png';
 import Pagination from '../../shared/Pagination';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
@@ -38,6 +41,7 @@ const Invite = () => {
     const friendsListPageCount = useSelector((state) => state.createGivingGroup.friendsListPageCount);
     const friendListLoader = useSelector((state) => state.createGivingGroup.groupFriendListLoader || false);
     const deepLinkUrl = useSelector((state) => state.profile.deepLinkUrl);
+    const inviteNodata = useSelector((state) => state.createGivingGroup.manageGroupFriendNoData);
     const dispatch = useDispatch();
     const [
         emails,
@@ -74,7 +78,7 @@ const Invite = () => {
 
     useEffect(() => {
         const url = `deeplink?profileType=groupprofile&profileId=${groupDetails.id}&sourceId=${currentUser.id}`;
-        dispatch(getMyfriendsList(groupDetails.id));
+        dispatch(getMyfriendsList(groupDetails.id, 1, true));
         generateDeepLink(url, dispatch);
     }, []);
 
@@ -182,63 +186,84 @@ const Invite = () => {
             </Header>
             <div className="Invite">
                 <Header as="h3">Invite people you're friends with on Charitable Impact to join your Giving Group.</Header>
-                <div className="search-banner campaignSearchBanner InviteSearch">
-                    <div className="searchbox">
-                        <Input
-                            fluid
-                            placeholder="Search friends"
-                            onChange={updateSearch}
-                            value={searchStr}
-                        />
-                        <div className="search-btn campaignSearch">
-                            {(!_isEmpty(searchStr) && searchStr.length >= 1)
-                                && <Icon name="close_icons_campaignSearch invite_search" onClick={handleClearSearch} />
-                            }
-                            <a>
-                                <Icon
-                                    name="search"
-                                    onClick={handleSearch}
-                                />
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                {!friendListLoader
+                {!inviteNodata
                     ? (
                         <Fragment>
-                            <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
-                                <Table.Body>
-                                    {!_isEmpty(inviteData)
-                                        ? (
-                                            inviteData
-                                        ) : (
-                                            <p> No friends found</p>
-                                        )}
-                                </Table.Body>
-                            </Table>
-                            <div className="paginationWraper group_pagination">
-                                <div className="db-pagination">
-                                    {
-                                        !_isEmpty(inviteData) && friendsListPageCount > 1 && (
-                                            <Pagination
-                                                activePage={currentActivePage}
-                                                totalPages={friendsListPageCount}
-                                                onPageChanged={onPageChanged}
+                            <div className="search-banner campaignSearchBanner InviteSearch">
+                                <div className="searchbox">
+                                    <Input
+                                        fluid
+                                        placeholder="Search friends"
+                                        onChange={updateSearch}
+                                        value={searchStr}
+                                    />
+                                    <div className="search-btn campaignSearch">
+                                        {(!_isEmpty(searchStr) && searchStr.length >= 1)
+                                && <Icon name="close_icons_campaignSearch invite_search" onClick={handleClearSearch} />
+                                        }
+                                        <a>
+                                            <Icon
+                                                name="search"
+                                                onClick={handleSearch}
                                             />
-                                        )
-                                    }
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
+                            {!friendListLoader
+                                ? (
+                                    <Fragment>
+                                        <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
+                                            <Table.Body>
+                                                {!_isEmpty(inviteData)
+                                                    ? (
+                                                        inviteData
+                                                    ) : (
+                                                        <p> No friends found</p>
+                                                    )}
+                                            </Table.Body>
+                                        </Table>
+                                        <div className="paginationWraper group_pagination">
+                                            <div className="db-pagination">
+                                                {
+                                                    !_isEmpty(inviteData) && friendsListPageCount > 1 && (
+                                                        <Pagination
+                                                            activePage={currentActivePage}
+                                                            totalPages={friendsListPageCount}
+                                                            onPageChanged={onPageChanged}
+                                                        />
+                                                    )
+                                                }
+                                            </div>
+                                        </div>
+                                    </Fragment>
+                                )
+                                : (
+                                    <Grid className="no-margin">
+                                        <Grid.Row>
+                                            <Grid.Column width={16}>
+                                                <PlaceholderGrid row={8} column={1} placeholderType="activityList" />
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                    </Grid>
+                                )}
                         </Fragment>
-                    )
-                    : (
-                        <Grid className="no-margin">
-                            <Grid.Row>
-                                <Grid.Column width={16}>
-                                    <PlaceholderGrid row={8} column={1} placeholderType="activityList" />
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
+                    ) : (
+                        <div className="GetDonation mt-2">
+                            <div className="Step1">
+                                <div className="ManageNoData">
+                                    <div className="ManageNoDataLeftImg">
+                                        <Image className="Connect_img" src={noDataImg} />
+                                    </div>
+                                    <div className="ManageNoDataRightText">
+                                        <Header as="h4">Connect with people you know on Charitable Impact.</Header>
+                                        <Link className="lnkChange" route="/user/profile/friends/findFriends">
+                                            <Button className="success-btn-rounded-def">Find friends</Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     )}
             </div>
             <div className="Invitepeople">

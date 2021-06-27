@@ -119,6 +119,18 @@ const createGivingGroup = (state = {}, action) => {
                 groupGalleryLoader: action.payload.showloader,
             };
             break;
+        case actionTypes.MANAGE_GROUP_MEMBERS_INITIAL:
+            newState = {
+                ...state,
+                groupMemberNoData: action.payload.isInitial,
+            };
+            break;
+        case actionTypes.MANAGE_FRIEND_GROUP_INVITE_INITIAL:
+            newState = {
+                ...state,
+                manageGroupFriendNoData: action.payload.isInitial,
+            };
+            break;
         default:
             break;
     }

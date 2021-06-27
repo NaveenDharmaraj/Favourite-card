@@ -27,6 +27,8 @@ export const actionTypes = {
     SHOW_GROUP_MESSAGE_HISTORY_LOADER: 'SHOW_GROUP_MESSAGE_HISTORY_LOADER',
     SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER: 'SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER',
     SHOW_GROUP_GALLERY_LOADER: 'SHOW_GROUP_GALLERY_LOADER',
+    MANAGE_GROUP_MEMBERS_INITIAL: 'MANAGE_GROUP_MEMBERS_INITIAL',
+    MANAGE_FRIEND_GROUP_INVITE_INITIAL: 'MANAGE_FRIEND_GROUP_INVITE_INITIAL'
 };
 
 const getPaginatedCitiesCalls = (pageNumber = 1, pageSize = 50, value = '', dispatch) => {
@@ -352,7 +354,7 @@ export const deleteGroupLogo = (editGivingGroupObj, groupId = '') => (dispatch) 
     });
 };
 
-export const getGroupMembers = (groupId, pageNumber = 1) => (dispatch) => {
+export const getGroupMembers = (groupId, pageNumber = 1, isInitial) => (dispatch) => {
     const fsa = {
         payload: {},
         type: actionTypes.GET_GROUP_MEMBERS_ROLES,
@@ -363,6 +365,11 @@ export const getGroupMembers = (groupId, pageNumber = 1) => (dispatch) => {
         },
         type: actionTypes.SHOW_GROUP_MEMBERS_PLACEHOLDER,
     };
+    const initialPayload = {
+        payload: {},
+        type: actionTypes.MANAGE_GROUP_MEMBERS_INITIAL,
+    };
+    let adminCount = 0;
     dispatch(placeholder);
     return coreApi.get(`/groups/${groupId}/groupUsers`, {
         params: {
@@ -376,6 +383,15 @@ export const getGroupMembers = (groupId, pageNumber = 1) => (dispatch) => {
             if (!_isEmpty(result)) {
                 fsa.payload = result;
                 dispatch(fsa);
+                if (isInitial && !_isEmpty(result.data) && !_isEmpty(result.data.length) <= 2) {
+                    result.data.map((data) => {
+                        if (data.attributes.isGroupAdmin) {
+                            adminCount += 1;
+                        }
+                    });
+                    initialPayload.payload.isInitial = (adminCount === 1);
+                    dispatch(initialPayload);
+                }
             }
         },
     ).finally(() => {
@@ -668,7 +684,7 @@ export const removeGroupMember = (userId, groupId, displayName) => (dispatch) =>
     });
 };
 
-export const getMyfriendsList = (groupId, pageNumber = 1) => (dispatch) => {
+export const getMyfriendsList = (groupId, pageNumber = 1, isInitial) => (dispatch) => {
     const fsa = {
         payload: {},
         type: actionTypes.GET_GROUP_FRIEND_LIST,
@@ -678,6 +694,10 @@ export const getMyfriendsList = (groupId, pageNumber = 1) => (dispatch) => {
             showplaceholder: true,
         },
         type: actionTypes.SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER,
+    };
+    const initialPayload = {
+        payload: {},
+        type: actionTypes.MANAGE_FRIEND_GROUP_INVITE_INITIAL,
     };
     dispatch(placeholderfsa);
     return coreApi.get(`/groups/${groupId}/nonGroupFriends`, {
@@ -691,6 +711,14 @@ export const getMyfriendsList = (groupId, pageNumber = 1) => (dispatch) => {
         if (!_isEmpty(result)) {
             fsa.payload = result;
             dispatch(fsa);
+            if (isInitial) {
+                let status = true;
+                if (!_isEmpty(result.data)) {
+                    status = false;
+                }
+                initialPayload.payload.isInitial = status;
+                dispatch(initialPayload);
+            }
         }
     }).finally(() => {
         placeholderfsa.payload.showplaceholder = false;
