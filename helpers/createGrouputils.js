@@ -32,6 +32,7 @@ export const intializeValidity = {
     isNotEmpty: true,
     hasAlphabet: true,
     hasValidLength: true,
+    isSectionNotEmpty: true,
 };
 
 // initialinzing the flow steps for create giving group
@@ -127,6 +128,7 @@ export const ValidateCreateGivingGroup = (validity, name, value) => {
             break;
         case 'description':
             validity.doesDescriptionNotExist = !_isEmpty(value) ? true : false;
+            validity.isSectionNotEmpty = !(!modofiedValue || modofiedValue.length === 0);
             break;
         case 'givingGoal':
             validity = validateGivingGoal(value, validity);
