@@ -268,7 +268,7 @@ const Invite = () => {
                         />
                         <FormValidationErrorMessage
                             condition={!validMessage}
-                            errorMessage="Maximum 300 characters can enter"
+                            errorMessage="Maximum of 300 characters can be entered"
                         />
                     </div>
                     <div className="email-group-members">
