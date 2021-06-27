@@ -155,6 +155,12 @@ class CreateGivingGroupAbout extends React.Component {
                     tempObj.purpose = desc.purpose;
                     tempArr.push(tempObj);
                 });
+                if (!fromCreate) {
+                    let tempObj = {};
+                    tempObj.description = addSectionObject.description;
+                    tempObj.purpose = addSectionObject.purpose;
+                    tempArr.push(tempObj);
+                }
             }
             if (!fromCreate) {
                 const editObject = {
