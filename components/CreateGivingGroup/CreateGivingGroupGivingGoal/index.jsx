@@ -9,6 +9,7 @@ import {
     Select,
     Dimmer,
     Loader,
+    Search,
 } from 'semantic-ui-react';
 import {
     PropTypes,
@@ -234,15 +235,14 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     };
     const handleCharityChange = (event, data) => {
         const {
-            options,
-            value,
+            result,
         } = data;
         if (_isEmpty(beneficiaryItems) || (beneficiaryItems && beneficiaryItems.length < 5)) {
-            const newvalue = _find(options, { value }) || {};
+            const newvalue = result;
             const beneficiaryItem = {
                 avatar: newvalue.avatar,
                 id: newvalue.id,
-                name: newvalue.text,
+                name: newvalue.title,
             };
             let uniqueBeneficiaryCharity = [];
             if (beneficiaryItems) {
@@ -250,7 +250,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             } else {
                 uniqueBeneficiaryCharity.push(beneficiaryItem);
             }
-            setShowCharityDropdown(true);
+            setShowCharityDropdown(false);
             setDisableContinueButton(false);
             if (fromCreate) {
                 setCreateGivingGroupObject({
@@ -289,20 +289,24 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     };
     const handleCharitySearchWordChange = (event, data) => {
         const {
-            searchQuery,
-        } = data;
-        if (searchQuery.length >= 2) {
-            const params = { dispatch, searchValue: searchQuery };
-            debounceFunction(params, 300)
-
+            currentTarget: {
+                value,
+            },
+        } = event;
+        if (value.length >= 2) {
+            const params = {
+                dispatch,
+                searchValue: value,
+            };
+            debounceFunction(params, 300);
         }
-        if (searchQuery.length === 0) {
+        if (value.length === 0) {
             dispatch({
                 type: actionTypes.GET_CHARITY_BASED_ON_SERACH_QUERY,
                 payload: [],
             });
         }
-        setCharitySearchQuery(searchQuery);
+        setCharitySearchQuery(value);
     };
 
     const handleRemoveCharity = (selectedId) => {
@@ -357,6 +361,12 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                 fromCreate={fromCreate}
             />
         );
+    };
+
+    const handleResetList = (event) => {
+        if ((event.keyCode || event.which) === 13) {
+            setShowCharityDropdown(false);
+        }
     };
     return (
         <Container>
@@ -438,39 +448,39 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                         <div className="searchBox charitysearch">
                                             {(_isEmpty(beneficiaryItems) || (!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5))
                                             && (
-                                                <Form.Field
-                                                    single
-                                                    control={Select}
-                                                    disabled={(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5) || showLoader}
-                                                    open={showCharityDropdown}
+                                                <Search
+                                                    fluid
                                                     className="searchInput"
-                                                    style={{ minHeight: 'auto' }}
-                                                    id="beneficiaryItems"
-                                                    name="beneficiaryItems"
-                                                    onChange={handleCharityChange}
-                                                    onSearchChange={handleCharitySearchWordChange}
-                                                    options={charitiesQueryBasedOptions}
-                                                    search={(options) => options}
-                                                    selection
-                                                    searchQuery={charitySearchQuery}
                                                     placeholder={formatMessage('createGivingGroupGivingGoal.chairtiesToSupportPlaceholder')}
                                                     loading={charitiesSearchQueryBasedLoader}
-                                                    onClick={() => {
-                                                        charitiesQueryBasedOptions.length > 0
-                                                            && setShowCharityDropdown(true);
-                                                    }}
-                                                    onClose={() => { setShowCharityDropdown(false); }}
-                                                >
-                                                    {/* <Icon
-                                                        name="close"
-                                                        // onClick={handleClearSearch}
-                                                    />
-                                                    <Icon
-                                                        color="blue"
-                                                        name="search"
-                                                        size="large"
-                                                    /> */}
-                                                </Form.Field>
+                                                    minCharacters={4}
+                                                    id="beneficiaryItems"
+                                                    name="beneficiaryItems"
+                                                    onResultSelect={handleCharityChange}
+                                                    onSearchChange={handleCharitySearchWordChange}
+                                                    disabled={(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5) || showLoader}
+                                                    results={charitiesQueryBasedOptions}
+                                                    value={charitySearchQuery}
+                                                    onKeyPress={handleResetList}
+                                                    icon={(
+                                                        <Fragment>
+                                                            <Icon
+                                                                name="close_icons_campaignSearch manage_charity_clear"
+                                                                onClick={() => { setShowCharityDropdown(false); }}
+                                                            />
+                                                            <div className="manage_charity_search">
+                                                                <a>
+                                                                    <Icon
+                                                                        name="search"
+                                                                        onClick={() => {
+                                                                            console.log('MIRAS');
+                                                                        }}
+                                                                    />
+                                                                </a>
+                                                            </div>
+                                                        </Fragment>
+                                                    )}
+                                                />
                                             )}
                                             <div className="charityWrap">
                                                 {!showLoader

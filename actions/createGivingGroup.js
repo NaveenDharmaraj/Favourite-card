@@ -173,10 +173,10 @@ export const getCharityBasedOnSearchQuery = (query = '', pageNumber = '', pageSi
             return {
                 avatar: attributes.avatar,
                 key: attributes.name + attributes.charity_id,
-                text: attributes.name,
+                title: attributes.name,
                 value: attributes.name,
                 id: attributes.charity_id,
-            }
+            };
         });
         dispatch({
             type: actionTypes.GET_CHARITY_BASED_ON_SERACH_QUERY,
