@@ -58,7 +58,7 @@ const EditGivingGoal = ({
                     !validity.isEndDateGreaterThanStartDate &&
                     <p className="error-message">
                         <Icon name="exclamation circle" />
-                        End date should be greater than start date
+                        The goal end date must be after the start date of the giving goal.
                     </p>
                 }
             </div>
