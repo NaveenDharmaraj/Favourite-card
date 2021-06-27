@@ -51,6 +51,13 @@ const CreateGivingGroupBasic = ({
     showMonthly,
     t,
 }) => {
+    const resetValues = {
+        doesNameExist: true,
+        doesDescriptionNotExist: true,
+        isNotEmpty: true,
+        hasAlphabet: true,
+        hasValidLength: true,
+    };
     const formatMessage = t;
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
     const currentActiveStepCompleted = [1];
@@ -122,6 +129,7 @@ const CreateGivingGroupBasic = ({
 
     useEffect(() => {
         // scrollTo(0, 0);
+        setValidity(resetValues);
         _isEmpty(provinceOptions) && dispatch(getProvincesList(1, 50));
         if (city !== '') {
             dispatch({
