@@ -123,6 +123,7 @@ export const ValidateCreateGivingGroup = (validity, name, value) => {
         case 'purpose':
             validity.doesNameExist = !_isEmpty(value) ? true : false;
             validity.hasValidLength = (value.length <= 300);
+            validity.isNotEmpty = !(!modofiedValue || modofiedValue.length === 0);
             break;
         case 'description':
             validity.doesDescriptionNotExist = !_isEmpty(value) ? true : false;

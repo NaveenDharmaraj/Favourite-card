@@ -42,17 +42,18 @@ const CreateGivingGroupAddSectionModal = ({
             name,
             value
         } = data || event.target;
-        setValidity(ValidateCreateGivingGroup(validity, name, value))
+        setValidity(ValidateCreateGivingGroup(validity, name, value));
     };
     const handleOnModalClick = (modalState, buttonClicked = '') => {
         setValidity({
-            doesNameExist: true,
             doesDescriptionNotExist: true,
+            doesNameExist: true,
+            hasValidLength: true,
         });
         setAddModalObj({ purpose: '', description: '' });
         setDisableContinue(true);
         handleParentModalClick(modalState, buttonClicked === 'add' ? addModalObj : {});
-    }
+    };
     return (
         <Modal
             className="chimp-modal addAbout-Modal"
@@ -93,7 +94,7 @@ const CreateGivingGroupAddSectionModal = ({
                         />
                         <FormValidationErrorMessage
                             condition={!validity.hasValidLength}
-                            errorMessage='Group name should not exceed 300 characters'
+                            errorMessage='Field should not exceed 300 characters'
                         />
                         <FormValidationErrorMessage
                             condition={!validity.doesNameExist}
@@ -124,7 +125,7 @@ const CreateGivingGroupAddSectionModal = ({
                             className='blue-btn-rounded-def'
                             disabled={
                                 disableContinue || !validity.doesNameExist || !validity.doesDescriptionNotExist
-                                || !validity.hasValidLength
+                                || !validity.hasValidLength || !validity.isNotEmpty
                                 || (addModalObj.purpose !== '' && addModalObj.description === '')
                                 || (addModalObj.purpose === '' && addModalObj.description !== '')
                             }

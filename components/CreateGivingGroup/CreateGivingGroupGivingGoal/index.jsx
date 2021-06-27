@@ -121,6 +121,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     const handleCreateGroup = () => {
         setDisableContinueButton(true);
         setCreateGivingButtonLoader(true);
+        const tempArr = [];
         if (validationCreateGivingGroup()) {
             if (!fromCreate) {
                 dispatch(editGivingGroupApiCall({
@@ -138,6 +139,15 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                         setCreateGivingButtonLoader(false);
                     });
             } else {
+                if (!_isEmpty(createGivingGroupObject.groupPurposeDescriptions)) {
+                    createGivingGroupObject.groupPurposeDescriptions.map((desc) => {
+                        const tempObj = {};
+                        tempObj.description = desc.description;
+                        tempObj.purpose = desc.purpose;
+                        tempArr.push(tempObj);
+                    });
+                    createGivingGroupObject.groupPurposeDescriptions = tempArr;
+                }
                 dispatch(createGivingGroupApiCall(createGivingGroupObject))
                     .then(({ data }) => {
                         dispatch({

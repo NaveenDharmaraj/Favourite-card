@@ -59,9 +59,18 @@ class CreateGivingGroupAbout extends React.Component {
                     dispatch,
                     groupId,
                 } = this.props;
+                const tempArr = [];
+                if (!_isEmpty(this.state.createGivingGroupObjectState.groupPurposeDescriptions)) {
+                    this.state.createGivingGroupObjectState.groupPurposeDescriptions.map((desc) => {
+                    let tempObj = {};
+                    tempObj.description = desc.description;
+                    tempObj.purpose = desc.purpose;
+                    tempArr.push(tempObj);
+                    });
+                }
                 const editObject = {
                     attributes: {},
-                    groupPurposeDescriptions: this.state.createGivingGroupObjectState.groupPurposeDescriptions,
+                    groupPurposeDescriptions: tempArr,
                 };
                 dispatch(editGivingGroupApiCall(editObject, groupId));
             }
@@ -117,6 +126,7 @@ class CreateGivingGroupAbout extends React.Component {
             fromCreate,
             groupId,
         } = this.props;
+        const tempArr = [];
         if (!_isEmpty(addSectionObject)) {
             let index;
             groupPurposeDescriptions.find((item, i) => {
@@ -137,10 +147,18 @@ class CreateGivingGroupAbout extends React.Component {
                 showModal: modalState,
                 isEdit: false,
             });
+            if (!_isEmpty(groupPurposeDescriptions)) {
+                groupPurposeDescriptions.map((desc) => {
+                    let tempObj = {};
+                    tempObj.description = desc.description;
+                    tempObj.purpose = desc.purpose;
+                    tempArr.push(tempObj);
+                });
+            }
             if (!fromCreate) {
                 const editObject = {
                     attributes: {},
-                    groupPurposeDescriptions: [...groupPurposeDescriptions],
+                    groupPurposeDescriptions: [...tempArr],
                 };
                 dispatch(editGivingGroupApiCall(editObject, groupId))
                     .then(() => {
@@ -179,6 +197,7 @@ class CreateGivingGroupAbout extends React.Component {
             fromCreate,
             groupId,
         } = this.props;
+        const tempArr = [];
         if (!_isEmpty(addSectionObject)) {
             let index;
             groupPurposeDescriptions.find((item, i) => {
@@ -194,10 +213,18 @@ class CreateGivingGroupAbout extends React.Component {
                     groupPurposeDescriptions: [...groupPurposeDescriptions],
                 },
             });
+            if (!_isEmpty(groupPurposeDescriptions)) {
+                groupPurposeDescriptions.map((desc) => {
+                    let tempObj = {};
+                    tempObj.description = desc.description;
+                    tempObj.purpose = desc.purpose;
+                    tempArr.push(tempObj);
+                });
+            }
             if (!fromCreate) {
                 const editObject = {
                     attributes: {},
-                    groupPurposeDescriptions: [...groupPurposeDescriptions],
+                    groupPurposeDescriptions: [...tempArr],
                 };
                 dispatch(editGivingGroupApiCall(editObject, groupId));
             }
