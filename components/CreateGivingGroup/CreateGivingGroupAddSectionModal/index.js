@@ -49,6 +49,8 @@ const CreateGivingGroupAddSectionModal = ({
             doesDescriptionNotExist: true,
             doesNameExist: true,
             hasValidLength: true,
+            isNotEmpty: true,
+            isSectionNotEmpty: true,
         });
         setAddModalObj({ purpose: '', description: '' });
         setDisableContinue(true);
@@ -100,6 +102,10 @@ const CreateGivingGroupAddSectionModal = ({
                             condition={!validity.doesNameExist}
                             errorMessage='The field is required'
                         />
+                        <FormValidationErrorMessage
+                            condition={!validity.isNotEmpty}
+                            errorMessage='The field should not be empty space'
+                        />
                     </div>
                     <div className='requiredfield field'>
                         <label>{formatMessage('createGivingGroupAbout.addSectionModalSectionDescription')}</label>
@@ -115,6 +121,10 @@ const CreateGivingGroupAddSectionModal = ({
                         <FormValidationErrorMessage
                             condition={!validity.doesDescriptionNotExist}
                             errorMessage='The field is required'
+                        />
+                        <FormValidationErrorMessage
+                            condition={!validity.isSectionNotEmpty}
+                            errorMessage='The field should not be empty space'
                         />
                         <div className='fieldInfoWrap'>
                             <div class="field-info">{addModalObj.description.length}/10,000</div>
