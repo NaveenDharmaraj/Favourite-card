@@ -93,6 +93,56 @@
   max-width: 335px;
   width: 100%;
   margin: 40px auto 0;
+  &.charitysearch{
+    .search{
+        &.searchInput{
+            .ui{
+              &.input{
+                width: 100%;
+                .manage_charity_search{
+                  position: absolute;
+                  top: 7px;
+                  right: 5px;
+                  height: 27px;
+                  width: 27px;
+                  padding: 8px;
+                  border-radius: 100%;
+                  background-color: #EEEEEE;
+                  cursor: pointer;
+                  a{
+                    .icon{
+                      right: 7px !important;
+                      position: relative;
+                      color: @link;
+                      cursor: pointer;
+                      font-size: 24px;
+                      font-weight: 400;
+                      margin-right: 0px;
+                      &.search{
+                        &::before{
+                          content: "" !important;
+                          background-image: url("@{img_url}/images/icons/icon-search.svg") !important;
+                          background-repeat: no-repeat !important;
+                          background-size: contain !important;
+                          background-position: center !important;
+                          height: 13px;
+                          width: 13px;
+                          display: block;
+                          margin: auto !important;
+                        }
+                      }
+                    }
+                  }
+                }
+                input{
+                  border-radius: 30px;
+                  padding: 11.1px 15px;
+                }
+              }
+            }
+        }
+    }
+  }
   .field.searchInput{
     margin-bottom: 0 !important;
     .ui{
@@ -855,6 +905,9 @@ body{
     .field-info{
       text-align: right;
       margin-top: 5px;
+      &.manage_description_modal{
+        width: 100%;
+      }
     }
   }
 }
@@ -2302,6 +2355,9 @@ body{
      margin: auto;
      bottom: 0;
      left: 0;
+   }
+   &.manage_charity_clear{
+    right: 12px !important;
    }
  }
 }

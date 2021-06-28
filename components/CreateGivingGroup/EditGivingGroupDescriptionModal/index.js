@@ -108,7 +108,7 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
                             errorMessage="This field should not be empty space"
                         />
                         <div className='fieldInfoWrap'>
-                            <div class="field-info">{`${editDescription.length}/300`}</div>
+                            <div class="field-info manage_description_modal">{`${editDescription.length}/300`}</div>
                         </div>
                     </div>
                     <div className='buttonsWrap'>

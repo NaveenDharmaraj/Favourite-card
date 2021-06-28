@@ -42,17 +42,20 @@ const CreateGivingGroupAddSectionModal = ({
             name,
             value
         } = data || event.target;
-        setValidity(ValidateCreateGivingGroup(validity, name, value))
+        setValidity(ValidateCreateGivingGroup(validity, name, value));
     };
     const handleOnModalClick = (modalState, buttonClicked = '') => {
         setValidity({
-            doesNameExist: true,
             doesDescriptionNotExist: true,
+            doesNameExist: true,
+            hasValidLength: true,
+            isNotEmpty: true,
+            isSectionNotEmpty: true,
         });
         setAddModalObj({ purpose: '', description: '' });
         setDisableContinue(true);
         handleParentModalClick(modalState, buttonClicked === 'add' ? addModalObj : {});
-    }
+    };
     return (
         <Modal
             className="chimp-modal addAbout-Modal"
@@ -93,11 +96,15 @@ const CreateGivingGroupAddSectionModal = ({
                         />
                         <FormValidationErrorMessage
                             condition={!validity.hasValidLength}
-                            errorMessage='Group name should not exceed 300 characters'
+                            errorMessage='Field should not exceed 300 characters'
                         />
                         <FormValidationErrorMessage
                             condition={!validity.doesNameExist}
                             errorMessage='The field is required'
+                        />
+                        <FormValidationErrorMessage
+                            condition={!validity.isNotEmpty}
+                            errorMessage='The field should not be empty space'
                         />
                     </div>
                     <div className='requiredfield field'>
@@ -115,6 +122,10 @@ const CreateGivingGroupAddSectionModal = ({
                             condition={!validity.doesDescriptionNotExist}
                             errorMessage='The field is required'
                         />
+                        <FormValidationErrorMessage
+                            condition={!validity.isSectionNotEmpty}
+                            errorMessage='The field should not be empty space'
+                        />
                         <div className='fieldInfoWrap'>
                             <div class="field-info">{addModalObj.description.length}/10,000</div>
                         </div>
@@ -124,7 +135,7 @@ const CreateGivingGroupAddSectionModal = ({
                             className='blue-btn-rounded-def'
                             disabled={
                                 disableContinue || !validity.doesNameExist || !validity.doesDescriptionNotExist
-                                || !validity.hasValidLength
+                                || !validity.hasValidLength || !validity.isNotEmpty
                                 || (addModalObj.purpose !== '' && addModalObj.description === '')
                                 || (addModalObj.purpose === '' && addModalObj.description !== '')
                             }

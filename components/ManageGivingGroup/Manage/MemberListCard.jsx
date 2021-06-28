@@ -55,6 +55,8 @@ const MemberListCard = (props) => {
     const userTextHeader = isCurrentUser ? 'yourself' : userDisplayName;
     const userText = isCurrentUser ? 'You' : userDisplayName;
     const name = !_isEmpty(userDisplayName) ? userDisplayName : email;
+    const profileImg = !isInvite ? avatar : imageManage;
+    const showImage = isUserBlocked ? imageManage : profileImg;
     const [
         showAdminmodel,
         setshowAdminmodel,
@@ -161,7 +163,7 @@ const MemberListCard = (props) => {
                 <Table.Cell className="ManageGroup">
                     <List verticalAlign="middle">
                         <List.Item>
-                            <Image src={!isInvite ? avatar : imageManage} className="imgManage" />
+                            <Image src={showImage} className="imgManage" />
                             <List.Content>
                                 <List.Header className="ManageAdmin">
                                     {!isInvite
