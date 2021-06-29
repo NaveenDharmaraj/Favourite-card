@@ -131,17 +131,8 @@ const CreateGivingGroupBasic = ({
         // scrollTo(0, 0);
         setValidity(resetValues);
         _isEmpty(provinceOptions) && dispatch(getProvincesList(1, 50));
-        if (city !== '') {
-            dispatch({
-                payload: [
-                    {
-                        key: city,
-                        text: city,
-                        value: city,
-                    },
-                ],
-                type: actionTypes.GET_UNIQUE_CITIES,
-            });
+        if (!_isEmpty(province) && !_isEmpty(city) && _isEmpty(uniqueCities)) {
+            dispatch(getUniqueCities(1, 50, province));
         }
     }, []);
 
@@ -334,7 +325,6 @@ const CreateGivingGroupBasic = ({
                                             value={province}
                                         />
                                         <Form.Field
-                                            open={showCitiesDropdown && !_isEmpty(uniqueCities)}
                                             className={uniqueCitiesLoader ? '' : 'dropdownWithArrowParent'}
                                             name='city'
                                             loading={uniqueCitiesLoader}
@@ -350,6 +340,7 @@ const CreateGivingGroupBasic = ({
                                                 }].concat(uniqueCities),
                                             })}
                                             value={city}
+                                            options={uniqueCities}
                                             onChange={handleOnChange}
                                             selectOnBlur={false}
                                             selectOnNavigation={false}
