@@ -55,7 +55,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
 
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(givingGroupObject);
     const [validity, setValidity] = useState(intializeValidity);
-    const [showCharityDropdown, setShowCharityDropdown] = useState(false);
     const [disableContinueButton, setDisableContinueButton] = useState(disableValue);
     const [createGivingButtonLoader, setCreateGivingButtonLoader] = useState(false);
     const [showLoader, setshowLoader] = useState(false);
@@ -76,7 +75,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         }
         if (!_isEmpty(editGivingGroupStoreFlowObject.beneficiaryItems) && editGivingGroupStoreFlowObject.beneficiaryItems.length >= 5) {
             setCharitySearchQuery('');
-            setShowCharityDropdown(false);
         }
     }, [
         editGivingGroupStoreFlowObject,
@@ -123,13 +121,14 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         setDisableContinueButton(true);
         setCreateGivingButtonLoader(true);
         const tempArr = [];
+        const formattedGoal = parseFloat(fundraisingGoal.replace(/,/g, ''));
         if (validationCreateGivingGroup()) {
             if (!fromCreate) {
                 dispatch(editGivingGroupApiCall({
                     attributes: {
-                        fundraisingCreated,
-                        fundraisingDate,
-                        fundraisingGoal: parseFloat(fundraisingGoal.replace(/,/g, '')),
+                        fundraisingCreated: (formattedGoal !== 0) ? fundraisingCreated : null,
+                        fundraisingDate: (formattedGoal !== 0) ? fundraisingDate : null,
+                        fundraisingGoal: (formattedGoal !== 0) ? formattedGoal : '',
                     },
                 }, groupId))
                     .then(() => {
@@ -148,6 +147,11 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                         tempArr.push(tempObj);
                     });
                     createGivingGroupObject.groupPurposeDescriptions = tempArr;
+                }
+                if (formattedGoal === 0) {
+                    createGivingGroupObject.attributes.fundraisingGoal = '';
+                    createGivingGroupObject.attributes.fundraisingCreated = null;
+                    createGivingGroupObject.attributes.fundraisingDate = null;
                 }
                 dispatch(createGivingGroupApiCall(createGivingGroupObject))
                     .then(({ data }) => {
@@ -250,7 +254,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             } else {
                 uniqueBeneficiaryCharity.push(beneficiaryItem);
             }
-            setShowCharityDropdown(false);
             setDisableContinueButton(false);
             if (fromCreate) {
                 setCreateGivingGroupObject({
@@ -278,13 +281,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             clearTimeout(timeout);
         }
         timeout = setTimeout(() => {
-            dispatch(getCharityBasedOnSearchQuery(searchValue, 1, 50))
-                .then(({ data }) => {
-                    data.length > 0 && setShowCharityDropdown(true);
-                })
-                .catch(() => {
-                    //handle error
-                })
+            dispatch(getCharityBasedOnSearchQuery(searchValue, 1, 50));
         }, delay);
     };
     const handleCharitySearchWordChange = (event, data) => {
@@ -369,12 +366,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                 fromCreate={fromCreate}
             />
         );
-    };
-
-    const handleResetList = (event) => {
-        if ((event.keyCode || event.which) === 13) {
-            setShowCharityDropdown(false);
-        }
     };
 
     const handleClearSearch = () => {
@@ -478,7 +469,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                     disabled={(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5) || showLoader}
                                                     results={charitiesQueryBasedOptions}
                                                     value={charitySearchQuery}
-                                                    onKeyPress={handleResetList}
                                                     icon={(
                                                         <Fragment>
                                                             {/* {!_isEmpty(charitySearchQuery)
