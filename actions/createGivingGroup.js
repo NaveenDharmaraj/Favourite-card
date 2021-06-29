@@ -365,10 +365,6 @@ export const getGroupMembers = (groupId, pageNumber = 1, isInitial) => (dispatch
         },
         type: actionTypes.SHOW_GROUP_MEMBERS_PLACEHOLDER,
     };
-    const initialPayload = {
-        payload: {},
-        type: actionTypes.MANAGE_GROUP_MEMBERS_INITIAL,
-    };
     let adminCount = 0;
     dispatch(placeholder);
     return coreApi.get(`/groups/${groupId}/groupUsers`, {
@@ -384,6 +380,10 @@ export const getGroupMembers = (groupId, pageNumber = 1, isInitial) => (dispatch
                 fsa.payload = result;
                 dispatch(fsa);
                 if (isInitial && !_isEmpty(result.data) && !_isEmpty(result.data.length) <= 2) {
+                    const initialPayload = {
+                        payload: {},
+                        type: actionTypes.MANAGE_GROUP_MEMBERS_INITIAL,
+                    };
                     result.data.map((data) => {
                         if (data.attributes.isGroupAdmin) {
                             adminCount += 1;
@@ -695,10 +695,6 @@ export const getMyfriendsList = (groupId, pageNumber = 1, isInitial) => (dispatc
         },
         type: actionTypes.SHOW_GROUP_FRIENDS_LIST_PLACEHOLDER,
     };
-    const initialPayload = {
-        payload: {},
-        type: actionTypes.MANAGE_FRIEND_GROUP_INVITE_INITIAL,
-    };
     dispatch(placeholderfsa);
     return coreApi.get(`/groups/${groupId}/nonGroupFriends`, {
         params: {
@@ -712,6 +708,10 @@ export const getMyfriendsList = (groupId, pageNumber = 1, isInitial) => (dispatc
             fsa.payload = result;
             dispatch(fsa);
             if (isInitial) {
+                const initialPayload = {
+                    payload: {},
+                    type: actionTypes.MANAGE_FRIEND_GROUP_INVITE_INITIAL,
+                };
                 let status = true;
                 if (!_isEmpty(result.data)) {
                     status = false;
