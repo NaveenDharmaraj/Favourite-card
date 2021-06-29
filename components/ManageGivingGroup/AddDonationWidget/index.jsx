@@ -18,6 +18,7 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     getWidgetCode,
 } from '../../../actions/createGivingGroup';
+import btnlogo from '../../../static/images/bt_donation_icon.svg';
 
 const AddDonationWidget = () => {
     const dispatch = useDispatch();
@@ -62,26 +63,60 @@ const AddDonationWidget = () => {
                     </div>
                     <div className="Donateonline chkMarginBtm checkboxToRadio">
                         <Checkbox
-                            radio
                             onChange={() => handleOnChange('green')}
-                            checked={selectedValue === 'green'}
+                            checked={false}
                         />
                         <Button
                             className="primary btn-width-donate blue-btn-rounded-def"
                         >
-                            Donate online
+                            <div className="add_widget_button">
+                                <div className="manage_charitable_logo">
+                                    <img src={btnlogo} />
+                                </div>
+                                <div className="manage_add_widget_text">
+                                    <h5>Donate online</h5>
+                                    <p>
+                                       Powered by
+                                       &nbsp;
+                                        <span className="charitable_text">CHARITABLE</span>
+&nbsp;
+                                        IMPACT
+                                    </p>
+                                </div>
+                            </div>
                         </Button>
                     </div>
                     <div className="Donateonline chkMarginBtm checkboxToRadio">
                         <Checkbox
-                            radio
                             onChange={() => handleOnChange('blue')}
-                            checked={selectedValue === 'blue'}
+                            checked
                         />
                         <Button
-                            className="btn-width-donate success-btn-rounded-def"
+                            className="primary btn-width-donate blue-btn-rounded-def"
                         >
-                            Donate online
+                            <div className="manage_add_widget_text_center">
+                                <h5>Donate online</h5>
+                                <p>
+                                       Powered by
+                                       &nbsp;
+                                    <span className="charitable_text">CHARITABLE</span>
+&nbsp;
+                                        IMPACT
+                                </p>
+                            </div>
+                        </Button>
+                    </div>
+                    <div className="Donateonline chkMarginBtm checkboxToRadio">
+                        <Checkbox
+                            onChange={() => handleOnChange('green')}
+                            checked
+                        />
+                        <Button
+                            className="primary btn-width-donate blue-btn-rounded-def"
+                        >
+                            <div className="manage_add_widget_text_center">
+                                <h5>Donate online</h5>
+                            </div>
                         </Button>
                     </div>
                     <div className="Step1 top-mrg">

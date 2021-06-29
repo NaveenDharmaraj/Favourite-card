@@ -570,12 +570,23 @@
       width: 100%;
       display: flex;
       align-items: center;
-
-      >.text {
-        font-weight: normal;
+      span.text{
+        &:last-child{
+          @media only screen and (max-width: 991px){
+            display: flex !important;
+            height: 100%;
+            min-height: 22px;
+          }
+        }
+      }
+       >.text {
+        .primeFont();
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        @media only screen and (max-width: 991px){
+          white-space:normal;
+        }
         .icon{
           position: relative;
           top: 3px;
@@ -637,6 +648,9 @@
         left: -5px;
         width: 100%;
         border-radius: 5px;
+        @media only screen and (max-width: 991px){
+        min-width: 100%;
+        }
         .item{
           color: #263238;
           .primeFont();
@@ -647,6 +661,9 @@
           .text{
             display: flex;
             align-items: center;
+            @media only screen and (max-width: 991px){
+            white-space: break-spaces;
+            }
             .icon{
               margin-right: 8px;
             }
@@ -875,9 +892,6 @@ body{
   }
   .blue-bordr-btn-round-def{
     padding: 12.2px 28.55px ;
-  }
-  .blue-btn-rounded-def{
-    padding: 12.2px 33.5px ;
   }
 }
 .ui.modal.addAbout-Modal{
@@ -1212,7 +1226,7 @@ body{
                 font-size: 14px;
                 letter-spacing: 0;
                 line-height: 22px;
-                font-family: 'ProximaNova-Regular';
+                .primeFont();
                 font-weight: 300;
                 margin-top: 10px;
                 
@@ -1367,6 +1381,9 @@ body{
                   }
                 }
               }
+              &.data_disabled{
+                pointer-events: unset !important;
+              }
             }
           }
           .GetDonation{
@@ -1425,12 +1442,7 @@ body{
                   }
                 }
               }
-              .btn-width-donate{
-                min-width: 187px;
-                min-height: 48px;
-                font-size: 17px;
-                color: #fff;
-              }
+          
             }
           }
           .Invitepeople{
@@ -1456,7 +1468,7 @@ body{
               font-size: 14px;
               letter-spacing: 0;
               line-height: 22px;
-              font-family: 'ProximaNova-Regular';
+              .primeFont();
               margin-bottom: 30px;
             }
             label{
@@ -1514,7 +1526,7 @@ body{
               font-size: 14px;
               letter-spacing: -0.1px;
               line-height: 17px;
-              font-family: 'ProximaNova-Semibold';
+              .primeFont();
             }
             textarea{
               margin-top:9.5px;
@@ -1644,7 +1656,7 @@ body{
                 float: right;
                 color: #055CE5;
                 font-size: 14px;
-                font-family: 'ProximaNova-Semibold';
+                .primeFont-semi-bold();
                 letter-spacing: 0;
                 line-height: 18px;
                 display: flex;
@@ -1681,7 +1693,7 @@ body{
                   float: left;
                   color:#263238;
                   font-size: 14px;
-                  font-family: 'ProximaNova-Regular';
+                  .primeFont();
                   letter-spacing: 0;
                   line-height: 18px;
                   margin-top: 45px;
@@ -1862,10 +1874,16 @@ body{
       }
       &:first-child{
         width: 25% !important;
+        @media only screen and (max-width:1199px) and (min-width:767px) {
+          width: 35% !important;
+        }
       }
       &:last-child{
         padding: 30px 0 0 70px !important;
         width: 75% !important;
+        @media only screen and (max-width:1199px) and (min-width:767px) {
+          width: 65% !important;
+        }
       }
     }
   }
@@ -1913,7 +1931,7 @@ body{
             >.item{
               padding: 22.7px 8px 22.2px 0;
               font-size: 17px;
-              font-family: 'ProximaNova-Semibold';
+              .primeFont-semi-bold();
               i.icon{
                 display: block;
                 float: right;
@@ -1929,7 +1947,7 @@ body{
                 .title{
                   padding: 22.7px 8px 22.2px 0;
                   font-size: 17px;
-                  font-family: 'ProximaNova-Semibold';
+                  .primeFont-semi-bold();
                   i.icon{
                     transform: rotateZ(0deg);
                     transition: 0.5s;
@@ -2322,4 +2340,57 @@ body{
       margin-top: 10%;
     }
   }
+}
+.btn-width-donate{
+  padding: 8px 25px !important;
+  margin: 0px;
+  min-width: 219px !important;
+  min-height: 48px !important;
+
+.add_widget_button{
+  display: flex;
+  align-items: center;
+  .manage_charitable_logo{
+    margin-right: 10px;
+    img{
+        width: 24px;
+        height:24px;
+    }
+  }
+  .manage_add_widget_text{
+    text-align: left;
+    h5{
+      font-size: 16px;
+      padding: 0px;
+      margin: 0px;
+      color: #fff;
+    }
+    p{
+      font-size: 8.2px;
+      padding: 0px;
+      margin: 0px;
+      .primeFont-semi-bold();
+      .charitable_text{
+        .primeFont();
+      }
+    }
+  }
+}
+.manage_add_widget_text_center{
+  h5{
+    font-size: 16px;
+    padding: 0px;
+    margin: 0px;
+    color: #fff;
+  }
+  p{
+    font-size: 8.2px;
+    padding: 0px;
+    margin: 0px;
+    .primeFont-semi-bold();
+    .charitable_text{
+      .primeFont();
+    }
+  }
+}
 }
