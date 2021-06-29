@@ -126,9 +126,9 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             if (!fromCreate) {
                 dispatch(editGivingGroupApiCall({
                     attributes: {
-                        fundraisingCreated,
-                        fundraisingDate,
-                        fundraisingGoal: parseFloat(fundraisingGoal.replace(/,/g, '')),
+                        fundraisingCreated: (formattedGoal !== 0) ? fundraisingCreated : null,
+                        fundraisingDate: (formattedGoal !== 0) ? fundraisingDate : null,
+                        fundraisingGoal: (formattedGoal !== 0) ? formattedGoal : '',
                     },
                 }, groupId))
                     .then(() => {
