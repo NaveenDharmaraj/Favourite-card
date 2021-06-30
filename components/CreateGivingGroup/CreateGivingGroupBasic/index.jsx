@@ -131,7 +131,7 @@ const CreateGivingGroupBasic = ({
         // scrollTo(0, 0);
         setValidity(resetValues);
         _isEmpty(provinceOptions) && dispatch(getProvincesList(1, 50));
-        if (!_isEmpty(province) && !_isEmpty(city) && _isEmpty(uniqueCities)) {
+        if (!_isEmpty(province) && _isEmpty(uniqueCities)) {
             dispatch(getUniqueCities(1, 50, province));
         }
     }, []);
