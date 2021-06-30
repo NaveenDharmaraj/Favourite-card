@@ -31,7 +31,7 @@ const DownloadTransaction = () => {
                             (
                                 <span>
                                     <Button
-                                        className="success-btn-rounded-def transactionBtn"
+                                        className={`success-btn-rounded-def transactionBtn ${!groupDetails.attributes.transactionsCount ? 'data_disabled' : ''}`}
                                         disabled={!_isEmpty(groupDetails) && !groupDetails.attributes.transactionsCount}
                                         href={`/groups/${groupDetails.attributes.slug}.csv`}
                                         target="_blank"
