@@ -133,6 +133,15 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                 }, groupId))
                     .then(() => {
                         setCreateGivingButtonLoader(false);
+                        setCreateGivingGroupObject({
+                            ...createGivingGroupObject,
+                            attributes: {
+                                ...createGivingGroupObject.attributes,
+                                fundraisingCreated: null,
+                                fundraisingDate: null,
+                                fundraisingGoal: '',
+                            },
+                        });
                     })
                     .catch(() => {
                         //handle error
@@ -306,14 +315,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         setCharitySearchQuery(value);
     };
 
-    const handleSearchClick = () => {
-        const params = {
-            dispatch,
-            searchValue: charitySearchQuery,
-        };
-        debounceFunction(params, 300);
-    }
-
     const handleRemoveCharity = (selectedId) => {
         let index;
         beneficiaryItems.find((item, i) => {
@@ -367,15 +368,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             />
         );
     };
-
-    const handleClearSearch = () => {
-        setCharitySearchQuery('');
-        dispatch({
-            payload: [],
-            type: 'GET_CHARITY_BASED_ON_SERACH_QUERY',
-        });
-    };
-
     return (
         <Container>
             <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
@@ -470,22 +462,10 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                     results={charitiesQueryBasedOptions}
                                                     value={charitySearchQuery}
                                                     icon={(
-                                                        <Fragment>
-                                                            {/* {!_isEmpty(charitySearchQuery)
-                                                            && (<Icon
-                                                                    name="close_icons_campaignSearch manage_charity_clear"
-                                                                    onClick={handleClearSearch}
-                                                                />
-                                                            )} */}
-                                                            <div className="manage_charity_search">
-                                                                <a>
-                                                                    <Icon
-                                                                        name="search"
-                                                                        onClick={handleSearchClick}
-                                                                    />
-                                                                </a>
-                                                            </div>
-                                                        </Fragment>
+                                                        <Icon
+                                                            name="search"
+                                                            className={`${!charitiesSearchQueryBasedLoader ? 'manage_charity_search' : ''} `}
+                                                        />
                                                     )}
                                                 />
                                             )}
