@@ -112,6 +112,7 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
                                 fundraisingGoal: result.data.attributes.goal,
                                 fundraisingPercentage: result.data.attributes.fundraisingPercentage,
                                 goalAmountRaised: result.data.attributes.goalAmountRaised,
+                                isAvatarUploadedByUser: result.data.attributes.isAvatarUploadedByUser,
                                 location: result.data.attributes.location,
                                 logo: result.data.attributes.avatar,
                                 name: result.data.attributes.name,

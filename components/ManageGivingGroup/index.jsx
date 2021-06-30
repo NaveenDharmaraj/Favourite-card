@@ -40,6 +40,7 @@ const ManageGivingGroup = ({
         attributes: {
             avatar,
             causes,
+            isAvatarUploadedByUser,
             location,
             name,
             slug,
@@ -94,10 +95,13 @@ const ManageGivingGroup = ({
                                                 />
                                                 <Dropdown icon="camera" direction="right">
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item
-                                                            onClick={(event) => handleUpload(event, 'remove')}
-                                                            text="Delete photo"
-                                                        />
+                                                        {isAvatarUploadedByUser
+                                                        && (
+                                                            <Dropdown.Item
+                                                                onClick={(event) => handleUpload(event, 'remove')}
+                                                                text="Delete photo"
+                                                            />
+                                                        )}
                                                         <Dropdown.Item
                                                             text="Change photo"
                                                             onClick={() => uploadLogoImageRef.current.click()}
