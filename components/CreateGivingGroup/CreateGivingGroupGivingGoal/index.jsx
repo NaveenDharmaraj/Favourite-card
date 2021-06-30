@@ -42,6 +42,7 @@ const intializeValidity = {
     isValidPositiveNumber: true,
     isValidGiveAmount: true,
     isEndDateGreaterThanStartDate: true,
+    isNotSameStartEndData: true,
 };
 let timeout = '';
 let loadOnce = true;
@@ -58,6 +59,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     const [disableContinueButton, setDisableContinueButton] = useState(disableValue);
     const [createGivingButtonLoader, setCreateGivingButtonLoader] = useState(false);
     const [showLoader, setshowLoader] = useState(false);
+    const [isEditModified, setisEditModified] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -203,7 +205,8 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                 fundraisingGoal: value,
             },
         });
-        setDisableContinueButton(false);
+        setisEditModified(true);
+        setDisableContinueButton(_isEmpty(value));
         setValidity(ValidateCreateGivingGroup(validity, name, value));
     };
     const handleInputOnBlurGivingGoal = (event, data) => {
@@ -234,10 +237,18 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         } else {
             validity.isEndDateGreaterThanStartDate = true;
         }
+        if (name === 'fundraisingDate' && new Date(fundraisingCreated) === new Date(fundraisingDate)) {
+            validity.isNotSameStartEndData = false;
+            setisEditModified(false);
+        } else {
+            setisEditModified(true);
+        }
         setValidity({
             ...validity
         });
-        setDisableContinueButton(false);
+        if (!_isEmpty(createGivingGroupObject.attributes.fundraisingGoal)) {
+            setDisableContinueButton(false);
+        }
         setCreateGivingGroupObject({
             ...createGivingGroupObject,
             attributes: {
@@ -419,6 +430,8 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                         modalContent={renderEditModalContentComponent()}
                                                         validity={validity}
                                                         setCreateGivingGroupObject={setCreateGivingGroupObject}
+                                                        isEditModified={isEditModified}
+                                                        setisEditModified={setisEditModified}
                                                     />
                                                 </div>
                                             )

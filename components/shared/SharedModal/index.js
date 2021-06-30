@@ -13,6 +13,7 @@ const SharedModal = ({
     showLoader,
     showModal,
     validity,
+    hasModified,
 }) => {
     return (
         <Modal
@@ -31,7 +32,7 @@ const SharedModal = ({
                 <Button
                     className='blue-btn-rounded-def'
                     onClick={() => handleSave()}
-                    disabled={!_every(validity)}
+                    disabled={!_every(validity) || !hasModified}
                     loader={showLoader}
                 >
                     {modalFooterSave}
