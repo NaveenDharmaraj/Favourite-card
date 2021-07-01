@@ -13,6 +13,7 @@ import {
 } from '../routes';
 
 import getConfig from 'next/config';
+
 import {
     formatDateForP2p,
 } from '../helpers/give/utils';
@@ -23,6 +24,12 @@ import {
 import {
     generatePayloadBodyForFollowAndUnfollow,
 } from './profile';
+import {
+    getGroupActivities,
+    getGroupFromSlug,
+    getDetails,
+} from './group';
+
 import storage from '../helpers/storage';
 
 const {
@@ -47,10 +54,12 @@ if (!_.isEmpty(BASIC_AUTH_KEY)) {
 export const actionTypes = {
     APPLICATION_ENV_CONFIG_VARIABLES: 'APPLICATION_ENV_CONFIG_VARIABLES',
     GET_FRIENDS_LIST: 'GET_FRIENDS_LIST',
+    GET_GROUP_DETAILS_FROM_SLUG: 'GET_GROUP_DETAILS_FROM_SLUG',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
     GIVING_GROUPS_lEAVE_MODAL: 'GIVING_GROUPS_lEAVE_MODAL',
+    GROUP_INVITE_DETAILS: 'GROUP_INVITE_DETAILS',
     MONTHLY_TRANSACTION_API_CALL: 'MONTHLY_TRANSACTION_API_CALL',
     TAX_RECEIPT_PROFILES: 'TAX_RECEIPT_PROFILES',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
@@ -1351,46 +1360,97 @@ export const getParamStoreConfig = (params = []) => async (dispatch) => {
     } catch (err) {}
 };
 
-export const handleInvitationAccepts = (reqParams, currentUserId, type = 'loggedIn') => (dispatch) => {
+export const handleInvitationAccepts = (reqParams, currentUserId, type = 'loggedIn', loadMembers) => (dispatch) => {
     const {
+        groupId,
         invitationType,
         profileType,
         sourceId,
     } = reqParams;
-    const payloadObj = {
-        relationship: 'IS_CHIMP_FRIEND_OF',
-        relationshipdata: {
-            source: sourceId,
-            status: 'PENDING',
-            target: Number(currentUserId),
-        },
-        source: {
-            entity: 'user',
-            filters: {
-                user_id: Number(sourceId),
-            },
-        },
-        target: {
-            entity: 'user',
-            filters: {
-                user_id: Number(currentUserId),
-            },
-        },
-    };
+    let payloadObj = {};
     let paramsObj = {
         params: {
             dispatch,
         },
     };
-    if (type === 'signUp') {
-        paramsObj = {
-            ...BASIC_AUTH_HEADER,
-            ...paramsObj,
+    if (invitationType === 'openFriendRequest') {
+        payloadObj = {
+            relationship: 'IS_CHIMP_FRIEND_OF',
+            relationshipdata: {
+                source: sourceId,
+                status: 'PENDING',
+                target: Number(currentUserId),
+            },
+            source: {
+                entity: 'user',
+                filters: {
+                    user_id: Number(sourceId),
+                },
+            },
+            target: {
+                entity: 'user',
+                filters: {
+                    user_id: Number(currentUserId),
+                },
+            },
         };
+        if (type === 'signUp') {
+            paramsObj = {
+                ...BASIC_AUTH_HEADER,
+                ...paramsObj,
+            };
+        }
+        return graphApi.post(`core/create/relationship`, payloadObj, paramsObj).then((data) => {
+            invitationParameters.reqParameters = {};
+        }).catch((error) => {
+            console.log(error);
+        });
+    } else if (invitationType === 'groupInvite') {
+        payloadObj = {
+            data: {
+                attributes: {
+                    claimToken: sourceId,
+                    email: currentUserId,
+                },
+                type: 'claimInvites',
+            },
+        };
+        const inviteObject = {
+            payload: {
+                groupInviteDetails: {
+                    attributes: {},
+                },
+            },
+            type: actionTypes.GROUP_INVITE_DETAILS,
+        };
+        const fsa = {
+            payload: {
+                groupDetails: {},
+            },
+            type: actionTypes.GET_GROUP_DETAILS_FROM_SLUG,
+        };
+        paramsObj.params.ignore401 = true;
+        return coreApi.post(`/claimInvites`, payloadObj, paramsObj).then((result) => {
+            const {
+                data: {
+                    attributes: {
+                        groupSlug,
+                    },
+                },
+            } = result;
+            dispatch(inviteObject);
+            // fsa.payload.groupDetails = result.data;
+            // dispatch(fsa);
+            if (type === 'loggedIn') {
+                dispatch(getGroupFromSlug(groupSlug));
+                dispatch(getGroupActivities(groupId, null, true));
+                if (loadMembers) {
+                    dispatch(getDetails(groupId, 'members'));
+                }
+            }
+            
+        }).catch((error) => {
+            console.log(error);
+        });
     }
-    return graphApi.post(`core/create/relationship`, payloadObj, paramsObj).then((data) => {
-        invitationParameters.reqParameters = {};
-    }).catch((error) => {
-        console.log(error);
-    });
 };

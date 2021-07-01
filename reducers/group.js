@@ -327,6 +327,12 @@ const group = (state = {}, action) => {
                 },
             };
             break;
+        case 'GROUP_INVITE_DETAILS':
+            newState = {
+                ...state,
+                groupInviteDetails: Object.assign({}, action.payload.groupInviteDetails),
+            };
+            break;
         default:
             break;
     }
