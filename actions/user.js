@@ -1448,9 +1448,6 @@ export const handleInvitationAccepts = (reqParams, currentUserId, type = 'logged
                     dispatch(getDetails(groupId, 'members'));
                 }
             }
-            
-        }).catch((error) => {
-            console.log(error);
         });
     }
 };
