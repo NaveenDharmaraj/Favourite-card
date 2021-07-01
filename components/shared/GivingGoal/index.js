@@ -32,6 +32,7 @@ const GivingGoal = ({
     setCreateGivingGroupObject,
     isEditModified,
     setisEditModified,
+    handleResetValidity,
 }) => {
     const editGivingGroupStoreFlowObject = useSelector((state) => state.createGivingGroup.editGivingGroupStoreFlowObject);
     const editGivingGroupStoreFlowObjectClone = _cloneDeep(editGivingGroupStoreFlowObject);
@@ -43,6 +44,7 @@ const GivingGoal = ({
             fundraisingCreated,
             fundraisingPercentage,
             goalAmountRaised,
+            givingGoalReachedDate,
         },
     } = editGivingGroupStoreFlowObjectClone;
     const contextRef = React.useRef();
@@ -84,10 +86,12 @@ const GivingGoal = ({
         setShowEditModal(false);
         setCreateGivingGroupObject(createGivingGroupObjectClone);
         setisEditModified(false);
+        handleResetValidity();
     };
 
     const handleSaveGivingGoal = () => {
         setShowEditModal(false);
+        setisEditModified(false);
         handleCreateGroup();
     };
 
@@ -208,7 +212,7 @@ const GivingGoal = ({
                                     </div>
                                     <Popup
                                         context={contextRef}
-                                        content={`${Number(fundraisingPercentage) === 100 ? `Reached goal on ${formatDateForGivingTools(fundraisingCreated)} ` : currentDate}`}
+                                        content={`${Number(fundraisingPercentage) === 100 ? `Reached goal on ${formatDateForGivingTools(givingGoalReachedDate)} ` : currentDate}`}
                                         open
                                         position={toolTopPos(BarWidth)}
                                         className='progress-tooltip'

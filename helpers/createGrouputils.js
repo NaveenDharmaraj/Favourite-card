@@ -33,6 +33,7 @@ export const intializeValidity = {
     hasAlphabet: true,
     hasValidLength: true,
     isSectionNotEmpty: true,
+    isValidText: true,
 };
 
 // initialinzing the flow steps for create giving group
@@ -120,15 +121,18 @@ export const ValidateCreateGivingGroup = (validity, name, value) => {
             validity.isNotEmpty = !(!modofiedValue || modofiedValue.length === 0);
             validity.hasAlphabet = hasAlphabet(modofiedValue);
             validity.hasValidLength = (value.length <= 211);
+            validity.isValidText = isValidText(modofiedValue);
             break;
         case 'purpose':
             validity.doesNameExist = !_isEmpty(value) ? true : false;
             validity.hasValidLength = (value.length <= 300);
             validity.isNotEmpty = !(!modofiedValue || modofiedValue.length === 0);
+            validity.isValidText = isValidText(modofiedValue);
             break;
         case 'description':
             validity.doesDescriptionNotExist = !_isEmpty(value) ? true : false;
             validity.isSectionNotEmpty = !(!modofiedValue || modofiedValue.length === 0);
+            validity.isValidText = isValidText(modofiedValue);
             break;
         case 'givingGoal':
             validity = validateGivingGoal(value, validity);
@@ -266,3 +270,9 @@ export const manageGivingGroupAccordianOptions = {
         component: <AddDonationWidget />
     },
 };
+
+export const isValidText = (str) => {
+    const stringRegex = /^[ A-Za-z0-9-_()@"'.,+=$]*$/;
+    const res = stringRegex.test(str);
+    return res;
+}

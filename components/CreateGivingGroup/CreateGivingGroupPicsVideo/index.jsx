@@ -130,15 +130,17 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     const handleUpload = async (event, type = '') => {
         try {
             if (type === 'logo') {
-                getBase64(event.target.files[0], (result) => {
-                    setCreateGivingGroupObject({
-                        ...createGivingGroupObject,
-                        attributes: {
-                            ...createGivingGroupObject.attributes,
-                            'logo': result
-                        },
+                if (event.target.files.length > 0) {
+                    getBase64(event.target.files[0], (result) => {
+                        setCreateGivingGroupObject({
+                            ...createGivingGroupObject,
+                            attributes: {
+                                ...createGivingGroupObject.attributes,
+                                'logo': result
+                            },
+                        });
                     });
-                });
+                }
             } else if (type === 'gallery') {
                 try {
                     const length = event.target.files.length;
@@ -269,6 +271,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                         <Button
                                             className='success-btn-rounded-def'
                                             onClick={() => { handleOnVideoClick('add') }}
+                                            disabled={_isEmpty(videoUrlState)}
                                         >
                                             {formatMessage('createGivingGroupPicsVideo.uploadVideoButton')}
                                         </Button>

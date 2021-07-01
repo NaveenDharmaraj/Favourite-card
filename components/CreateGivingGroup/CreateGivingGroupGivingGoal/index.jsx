@@ -119,17 +119,30 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         );
     };
 
+    const handleResetValidity = () => {
+        setValidity({
+            doesAmountExist: true,
+            isAmountLessThanOneBillion: true,
+            isAmountMoreThanOneDollor: true,
+            isEndDateGreaterThanStartDate: true,
+            isNotSameStartEndData: true,
+            isValidGiveAmount: true,
+            isValidPositiveNumber: true,
+        });
+    };
+
     const handleCreateGroup = () => {
         setDisableContinueButton(true);
         setCreateGivingButtonLoader(true);
         const tempArr = [];
         const formattedGoal = parseFloat(fundraisingGoal.replace(/,/g, ''));
         if (validationCreateGivingGroup()) {
+            handleResetValidity();
             if (!fromCreate) {
                 dispatch(editGivingGroupApiCall({
                     attributes: {
-                        fundraisingCreated: (formattedGoal !== 0) ? fundraisingCreated : null,
-                        fundraisingDate: (formattedGoal !== 0) ? fundraisingDate : null,
+                        fundraisingCreated: ((formattedGoal !== 0) && fundraisingCreated) ? new Date(fundraisingCreated).toLocaleDateString() : null,
+                        fundraisingDate: ((formattedGoal !== 0) && fundraisingDate) ? new Date(fundraisingDate).toLocaleDateString() : null,
                         fundraisingGoal: (formattedGoal !== 0) ? formattedGoal : '',
                     },
                 }, groupId))
@@ -230,21 +243,22 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         setValidity(ValidateCreateGivingGroup(validity, name, value));
     };
     const handleOnDateChange = (date, name) => {
-        if (name === 'fundraisingCreated' && fundraisingDate && (new Date(fundraisingDate) <= new Date(date))) {
+        if (name === 'fundraisingCreated' && fundraisingDate && (+new Date(fundraisingDate) <= +new Date(date))) {
             validity.isEndDateGreaterThanStartDate = false;
-        } else if (name === 'fundraisingDate' && fundraisingCreated && (new Date(date) <= new Date(fundraisingCreated))) {
+        } else if (name === 'fundraisingDate' && fundraisingCreated && (new Date(date) < new Date(fundraisingCreated))) {
             validity.isEndDateGreaterThanStartDate = false;
         } else {
             validity.isEndDateGreaterThanStartDate = true;
         }
-        if (name === 'fundraisingDate' && new Date(fundraisingCreated) === new Date(fundraisingDate)) {
+        if (name === 'fundraisingDate' && fundraisingCreated && +new Date(fundraisingCreated) === +new Date(date)) {
             validity.isNotSameStartEndData = false;
             setisEditModified(false);
         } else {
             setisEditModified(true);
+            validity.isNotSameStartEndData = true;
         }
         setValidity({
-            ...validity
+            ...validity,
         });
         if (!_isEmpty(createGivingGroupObject.attributes.fundraisingGoal)) {
             setDisableContinueButton(false);
@@ -379,6 +393,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             />
         );
     };
+
     return (
         <Container>
             <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
@@ -432,6 +447,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                         setCreateGivingGroupObject={setCreateGivingGroupObject}
                                                         isEditModified={isEditModified}
                                                         setisEditModified={setisEditModified}
+                                                        handleResetValidity={handleResetValidity}
                                                     />
                                                 </div>
                                             )
