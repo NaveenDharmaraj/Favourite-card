@@ -14,7 +14,15 @@ import arrayMove from 'array-move';
 import dynamic from 'next/dynamic';
 import { connect } from 'react-redux';
 
-import { aboutDescriptionLimit, createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, generateBreadCrum, initializeAddSectionModalObject, intializeCreateGivingGroup } from '../../../helpers/createGrouputils';
+import {
+    aboutDescriptionLimit,
+    createGivingGroupBreadCrum,
+    CreateGivingGroupFlowSteps,
+    generateBreadCrum,
+    initializeAddSectionModalObject,
+    intializeCreateGivingGroup,
+    isValidText,
+} from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
@@ -87,17 +95,19 @@ class CreateGivingGroupAbout extends React.Component {
         const {
             createGivingGroupObjectState
         } = this.state;
-        this.setState({
-            createGivingGroupObjectState: {
-                ...createGivingGroupObjectState,
-                attributes: {
-                    ...createGivingGroupObjectState.attributes,
-                    [name]: value,
-                }
-            },
-            disableContinue: false,
-            doesDescriptionPresent: true,
-        })
+        if (isValidText(value)) {
+            this.setState({
+                createGivingGroupObjectState: {
+                    ...createGivingGroupObjectState,
+                    attributes: {
+                        ...createGivingGroupObjectState.attributes,
+                        [name]: value,
+                    }
+                },
+                disableContinue: false,
+                doesDescriptionPresent: true,
+            });
+        }
     };
 
     handleOnBlur = (event, data) => {

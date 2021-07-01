@@ -5,7 +5,11 @@ import { Button, Card, Form, Icon, Modal, TextArea, Segment, Header } from "sema
 
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import { editGivingGroupApiCall } from "../../../actions/createGivingGroup";
-import { aboutDescriptionLimit, intializeCreateGivingGroup } from "../../../helpers/createGrouputils";
+import {
+    aboutDescriptionLimit,
+    intializeCreateGivingGroup,
+    isValidText,
+} from '../../../helpers/createGrouputils';
 
 
 const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject, groupId }) => {
@@ -65,6 +69,15 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
         }
     };
 
+    const handleDescriptionChange = (event) => {
+        const isValid = isValidText(event.target.value);
+        if (isValid) {
+            setDisableSave(false);
+            setDoesDescriptionPresent(true);
+            setEditDescription(event.target.value);
+        }
+    };
+
     return (
         <Modal
             className="chimp-modal addAbout-Modal"
@@ -89,11 +102,7 @@ const EditGivingGroupDescriptionModal = ({ formatMessage, editGivingGroupObject,
                         <Form.Field
                             control={TextArea}
                             value={editDescription}
-                            onChange={(event) => {
-                                setDisableSave(false)
-                                setDoesDescriptionPresent(true)
-                                setEditDescription(event.target.value)
-                            }}
+                            onChange={handleDescriptionChange}
                             onBlur={handleOnBlur}
                             name="short"
                             error={!doesDescriptionPresent}

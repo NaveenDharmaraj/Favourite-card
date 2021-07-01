@@ -8,6 +8,7 @@ import {
     Popup,
     Responsive
 } from 'semantic-ui-react';
+import { useDispatch, useSelector } from 'react-redux';
 import _cloneDeep from 'lodash/cloneDeep';
 import _every from 'lodash/every';
 import _isEmpty from 'lodash/isEmpty';
@@ -25,17 +26,27 @@ const GivingGoal = ({
     createGivingButtonLoader,
     createGivingGroupObject,
     dispatch,
-    fundraisingGoal,
-    fundraisingDate,
-    fundraisingDaysRemaining,
-    fundraisingCreated,
-    fundraisingPercentage,
-    goalAmountRaised,
     groupId,
     handleCreateGroup,
     modalContent,
     setCreateGivingGroupObject,
+    isEditModified,
+    setisEditModified,
+    handleResetValidity,
 }) => {
+    const editGivingGroupStoreFlowObject = useSelector((state) => state.createGivingGroup.editGivingGroupStoreFlowObject);
+    const editGivingGroupStoreFlowObjectClone = _cloneDeep(editGivingGroupStoreFlowObject);
+    const {
+        attributes: {
+            fundraisingGoal,
+            fundraisingDate,
+            fundraisingDaysRemaining,
+            fundraisingCreated,
+            fundraisingPercentage,
+            goalAmountRaised,
+            givingGoalReachedDate,
+        },
+    } = editGivingGroupStoreFlowObjectClone;
     const contextRef = React.useRef();
     const createGivingGroupObjectClone = _cloneDeep(createGivingGroupObject);
     const previousGivingGroupObject = useRef();
@@ -47,14 +58,14 @@ const GivingGoal = ({
     let BarWidth = fundraisingPercentage || 0;
     const currency = 'USD';
     const language = 'en';
-    const formattedfundraisingGoal = formatCurrency(fundraisingGoal, language, currency);
-    const formattedgoalAmountRaised = formatCurrency(goalAmountRaised, language, currency);
-    const hasGoal = (fundraisingDaysRemaining > 0);
-    let hasNoExpiryGoal = false;
-    if (!_isEmpty(fundraisingGoal) && !_isEmpty(fundraisingCreated) && _isEmpty(fundraisingDate)) {
-        hasNoExpiryGoal = true;
-    }
-    const isGoalExpired = (Number(fundraisingDaysRemaining === 0) && !hasNoExpiryGoal) ? true : false;
+    const formattedfundraisingGoal = formatCurrency(parseFloat(fundraisingGoal.replace(/,/g, '')), language, currency);
+    const formattedgoalAmountRaised = formatCurrency(parseFloat(goalAmountRaised.replace(/,/g, '')), language, currency);
+    const hasGoalSet = (!_isEmpty(fundraisingGoal));
+    const hasNonExpireGoal = (hasGoalSet && !_isEmpty(fundraisingCreated) && _isEmpty(fundraisingDate));
+    const hasDefinedGoal = (hasGoalSet && !_isEmpty(fundraisingCreated) && !_isEmpty(fundraisingDate));
+    const isGoalReached = (hasGoalSet && (Number(fundraisingPercentage) === 100));
+    const isGoalExpired = (hasGoalSet && (fundraisingDaysRemaining === 0) && !isGoalReached);
+
     useEffect(() => {
         previousGivingGroupObject.current = createGivingGroupObjectClone;
     }, []);
@@ -73,11 +84,14 @@ const GivingGoal = ({
 
     const handleClose = () => {
         setShowEditModal(false);
-        setCreateGivingGroupObject(previousGivingGroupObject.current);
+        setCreateGivingGroupObject(createGivingGroupObjectClone);
+        setisEditModified(false);
+        handleResetValidity();
     };
 
     const handleSaveGivingGoal = () => {
         setShowEditModal(false);
+        setisEditModified(false);
         handleCreateGroup();
     };
 
@@ -90,9 +104,24 @@ const GivingGoal = ({
                 fundraisingCreated: null,
                 fundraisingDate: null,
             },
-        }, groupId, messageText)).finally(() => {
+        }, groupId, messageText)).then(() => {
+            setCreateGivingGroupObject({
+                ...createGivingGroupObject,
+                attributes: {
+                    ...createGivingGroupObject.attributes,
+                    fundraisingCreated: null,
+                    fundraisingDate: null,
+                    fundraisingGoal: '',
+                },
+            });
+        }).finally(() => {
             setshowLoader(false);
         });
+    };
+
+    const handleShowEditModal = () => {
+        setCreateGivingGroupObject(editGivingGroupStoreFlowObjectClone);
+        setShowEditModal(true);
     };
     return (
         <Fragment>
@@ -106,7 +135,7 @@ const GivingGoal = ({
                     modalFooterCancel={'Cancel'}
                     showModal={showEditModal}
                     showLoader={createGivingButtonLoader}
-                    hasModified={false}
+                    hasModified={isEditModified}
                 /> :
                 <div className='basicsettings'>
                     <Header className='titleHeader'>
@@ -123,31 +152,35 @@ const GivingGoal = ({
                                 </Grid.Column>
                                 <Grid.Column computer={9} mobile={12}>
                                     <div className='headerContent'>
-                                        {(Number(fundraisingPercentage) === 100)
-                                        && (
+                                        {isGoalReached
+                                        ? (
                                             <>
                                                 <p><b>Congratulations! The group has reached its goal!</b></p>
                                                 <p>Keep going. You can set a new goal by selecting 'Edit' and add a new goal amount.</p>
                                             </>
-                                        )}
-                                        {isGoalExpired
-                                        && (
-                                            <>
-                                                <p>Your goal has expired.</p>
-                                                <p>You can set a new goal by selecting 'Edit' to add a new goal amount or extend its end date.</p>
-                                            </>
-                                        )}
-                                        {(hasNoExpiryGoal)
-                                        && (
-                                            <p>Your group has set a goal to raise {formattedfundraisingGoal}.</p>
-                                        )}
-                                        {(hasGoal && (Number(fundraisingPercentage) !== 100))
-                                        && (
-                                            <p>Your group has set a goal to raise {formattedfundraisingGoal} by {endDate}.</p>
+                                        ) : (
+                                                <Fragment>
+                                                    {hasNonExpireGoal
+                                                    ? (
+                                                        <p>Your group has set a goal to raise {formattedfundraisingGoal}.</p>
+                                                    ) : (
+                                                        <Fragment>
+                                                            {isGoalExpired
+                                                            ? (
+                                                                <>
+                                                                    <p>Your goal has expired.</p>
+                                                                    <p>You can set a new goal by selecting 'Edit' to add a new goal amount or extend its end date.</p>
+                                                                </>
+                                                            ) : (
+                                                                <p>Your group has set a goal to raise {formattedfundraisingGoal} by {endDate}.</p>
+                                                            )}
+                                                        </Fragment>
+                                                    )}
+                                                </Fragment>
                                         )}
                                     </div>
                                 </Grid.Column>
-                                {(Number(fundraisingDaysRemaining > 0) && (Number(fundraisingPercentage) < 100)) ?
+                                {(hasDefinedGoal && !isGoalReached && !isGoalExpired) ?
                                     <Grid.Column computer={5} mobile={16} >
                                         <p className='daysleftText'>{fundraisingDaysRemaining} days left to reach goal</p>
                                     </Grid.Column>
@@ -179,7 +212,7 @@ const GivingGoal = ({
                                     </div>
                                     <Popup
                                         context={contextRef}
-                                        content={`${Number(fundraisingPercentage) === 100 ? `Reached goal on ${formatDateForGivingTools(fundraisingCreated)} ` : currentDate}`}
+                                        content={`${Number(fundraisingPercentage) === 100 ? `Reached goal on ${formatDateForGivingTools(givingGoalReachedDate)} ` : currentDate}`}
                                         open
                                         position={toolTopPos(BarWidth)}
                                         className='progress-tooltip'
@@ -196,7 +229,7 @@ const GivingGoal = ({
                                 <Grid.Column computer={8} mobile={16} >
                                     <Button
                                         className='blue-bordr-btn-round-def'
-                                        onClick={() => setShowEditModal(true)}
+                                        onClick={handleShowEditModal}
                                     >
                                         Edit
                                 </Button>

@@ -42,6 +42,7 @@ const intializeValidity = {
     isValidPositiveNumber: true,
     isValidGiveAmount: true,
     isEndDateGreaterThanStartDate: true,
+    isNotSameStartEndData: true,
 };
 let timeout = '';
 let loadOnce = true;
@@ -58,6 +59,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
     const [disableContinueButton, setDisableContinueButton] = useState(disableValue);
     const [createGivingButtonLoader, setCreateGivingButtonLoader] = useState(false);
     const [showLoader, setshowLoader] = useState(false);
+    const [isEditModified, setisEditModified] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -117,22 +119,44 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         );
     };
 
+    const handleResetValidity = () => {
+        setValidity({
+            doesAmountExist: true,
+            isAmountLessThanOneBillion: true,
+            isAmountMoreThanOneDollor: true,
+            isEndDateGreaterThanStartDate: true,
+            isNotSameStartEndData: true,
+            isValidGiveAmount: true,
+            isValidPositiveNumber: true,
+        });
+    };
+
     const handleCreateGroup = () => {
         setDisableContinueButton(true);
         setCreateGivingButtonLoader(true);
         const tempArr = [];
         const formattedGoal = parseFloat(fundraisingGoal.replace(/,/g, ''));
         if (validationCreateGivingGroup()) {
+            handleResetValidity();
             if (!fromCreate) {
                 dispatch(editGivingGroupApiCall({
                     attributes: {
-                        fundraisingCreated: (formattedGoal !== 0) ? fundraisingCreated : null,
-                        fundraisingDate: (formattedGoal !== 0) ? fundraisingDate : null,
+                        fundraisingCreated: ((formattedGoal !== 0) && fundraisingCreated) ? new Date(fundraisingCreated).toLocaleDateString() : null,
+                        fundraisingDate: ((formattedGoal !== 0) && fundraisingDate) ? new Date(fundraisingDate).toLocaleDateString() : null,
                         fundraisingGoal: (formattedGoal !== 0) ? formattedGoal : '',
                     },
                 }, groupId))
                     .then(() => {
                         setCreateGivingButtonLoader(false);
+                        setCreateGivingGroupObject({
+                            ...createGivingGroupObject,
+                            attributes: {
+                                ...createGivingGroupObject.attributes,
+                                fundraisingCreated: null,
+                                fundraisingDate: null,
+                                fundraisingGoal: '',
+                            },
+                        });
                     })
                     .catch(() => {
                         //handle error
@@ -194,7 +218,8 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                 fundraisingGoal: value,
             },
         });
-        setDisableContinueButton(false);
+        setisEditModified(true);
+        setDisableContinueButton(_isEmpty(value));
         setValidity(ValidateCreateGivingGroup(validity, name, value));
     };
     const handleInputOnBlurGivingGoal = (event, data) => {
@@ -218,17 +243,26 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         setValidity(ValidateCreateGivingGroup(validity, name, value));
     };
     const handleOnDateChange = (date, name) => {
-        if (name === 'fundraisingCreated' && fundraisingDate && (new Date(fundraisingDate) <= new Date(date))) {
+        if (name === 'fundraisingCreated' && fundraisingDate && (+new Date(fundraisingDate) <= +new Date(date))) {
             validity.isEndDateGreaterThanStartDate = false;
-        } else if (name === 'fundraisingDate' && fundraisingCreated && (new Date(date) <= new Date(fundraisingCreated))) {
+        } else if (name === 'fundraisingDate' && fundraisingCreated && (new Date(date) < new Date(fundraisingCreated))) {
             validity.isEndDateGreaterThanStartDate = false;
         } else {
             validity.isEndDateGreaterThanStartDate = true;
         }
+        if (name === 'fundraisingDate' && fundraisingCreated && +new Date(fundraisingCreated) === +new Date(date)) {
+            validity.isNotSameStartEndData = false;
+            setisEditModified(false);
+        } else {
+            setisEditModified(true);
+            validity.isNotSameStartEndData = true;
+        }
         setValidity({
-            ...validity
+            ...validity,
         });
-        setDisableContinueButton(false);
+        if (!_isEmpty(createGivingGroupObject.attributes.fundraisingGoal)) {
+            setDisableContinueButton(false);
+        }
         setCreateGivingGroupObject({
             ...createGivingGroupObject,
             attributes: {
@@ -306,14 +340,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         setCharitySearchQuery(value);
     };
 
-    const handleSearchClick = () => {
-        const params = {
-            dispatch,
-            searchValue: charitySearchQuery,
-        };
-        debounceFunction(params, 300);
-    }
-
     const handleRemoveCharity = (selectedId) => {
         let index;
         beneficiaryItems.find((item, i) => {
@@ -368,14 +394,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         );
     };
 
-    const handleClearSearch = () => {
-        setCharitySearchQuery('');
-        dispatch({
-            payload: [],
-            type: 'GET_CHARITY_BASED_ON_SERACH_QUERY',
-        });
-    };
-
     return (
         <Container>
             <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
@@ -427,6 +445,9 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                         modalContent={renderEditModalContentComponent()}
                                                         validity={validity}
                                                         setCreateGivingGroupObject={setCreateGivingGroupObject}
+                                                        isEditModified={isEditModified}
+                                                        setisEditModified={setisEditModified}
+                                                        handleResetValidity={handleResetValidity}
                                                     />
                                                 </div>
                                             )
@@ -470,22 +491,10 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                     results={charitiesQueryBasedOptions}
                                                     value={charitySearchQuery}
                                                     icon={(
-                                                        <Fragment>
-                                                            {/* {!_isEmpty(charitySearchQuery)
-                                                            && (<Icon
-                                                                    name="close_icons_campaignSearch manage_charity_clear"
-                                                                    onClick={handleClearSearch}
-                                                                />
-                                                            )} */}
-                                                            <div className="manage_charity_search">
-                                                                <a>
-                                                                    <Icon
-                                                                        name="search"
-                                                                        onClick={handleSearchClick}
-                                                                    />
-                                                                </a>
-                                                            </div>
-                                                        </Fragment>
+                                                        <Icon
+                                                            name="search"
+                                                            className={`${!charitiesSearchQueryBasedLoader ? 'manage_charity_search' : ''} `}
+                                                        />
                                                     )}
                                                 />
                                             )}

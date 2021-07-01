@@ -2,6 +2,7 @@ import React, {
     useState,
     useEffect,
 } from 'react';
+import _every from 'lodash/every';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Container,
@@ -28,6 +29,7 @@ import {
     intializeCreateGivingGroup,
     intializeValidity,
     ValidateCreateGivingGroup,
+    isValidText,
 } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
@@ -107,7 +109,7 @@ const CreateGivingGroupBasic = ({
     const [
         disableContinue,
         setDisableContinue,
-    ] = useState(_isEmpty(createGivingGroupObject.attributes.name));
+    ] = useState(true);
     const [
         enableCitySearchOption,
         setEnableCitySearchOption,
@@ -131,7 +133,7 @@ const CreateGivingGroupBasic = ({
         // scrollTo(0, 0);
         setValidity(resetValues);
         _isEmpty(provinceOptions) && dispatch(getProvincesList(1, 50));
-        if (!_isEmpty(province) && !_isEmpty(city) && _isEmpty(uniqueCities)) {
+        if (!_isEmpty(province) && _isEmpty(uniqueCities)) {
             dispatch(getUniqueCities(1, 50, province));
         }
     }, []);
@@ -142,6 +144,7 @@ const CreateGivingGroupBasic = ({
             name,
             value,
         } = data || event.target;
+        let isValid = true;
         switch (name) {
             case 'prefersInviteOnly':
                 value = (value === 'Public') ? '0' : '1';
@@ -150,7 +153,10 @@ const CreateGivingGroupBasic = ({
                 value = checked ? '1' : '0';
                 break;
             case 'name':
-                setDisableContinue(false);
+                isValid = isValidText(value);
+                if (isValid) {
+                    setDisableContinue(false);
+                }
                 break;
             case 'province':
                 if (value === 'defaultProvince') {
@@ -167,15 +173,17 @@ const CreateGivingGroupBasic = ({
                 break;
             default: break;
         }
-        setCreateGivingGroupObject({
-            ...createGivingGroupObject,
-            attributes: {
-                ...createGivingGroupObject.attributes,
-                [name]: value,
-            },
-        });
-        setValidity(ValidateCreateGivingGroup(validity, name, value));
-        !fromCreate && setDisableContinue(false);
+        if (isValid) {
+            setCreateGivingGroupObject({
+                ...createGivingGroupObject,
+                attributes: {
+                    ...createGivingGroupObject.attributes,
+                    [name]: value,
+                },
+            });
+            setValidity(ValidateCreateGivingGroup(validity, name, value));
+            !fromCreate && setDisableContinue(false);
+        }
     };
 
     const handleOnBlur = (event, data) => {
@@ -406,7 +414,9 @@ const CreateGivingGroupBasic = ({
                                             <div className={`buttonsWrap ${fromCreate ? '' : 'buttons_space'}`}>
                                                 <Button
                                                     className="blue-btn-rounded-def"
-                                                    disabled={disableContinue || !validity.doesNameExist || !validity.isNotEmpty || !validity.hasAlphabet || !validity.hasValidLength}
+                                                    disabled={disableContinue || !validity.doesNameExist
+                                                        || !validity.isNotEmpty || !validity.hasAlphabet
+                                                        || !validity.hasValidLength || !validity.isValidText}
                                                     loading={showLoader}
                                                     onClick={
                                                         (event, data) => (

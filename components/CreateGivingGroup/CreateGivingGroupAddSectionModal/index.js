@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Button, Form, Icon, Input, Modal, TextArea } from "semantic-ui-react";
-import { addModalDescriptionLimit, initializeAddSectionModalObject, intializeValidity, ValidateCreateGivingGroup } from "../../../helpers/createGrouputils";
+import {
+    addModalDescriptionLimit,
+    initializeAddSectionModalObject,
+    intializeValidity,
+    ValidateCreateGivingGroup,
+    isValidText,
+} from "../../../helpers/createGrouputils";
 import _isEmpty from 'lodash/isEmpty';
 
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
@@ -29,12 +35,14 @@ const CreateGivingGroupAddSectionModal = ({
             name,
             value
         } = data || event.target;
-        setAddModalObj({
-            ...addModalObj,
-            [name]: value
-        });
-        setDisableContinue(false);
-        setValidity(ValidateCreateGivingGroup(validity, name, value))
+        if (isValidText(value)) {
+            setAddModalObj({
+                ...addModalObj,
+                [name]: value,
+            });
+            setDisableContinue(false);
+            setValidity(ValidateCreateGivingGroup(validity, name, value));
+        }
     };
 
     const handleOnBlur = (event, data) => {
