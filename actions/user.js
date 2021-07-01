@@ -1402,8 +1402,6 @@ export const handleInvitationAccepts = (reqParams, currentUserId, type = 'logged
         }
         return graphApi.post(`core/create/relationship`, payloadObj, paramsObj).then((data) => {
             invitationParameters.reqParameters = {};
-        }).catch((error) => {
-            console.log(error);
         });
     } else if (invitationType === 'groupInvite') {
         payloadObj = {
