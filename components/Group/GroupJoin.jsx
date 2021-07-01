@@ -22,6 +22,9 @@ import {
     joinGroup,
     leaveGroup,
 } from '../../actions/group';
+import {
+    handleInvitationAccepts,
+} from '../../actions/user';
 import LeaveModal from '../shared/LeaveModal';
 
 class GroupJoin extends React.Component {
@@ -39,6 +42,11 @@ class GroupJoin extends React.Component {
 
     handleUserJoin() {
         const {
+            currentUser: {
+                attributes: {
+                    email,
+                },
+            },
             dispatch,
             groupDetails: {
                 attributes: {
@@ -47,16 +55,26 @@ class GroupJoin extends React.Component {
                 id: groupId,
             },
             groupMembersDetails,
+            inviteToken,
         } = this.props;
         const loadMembers = !_isEmpty(groupMembersDetails);
         this.setState({
             joinClicked: true,
         });
-        dispatch(joinGroup(slug, groupId, loadMembers)).then(() => {
-            this.setState({
-                joinClicked: false,
+        if (inviteToken) {
+            const reqObj = {
+                groupId,
+                invitationType: 'groupInvite',
+                sourceId: inviteToken,
+            };
+            dispatch(handleInvitationAccepts(reqObj, email, 'loggedIn', loadMembers));
+        } else {
+            dispatch(joinGroup(slug, groupId, loadMembers)).then(() => {
+                this.setState({
+                    joinClicked: false,
+                });
             });
-        });
+        }
     }
 
     handleLeaveGroup() {
@@ -103,6 +121,7 @@ class GroupJoin extends React.Component {
                 },
             },
             isAuthenticated,
+            inviteToken,
             t: formatMessage,
         } = this.props;
         const {
@@ -167,9 +186,10 @@ class GroupJoin extends React.Component {
                 );
             }
         } else {
+            const linkRoute = inviteToken ? `/users/login?returnTo=/groups/${slug}&invitationType=groupInvite&sourceId=${inviteToken}` : `/users/login?returnTo=/groups/${slug}`;
             joinButton = (
                 <Fragment>
-                    <Link route={`/users/login?returnTo=/groups/${slug}`}>
+                    <Link route={linkRoute}>
                         <Button
                             className="blue-bordr-btn-round-def"
                         >
@@ -215,6 +235,7 @@ GroupJoin.defaultProps = {
         id: '',
     },
     groupMembersDetails: {},
+    inviteToken: '',
     isAuthenticated: false,
     t: () => {},
 };
@@ -241,6 +262,7 @@ GroupJoin.propTypes = {
         id: string,
     }),
     groupMembersDetails: PropTypes.shape({}),
+    inviteToken: string,
     isAuthenticated: bool,
     t: func,
 };

@@ -21,6 +21,7 @@ export const actionTypes = {
     GET_GROUP_GALLERY_IMAGES: 'GET_GROUP_GALLERY_IMAGES',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
+    GROUP_INVITE_DETAILS: 'GROUP_INVITE_DETAILS',
     GROUP_MATCHING_HISTORY: 'GROUP_MATCHING_HISTORY',
     GROUP_MEMBER_UPDATE_FRIEND_STATUS: 'GROUP_MEMBER_UPDATE_FRIEND_STATUS',
     GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
@@ -35,6 +36,7 @@ export const actionTypes = {
     TOGGLE_TRANSACTION_VISIBILITY: 'TOGGLE_TRANSACTION_VISIBILITY',
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
 };
+
 
 export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async (dispatch) => {
     if (slug !== ':slug') {
@@ -733,4 +735,25 @@ export const getMatchingHistory = (groupId) => (dispatch) => {
             dispatch(fsa);
         }
     }).catch().finally();
+};
+
+export const getGroupInviteDetails = (groupId, claimToken) => (dispatch) => {
+    const fsa = {
+        payload: {
+            groupInviteDetails: {},
+        },
+        type: actionTypes.GROUP_INVITE_DETAILS,
+    };
+    return coreApi.get(`/groups/${groupId}/pendingGroupInvites`, {
+        params: {
+            dispatch,
+            'filter[claimToken]': claimToken,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && result.data && result.data.length > 0) {
+            fsa.payload.groupInviteDetails = result.data[0] || {};
+            dispatch(fsa);
+        }
+    });
 };
