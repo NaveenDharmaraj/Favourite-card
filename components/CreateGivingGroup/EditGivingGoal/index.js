@@ -54,20 +54,13 @@ const EditGivingGoal = ({
                     handleonDateChange={handleOnDateChange}
                     name="fundraisingDate"
                 />
-                {
-                    !validity.isEndDateGreaterThanStartDate &&
+                {(!validity.isEndDateGreaterThanStartDate || !validity.isNotSameStartEndData)
+                    &&
                     <p className="error-message">
                         <Icon name="exclamation circle" />
                         The goal end date must be after the start date of the giving goal.
                     </p>
                 }
-                {!validity.isNotSameStartEndData
-                && (
-                    <p className="error-message">
-                        <Icon name="exclamation circle" />
-                        Same date
-                    </p>
-                )}
             </div>
         </div>
         </Fragment>
