@@ -384,17 +384,23 @@ export const getGroupMembers = (groupId, pageNumber = 1, isInitial) => (dispatch
             if (!_isEmpty(result)) {
                 fsa.payload = result;
                 dispatch(fsa);
-                if (isInitial && !_isEmpty(result.data) && !_isEmpty(result.data.length) <= 2) {
+                if (isInitial) {
                     const initialPayload = {
-                        payload: {},
+                        payload: {
+                            isInitial: false,
+                        },
                         type: actionTypes.MANAGE_GROUP_MEMBERS_INITIAL,
                     };
-                    result.data.map((data) => {
-                        if (data.attributes.isGroupAdmin) {
-                            adminCount += 1;
-                        }
-                    });
-                    initialPayload.payload.isInitial = (adminCount === 1);
+                    if (!_isEmpty(result.data) && !_isEmpty(result.data.length) <= 2) {
+                        result.data.map((data) => {
+                            if (data.attributes.isGroupAdmin) {
+                                adminCount += 1;
+                            }
+                        });
+                        initialPayload.payload.isInitial = (adminCount === 1);
+                    } else if (_isEmpty(result.data)) {
+                        initialPayload.payload.isInitial = true;
+                    }
                     dispatch(initialPayload);
                 }
             }
