@@ -64,8 +64,10 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             name,
             value,
         } = data || event.target;
+        let formattedUrl = '';
         if (name === 'videoUrl') {
-            setVideoUrlState(value);
+            formattedUrl = value.replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/");
+            setVideoUrlState(formattedUrl);
             setValidateVideoUrl(false);
         }
     };
@@ -283,9 +285,14 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                             className='remove'
                                             onClick={() => { handleOnVideoClick('remove') }}
                                         />
-                                        <iframe width="100%" height="415"
+                                        {/* <iframe width="100%" height="415"
                                             src={videoUrl}>
-                                        </iframe>
+                                        </iframe> */}
+                                        <embed
+                                            title="video"
+                                            src={videoUrl}
+                                            className="responsiveVideo"
+                                        />
                                     </div>
                                 }
                                 {validateVideoUrl &&
