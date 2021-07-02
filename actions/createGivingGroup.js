@@ -335,19 +335,24 @@ export const editGivingGroupApiCall = (editGivingGroupObj, groupId = '', message
 };
 
 export const deleteGroupLogo = (editGivingGroupObj, groupId = '') => (dispatch) => {
+    let updateImageStatus = false;
     coreApi.delete(`/groups/${groupId}/delete_logo`, {
         params: {
             dispatch,
             uxCritical: true,
         },
-    }).then(() => {
+    }).then((result) => {
+        if (!_isEmpty(result.data)) {
+            updateImageStatus = result.data.attributes.isAvatarUploadedByUser;
+        }
         dispatch(upadateEditGivingGroupObj({
             ...editGivingGroupObj,
             attributes: {
                 ...editGivingGroupObj.attributes,
                 logo: '',
                 avatar: '',
-            }
+                isAvatarUploadedByUser: updateImageStatus,
+            },
         }));
     }).catch(() => {
         //handle error

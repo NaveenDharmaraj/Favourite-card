@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import {
     aboutDescriptionLimit,
     createGivingGroupBreadCrum,
-    CreateGivingGroupFlowSteps,
+    createGivingGroupFlowSteps,
     generateBreadCrum,
     initializeAddSectionModalObject,
     intializeCreateGivingGroup,
@@ -268,7 +268,7 @@ class CreateGivingGroupAbout extends React.Component {
             return;
         }
         dispatch(updateCreateGivingGroupObj(this.state.createGivingGroupObjectState));
-        Router.pushRoute(CreateGivingGroupFlowSteps.stepThree);
+        Router.pushRoute(createGivingGroupFlowSteps.stepThree);
     };
     render() {
         const {
@@ -374,7 +374,7 @@ class CreateGivingGroupAbout extends React.Component {
                                     className='blue-bordr-btn-round-def'
                                     onClick={() => {
                                         dispatch(updateCreateGivingGroupObj(this.state.createGivingGroupObjectState));
-                                        Router.pushRoute(CreateGivingGroupFlowSteps.stepOne)
+                                        Router.pushRoute(createGivingGroupFlowSteps.stepOne)
                                     }}
                                 >
                                     {formatMessage('backButton')}

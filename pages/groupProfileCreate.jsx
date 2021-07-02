@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { Router } from '../routes';
 import Layout from '../components/shared/Layout';
 import {
-    CreateGivingGroupFlowSteps,
+    createGivingGroupFlowSteps,
     getStore,
     intializeCreateGivingGroup,
 } from '../helpers/createGrouputils';
@@ -19,12 +19,12 @@ const GroupProfileCreate = ({ createGivingGroupStoreFlowObject, dispatch, slug }
     useEffect(() => {
         if (slug !== 'one') {
             if ((window !== 'undefined' && _isEmpty(createGivingGroupStoreFlowObject))) {
-                Router.pushRoute(CreateGivingGroupFlowSteps.stepOne);
+                Router.pushRoute(createGivingGroupFlowSteps.stepOne);
             } else if (!_isEmpty(createGivingGroupStoreFlowObject.attributes)) {
                 if (_isEmpty(createGivingGroupStoreFlowObject.attributes.name)) {
-                    Router.pushRoute(CreateGivingGroupFlowSteps.stepOne);
+                    Router.pushRoute(createGivingGroupFlowSteps.stepOne);
                 } else if (_isEmpty(createGivingGroupStoreFlowObject.attributes.short) && slug !== 'two') {
-                    Router.pushRoute(CreateGivingGroupFlowSteps.stepTwo)
+                    Router.pushRoute(createGivingGroupFlowSteps.stepTwo)
                 }
             }
         }

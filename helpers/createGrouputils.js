@@ -37,7 +37,7 @@ export const intializeValidity = {
 };
 
 // initialinzing the flow steps for create giving group
-export const CreateGivingGroupFlowSteps = {
+export const createGivingGroupFlowSteps = {
     stepOne: '/groups/step/one',
     stepTwo: '/groups/step/two',
     stepThree: '/groups/step/three',
