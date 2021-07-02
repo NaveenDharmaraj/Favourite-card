@@ -66,7 +66,15 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
         } = data || event.target;
         let formattedUrl = '';
         if (name === 'videoUrl') {
-            formattedUrl = value.replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/");
+            if (value.startsWith("https://youtu.be")) {
+                formattedUrl = value.replace("https://youtu.be/", "https://www.youtube.com/embed/");
+            }
+            if (value.startsWith("https://www.youtube.com")) {
+                formattedUrl = value.replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/");
+            }
+            if (!_isEmpty(formattedUrl) && formattedUrl.includes("&t=")) {
+                formattedUrl = formattedUrl.split("&t=")[0];
+            }
             setVideoUrlState(formattedUrl);
             setValidateVideoUrl(false);
         }
