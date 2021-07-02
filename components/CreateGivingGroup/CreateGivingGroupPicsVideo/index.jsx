@@ -17,7 +17,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _cloneDeep from 'lodash/cloneDeep';
 import dynamic from 'next/dynamic';
 
-import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, intializeCreateGivingGroup, youTubeVimeoValidator } from '../../../helpers/createGrouputils';
+import { createGivingGroupBreadCrum, createGivingGroupFlowSteps, intializeCreateGivingGroup, youTubeVimeoValidator } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import { withTranslation } from '../../../i18n';
 import '../../../static/less/create_manage_group.less';
@@ -184,7 +184,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             return;
         };
         dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
-        Router.pushRoute(CreateGivingGroupFlowSteps.stepFour);
+        Router.pushRoute(createGivingGroupFlowSteps.stepFour);
     }
     const profilePicture = _isEmpty(logo) ? groupImg : logo;
     const newGalleryImages = [];
@@ -353,7 +353,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                     className='blue-bordr-btn-round-def'
                                     onClick={() => {
                                         dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
-                                        Router.pushRoute(CreateGivingGroupFlowSteps.stepTwo)
+                                        Router.pushRoute(createGivingGroupFlowSteps.stepTwo)
                                     }}
                                 >
                                     {formatMessage('backButton')}

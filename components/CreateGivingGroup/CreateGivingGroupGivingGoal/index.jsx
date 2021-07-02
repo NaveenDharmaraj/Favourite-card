@@ -22,7 +22,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { withTranslation } from '../../../i18n';
-import { createGivingGroupBreadCrum, CreateGivingGroupFlowSteps, intializeCreateGivingGroup, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { createGivingGroupBreadCrum, createGivingGroupFlowSteps, intializeCreateGivingGroup, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import { formatAmount, formatCurrency } from '../../../helpers/give/utils';
@@ -531,7 +531,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                                 className="blue-bordr-btn-round-def"
                                                 onClick={() => {
                                                     dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
-                                                    Router.pushRoute(CreateGivingGroupFlowSteps.stepThree);
+                                                    Router.pushRoute(createGivingGroupFlowSteps.stepThree);
                                                 }}
                                                 disabled={disableContinueButton}
                                             >

@@ -27,7 +27,7 @@ import noDataggJoin from '../../../static/images/givinggroupsyoujoined_nodata_il
 
 import GroupsAndCampaignsList from './GroupsAndCampaignsList';
 import PrivacySetting from '../../shared/Privacy';
-import { CreateGivingGroupFlowSteps } from '../../../helpers/createGrouputils';
+import { createGivingGroupFlowSteps } from '../../../helpers/createGrouputils';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -245,7 +245,7 @@ class GroupsAndCampaigns extends React.Component {
                                             <Button fluid className="success-btn-rounded-def">Learn how to start a Giving Group</Button>
                                         </a>
                                     ) : (
-                                            <Link route={CreateGivingGroupFlowSteps.stepOne}>
+                                            <Link route={createGivingGroupFlowSteps.stepOne}>
                                                 <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
                                             </Link>
                                         )

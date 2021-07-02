@@ -25,7 +25,7 @@ import {
 
 import {
     createGivingGroupBreadCrum,
-    CreateGivingGroupFlowSteps,
+    createGivingGroupFlowSteps,
     intializeCreateGivingGroup,
     intializeValidity,
     ValidateCreateGivingGroup,
@@ -200,7 +200,7 @@ const CreateGivingGroupBasic = ({
         if (name !== '') {
             //handle continue from create giving group
             dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
-            Router.pushRoute(CreateGivingGroupFlowSteps.stepTwo);
+            Router.pushRoute(createGivingGroupFlowSteps.stepTwo);
         }
     };
 
