@@ -28,7 +28,7 @@ import {
     createGivingGroupFlowSteps,
     intializeCreateGivingGroup,
     intializeValidity,
-    ValidateCreateGivingGroup,
+    validateCreateGivingGroup,
     isValidText,
 } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
@@ -182,7 +182,7 @@ const CreateGivingGroupBasic = ({
                     [name]: value,
                 },
             });
-            setValidity(ValidateCreateGivingGroup(validity, name, value));
+            setValidity(validateCreateGivingGroup(validity, name, value));
             !fromCreate && setDisableContinue(false);
         }
     };
@@ -192,7 +192,7 @@ const CreateGivingGroupBasic = ({
             name,
             value,
         } = data || event.target;
-        setValidity(ValidateCreateGivingGroup(validity, name, value));
+        setValidity(validateCreateGivingGroup(validity, name, value));
     };
 
     const handleContinue = () => {

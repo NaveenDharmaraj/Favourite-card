@@ -22,7 +22,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { withTranslation } from '../../../i18n';
-import { createGivingGroupBreadCrum, createGivingGroupFlowSteps, intializeCreateGivingGroup, ValidateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import { createGivingGroupBreadCrum, createGivingGroupFlowSteps, intializeCreateGivingGroup, validateCreateGivingGroup } from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
 import { formatAmount, formatCurrency } from '../../../helpers/give/utils';
@@ -222,7 +222,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         });
         setisEditModified(true);
         setDisableContinueButton(_isEmpty(value));
-        setValidity(ValidateCreateGivingGroup(validity, name, value));
+        setValidity(validateCreateGivingGroup(validity, name, value));
     };
     const handleInputOnBlurGivingGoal = (event, data) => {
         const {
@@ -242,7 +242,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                 },
             });
         }
-        setValidity(ValidateCreateGivingGroup(validity, name, value));
+        setValidity(validateCreateGivingGroup(validity, name, value));
     };
     const handleOnDateChange = (date, name) => {
         if (name === 'fundraisingCreated' && fundraisingDate && (new Date(fundraisingDate).setHours(0, 0, 0, 0) <= new Date(date).setHours(0, 0, 0, 0))) {
