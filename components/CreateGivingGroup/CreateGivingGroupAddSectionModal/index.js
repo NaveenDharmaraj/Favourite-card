@@ -4,7 +4,7 @@ import {
     addModalDescriptionLimit,
     initializeAddSectionModalObject,
     intializeValidity,
-    ValidateCreateGivingGroup,
+    validateCreateGivingGroup,
     isValidText,
 } from "../../../helpers/createGrouputils";
 import _isEmpty from 'lodash/isEmpty';
@@ -41,7 +41,7 @@ const CreateGivingGroupAddSectionModal = ({
                 [name]: value,
             });
             setDisableContinue(false);
-            setValidity(ValidateCreateGivingGroup(validity, name, value));
+            setValidity(validateCreateGivingGroup(validity, name, value));
         }
     };
 
@@ -50,7 +50,7 @@ const CreateGivingGroupAddSectionModal = ({
             name,
             value
         } = data || event.target;
-        setValidity(ValidateCreateGivingGroup(validity, name, value));
+        setValidity(validateCreateGivingGroup(validity, name, value));
     };
     const handleOnModalClick = (modalState, buttonClicked = '') => {
         setValidity({

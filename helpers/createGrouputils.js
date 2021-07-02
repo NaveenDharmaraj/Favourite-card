@@ -110,7 +110,7 @@ export const generateBreadCrum = (breakCrumArray = [], currentActiveStepArray = 
  * @param {string} value value from the field to be validated.
  * @returns {object} returns the validation object after validating.
  */
-export const ValidateCreateGivingGroup = (validity, name, value) => {
+export const validateCreateGivingGroup = (validity, name, value) => {
     let modofiedValue = '';
     if (value) {
         modofiedValue =  value.trim();
