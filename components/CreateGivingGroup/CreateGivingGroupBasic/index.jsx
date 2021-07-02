@@ -59,6 +59,7 @@ const CreateGivingGroupBasic = ({
         isNotEmpty: true,
         hasAlphabet: true,
         hasValidLength: true,
+        isValidText: true,
     };
     const formatMessage = t;
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);

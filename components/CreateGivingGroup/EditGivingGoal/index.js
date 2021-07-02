@@ -53,6 +53,7 @@ const EditGivingGoal = ({
                     dateValue={fundraisingDate ? new Date(fundraisingDate) : null}
                     handleonDateChange={handleOnDateChange}
                     name="fundraisingDate"
+                    minDate={new Date(fundraisingCreated)}
                 />
                 {(!validity.isEndDateGreaterThanStartDate || !validity.isNotSameStartEndData)
                     &&

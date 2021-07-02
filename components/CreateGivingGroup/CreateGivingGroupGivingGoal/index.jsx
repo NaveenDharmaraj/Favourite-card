@@ -111,7 +111,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         if (!_isEmpty(fundraisingGoal)) {
             givingGoalValidity = _every(validateGivingGoal(parseFloat(fundraisingGoal.replace(/,/g, '')), validity));
         }
-        if (fundraisingDate) {
+        if (!_isEmpty(fundraisingDate)) {
             dateCheck = new Date(fundraisingDate) > new Date(fundraisingCreated);
         }
         return (
@@ -139,10 +139,12 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         if (validationCreateGivingGroup()) {
             handleResetValidity();
             if (!fromCreate) {
+                const goalStartDate = ((formattedGoal !== 0) && fundraisingCreated) ? fundraisingCreated.toString() : null;
+                const goalEndDate = ((formattedGoal !== 0) && fundraisingDate) ? fundraisingDate.toString() : null;
                 dispatch(editGivingGroupApiCall({
                     attributes: {
-                        fundraisingCreated: ((formattedGoal !== 0) && fundraisingCreated) ? new Date(fundraisingCreated).toLocaleDateString() : null,
-                        fundraisingDate: ((formattedGoal !== 0) && fundraisingDate) ? new Date(fundraisingDate).toLocaleDateString() : null,
+                        fundraisingCreated: goalStartDate,
+                        fundraisingDate: goalEndDate,
                         fundraisingGoal: (formattedGoal !== 0) ? formattedGoal : '',
                     },
                 }, groupId))
@@ -243,14 +245,23 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         setValidity(ValidateCreateGivingGroup(validity, name, value));
     };
     const handleOnDateChange = (date, name) => {
-        if (name === 'fundraisingCreated' && fundraisingDate && (+new Date(fundraisingDate) <= +new Date(date))) {
+        if (name === 'fundraisingCreated' && fundraisingDate && (new Date(fundraisingDate).setHours(0, 0, 0, 0) <= new Date(date).setHours(0, 0, 0, 0))) {
             validity.isEndDateGreaterThanStartDate = false;
-        } else if (name === 'fundraisingDate' && fundraisingCreated && (new Date(date) < new Date(fundraisingCreated))) {
+        } else if (name === 'fundraisingDate' && date && fundraisingCreated && (new Date(date).setHours(0, 0, 0, 0) < new Date(fundraisingCreated).setHours(0, 0, 0, 0))) {
             validity.isEndDateGreaterThanStartDate = false;
+        } else if (name === 'fundraisingCreated' && !date && fundraisingDate) {
+            validity.isEndDateGreaterThanStartDate = true;
+        } else if (name === 'fundraisingDate' && !date) {
+            validity.isEndDateGreaterThanStartDate = true;
         } else {
             validity.isEndDateGreaterThanStartDate = true;
         }
-        if (name === 'fundraisingDate' && fundraisingCreated && +new Date(fundraisingCreated) === +new Date(date)) {
+        if (name === 'fundraisingDate' && fundraisingCreated && date
+            && ((new Date(fundraisingCreated).setHours(0, 0, 0, 0) === new Date(date).setHours(0, 0, 0, 0))
+            || (new Date(date).setHours(0, 0, 0, 0) <= new Date(fundraisingCreated).setHours(0, 0, 0, 0)))) {
+            validity.isNotSameStartEndData = false;
+            setisEditModified(false);
+        } else if (name === 'fundraisingCreated' && fundraisingDate && new Date(fundraisingDate).setHours(0, 0, 0, 0) <= new Date(date).setHours(0, 0, 0, 0)) {
             validity.isNotSameStartEndData = false;
             setisEditModified(false);
         } else {
@@ -393,7 +404,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             />
         );
     };
-
     return (
         <Container>
             <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>

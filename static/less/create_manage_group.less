@@ -2355,6 +2355,14 @@ body{
    &.manage_charity_clear{
     right: 12px !important;
    }
+   &.datepicker_close_icon{
+    right: 15px !important;
+    margin-top: 3px !important;
+    width: 15px;
+    margin-right: 22px;
+    cursor: pointer;
+    pointer-events: all !important;
+   }
  }
 }
 .manage_charities_max{
@@ -2372,6 +2380,25 @@ body{
     &.dimmer{
       background: transparent !important;
       margin-top: 10%;
+    }
+  }
+}
+.react-datepicker__input-container{
+  .react-datepicker__close-icon{
+    &::after{
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 8px;
+        height: 8px;
+        margin: auto;
+        background-image: url("@{img_url}/images/icons/close.svg") !important;
+        background-position: center !important;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
     }
   }
 }
