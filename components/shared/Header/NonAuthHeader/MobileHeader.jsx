@@ -11,6 +11,7 @@ import storage from '../../../../helpers/storage';
 import { Link } from '../../../../routes';
 import logo from '../../../../static/images/CharitableImpact.png';
 import searchIcon from '../../../../static/images/icons/icon-search.svg';
+import { useRouter } from 'next/router';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -55,6 +56,13 @@ class MobileHeader extends React.Component {
         if (typeof Storage !== 'undefined') {
             claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
         }
+        const router = useRouter();
+        const {
+            query: {
+                step,
+            },
+        } = router;
+        const loginUrl = step ? `/users/login?invitationType=groupInvite&sourceId=${step}` : `/users/login`;
         return (
             <Sidebar.Pushable className="c-m-default-header">
                 <Sidebar
@@ -65,7 +73,7 @@ class MobileHeader extends React.Component {
                     direction="right"
                 >
                     <Menu.Item className="twoBtnWraper" >
-                        <Link route="/users/login" >
+                        <Link route={loginUrl} >
                             <Button as="a" basic color="blue" onClick={this.handleToggle}>Login</Button>
                         </Link>
                         <Link route={claimCharityAccessCode ? `/users/new?isClaimCharity=${true}` : '/users/new'}>

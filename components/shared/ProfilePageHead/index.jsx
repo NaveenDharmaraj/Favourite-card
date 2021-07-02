@@ -73,6 +73,7 @@ class ProfilePageHead extends React.Component {
             pageDetails,
             isAuthenticated,
             t: formatMessage,
+            inviteToken,
         } = this.props;
         const {
             isGiveFromModalOpen,
@@ -211,7 +212,9 @@ class ProfilePageHead extends React.Component {
                 {buttonLink}
                 {(type === 'groups' && !isAdmin)
                 && (
-                    <GroupJoin />
+                    <GroupJoin
+                        inviteToken={inviteToken}
+                    />
                 )}
             </Fragment>
         );
@@ -221,6 +224,7 @@ class ProfilePageHead extends React.Component {
 ProfilePageHead.defaultProps = {
     beneficiariesCount: null,
     dispatch: () => {},
+    inviteToken: '',
     isAuthenticated: false,
     pageDetails: {
         attributes: {
@@ -240,6 +244,7 @@ ProfilePageHead.defaultProps = {
 
 ProfilePageHead.propTypes = {
     dispatch: func,
+    inviteToken: string,
     isAuthenticated: bool,
     pageDetails: PropTypes.shape({
         attributes: PropTypes.shape({

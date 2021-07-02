@@ -488,9 +488,14 @@ const _handleLockSuccess = async ({
         };
         addToDataLayer(tagManagerArgs);
         if (reqPar.invitationType && reqPar.sourceId) {
+            let reqType = 'loggedIn';
+            if (reqPar.invitationType === 'groupInvite') {
+                reqType = 'loggedOut';
+            }
             dispatch(handleInvitationAccepts(
                 reqPar,
                 userId,
+                reqType,
             ));
         }
         if (beneficiarySlug) {

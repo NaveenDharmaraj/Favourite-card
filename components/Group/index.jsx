@@ -15,13 +15,19 @@ import {
     Grid,
     Responsive,
     Divider,
+    Segment,
+    Header,
+    Button,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import { Link } from '../../routes';
 
+import avatarIcon from '../../static/images/no-data-avatar-user-profile.png';
 import BreadcrumbDetails from '../shared/BreadCrumbs';
 import ProfileTitle from '../shared/ProfileTitle';
 import ProfilePageHead from '../shared/ProfilePageHead';
 import { generateDeepLink } from '../../actions/profile';
+import { handleInvitationAccepts } from '../../actions/user';
 
 import GroupAdmins from './GroupAdmins';
 import AboutGroup from './AboutGroup';
@@ -50,6 +56,26 @@ class GroupProfileWrapper extends Component {
             generateDeepLink(deepLinkApiUrl, dispatch);
         }
     }
+    handleAcceptInvite = (e) => {
+        const { 
+            currentUser: {
+                attributes: {
+                    email
+                },
+            },
+            groupDetails: {
+                id:groupId,
+            },
+            dispatch,
+            step,
+        } = this.props;
+        const reqObj = { 
+            groupId,
+            invitationType: 'groupInvite',
+            sourceId: step,
+        }
+        dispatch(handleInvitationAccepts(reqObj, email));
+    }
 
     render() {
         const {
@@ -66,13 +92,24 @@ class GroupProfileWrapper extends Component {
                     location,
                     name,
                     hasActiveMatch,
+                    slug,
                 },
                 id: profileId,
                 type,
             },
+            groupInviteDetails: {
+                attributes: {
+                    senderAvatar,
+                    senderDisplayName,
+                    senderFullName,
+                },
+                id,
+            },
             groupMatchingHistory: {
                 data: matchHistory,
             },
+            isAuthenticated,
+            step,
         } = this.props;
         const beneficiariesCount = !_isEmpty(data) ? data : null;
         const {
@@ -85,6 +122,35 @@ class GroupProfileWrapper extends Component {
         ];
         return (
             <Fragment>
+                {!_isEmpty(id) && (
+                    <div className="giving_group_top">
+                        <Container>
+                            <Segment className="box_color">
+                                <div className="group_icon">
+                                    <img src={senderAvatar || avatarIcon} alt="user-avatar" />
+                                </div>
+                                <div className="group_text">
+                                    <Header as="h5">
+                                        {senderDisplayName || senderFullName}
+                                        {' '}
+                                    has invited you to join this Giving Group.
+                                    </Header>
+                                    <p>Join this group to show your support and connect with other group members.</p>
+                                </div>
+                                {isAuthenticated ? (<div className="giving_group_btn">
+                                    <Button className="white-btn-round_join_group" onClick={this.handleAcceptInvite}>Join group</Button>
+                                </div>) :
+                                (<div className="giving_group_btn"><Link route={`/users/login?returnTo=/groups/${slug}&invitationType=groupInvite&sourceId=${step}`}>
+                                    <Button
+                                        className="white-btn-round_join_group"
+                                    >
+                                        Join group
+                                    </Button>
+                                </Link></div>)}
+                            </Segment>
+                        </Container>
+                    </div>
+                )}
                 <div className="top-breadcrumb">
                     <BreadcrumbDetails
                         pathDetails={pathArr}
@@ -112,6 +178,7 @@ class GroupProfileWrapper extends Component {
                                                     pageDetails={groupDetails}
                                                     dispatch={dispatch}
                                                     hasActiveMatch={hasActiveMatch}
+                                                    inviteToken={step}
                                                 />
                                             </ProfileTitle>
                                         </Grid>
@@ -176,9 +243,14 @@ GroupProfileWrapper.defaultProps = {
         id: '',
         type: '',
     },
+    groupInviteDetails: {
+        attributes: {},
+        id: '',
+    },
     groupMatchingHistory: {
         data: [],
     },
+    isAuthenticated: false
 };
 
 GroupProfileWrapper.propTypes = {
@@ -202,16 +274,23 @@ GroupProfileWrapper.propTypes = {
         id: string,
         type: string,
     }),
+    groupInviteDetails: PropTypes.shape({
+        attributes: PropTypes.shape({}),
+        id: string,
+    }),
     groupMatchingHistory: PropTypes.shape({
         data: array,
     }),
+    isAuthenticated: bool,
 };
 
 function mapStateToProps(state) {
     return {
         groupBeneficiaries: state.group.groupBeneficiaries,
         groupDetails: state.group.groupDetails,
+        groupInviteDetails: state.group.groupInviteDetails,
         groupMatchingHistory: state.group.groupMatchingHistory,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 

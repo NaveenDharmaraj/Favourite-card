@@ -20,6 +20,7 @@ import { withTranslation } from '../i18n';
 import {
     actionTypes,
     getGroupFromSlug,
+    getGroupInviteDetails,
     getImageGallery,
     getMatchingHistory,
 } from '../actions/group';
@@ -58,6 +59,7 @@ class GroupProfile extends React.Component {
                 'groupProfile',
             ],
             slug: query.slug,
+            step: query.step,
         };
     }
 
@@ -69,6 +71,8 @@ class GroupProfile extends React.Component {
             groupDetails: {
                 attributes: {
                     isCampaign,
+                    isAdmin,
+                    isMember,
                 },
                 id: groupId,
                 relationships: {
@@ -81,7 +85,11 @@ class GroupProfile extends React.Component {
             },
             redirectToPrivateGroupErrorPage,
             redirectToDashboard,
+            step,
         } = this.props;
+        if (step && !isMember && !_isEmpty(groupId)) {
+            dispatch(getGroupInviteDetails(groupId, step));
+        }
         if (!_isEmpty(groupId)) {
             dispatch(getMatchingHistory(groupId));
         }
@@ -218,6 +226,7 @@ GroupProfile.defaultProps = {
     redirectToDashboard: false,
     redirectToPrivateGroupErrorPage: false,
     slug: '',
+    step: '',
     t: () => { },
 };
 
@@ -252,6 +261,7 @@ GroupProfile.propTypes = {
     redirectToDashboard: bool,
     redirectToPrivateGroupErrorPage: bool,
     slug: string,
+    step: string,
     t: func,
 };
 
