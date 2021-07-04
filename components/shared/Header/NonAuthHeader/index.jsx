@@ -22,14 +22,8 @@ const {
 } = publicRuntimeConfig;
 
 const NonAuthHeader = () => {
-    const router = useRouter();
     const groupInviteDetails = useSelector((state) => state.group.groupInviteDetails);
-    const {
-        query: {
-            step,
-        },
-    } = router;
-    const loginUrl = step && !_isEmpty(groupInviteDetails) ? `/users/login?invitationType=groupInvite&sourceId=${step}` : `/users/login`;
+    const loginUrl = !_isEmpty(groupInviteDetails) ? `/users/login?invitationType=groupInvite&sourceId=${groupInviteDetails.attributes.claimToken}` : `/users/login`;
     return (
         <Fragment>
             <Menu.Menu className="left-menu">
