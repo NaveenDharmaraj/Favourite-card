@@ -7,11 +7,13 @@ import {
     Button,
 } from "semantic-ui-react";
 import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
+import { connect } from "react-redux";
+
 import storage from '../../../../helpers/storage';
 import { Link } from '../../../../routes';
 import logo from '../../../../static/images/CharitableImpact.png';
 import searchIcon from '../../../../static/images/icons/icon-search.svg';
-import { useRouter } from 'next/router';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -44,6 +46,7 @@ class MobileHeader extends React.Component {
     render() {
         const {
         children,
+        groupInviteDetails,
         // onPusherClick,
         // onToggle,
         // visible
@@ -56,13 +59,7 @@ class MobileHeader extends React.Component {
         if (typeof Storage !== 'undefined') {
             claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
         }
-        const router = useRouter();
-        const {
-            query: {
-                step,
-            },
-        } = router;
-        const loginUrl = step ? `/users/login?invitationType=groupInvite&sourceId=${step}` : `/users/login`;
+        const loginUrl = !_isEmpty(groupInviteDetails) ? `/users/login?invitationType=groupInvite&sourceId=${groupInviteDetails.attributes.claimToken}` : `/users/login`;
         return (
             <Sidebar.Pushable className="c-m-default-header">
                 <Sidebar
@@ -169,5 +166,9 @@ class MobileHeader extends React.Component {
     }
   
 }
-
-export default MobileHeader;
+function mapStateToProps(state){
+    return {
+        groupInviteDetails:state.group.groupInviteDetails,
+    }
+}
+export default connect(mapStateToProps)(MobileHeader);

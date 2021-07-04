@@ -8,6 +8,8 @@ import {
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
 import { useRouter } from 'next/router';
+import _isEmpty from 'lodash/isEmpty';
+import { useSelector } from 'react-redux';
 
 import { Link } from '../../../../routes';
 import searchIcon from '../../../../static/images/icons/icon-search.svg';
@@ -21,12 +23,13 @@ const {
 
 const NonAuthHeader = () => {
     const router = useRouter();
+    const groupInviteDetails = useSelector((state) => state.group.groupInviteDetails);
     const {
         query: {
             step,
         },
     } = router;
-    const loginUrl = step ? `/users/login?invitationType=groupInvite&sourceId=${step}` : `/users/login`;
+    const loginUrl = step && !_isEmpty(groupInviteDetails) ? `/users/login?invitationType=groupInvite&sourceId=${step}` : `/users/login`;
     return (
         <Fragment>
             <Menu.Menu className="left-menu">
