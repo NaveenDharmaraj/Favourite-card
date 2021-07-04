@@ -7,7 +7,6 @@ import {
     Image,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
-import { useRouter } from 'next/router';
 import _isEmpty from 'lodash/isEmpty';
 import { useSelector } from 'react-redux';
 
