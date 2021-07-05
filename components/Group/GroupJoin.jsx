@@ -68,7 +68,11 @@ class GroupJoin extends React.Component {
                 invitationType: 'groupInvite',
                 sourceId: inviteToken,
             };
-            dispatch(handleInvitationAccepts(reqObj, email, 'loggedIn', loadMembers));
+            dispatch(handleInvitationAccepts(reqObj, email, 'loggedIn', loadMembers)).then(()=>{
+                this.setState({
+                    joinClicked: false,
+                });
+            });
         } else {
             dispatch(joinGroup(slug, groupId, loadMembers)).then(() => {
                 this.setState({
@@ -274,6 +278,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         errorMessage: state.group.errorMessage,
         groupDetails: state.group.groupDetails,
+        groupInviteDetails: state.group.groupInviteDetails,
         groupMembersDetails: state.group.groupMembersDetails,
         isAuthenticated: state.auth.isAuthenticated,
     };
