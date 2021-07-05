@@ -125,6 +125,7 @@ class GroupJoin extends React.Component {
                     slug,
                 },
             },
+            groupInviteDetails,
             isAuthenticated,
             inviteToken,
             t: formatMessage,
@@ -191,7 +192,7 @@ class GroupJoin extends React.Component {
                 );
             }
         } else {
-            const linkRoute = inviteToken ? `/users/login?returnTo=/groups/${slug}&invitationType=groupInvite&sourceId=${inviteToken}` : `/users/login?returnTo=/groups/${slug}`;
+            const linkRoute = inviteToken && !_isEmpty(groupInviteDetails) ? `/users/login?returnTo=/groups/${slug}&invitationType=groupInvite&sourceId=${inviteToken}` : `/users/login?returnTo=/groups/${slug}`;
             joinButton = (
                 <Fragment>
                     <Link route={linkRoute}>
