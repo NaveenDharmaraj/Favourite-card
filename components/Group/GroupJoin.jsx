@@ -54,6 +54,7 @@ class GroupJoin extends React.Component {
                 },
                 id: groupId,
             },
+            groupInviteDetails,
             groupMembersDetails,
             inviteToken,
         } = this.props;
@@ -61,7 +62,7 @@ class GroupJoin extends React.Component {
         this.setState({
             joinClicked: true,
         });
-        if (inviteToken) {
+        if (inviteToken && !_isEmpty(groupInviteDetails)) {
             const reqObj = {
                 groupId,
                 invitationType: 'groupInvite',
