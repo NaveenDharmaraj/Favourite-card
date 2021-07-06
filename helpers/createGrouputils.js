@@ -63,6 +63,7 @@ export const intializeCreateGivingGroup = {
         fundraisingGoal: "",
         fundraisingDate: null,
         fundraisingCreated: null,
+        // isCampaignLocked: false,
         logo: "",
         videoUrl: ""
     },
@@ -184,7 +185,7 @@ export const manageGivingGroupAccordianMenuOptions = {
     picsvideos: {
         key: 'picsvideos',
         route: 'picsvideos',
-        text: 'Pics & video',
+        text: 'Photos and video',
         value: 2,
         component: <CreateGivingGroupPicsVideo />
     },

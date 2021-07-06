@@ -119,6 +119,7 @@ const CreateGivingGroupBasic = ({
         showLoader,
         setshowLoader,
     ] = useState(false);
+    const isFromCampaignObj = useSelector((state) => state.createGivingGroup.isFromCampaignObj);
 
     const {
         attributes: {
@@ -136,6 +137,12 @@ const CreateGivingGroupBasic = ({
         _isEmpty(provinceOptions) && dispatch(getProvincesList(1, 50));
         if (!_isEmpty(province)) {
             dispatch(getUniqueCities(1, 50, province));
+        }
+        if (!_isEmpty(isFromCampaignObj) && !_isEmpty(isFromCampaignObj.featuredCharities)) {
+            setCreateGivingGroupObject({
+                ...createGivingGroupObject,
+                beneficiaryItems: isFromCampaignObj.featuredCharities,
+            });
         }
     }, []);
 

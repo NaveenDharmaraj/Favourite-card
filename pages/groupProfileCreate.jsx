@@ -1,4 +1,7 @@
 import React, { useEffect } from 'react';
+import {
+    useDispatch, useSelector,
+} from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
 
@@ -15,11 +18,26 @@ const CreateGivingGroupAbout = dynamic(() => import('../components/CreateGivingG
 const CreateGivingGroupPicsVideo = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupPicsVideo'));
 const CreateGivingGroupGivingGoal = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupGivingGoal'));
 
-const GroupProfileCreate = ({ createGivingGroupStoreFlowObject, dispatch, slug }) => {
+const GroupProfileCreate = (props) => {
+    const {
+        createGivingGroupStoreFlowObject,
+        dispatch,
+        slug,
+        step,
+        substep,
+    } = props;
     useEffect(() => {
+        const {
+            slug,
+            step,
+            substep,
+        } = props;
+        const isFromCampaign = (!_isEmpty(step) && (step === 'step')) && (!_isEmpty(substep) && (substep === 'one'));
         if (slug !== 'one') {
-            if ((window !== 'undefined' && _isEmpty(createGivingGroupStoreFlowObject))) {
+            if ((window !== 'undefined' && _isEmpty(createGivingGroupStoreFlowObject)) && !isFromCampaign) {
                 Router.pushRoute(createGivingGroupFlowSteps.stepOne);
+            } else if ((window !== 'undefined' && _isEmpty(createGivingGroupStoreFlowObject)) && isFromCampaign) {
+                const campaignDetails = useSelector((state) => state.profile.campaignDetails);
             } else if (!_isEmpty(createGivingGroupStoreFlowObject.attributes)) {
                 if (_isEmpty(createGivingGroupStoreFlowObject.attributes.name)) {
                     Router.pushRoute(createGivingGroupFlowSteps.stepOne);
@@ -28,6 +46,35 @@ const GroupProfileCreate = ({ createGivingGroupStoreFlowObject, dispatch, slug }
                 }
             }
         }
+        // if (isFromCampaign) {
+        //     dispatch({
+        //         payload: {
+        //             isFromCampaign: false,
+        //         },
+        //         type: 'SET_GROUP_FROM_CAMPAIGN',
+        //     });
+        //     if(!_isEmpty(campaignDetails)) {
+        //         fromCampaignObj = {
+        //             campaignId: campaignDetails.id,
+        //             featuredCharities: campaignDetails.attributes.featuredCharities,
+        //             isCampaignLocked: campaignDetails.attributes.isCampaignLocked,
+        //             isFromCampaign: true,
+        //         }
+        //         dispatch({
+        //             payload: {
+        //                 fromCampaignObj,
+        //             },
+        //             type: 'SET_GROUP_FROM_CAMPAIGN_OBJECT',
+        //         });
+        //     }
+        // } else {
+        //     dispatch({
+        //         payload: {
+        //             fromCampaignObj,
+        //         },
+        //         type: 'SET_GROUP_FROM_CAMPAIGN_OBJECT',
+        //     });
+        // }
         return (() => {
             dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
         })
@@ -86,6 +133,8 @@ GroupProfileCreate.getInitialProps = async ({
                 'common',
             ],
             slug: query.slug,
+            step: query.step,
+            substep: query.substep
         }
     }
     catch (err) {
@@ -98,6 +147,8 @@ GroupProfileCreate.defaultProps = {
     createGivingGroupStoreFlowObject: intializeCreateGivingGroup,
     dispatch: () => { },
     slug: '',
+    step: '',
+    substep: ''
 };
 
 export default GroupProfileCreate;

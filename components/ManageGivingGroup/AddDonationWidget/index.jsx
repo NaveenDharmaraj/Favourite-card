@@ -63,8 +63,8 @@ const AddDonationWidget = () => {
                     </div>
                     <div className="Donateonline chkMarginBtm checkboxToRadio">
                         <Checkbox
-                            onChange={() => handleOnChange('green')}
-                            checked={false}
+                            onChange={() => handleOnChange('large')}
+                            checked={selectedValue === 'large'}
                         />
                         <Button
                             className="primary btn-width-donate blue-btn-rounded-def"
@@ -79,7 +79,7 @@ const AddDonationWidget = () => {
                                        Powered by
                                        &nbsp;
                                         <span className="charitable_text">CHARITABLE</span>
-&nbsp;
+                                        &nbsp;
                                         IMPACT
                                     </p>
                                 </div>
@@ -88,8 +88,8 @@ const AddDonationWidget = () => {
                     </div>
                     <div className="Donateonline chkMarginBtm checkboxToRadio">
                         <Checkbox
-                            onChange={() => handleOnChange('blue')}
-                            checked
+                            onChange={() => handleOnChange('medium')}
+                            checked={selectedValue === 'medium'}
                         />
                         <Button
                             className="primary btn-width-donate blue-btn-rounded-def"
@@ -100,7 +100,7 @@ const AddDonationWidget = () => {
                                        Powered by
                                        &nbsp;
                                     <span className="charitable_text">CHARITABLE</span>
-&nbsp;
+                                    &nbsp;
                                         IMPACT
                                 </p>
                             </div>
@@ -108,8 +108,8 @@ const AddDonationWidget = () => {
                     </div>
                     <div className="Donateonline chkMarginBtm checkboxToRadio">
                         <Checkbox
-                            onChange={() => handleOnChange('green')}
-                            checked
+                            onChange={() => handleOnChange('simple')}
+                            checked={selectedValue === 'simple'}
                         />
                         <Button
                             className="primary btn-width-donate blue-btn-rounded-def"

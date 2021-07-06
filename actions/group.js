@@ -4,8 +4,9 @@ import _isEmpty from 'lodash/isEmpty';
 import coreApi from '../services/coreApi';
 import graphApi from '../services/graphApi';
 import eventApi from '../services/eventApi';
-import { upadateEditGivingGroupObj } from './createGivingGroup';
 import { intializeCreateGivingGroup } from '../helpers/createGrouputils';
+
+import { upadateEditGivingGroupObj } from './createGivingGroup';
 
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
@@ -77,7 +78,14 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
         }).then(
             async (result) => {
                 if (result && !_isEmpty(result.data)) {
-                    fsa.payload.groupDetails = result.data;
+                    const temp = {
+                        ...result.data,
+                        attributes: {
+                            ...result.data.attributes,
+                            isCampaignLocked: true,
+                        },
+                    };
+                    fsa.payload.groupDetails = temp;
                     dispatch(fsa);
                     if (fromEdit) {
                         const galleryImages = [];
@@ -125,6 +133,7 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
                                 short: result.data.attributes.description,
                                 slug: result.data.attributes.slug,
                                 videoUrl: result.data.attributes.videoPlayerLink,
+                                isCampaignLocked: true,
                             },
                             beneficiaryItems: result.data.attributes.groupCharities,
                             galleryImages: [

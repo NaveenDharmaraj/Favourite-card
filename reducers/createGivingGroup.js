@@ -131,6 +131,18 @@ const createGivingGroup = (state = {}, action) => {
                 manageGroupFriendNoData: action.payload.isInitial,
             };
             break;
+        case 'SET_GROUP_FROM_CAMPAIGN':
+            newState = {
+                ...state,
+                isFromCampaign: action.payload.isFromCampaign,
+            };
+            break;
+        case 'SET_GROUP_FROM_CAMPAIGN_OBJECT':
+            newState = {
+                ...state,
+                isFromCampaignObj: action.payload.fromCampaignObj,
+            };
+            break;
         default:
             break;
     }

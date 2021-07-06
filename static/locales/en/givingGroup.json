@@ -2,7 +2,7 @@
     "createGivingGroupBreadCrum": {
         "basicSettings": "Basic settings",
         "aboutTheGroup": "About the group",
-        "picsVideos": "Pics & video",
+        "picsVideos": "Photos and video",
         "charitiesGoals": "Charities and goal"
     },
     "createGivingGroupHeader": "Create a new Giving Group",
@@ -27,7 +27,7 @@
         "aboutDescription": "Provide a brief summary about why you started this Giving Group.",
         "additionAboutDescriptionHeader": "Expand your group description",
         "additionAboutDescriptionHeaderOptional": "(optional)",
-        "additionAboutDescriptionDescriptionLabel": "Provide additional details about your Giving Group. You can add up to 5 sections, and you can edit or re-order how they appear on your profile anytime.",
+        "additionAboutDescriptionDescriptionLabel": "If you'd like, you can provide additional details about your Giving Group. You can add up to 5 sections, and you can edit or re-order how they appear on your profile anytime.",
         "addSectionModalAddButton": "Add about section",
         "addSectionModalHeader": "Add section",
         "addSectionModalDescription": "Use this section to add more information about your group, such as information about your group's organizers or how people can help.",
@@ -36,7 +36,7 @@
         "addSectionModalSectionDescription": "Description"
     },
     "createGivingGroupPicsVideo": {
-        "header": "Pics & video",
+        "header": "Photos and video",
         "pictureHeader": "Giving Group picture",
         "pictureDescription": "Add a logo, photo, or any kind of visual that represents the group.",
         "uploadPictureButton": "Upload picture",

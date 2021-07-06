@@ -6,6 +6,11 @@ import coreApi from '../services/coreApi';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 
+import {
+    featuredCharities,
+    isCampaignLocked,
+} from './data';
+
 const { publicRuntimeConfig } = getConfig();
 
 const {
@@ -224,9 +229,17 @@ export const getCampaignFromSlug = (slug, token = null) => async (dispatch) => {
             },
             type: actionTypes.SUB_GROUP_LIST_LOADER,
         });
+        const temp = {
+            ...result.data,
+            attributes: {
+                ...result.data.attributes,
+                featuredCharities,
+                isCampaignLocked,
+            },
+        };
         dispatch({
             payload: {
-                campaignDetails: result.data,
+                campaignDetails: temp,
             },
             type: actionTypes.GET_CAMPAIGN_FROM_SLUG,
         });
