@@ -206,119 +206,126 @@ const Manage = () => {
                     )
                     : (
                         <Fragment>
-                            <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
-                                <Table.Body>
-                                    {pendingList}
-                                </Table.Body>
-                            </Table>
-                            <div className="paginationWraper group_pagination">
-                                <div className="db-pagination">
-                                    {
-                                        !_isEmpty(groupPendingInvites) && invitesPageCount > 1 && (
-                                            <Pagination
-                                                activePage={currentInviteActivePage}
-                                                totalPages={invitesPageCount}
-                                                onPageChanged={onInvitePageChanged}
-                                            />
-                                        )
-                                    }
-                                </div>
-                            </div>
+                            {!_isEmpty(pendingList)
+                            && (
+                                <Fragment>
+                                    <Table basic="very" unstackable className="ManageTable Topborder Bottomborder ABC">
+                                        <Table.Body>
+                                            {pendingList}
+                                        </Table.Body>
+                                    </Table>
+                                    <div className="paginationWraper group_pagination">
+                                        <div className="db-pagination">
+                                            {
+                                                !_isEmpty(groupPendingInvites) && invitesPageCount > 1 && (
+                                                    <Pagination
+                                                        activePage={currentInviteActivePage}
+                                                        totalPages={invitesPageCount}
+                                                        onPageChanged={onInvitePageChanged}
+                                                    />
+                                                )
+                                            }
+                                        </div>
+                                    </div>
+                                </Fragment>
+                            )}
                         </Fragment>
                     )}
             </Fragment>
             <Fragment>
-                {(!_isEmpty(memberList) || (groupMemberPlaceholderStatus))
-                && (
-                    <div className="invite-heading">
-                        <h3>
-                            Members
-                        </h3>
-                    </div>
-                )}
-                <div className="memberswapper">
-                    {(memberCount > 1)
-                            && (
-                                <div className="membersadmin">
-                                    <p>
-                                        <span>
-                                            <i aria-hidden="true" className="users icon" />
-                                        </span>
-                                        {`${memberCount} members`}
-                                    </p>
-                                </div>
-                            )}
-                    <div className="Emailmembers">
-                        {/* <Link route={`/groups/${groupDetails.attributes.slug}/email_members`}> */}
-                        <p>
-                            <span>
-                                <i
-                                    aria-hidden="true"
-                                    className="icon icon-mail"
-                                    onClick={handleEmailClick}
-                                />
-                            </span>
-                            Email members
-                        </p>
-                        {/* </Link> */}
-                    </div>
-                </div>
-                {groupMemberPlaceholderStatus
+                {isSingleAdminMember
                     ? (
-                        <Grid className="no-margin">
-                            <Grid.Row>
-                                <Grid.Column width={16}>
-                                    <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                    )
-                    : (
+                        <div className="GetDonation">
+                            <div className="Step1">
+                                <p className="stepSubHeader">This Giving Group doesn't have any members yet.</p>
+                                <div className="ManageNoData">
+                                    <div className="ManageNoDataLeftImg">
+                                        <Image className="Connect_img" src={noDataImg} />
+                                    </div>
+                                    <div className="ManageNoDataRightText">
+                                        <Header as="h4">Invite friends to join your group</Header>
+                                        <Link className="lnkChange" route={`/groups/${groupDetails.attributes.slug}/invites`}>
+                                            <Button className="success-btn-rounded-def">Invite friends</Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
                         <Fragment>
-                            {!isSingleAdminMember
-                                ? (
-                                    <Fragment>
-                                        <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
-                                            <Table.Body>
-                                                {!_isEmpty(memberList)
-                                                    ? memberList
-                                                    : (
-                                                        <p> No Members Found</p>
-                                                    )}
-                                            </Table.Body>
-                                        </Table>
-                                        <div className="paginationWraper group_pagination">
-                                            <div className="db-pagination">
-                                                {
-                                                    !_isEmpty(memberList) && memberPageCount > 1 && (
-                                                        <Pagination
-                                                            activePage={currentActivePage}
-                                                            totalPages={memberPageCount}
-                                                            onPageChanged={onPageChanged}
-                                                        />
-                                                    )
-                                                }
-                                            </div>
-                                        </div>
-                                    </Fragment>
-                                ) : (
-                                    <div className="GetDonation">
-                                        <div className="Step1">
-                                            <p className="stepSubHeader">This Giving Group doesn't have any members yet.</p>
-                                            <div className="ManageNoData">
-                                                <div className="ManageNoDataLeftImg">
-                                                    <Image className="Connect_img" src={noDataImg} />
-                                                </div>
-                                                <div className="ManageNoDataRightText">
-                                                    <Header as="h4">Invite friends to join your group</Header>
-                                                    <Link className="lnkChange" route={`/groups/${groupDetails.attributes.slug}/invites`}>
-                                                        <Button className="success-btn-rounded-def">Invite friends</Button>
-                                                    </Link>
-                                                </div>
-                                            </div>
+                            {(!_isEmpty(memberList) || (groupMemberPlaceholderStatus))
+                            && (
+                                <Fragment>
+                                    <div className="invite-heading">
+                                        <h3>
+                                        Members
+                                        </h3>
+                                    </div>
+                                    <div className="memberswapper">
+                                        {(memberCount > 1)
+                                                && (
+                                                    <div className="membersadmin">
+                                                        <p>
+                                                            <span>
+                                                                <i aria-hidden="true" className="users icon" />
+                                                            </span>
+                                                            {`${memberCount} members`}
+                                                        </p>
+                                                    </div>
+                                                )}
+                                        <div className="Emailmembers">
+                                            {/* <Link route={`/groups/${groupDetails.attributes.slug}/email_members`}> */}
+                                            <p>
+                                                <span>
+                                                    <i
+                                                        aria-hidden="true"
+                                                        className="icon icon-mail"
+                                                        onClick={handleEmailClick}
+                                                    />
+                                                </span>
+                                                Email members
+                                            </p>
+                                            {/* </Link> */}
                                         </div>
                                     </div>
-                                )}
+                                    {groupMemberPlaceholderStatus
+                                        ? (
+                                            <Grid className="no-margin">
+                                                <Grid.Row>
+                                                    <Grid.Column width={16}>
+                                                        <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        )
+                                        : (
+                                            <Fragment>
+                                                <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
+                                                    <Table.Body>
+                                                        {!_isEmpty(memberList)
+                                                            ? memberList
+                                                            : (
+                                                                <p> No Members Found</p>
+                                                            )}
+                                                    </Table.Body>
+                                                </Table>
+                                                <div className="paginationWraper group_pagination">
+                                                    <div className="db-pagination">
+                                                        {
+                                                            !_isEmpty(memberList) && memberPageCount > 1 && (
+                                                                <Pagination
+                                                                    activePage={currentActivePage}
+                                                                    totalPages={memberPageCount}
+                                                                    onPageChanged={onPageChanged}
+                                                                />
+                                                            )
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </Fragment>
+                                        )}
+                                </Fragment>
+                            )}
                         </Fragment>
                     )}
             </Fragment>
