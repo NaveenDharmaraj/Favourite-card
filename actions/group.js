@@ -78,14 +78,7 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
         }).then(
             async (result) => {
                 if (result && !_isEmpty(result.data)) {
-                    const temp = {
-                        ...result.data,
-                        attributes: {
-                            ...result.data.attributes,
-                            isCampaignLocked: true,
-                        },
-                    };
-                    fsa.payload.groupDetails = temp;
+                    fsa.payload.groupDetails = result.data;
                     dispatch(fsa);
                     if (fromEdit) {
                         const galleryImages = [];
@@ -133,7 +126,6 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
                                 short: result.data.attributes.description,
                                 slug: result.data.attributes.slug,
                                 videoUrl: result.data.attributes.videoPlayerLink,
-                                isCampaignLocked: true,
                             },
                             beneficiaryItems: result.data.attributes.groupCharities,
                             galleryImages: [
