@@ -12,6 +12,7 @@ import {
     getStore,
     intializeCreateGivingGroup,
 } from '../helpers/createGrouputils';
+import { getCampaignFromSlug } from '../actions/profile';
 import { updateCreateGivingGroupObj } from '../actions/createGivingGroup';
 const CreateGivingGroupBasic = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupBasic'));
 const CreateGivingGroupAbout = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupAbout'));
@@ -19,25 +20,29 @@ const CreateGivingGroupPicsVideo = dynamic(() => import('../components/CreateGiv
 const CreateGivingGroupGivingGoal = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupGivingGoal'));
 
 const GroupProfileCreate = (props) => {
-    const {
+    let {
         createGivingGroupStoreFlowObject,
         dispatch,
         slug,
         step,
         substep,
     } = props;
+    dispatch = useDispatch();
+    const campaignDetails = useSelector((state) => state.profile.campaignDetails);
+    const isFromCampaign = ((step === 'step') && (substep === 'one'));
     useEffect(() => {
         const {
             slug,
             step,
             substep,
         } = props;
-        const isFromCampaign = (!_isEmpty(step) && (step === 'step')) && (!_isEmpty(substep) && (substep === 'one'));
-        if (slug !== 'one') {
-            if ((window !== 'undefined' && _isEmpty(createGivingGroupStoreFlowObject)) && !isFromCampaign) {
+        let modifiedStep = slug;
+        if (isFromCampaign) {
+            modifiedStep = substep
+        }
+        if (modifiedStep !== 'one') {
+            if ((window !== 'undefined' && _isEmpty(createGivingGroupStoreFlowObject))) {
                 Router.pushRoute(createGivingGroupFlowSteps.stepOne);
-            } else if ((window !== 'undefined' && _isEmpty(createGivingGroupStoreFlowObject)) && isFromCampaign) {
-                const campaignDetails = useSelector((state) => state.profile.campaignDetails);
             } else if (!_isEmpty(createGivingGroupStoreFlowObject.attributes)) {
                 if (_isEmpty(createGivingGroupStoreFlowObject.attributes.name)) {
                     Router.pushRoute(createGivingGroupFlowSteps.stepOne);
@@ -46,42 +51,65 @@ const GroupProfileCreate = (props) => {
                 }
             }
         }
-        // if (isFromCampaign) {
-        //     dispatch({
-        //         payload: {
-        //             isFromCampaign: false,
-        //         },
-        //         type: 'SET_GROUP_FROM_CAMPAIGN',
-        //     });
-        //     if(!_isEmpty(campaignDetails)) {
-        //         fromCampaignObj = {
-        //             campaignId: campaignDetails.id,
-        //             featuredCharities: campaignDetails.attributes.featuredCharities,
-        //             isCampaignLocked: campaignDetails.attributes.isCampaignLocked,
-        //             isFromCampaign: true,
-        //         }
-        //         dispatch({
-        //             payload: {
-        //                 fromCampaignObj,
-        //             },
-        //             type: 'SET_GROUP_FROM_CAMPAIGN_OBJECT',
-        //         });
-        //     }
-        // } else {
-        //     dispatch({
-        //         payload: {
-        //             fromCampaignObj,
-        //         },
-        //         type: 'SET_GROUP_FROM_CAMPAIGN_OBJECT',
-        //     });
-        // }
+        if(isFromCampaign) {
+            let fromCampaignObj = {};
+            dispatch({
+                payload: {
+                    isFromCampaign: true,
+                },
+                type: 'SET_GROUP_FROM_CAMPAIGN',
+            });
+            if(!_isEmpty(campaignDetails) && (campaignDetails.attributes.slug === slug)) {
+                fromCampaignObj = {
+                    campaignId: campaignDetails.id,
+                    featuredCharities: campaignDetails.attributes.featuredCharities,
+                    isLocked: (campaignDetails.attributes.moneyManage === "Campaign Admin"),
+                    isFromCampaign: true,
+                }
+                dispatch({
+                    payload: {
+                        fromCampaignObj,
+                    },
+                    type: 'SET_GROUP_FROM_CAMPAIGN_OBJECT',
+                });
+            } else if (_isEmpty(campaignDetails) || (!_isEmpty(campaignDetails) && (campaignDetails.attributes.slug !== slug))) {
+                dispatch(getCampaignFromSlug(slug));
+            }
+        }
         return (() => {
             dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
         })
     }, []);
 
+    useEffect(() => {
+        let fromCampaignObj = {};
+        if (!_isEmpty(campaignDetails) && (campaignDetails.attributes.slug === slug)) {
+            fromCampaignObj = {
+                campaignId: campaignDetails.id,
+                featuredCharities: campaignDetails.attributes.featuredCharities,
+                isLocked: (campaignDetails.attributes.moneyManage === "Campaign Admin"),
+                isFromCampaign: true,
+            }
+            dispatch({
+                payload: {
+                    fromCampaignObj,
+                },
+                type: 'SET_GROUP_FROM_CAMPAIGN_OBJECT',
+            });
+        }
+    }, [ campaignDetails ]);
+
     const renderCreateGivingGroupCreate = () => {
-        switch (slug) {
+        const {
+            slug,
+            step,
+            substep,
+        } = props;
+        let modifiedStep = slug;
+        if (isFromCampaign) {
+            modifiedStep = substep
+        }
+        switch (modifiedStep) {
             case 'one':
                 return <CreateGivingGroupBasic
                     createGivingGroupStoreFlowObject={!_isEmpty(createGivingGroupStoreFlowObject) ?
@@ -117,7 +145,7 @@ const GroupProfileCreate = (props) => {
         <Layout authRequired={true}>
             {renderCreateGivingGroupCreate()}
         </Layout>
-    )
+)
 }
 
 GroupProfileCreate.getInitialProps = async ({

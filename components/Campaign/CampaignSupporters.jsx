@@ -60,9 +60,6 @@ const CampaignSupporters = (props) => {
                         {formatMessage('campaignProfile:createGroupBtn')}
                     </Button>
                 </Link>
-                {/* <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
-                    <Button className="success-btn-rounded-def medium btnboxWidth">{formatMessage('campaignProfile:createGroupBtn')}</Button>
-                </a> */}
             </div>
         </div>
     )

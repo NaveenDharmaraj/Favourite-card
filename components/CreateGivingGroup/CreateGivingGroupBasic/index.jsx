@@ -141,7 +141,9 @@ const CreateGivingGroupBasic = ({
         if (!_isEmpty(isFromCampaignObj) && !_isEmpty(isFromCampaignObj.featuredCharities)) {
             setCreateGivingGroupObject({
                 ...createGivingGroupObject,
-                beneficiaryItems: isFromCampaignObj.featuredCharities,
+                beneficiaryItems: [
+                    ...isFromCampaignObj.featuredCharities,
+                ],
             });
         }
     }, []);
@@ -319,7 +321,7 @@ const CreateGivingGroupBasic = ({
                                         && (
                                             <p className="error-message">
                                                 <Icon name="exclamation circle" />
-                                                Group name should not exceed 211 characters
+                                                Group name should not exceed 150 characters
                                             </p>
                                         )}
                                     </div>

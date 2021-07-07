@@ -106,9 +106,15 @@ const CreateGivingGroupGivingGoal = ({
     const charitiesQueryBasedOptions = useSelector((state) => state.createGivingGroup.charitiesQueryBasedOptions || []);
     const charitiesSearchQueryBasedLoader = useSelector((state) => state.createGivingGroup.charitiesSearchQueryBasedLoader || null);
     const isFromCampaignObj = useSelector((state) => state.createGivingGroup.isFromCampaignObj || {});
-    const hasFeaturedCharities = !!((!_isEmpty(isFromCampaignObj) && !_isEmpty(isFromCampaignObj.featuredCharities)));
+    let hasFeaturedCharities = false;
+    let isCampaignLocked = false;
     const groupDetails = useSelector((state) => state.group.groupDetails);
-    const isCampaignLocked = (!_isEmpty(groupDetails) && !_isEmpty(groupDetails.attributes) && (groupDetails.attributes.isCampaignLocked));
+    if (fromCreate) {
+        hasFeaturedCharities = (!_isEmpty(isFromCampaignObj) && !_isEmpty(isFromCampaignObj.featuredCharities));
+        isCampaignLocked = (!_isEmpty(isFromCampaignObj) && (isFromCampaignObj.isLocked));
+    } else {
+        isCampaignLocked = (!_isEmpty(groupDetails) && (groupDetails.attributes.moneyManage === 'Campaign Admin'));
+    }
     useEffect(() => {
         if (loadOnce) {
             window.scrollTo(0, 0);
@@ -221,8 +227,17 @@ const CreateGivingGroupGivingGoal = ({
                     createGivingGroupObject.attributes.fundraisingCreated = null;
                     createGivingGroupObject.attributes.fundraisingDate = null;
                 }
+                if (!_isEmpty(isFromCampaignObj) && isFromCampaignObj.isFromCampaign) {
+                    createGivingGroupObject.attributes.campaignId = isFromCampaignObj.campaignId;
+                }
                 dispatch(createGivingGroupApiCall(createGivingGroupObject))
                     .then(({ data }) => {
+                        dispatch({
+                            payload: {
+                                isFromCampaign: false,
+                            },
+                            type: 'SET_GROUP_FROM_CAMPAIGN',
+                        });
                         dispatch({
                             payload: {
                                 fromCampaignObj: {},
@@ -444,13 +459,10 @@ const CreateGivingGroupGivingGoal = ({
     };
     const renderSelectedCharities = () => beneficiaryItems.map((item) => (
         <div className="charity">
-            {((fromCreate && !_isEmpty(isFromCampaignObj) && !isFromCampaignObj.isCampaignLocked)
-                || (fromCreate && _isEmpty(isFromCampaignObj))
-                || !isCampaignLocked)
-                && (
-                    <Icon className="remove" onClick={() => handleRemoveCharity(item.id)} />
-                )}
-            {/* <Icon className="remove" onClick={() => handleRemoveCharity(item.id)} /> */}
+            {!hasFeaturedCharities && !isCampaignLocked
+            && (
+                <Icon className="remove" onClick={() => handleRemoveCharity(item.id)} />
+            )}
             <Image src={item.avatar || groupImg} />
             <Header>{item.name}</Header>
         </div>
@@ -559,35 +571,51 @@ const CreateGivingGroupGivingGoal = ({
                                             )}
                                         </Header>
                                         <Fragment>
-                                            {!hasFeaturedCharities
-                                            && (
-                                                <Fragment>
-                                                    <p>
-                                                        Let your supporters know which charities you plan to support.
-                                                        <span>
-                                                            {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
-                                                        </span>
-                                                        <a
-                                                            href="https://help.charitableimpact.com/article/147-what-is-a-giving-group"
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                        >
-                                                        Learn more
-                                                        </a>
-                                                        &nbsp; about where money raised from groups can go.
-                                                    </p>
-                                                    {(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5)
+                                            {hasFeaturedCharities
+                                                ? (
+                                                    <Fragment>
+                                                        {!isCampaignLocked
                                                         && (
-                                                            <div className="manage_charities_max">
-                                                                <p>Groups can support up to 5 charities at a time. </p>
-                                                                <p>To add another charity, remove one of the charities listed below.</p>
-                                                            </div>
+                                                            <p>
+                                                            These charities will be displayed on your group to show visitors whom you plan to support.
+                                                            Don't worry, you can change these at any time.
+                                                            </p>
                                                         )}
-                                                </Fragment>
-                                            )}
+                                                    </Fragment>
+                                                )
+                                                : (
+                                                    <Fragment>
+                                                        {!isCampaignLocked
+                                                        && (
+                                                            <Fragment>
+                                                                <p>
+                                                                Let your supporters know which charities you plan to support.
+                                                                    <span>
+                                                                        {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
+                                                                    </span>
+                                                                    <a
+                                                                        href="https://help.charitableimpact.com/article/147-what-is-a-giving-group"
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                    >
+                                                                    Learn more
+                                                                    </a>
+                                                                    &nbsp; about where money raised from groups can go.
+                                                                </p>
+                                                                {(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5)
+                                                                    && (
+                                                                        <div className="manage_charities_max">
+                                                                            <p>Groups can support up to 5 charities at a time. </p>
+                                                                            <p>To add another charity, remove one of the charities listed below.</p>
+                                                                        </div>
+                                                                    )}
+                                                            </Fragment>
+                                                        )}
+                                                    </Fragment>
+                                                )}
                                         </Fragment>
                                         <div className="searchBox charitysearch">
-                                            {!hasFeaturedCharities
+                                            {(!hasFeaturedCharities && !isCampaignLocked)
                                             && (
                                                 <Fragment>
                                                     {(_isEmpty(beneficiaryItems) || (!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5))
