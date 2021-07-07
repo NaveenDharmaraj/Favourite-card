@@ -179,8 +179,8 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                 }
                             }
                         });
+                        event.target.value = '';
                     }
-
                 }
                 catch (err) {
 

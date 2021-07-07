@@ -642,25 +642,18 @@ export const getWidgetCode = (groupId) => (dispatch) => {
             dispatch,
             entity_type: 'group',
             id: groupId,
-            selected_value: 'large',
+            selected_value: 'all',
             uxCritical: true,
         },
-    }).then((greenData) => {
-        coreApi.get(`/widgets/generateWidgetScript`, {
-            params: {
-                dispatch,
-                entity_type: 'group',
-                id: groupId,
-                selected_value: 'medium',
-                uxCritical: true,
-            },
-        }).then((blueData) => {
-            fsa.payload = {
-                blue: blueData,
-                green: greenData,
-            };
+    }).then((result) => {
+        if (!_isEmpty(result)) {
+            const formattedWidgetScript = {};
+            formattedWidgetScript.large = result[0].large;
+            formattedWidgetScript.medium = result[1].medium;
+            formattedWidgetScript.simple = result[2].simple;
+            fsa.payload = formattedWidgetScript;
             dispatch(fsa);
-        });
+        }
     });
 };
 
