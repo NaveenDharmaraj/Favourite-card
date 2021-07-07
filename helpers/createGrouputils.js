@@ -63,7 +63,6 @@ export const intializeCreateGivingGroup = {
         fundraisingGoal: "",
         fundraisingDate: null,
         fundraisingCreated: null,
-        // isCampaignLocked: false,
         logo: "",
         videoUrl: ""
     },
