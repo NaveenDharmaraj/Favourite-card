@@ -1,22 +1,12 @@
 
 import React from 'react';
-import {
-    useDispatch,
-} from 'react-redux';
 import { Header, Button } from 'semantic-ui-react';
-import getConfig from 'next/config';
 import {
     PropTypes,
 } from 'prop-types';
 
 import { Link } from '../../routes';
 import { withTranslation } from '../../i18n';
-
-const { publicRuntimeConfig } = getConfig();
-
-const {
-    RAILS_APP_URL_ORIGIN,
-} = publicRuntimeConfig;
 
 const CampaignSupporters = (props) => {
     const {
@@ -25,15 +15,6 @@ const CampaignSupporters = (props) => {
         slug,
         t: formatMessage,
     } = props;
-    const dispatch = useDispatch();
-    const handleCreateGroup = () => {
-        dispatch({
-            payload: {
-                isFromCampaign: true,
-            },
-            type: 'SET_GROUP_FROM_CAMPAIGN',
-        });
-    };
     return (
         <div className="charityInfowrap fullwidth">
             <div className="charityInfo">
@@ -55,7 +36,6 @@ const CampaignSupporters = (props) => {
                 <Link route={`/campaigns/${slug}/step/one`}>
                     <Button
                         className="success-btn-rounded-def medium btnboxWidth"
-                        onClick={handleCreateGroup}
                     >
                         {formatMessage('campaignProfile:createGroupBtn')}
                     </Button>

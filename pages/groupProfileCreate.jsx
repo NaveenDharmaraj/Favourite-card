@@ -76,6 +76,12 @@ const GroupProfileCreate = (props) => {
                 dispatch(getCampaignFromSlug(slug));
             }
         }
+        dispatch({
+            payload: {
+                isFromCampaign: false,
+            },
+            type: 'SET_GROUP_FROM_CAMPAIGN',
+        });
         return (() => {
             dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
         })
