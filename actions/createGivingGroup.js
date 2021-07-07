@@ -391,7 +391,7 @@ export const getGroupMembers = (groupId, pageNumber = 1, isInitial) => (dispatch
                         },
                         type: actionTypes.MANAGE_GROUP_MEMBERS_INITIAL,
                     };
-                    if (!_isEmpty(result.data) && !_isEmpty(result.data.length) <= 2) {
+                    if (!_isEmpty(result.data) && (result.data.length) <= 2) {
                         result.data.map((data) => {
                             if (data.attributes.isGroupAdmin) {
                                 adminCount += 1;
