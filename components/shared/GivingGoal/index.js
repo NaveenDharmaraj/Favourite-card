@@ -65,6 +65,7 @@ const GivingGoal = ({
     const hasDefinedGoal = (hasGoalSet && !_isEmpty(fundraisingCreated) && !_isEmpty(fundraisingDate));
     const isGoalReached = (hasGoalSet && (Number(fundraisingPercentage) === 100));
     const isGoalExpired = (hasGoalSet && (fundraisingDaysRemaining === 0) && !isGoalReached);
+    const hasReachedGoalBeforeEnd = (isGoalReached && (new Date(givingGoalReachedDate).setHours(0, 0, 0, 0) <= new Date(fundraisingDate).setHours(0, 0, 0, 0)));
 
     useEffect(() => {
         previousGivingGroupObject.current = createGivingGroupObjectClone;
@@ -210,13 +211,16 @@ const GivingGoal = ({
                                             <span>{endDate ? formatDateForGivingTools(endDate) : null}</span>
                                         </div>
                                     </div>
-                                    <Popup
+                                    {(!isGoalExpired || hasNonExpireGoal)
+                                    && (
+                                        <Popup
                                         context={contextRef}
-                                        content={`${Number(fundraisingPercentage) === 100 ? `Reached goal on ${formatDateForGivingTools(givingGoalReachedDate)} ` : currentDate}`}
+                                        content={`${hasReachedGoalBeforeEnd ? `Reached goal on ${formatDateForGivingTools(givingGoalReachedDate)} ` : currentDate}`}
                                         open
                                         position={toolTopPos(BarWidth)}
                                         className='progress-tooltip'
                                     />
+                                    )}
                                 </Grid.Column>
                             </Grid>
                         </div>

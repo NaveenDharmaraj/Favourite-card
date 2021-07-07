@@ -1,4 +1,6 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, {
+    Fragment, useEffect, useState,
+} from 'react';
 import {
     Container,
     Header,
@@ -10,6 +12,7 @@ import {
     Dimmer,
     Loader,
     Search,
+    Label,
 } from 'semantic-ui-react';
 import {
     PropTypes,
@@ -19,22 +22,35 @@ import _replace from 'lodash/replace';
 import _every from 'lodash/every';
 import _find from 'lodash/find';
 import _cloneDeep from 'lodash/cloneDeep';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+    useDispatch, useSelector,
+} from 'react-redux';
 
 import { withTranslation } from '../../../i18n';
-import { createGivingGroupBreadCrum, createGivingGroupFlowSteps, intializeCreateGivingGroup, validateCreateGivingGroup } from '../../../helpers/createGrouputils';
+import {
+    createGivingGroupBreadCrum, createGivingGroupFlowSteps, intializeCreateGivingGroup, validateCreateGivingGroup,
+} from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import '../../../static/less/create_manage_group.less';
-import { formatAmount, formatCurrency } from '../../../helpers/give/utils';
+import {
+    formatAmount, formatCurrency,
+} from '../../../helpers/give/utils';
 import { validateGivingGoal } from '../../../helpers/users/utils';
 import groupImg from '../../../static/images/no-data-avatar-charity-profile.png';
-import { actionTypes, createGivingGroupApiCall, editGivingGroupApiCall, getCharityBasedOnSearchQuery, updateCreateGivingGroupObj } from '../../../actions/createGivingGroup';
+import {
+    actionTypes, createGivingGroupApiCall, editGivingGroupApiCall, getCharityBasedOnSearchQuery, updateCreateGivingGroupObj,
+} from '../../../actions/createGivingGroup';
 import { isFalsy } from '../../../helpers/utils';
 import GivingGoal from '../../shared/GivingGoal';
 import EditGivingGoal from '../EditGivingGoal';
 import CreateGivingGroupHeader from '../CreateGivingGroupHeader';
 
-const currentActiveStepCompleted = [1, 2, 3, 4];
+const currentActiveStepCompleted = [
+    1,
+    2,
+    3,
+    4,
+];
 const intializeValidity = {
     doesAmountExist: true,
     isAmountLessThanOneBillion: true,
@@ -46,34 +62,66 @@ const intializeValidity = {
 };
 let timeout = '';
 let loadOnce = true;
-const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGivingGroupStoreFlowObject, fromCreate, groupId, showCharity, showGivingGoal, t }) => {
+const CreateGivingGroupGivingGoal = ({
+    createGivingGroupStoreFlowObject, editGivingGroupStoreFlowObject, fromCreate, groupId, showCharity, showGivingGoal, t,
+}) => {
     const editGivingGroupStoreFlowObjectClone = _cloneDeep(editGivingGroupStoreFlowObject);
     const initalizeObject = _isEmpty(createGivingGroupStoreFlowObject) ? intializeCreateGivingGroup : createGivingGroupStoreFlowObject;
     const givingGroupObject = fromCreate ? initalizeObject : editGivingGroupStoreFlowObjectClone;
     const formatMessage = t;
     const breakCrumArray = createGivingGroupBreadCrum(formatMessage);
-    const disableValue = fromCreate ? false : true;
+    const disableValue = !fromCreate;
 
-    const [createGivingGroupObject, setCreateGivingGroupObject] = useState(givingGroupObject);
-    const [validity, setValidity] = useState(intializeValidity);
-    const [disableContinueButton, setDisableContinueButton] = useState(disableValue);
-    const [createGivingButtonLoader, setCreateGivingButtonLoader] = useState(false);
-    const [showLoader, setshowLoader] = useState(false);
-    const [isEditModified, setisEditModified] = useState(false);
+    const [
+        createGivingGroupObject,
+        setCreateGivingGroupObject,
+    ] = useState(givingGroupObject);
+    const [
+        validity,
+        setValidity,
+    ] = useState(intializeValidity);
+    const [
+        disableContinueButton,
+        setDisableContinueButton,
+    ] = useState(disableValue);
+    const [
+        createGivingButtonLoader,
+        setCreateGivingButtonLoader,
+    ] = useState(false);
+    const [
+        showLoader,
+        setshowLoader,
+    ] = useState(false);
+    const [
+        isEditModified,
+        setisEditModified,
+    ] = useState(false);
 
     const dispatch = useDispatch();
 
-    const [charitySearchQuery, setCharitySearchQuery] = useState('');
-    const charitiesQueryBasedOptions = useSelector(state => state.createGivingGroup.charitiesQueryBasedOptions || []);
-    const charitiesSearchQueryBasedLoader = useSelector(state => state.createGivingGroup.charitiesSearchQueryBasedLoader || null);
-
+    const [
+        charitySearchQuery,
+        setCharitySearchQuery,
+    ] = useState('');
+    const charitiesQueryBasedOptions = useSelector((state) => state.createGivingGroup.charitiesQueryBasedOptions || []);
+    const charitiesSearchQueryBasedLoader = useSelector((state) => state.createGivingGroup.charitiesSearchQueryBasedLoader || null);
+    const isFromCampaignObj = useSelector((state) => state.createGivingGroup.isFromCampaignObj || {});
+    let hasFeaturedCharities = false;
+    let isCampaignLocked = false;
+    const groupDetails = useSelector((state) => state.group.groupDetails);
+    if (fromCreate) {
+        hasFeaturedCharities = (!_isEmpty(isFromCampaignObj) && !_isEmpty(isFromCampaignObj.featuredCharities));
+        isCampaignLocked = (!_isEmpty(isFromCampaignObj) && (isFromCampaignObj.isLocked));
+    } else {
+        isCampaignLocked = (!_isEmpty(groupDetails) && (groupDetails.attributes.moneyManage === 'Campaign Admin'));
+    }
     useEffect(() => {
         if (loadOnce) {
             window.scrollTo(0, 0);
             loadOnce = false;
         }
         if (!fromCreate) {
-            editGivingGroupStoreFlowObject && setCreateGivingGroupObject(editGivingGroupStoreFlowObjectClone)
+            editGivingGroupStoreFlowObject && setCreateGivingGroupObject(editGivingGroupStoreFlowObjectClone);
         }
         if (!_isEmpty(editGivingGroupStoreFlowObject.beneficiaryItems) && editGivingGroupStoreFlowObject.beneficiaryItems.length >= 5) {
             setCharitySearchQuery('');
@@ -91,7 +139,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         }
     }, []);
 
-    let {
+    const {
         attributes: {
             fundraisingGoal,
             fundraisingDate,
@@ -161,7 +209,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                         });
                     })
                     .catch(() => {
-                        //handle error
+                        // handle error
                         setCreateGivingButtonLoader(false);
                     });
             } else {
@@ -179,8 +227,23 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                     createGivingGroupObject.attributes.fundraisingCreated = null;
                     createGivingGroupObject.attributes.fundraisingDate = null;
                 }
+                if (!_isEmpty(isFromCampaignObj) && isFromCampaignObj.isFromCampaign) {
+                    createGivingGroupObject.attributes.campaignId = isFromCampaignObj.campaignId;
+                }
                 dispatch(createGivingGroupApiCall(createGivingGroupObject))
                     .then(({ data }) => {
+                        dispatch({
+                            payload: {
+                                isFromCampaign: false,
+                            },
+                            type: 'SET_GROUP_FROM_CAMPAIGN',
+                        });
+                        dispatch({
+                            payload: {
+                                fromCampaignObj: {},
+                            },
+                            type: 'SET_GROUP_FROM_CAMPAIGN_OBJECT',
+                        });
                         dispatch({
                             type: actionTypes.UPDATE_CREATE_GIVING_GROUP_OBJECT,
                             payload: intializeCreateGivingGroup,
@@ -200,7 +263,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                         });
                     })
                     .catch((err) => {
-                        //handle error
+                        // handle error
                         setCreateGivingButtonLoader(false);
                         setDisableContinueButton(false);
                     });
@@ -208,7 +271,7 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         }
     };
     const handleInputChange = (event, data) => {
-        let {
+        const {
             name,
             value,
         } = data || event.target;
@@ -295,7 +358,10 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             };
             let uniqueBeneficiaryCharity = [];
             if (beneficiaryItems) {
-                uniqueBeneficiaryCharity = new Set([...beneficiaryItems, beneficiaryItem]);
+                uniqueBeneficiaryCharity = new Set([
+                    ...beneficiaryItems,
+                    beneficiaryItem,
+                ]);
             } else {
                 uniqueBeneficiaryCharity.push(beneficiaryItem);
             }
@@ -303,25 +369,33 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
             if (fromCreate) {
                 setCreateGivingGroupObject({
                     ...createGivingGroupObject,
-                    beneficiaryItems: [...uniqueBeneficiaryCharity]
+                    beneficiaryItems: [
+                        ...uniqueBeneficiaryCharity,
+                    ],
                 });
             } else {
                 const beneficiaryIds = [];
-                const uniqueBeneficiaryCharityArr = [...uniqueBeneficiaryCharity];
+                const uniqueBeneficiaryCharityArr = [
+                    ...uniqueBeneficiaryCharity,
+                ];
                 uniqueBeneficiaryCharityArr && uniqueBeneficiaryCharityArr.map(({ id }) => {
                     beneficiaryIds.push(id);
                 });
                 setshowLoader(true);
                 dispatch(editGivingGroupApiCall({
                     attributes: {},
-                    beneficiaryIds: [...beneficiaryIds],
+                    beneficiaryIds: [
+                        ...beneficiaryIds,
+                    ],
                 }, groupId)).finally(() => {
                     setshowLoader(false);
                 });
             }
         }
     };
-    const debounceFunction = ({ dispatch, searchValue }, delay) => {
+    const debounceFunction = ({
+        dispatch, searchValue,
+    }, delay) => {
         if (timeout) {
             clearTimeout(timeout);
         }
@@ -356,7 +430,6 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         beneficiaryItems.find((item, i) => {
             if (selectedId === Number(item.id)) {
                 index = i;
-                return;
             }
         });
         setDisableContinueButton(false);
@@ -364,45 +437,56 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
         if (fromCreate) {
             setCreateGivingGroupObject({
                 ...createGivingGroupObject,
-                beneficiaryItems: [...beneficiaryItems],
+                beneficiaryItems: [
+                    ...beneficiaryItems,
+                ],
             });
         } else {
             setshowLoader(true);
-            let beneficiaryIds = [];
-            beneficiaryItems && beneficiaryItems.map(({id})=>{
+            const beneficiaryIds = [];
+            beneficiaryItems && beneficiaryItems.map(({ id }) => {
                 beneficiaryIds.push(id);
             });
             dispatch(editGivingGroupApiCall({
                 attributes: {},
-                beneficiaryIds:[...beneficiaryIds]
+                beneficiaryIds: [
+                    ...beneficiaryIds,
+                ],
             }, groupId)).finally(() => {
                 setshowLoader(false);
             });
         }
     };
-    const renderSelectedCharities = () => beneficiaryItems.map((item) => {
-        return (
-            <div className="charity">
+    const renderSelectedCharities = () => beneficiaryItems.map((item) => (
+        <div className="charity">
+            {!hasFeaturedCharities && !isCampaignLocked
+            && (
                 <Icon className="remove" onClick={() => handleRemoveCharity(item.id)} />
-                <Image src={item.avatar || groupImg} />
-                <Header>{item.name}</Header>
-            </div>
-        );
-    });
-    const renderEditModalContentComponent = () => {
-        return (
-            <EditGivingGoal
-                formatMessage={formatMessage}
-                fundraisingCreated={fundraisingCreated}
-                fundraisingDate={fundraisingDate}
-                fundraisingGoal={fundraisingGoal}
-                handleInputChange={handleInputChange}
-                handleInputOnBlurGivingGoal={handleInputOnBlurGivingGoal}
-                handleOnDateChange={handleOnDateChange}
-                validity={validity}
-                fromCreate={fromCreate}
-            />
-        );
+            )}
+            <Image src={item.avatar || groupImg} />
+            <Header>{item.name}</Header>
+        </div>
+    ));
+    const renderEditModalContentComponent = () => (
+        <EditGivingGoal
+            formatMessage={formatMessage}
+            fundraisingCreated={fundraisingCreated}
+            fundraisingDate={fundraisingDate}
+            fundraisingGoal={fundraisingGoal}
+            handleInputChange={handleInputChange}
+            handleInputOnBlurGivingGoal={handleInputOnBlurGivingGoal}
+            handleOnDateChange={handleOnDateChange}
+            validity={validity}
+            fromCreate={fromCreate}
+        />
+    );
+
+    const resultRenderer = (event, data) => {
+        let isSelected = false;
+        if (!_isEmpty(data)) {
+            isSelected = data.filter((obj) => obj.name.includes(event.title));
+        }
+        return <Label className={`charities_label ${!_isEmpty(isSelected) ? 'disabled' : ''}`} content={event.title} />;
     };
     return (
         <Container>
@@ -433,8 +517,17 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                             <div className={`createnewSec ${fromCreate ? 'bottom_space' : 'no_border'}`}>
                                                 <Header className="sectionHeader">
                                                     {formatMessage('createGivingGroupGivingGoal.givingGoalTitle')}
-                                                    <span className="optional">&nbsp;{formatMessage('optional')}</span>
+                                                    <span className="optional">
+&nbsp;
+                                                        {formatMessage('optional')}
+                                                    </span>
                                                 </Header>
+                                                {fromCreate
+                                                && (
+                                                    <p className="label-info">
+                                                        Consider setting a giving goal for your group.
+                                                    </p>
+                                                )}
                                                 {renderEditModalContentComponent()}
                                             </div>
                                         )
@@ -469,44 +562,87 @@ const CreateGivingGroupGivingGoal = ({ createGivingGroupStoreFlowObject, editGiv
                                     <div className={`createnewSec ${!fromCreate ? 'no_border' : ''}`}>
                                         <Header className={`sectionHeader ${!fromCreate ? 'gifts_bottom_border' : ''}`}>
                                             {formatMessage('createGivingGroupGivingGoal.charitiesToSupport')}
-                                            <span className="optional">&nbsp;{formatMessage('optional')}</span>
-                                        </Header>
-                                        <p>
-                                            {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc1')}
-                                            <span>
-                                                {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
-                                            </span>
-                                        </p>
-                                        {(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5)
-                                        && (
-                                            <div className="manage_charities_max">
-                                                <p>Groups can support up to 5 charities at a time. </p>
-                                                <p>To add another charity, remove one of the charities listed below.</p>
-                                            </div>
-                                        )}
-                                        <div className="searchBox charitysearch">
-                                            {(_isEmpty(beneficiaryItems) || (!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5))
+                                            {!hasFeaturedCharities
                                             && (
-                                                <Search
-                                                    fluid
-                                                    className="searchInput"
-                                                    placeholder={formatMessage('createGivingGroupGivingGoal.chairtiesToSupportPlaceholder')}
-                                                    loading={charitiesSearchQueryBasedLoader}
-                                                    minCharacters={4}
-                                                    id="beneficiaryItems"
-                                                    name="beneficiaryItems"
-                                                    onResultSelect={handleCharityChange}
-                                                    onSearchChange={handleCharitySearchWordChange}
-                                                    disabled={(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5) || showLoader}
-                                                    results={charitiesQueryBasedOptions}
-                                                    value={charitySearchQuery}
-                                                    icon={(
-                                                        <Icon
-                                                            name="search"
-                                                            className={`${!charitiesSearchQueryBasedLoader ? 'manage_charity_search' : ''} `}
-                                                        />
-                                                    )}
-                                                />
+                                                <span className="optional">
+&nbsp;
+                                                    {formatMessage('optional')}
+                                                </span>
+                                            )}
+                                        </Header>
+                                        <Fragment>
+                                            {hasFeaturedCharities
+                                                ? (
+                                                    <Fragment>
+                                                        {!isCampaignLocked
+                                                        && (
+                                                            <p>
+                                                            These charities will be displayed on your group to show visitors whom you plan to support.
+                                                            Don't worry, you can change these at any time.
+                                                            </p>
+                                                        )}
+                                                    </Fragment>
+                                                )
+                                                : (
+                                                    <Fragment>
+                                                        {!isCampaignLocked
+                                                        && (
+                                                            <Fragment>
+                                                                <p>
+                                                                Let your supporters know which charities you plan to support.
+                                                                    <span>
+                                                                        {formatMessage('createGivingGroupGivingGoal.charitiesToSupportDesc2')}
+                                                                    </span>
+                                                                    <a
+                                                                        href="https://help.charitableimpact.com/article/147-what-is-a-giving-group"
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                    >
+                                                                    Learn more
+                                                                    </a>
+                                                                    &nbsp; about where money raised from groups can go.
+                                                                </p>
+                                                                {(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5)
+                                                                    && (
+                                                                        <div className="manage_charities_max">
+                                                                            <p>Groups can support up to 5 charities at a time. </p>
+                                                                            <p>To add another charity, remove one of the charities listed below.</p>
+                                                                        </div>
+                                                                    )}
+                                                            </Fragment>
+                                                        )}
+                                                    </Fragment>
+                                                )}
+                                        </Fragment>
+                                        <div className="searchBox charitysearch">
+                                            {(!hasFeaturedCharities && !isCampaignLocked)
+                                            && (
+                                                <Fragment>
+                                                    {(_isEmpty(beneficiaryItems) || (!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5))
+                                                        && (
+                                                            <Search
+                                                                fluid
+                                                                className="searchInput search_charity_wrapper"
+                                                                placeholder={formatMessage('createGivingGroupGivingGoal.chairtiesToSupportPlaceholder')}
+                                                                loading={charitiesSearchQueryBasedLoader}
+                                                                minCharacters={4}
+                                                                id="beneficiaryItems"
+                                                                name="beneficiaryItems"
+                                                                onResultSelect={handleCharityChange}
+                                                                onSearchChange={handleCharitySearchWordChange}
+                                                                disabled={(!_isEmpty(beneficiaryItems) && beneficiaryItems.length >= 5) || showLoader}
+                                                                resultRenderer={(event) => resultRenderer(event, beneficiaryItems)}
+                                                                results={charitiesQueryBasedOptions}
+                                                                value={charitySearchQuery}
+                                                                icon={(
+                                                                    <Icon
+                                                                        name="search"
+                                                                        className={`${!charitiesSearchQueryBasedLoader ? 'manage_charity_search' : ''} `}
+                                                                    />
+                                                                )}
+                                                            />
+                                                        )}
+                                                </Fragment>
                                             )}
                                             <div className="charityWrap">
                                                 {!showLoader

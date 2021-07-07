@@ -121,7 +121,11 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
         event.stopPropagation();
         if (type === 'gallery') {
             const index = galleryImages.find((item) => {
-                return item.assetId === url.assetId;
+                if (!fromCreate) {
+                    return item.assetId === url.assetId;
+                } else {
+                    return item === url;
+                }
             });
             galleryImages.splice(galleryImages.indexOf(index), 1)
         }

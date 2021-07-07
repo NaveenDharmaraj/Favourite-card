@@ -120,7 +120,7 @@ export const validateCreateGivingGroup = (validity, name, value) => {
             validity.doesNameExist = !_isEmpty(value) ? true : false;
             validity.isNotEmpty = !(!modofiedValue || modofiedValue.length === 0);
             validity.hasAlphabet = hasAlphabet(modofiedValue);
-            validity.hasValidLength = (value.length <= 211);
+            validity.hasValidLength = (value.length <= 150);
             validity.isValidText = isValidText(modofiedValue);
             break;
         case 'purpose':
@@ -184,7 +184,7 @@ export const manageGivingGroupAccordianMenuOptions = {
     picsvideos: {
         key: 'picsvideos',
         route: 'picsvideos',
-        text: 'Pics & video',
+        text: 'Photos and video',
         value: 2,
         component: <CreateGivingGroupPicsVideo />
     },

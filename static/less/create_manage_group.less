@@ -350,11 +350,11 @@
         font-size: 20px;
       }
       +p{
-        line-height: 22px;
+        margin-bottom: 30px;
         span{
-          margin-top: 10px;
+          margin-top: 8px;
           display: block;
-          padding-bottom: 16px;
+          margin-bottom: 14px;
         }
       }
       .optional{
@@ -469,7 +469,7 @@
       }
     }
     .searchBox.charitysearch{
-      margin: -10px 0 0 0;
+      margin: 0px 0 0 0;
       max-width: 480px;
     }
     .videoLink{
@@ -2301,6 +2301,27 @@ body{
 }
 .charitysearch{
   .searchInput{
+    &.search_charity_wrapper{
+      .results{
+        .result{ 
+          border: none !important;
+           padding: 0px !important;
+            .charities_label{
+              background: transparent;
+              display: block;
+              padding: 6px 15px;
+              font-size: 14px;
+              line-height: 22px;
+              .primeFont();
+              color: #263238;
+              &.disabled{
+                cursor: default !important;
+                pointer-events: all !important;
+              }
+            }
+          }
+        }
+    }
     .selection{
       &.dropdown{
         border-radius: 30px;

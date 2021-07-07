@@ -1,4 +1,7 @@
 import React, { useEffect } from 'react';
+import {
+    useDispatch, useSelector,
+} from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
 
@@ -9,15 +12,35 @@ import {
     getStore,
     intializeCreateGivingGroup,
 } from '../helpers/createGrouputils';
+import { getCampaignFromSlug } from '../actions/profile';
 import { updateCreateGivingGroupObj } from '../actions/createGivingGroup';
 const CreateGivingGroupBasic = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupBasic'));
 const CreateGivingGroupAbout = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupAbout'));
 const CreateGivingGroupPicsVideo = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupPicsVideo'));
 const CreateGivingGroupGivingGoal = dynamic(() => import('../components/CreateGivingGroup/CreateGivingGroupGivingGoal'));
 
-const GroupProfileCreate = ({ createGivingGroupStoreFlowObject, dispatch, slug }) => {
+const GroupProfileCreate = (props) => {
+    let {
+        createGivingGroupStoreFlowObject,
+        dispatch,
+        slug,
+        step,
+        substep,
+    } = props;
+    dispatch = useDispatch();
+    const campaignDetails = useSelector((state) => state.profile.campaignDetails);
+    const isFromCampaign = ((step === 'step') && (substep === 'one'));
     useEffect(() => {
-        if (slug !== 'one') {
+        const {
+            slug,
+            step,
+            substep,
+        } = props;
+        let modifiedStep = slug;
+        if (isFromCampaign) {
+            modifiedStep = substep
+        }
+        if (modifiedStep !== 'one') {
             if ((window !== 'undefined' && _isEmpty(createGivingGroupStoreFlowObject))) {
                 Router.pushRoute(createGivingGroupFlowSteps.stepOne);
             } else if (!_isEmpty(createGivingGroupStoreFlowObject.attributes)) {
@@ -28,13 +51,71 @@ const GroupProfileCreate = ({ createGivingGroupStoreFlowObject, dispatch, slug }
                 }
             }
         }
+        if(isFromCampaign) {
+            let fromCampaignObj = {};
+            dispatch({
+                payload: {
+                    isFromCampaign: true,
+                },
+                type: 'SET_GROUP_FROM_CAMPAIGN',
+            });
+            if(!_isEmpty(campaignDetails) && (campaignDetails.attributes.slug === slug)) {
+                fromCampaignObj = {
+                    campaignId: campaignDetails.id,
+                    featuredCharities: campaignDetails.attributes.featuredCharities,
+                    isLocked: (campaignDetails.attributes.moneyManage === "Campaign Admin"),
+                    isFromCampaign: true,
+                }
+                dispatch({
+                    payload: {
+                        fromCampaignObj,
+                    },
+                    type: 'SET_GROUP_FROM_CAMPAIGN_OBJECT',
+                });
+            } else if (_isEmpty(campaignDetails) || (!_isEmpty(campaignDetails) && (campaignDetails.attributes.slug !== slug))) {
+                dispatch(getCampaignFromSlug(slug));
+            }
+        }
+        dispatch({
+            payload: {
+                isFromCampaign: false,
+            },
+            type: 'SET_GROUP_FROM_CAMPAIGN',
+        });
         return (() => {
             dispatch(updateCreateGivingGroupObj(intializeCreateGivingGroup));
         })
     }, []);
 
+    useEffect(() => {
+        let fromCampaignObj = {};
+        if (!_isEmpty(campaignDetails) && (campaignDetails.attributes.slug === slug)) {
+            fromCampaignObj = {
+                campaignId: campaignDetails.id,
+                featuredCharities: campaignDetails.attributes.featuredCharities,
+                isLocked: (campaignDetails.attributes.moneyManage === "Campaign Admin"),
+                isFromCampaign: true,
+            }
+            dispatch({
+                payload: {
+                    fromCampaignObj,
+                },
+                type: 'SET_GROUP_FROM_CAMPAIGN_OBJECT',
+            });
+        }
+    }, [ campaignDetails ]);
+
     const renderCreateGivingGroupCreate = () => {
-        switch (slug) {
+        const {
+            slug,
+            step,
+            substep,
+        } = props;
+        let modifiedStep = slug;
+        if (isFromCampaign) {
+            modifiedStep = substep
+        }
+        switch (modifiedStep) {
             case 'one':
                 return <CreateGivingGroupBasic
                     createGivingGroupStoreFlowObject={!_isEmpty(createGivingGroupStoreFlowObject) ?
@@ -70,7 +151,7 @@ const GroupProfileCreate = ({ createGivingGroupStoreFlowObject, dispatch, slug }
         <Layout authRequired={true}>
             {renderCreateGivingGroupCreate()}
         </Layout>
-    )
+)
 }
 
 GroupProfileCreate.getInitialProps = async ({
@@ -86,6 +167,8 @@ GroupProfileCreate.getInitialProps = async ({
                 'common',
             ],
             slug: query.slug,
+            step: query.step,
+            substep: query.substep
         }
     }
     catch (err) {
@@ -98,6 +181,8 @@ GroupProfileCreate.defaultProps = {
     createGivingGroupStoreFlowObject: intializeCreateGivingGroup,
     dispatch: () => { },
     slug: '',
+    step: '',
+    substep: ''
 };
 
 export default GroupProfileCreate;

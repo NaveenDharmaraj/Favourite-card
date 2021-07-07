@@ -642,7 +642,7 @@ export const getWidgetCode = (groupId) => (dispatch) => {
             dispatch,
             entity_type: 'group',
             id: groupId,
-            selected_value: 'Green',
+            selected_value: 'large',
             uxCritical: true,
         },
     }).then((greenData) => {
@@ -651,7 +651,7 @@ export const getWidgetCode = (groupId) => (dispatch) => {
                 dispatch,
                 entity_type: 'group',
                 id: groupId,
-                selected_value: 'Blue',
+                selected_value: 'medium',
                 uxCritical: true,
             },
         }).then((blueData) => {
