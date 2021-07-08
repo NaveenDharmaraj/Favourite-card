@@ -17,6 +17,7 @@ import {
     TextArea,
     Grid,
     Image,
+    Responsive,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
@@ -179,9 +180,30 @@ const Invite = () => {
         setisValidEmail(isValid);
     };
 
+    const resetPageViewStatus = () => {
+        dispatch({
+            payload: {
+                pageStatus: {
+                    menuView: true,
+                    pageView: false,
+                },
+            },
+            type: 'SET_MANAGE_PAGE_STATUS',
+        });
+    };
+
     return (
         <div className="basicsettings">
             <Header className="titleHeader">
+                <Responsive minWidth={320} maxWidth={767}>
+                    <span>
+                        <i
+                            aria-hidden="true"
+                            className="back_to_menu icon"
+                            onClick={resetPageViewStatus}
+                        />
+                    </span>
+                </Responsive>
                 Invite
             </Header>
             <div className="Invite">

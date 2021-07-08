@@ -276,3 +276,9 @@ export const isValidText = (str) => {
     const res = stringRegex.test(str);
     return res;
 }
+
+export const parseVimeoUrl = (url) => {
+    const vimeoRegex = /(?:vimeo)\.com.*(?:videos|video|channels|)\/([\d]+)/i;
+    const parsedUrl = url.match(vimeoRegex);
+    return "https://player.vimeo.com/video/" + parsedUrl[1];
+}

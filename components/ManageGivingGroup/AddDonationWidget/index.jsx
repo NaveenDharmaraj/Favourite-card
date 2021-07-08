@@ -12,6 +12,7 @@ import {
     Checkbox,
     Button,
     TextArea,
+    Responsive,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
@@ -46,9 +47,30 @@ const AddDonationWidget = () => {
         setselectedValue(type);
     };
 
+    const resetPageViewStatus = () => {
+        dispatch({
+            payload: {
+                pageStatus: {
+                    menuView: true,
+                    pageView: false,
+                },
+            },
+            type: 'SET_MANAGE_PAGE_STATUS',
+        });
+    };
+
     return (
         <div className="basicsettings">
             <Header className="titleHeader transaction">
+                <Responsive minWidth={320} maxWidth={767}>
+                    <span>
+                        <i
+                            aria-hidden="true"
+                            className="back_to_menu icon"
+                            onClick={resetPageViewStatus}
+                        />
+                    </span>
+                </Responsive>
                 Add donation button
                 <p className="SubHeader">
                     You can add a donation button to your website to accept credit card donations through Charitable Impact.
