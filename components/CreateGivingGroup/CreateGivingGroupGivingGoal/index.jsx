@@ -230,7 +230,7 @@ const CreateGivingGroupGivingGoal = ({
                 if (!_isEmpty(isFromCampaignObj) && isFromCampaignObj.isFromCampaign) {
                     createGivingGroupObject.attributes.campaignId = isFromCampaignObj.campaignId;
                 }
-                dispatch(createGivingGroupApiCall(createGivingGroupObject))
+                dispatch(createGivingGroupApiCall(createGivingGroupObject, isCampaignLocked))
                     .then(({ data }) => {
                         dispatch({
                             payload: {
@@ -464,7 +464,7 @@ const CreateGivingGroupGivingGoal = ({
     };
     const renderSelectedCharities = () => beneficiaryItems.map((item) => (
         <div className="charity">
-            {!hasFeaturedCharities && !isCampaignLocked
+            {!isCampaignLocked
             && (
                 <Icon className="remove" onClick={() => handleRemoveCharity(item.id)} />
             )}
@@ -472,6 +472,7 @@ const CreateGivingGroupGivingGoal = ({
             <Header>{item.name}</Header>
         </div>
     ));
+
     const renderEditModalContentComponent = () => (
         <EditGivingGoal
             formatMessage={formatMessage}
@@ -522,10 +523,6 @@ const CreateGivingGroupGivingGoal = ({
                                             <div className={`createnewSec ${fromCreate ? 'bottom_space' : 'no_border'}`}>
                                                 <Header className="sectionHeader">
                                                     {formatMessage('createGivingGroupGivingGoal.givingGoalTitle')}
-                                                    <span className="optional">
-&nbsp;
-                                                        {formatMessage('optional')}
-                                                    </span>
                                                 </Header>
                                                 {fromCreate
                                                 && (
@@ -567,13 +564,6 @@ const CreateGivingGroupGivingGoal = ({
                                     <div className={`createnewSec ${!fromCreate ? 'no_border' : ''}`}>
                                         <Header className={`sectionHeader ${!fromCreate ? 'gifts_bottom_border' : ''}`}>
                                             {formatMessage('createGivingGroupGivingGoal.charitiesToSupport')}
-                                            {!hasFeaturedCharities
-                                            && (
-                                                <span className="optional">
-&nbsp;
-                                                    {formatMessage('optional')}
-                                                </span>
-                                            )}
                                         </Header>
                                         <Fragment>
                                             {hasFeaturedCharities
@@ -620,7 +610,7 @@ const CreateGivingGroupGivingGoal = ({
                                                 )}
                                         </Fragment>
                                         <div className="searchBox charitysearch">
-                                            {(!hasFeaturedCharities && !isCampaignLocked)
+                                            {(!isCampaignLocked)
                                             && (
                                                 <Fragment>
                                                     {(_isEmpty(beneficiaryItems) || (!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5))

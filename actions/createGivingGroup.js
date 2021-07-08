@@ -194,7 +194,7 @@ export const getCharityBasedOnSearchQuery = (query = '', pageNumber = '', pageSi
     return GetCharityBasedOnSearchQueryPromise;
 };
 
-export const createGivingGroupApiCall = (createGivingGroupObj) => (dispatch) => {
+export const createGivingGroupApiCall = (createGivingGroupObj, isCampaignLocked = false) => (dispatch) => {
     const cloneCreateGivingGroupObject = _cloneDeep(createGivingGroupObj);
     const {
         attributes: {
@@ -209,13 +209,13 @@ export const createGivingGroupApiCall = (createGivingGroupObj) => (dispatch) => 
     if (!_isEmpty(fundraisingGoal)) {
         cloneCreateGivingGroupObject.attributes.fundraisingGoal = parseFloat(fundraisingGoal.replace(/,/g, ''));
     }
-    if (!_isEmpty(beneficiaryItems)) {
+    if (!_isEmpty(beneficiaryItems) && !isCampaignLocked) {
         beneficiaryItems.map((beneficiary) => {
             beneficiaryIds.push(beneficiary.id.toString());
         });
-        cloneCreateGivingGroupObject.beneficiaryIds = beneficiaryIds;
-        delete cloneCreateGivingGroupObject.beneficiaryItems;
     }
+    cloneCreateGivingGroupObject.beneficiaryIds = beneficiaryIds;
+    delete cloneCreateGivingGroupObject.beneficiaryItems;
     if (!_isEmpty(fundraisingDate)) {
         cloneCreateGivingGroupObject.attributes.fundraisingDate = dateFormatConverter(fundraisingDate, '/');
     }

@@ -64,21 +64,28 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             name,
             value,
         } = data || event.target;
-        let formattedUrl = '';
-        if (name === 'videoUrl') {
-            if (value.startsWith("https://youtu.be")) {
-                formattedUrl = value.replace("https://youtu.be/", "https://www.youtube.com/embed/");
-            }
-            if (value.startsWith("https://www.youtube.com")) {
-                formattedUrl = value.replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/");
-            }
-            if (!_isEmpty(formattedUrl) && formattedUrl.includes("&t=")) {
-                formattedUrl = formattedUrl.split("&t=")[0];
-            }
+        setVideoUrlState(value);
+        setValidateVideoUrl(false);
+    };
+
+    const handleUrlOnBlur = () => {
+        let formattedUrl = videoUrlState;
+        if (formattedUrl.startsWith("https://youtu.be")) {
+            formattedUrl = formattedUrl.replace("https://youtu.be/", "https://www.youtube.com/embed/");
+        }
+        if (formattedUrl.startsWith("https://www.youtube.com")) {
+            formattedUrl = formattedUrl.replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/");
+        }
+        if (!_isEmpty(formattedUrl) && formattedUrl.includes("&t=")) {
+            formattedUrl = formattedUrl.split("&t=")[0];
+        }
+        const isValidUrl = !youTubeVimeoValidator(formattedUrl);
+        setValidateVideoUrl(isValidUrl);
+        if (isValidUrl) {
             setVideoUrlState(formattedUrl);
-            setValidateVideoUrl(false);
         }
     };
+
     useEffect(() => {
         if (loadOnce) {
             window.scrollTo(0, 0);
@@ -230,12 +237,12 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                 }
                 <div className='mainContent'>
                     <div className='pics-video'>
-                        <Header className='titleHeader'>{formatMessage('createGivingGroupPicsVideo.header')}</Header>
+                        <Header>{formatMessage('createGivingGroupPicsVideo.header')}</Header>
+                        <p>If you'd like, you can add photos and video to your group page.</p>
                         <Form>
                             {fromCreate &&
                                 <div className='createnewSec'>
                                     <Header className='sectionHeader'>{formatMessage('createGivingGroupPicsVideo.pictureHeader')}
-                                        <span className='optional'>&nbsp;{formatMessage('optional')}</span>
                                     </Header>
                                     <p>{formatMessage('createGivingGroupPicsVideo.pictureDescription')}</p>
                                     <div className='groupPrflWrap'>
@@ -269,7 +276,6 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                             }
                             <div className="createnewSec bottom_space">
                                 <Header className='sectionHeader'>{formatMessage('createGivingGroupPicsVideo.uploadVideo')}
-                                    <span className='optional'>&nbsp;{formatMessage('optional')}</span>
                                 </Header>
                                 <p>{formatMessage('createGivingGroupPicsVideo.uploadVideoDescription')}</p>
                                 <div className='field videoLink'>
@@ -278,6 +284,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                         <Form.Field
                                             control={Input}
                                             onChange={handleOnChange}
+                                            onBlur={handleUrlOnBlur}
                                             value={videoUrlState || ''}
                                             name='videoUrl'
                                             error={validateVideoUrl}
@@ -301,10 +308,15 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                             src={videoUrl}>
                                         </iframe> */}
                                         <embed
+                                            // width="100%"
+                                            // height="415"
+                                            // controls
                                             title="video"
                                             src={videoUrl}
                                             className="responsiveVideo"
-                                        />
+                                        >
+                                            {/* <source src={videoUrl} type="video"></source> */}
+                                            </embed>
                                     </div>
                                 }
                                 {validateVideoUrl &&
@@ -316,7 +328,6 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                             </div>
                             <div className='createnewSec'>
                                 <Header className='sectionHeader'> {formatMessage('createGivingGroupPicsVideo.photoGallery')}
-                                    <span className='optional'>&nbsp;{formatMessage('optional')}</span>
                                 </Header>
                                 <p>
                                     {formatMessage('createGivingGroupPicsVideo.photoGallerydesc1')}
