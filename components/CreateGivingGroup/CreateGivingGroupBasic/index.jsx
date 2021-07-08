@@ -138,15 +138,22 @@ const CreateGivingGroupBasic = ({
         if (!_isEmpty(province)) {
             dispatch(getUniqueCities(1, 50, province));
         }
-        if (!_isEmpty(isFromCampaignObj) && !_isEmpty(isFromCampaignObj.featuredCharities)) {
+    }, []);
+
+    useEffect(() => {
+        if (!_isEmpty(isFromCampaignObj)) {
             setCreateGivingGroupObject({
                 ...createGivingGroupObject,
                 beneficiaryItems: [
-                    ...isFromCampaignObj.featuredCharities,
+                    ...(!_isEmpty(isFromCampaignObj.featuredCharities)
+                        ? isFromCampaignObj.featuredCharities
+                        : []),
                 ],
             });
         }
-    }, []);
+    }, [
+        isFromCampaignObj,
+    ]);
 
     const handleOnChange = (event, data) => {
         let {

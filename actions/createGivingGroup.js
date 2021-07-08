@@ -194,7 +194,7 @@ export const getCharityBasedOnSearchQuery = (query = '', pageNumber = '', pageSi
     return GetCharityBasedOnSearchQueryPromise;
 };
 
-export const createGivingGroupApiCall = (createGivingGroupObj) => (dispatch) => {
+export const createGivingGroupApiCall = (createGivingGroupObj, isCampaignLocked = false) => (dispatch) => {
     const cloneCreateGivingGroupObject = _cloneDeep(createGivingGroupObj);
     const {
         attributes: {
@@ -209,13 +209,13 @@ export const createGivingGroupApiCall = (createGivingGroupObj) => (dispatch) => 
     if (!_isEmpty(fundraisingGoal)) {
         cloneCreateGivingGroupObject.attributes.fundraisingGoal = parseFloat(fundraisingGoal.replace(/,/g, ''));
     }
-    if (!_isEmpty(beneficiaryItems)) {
+    if (!_isEmpty(beneficiaryItems) && !isCampaignLocked) {
         beneficiaryItems.map((beneficiary) => {
             beneficiaryIds.push(beneficiary.id.toString());
         });
-        cloneCreateGivingGroupObject.beneficiaryIds = beneficiaryIds;
-        delete cloneCreateGivingGroupObject.beneficiaryItems;
     }
+    cloneCreateGivingGroupObject.beneficiaryIds = beneficiaryIds;
+    delete cloneCreateGivingGroupObject.beneficiaryItems;
     if (!_isEmpty(fundraisingDate)) {
         cloneCreateGivingGroupObject.attributes.fundraisingDate = dateFormatConverter(fundraisingDate, '/');
     }
@@ -391,7 +391,7 @@ export const getGroupMembers = (groupId, pageNumber = 1, isInitial) => (dispatch
                         },
                         type: actionTypes.MANAGE_GROUP_MEMBERS_INITIAL,
                     };
-                    if (!_isEmpty(result.data) && !_isEmpty(result.data.length) <= 2) {
+                    if (!_isEmpty(result.data) && (result.data.length) <= 2) {
                         result.data.map((data) => {
                             if (data.attributes.isGroupAdmin) {
                                 adminCount += 1;
@@ -642,25 +642,18 @@ export const getWidgetCode = (groupId) => (dispatch) => {
             dispatch,
             entity_type: 'group',
             id: groupId,
-            selected_value: 'large',
+            selected_value: 'all',
             uxCritical: true,
         },
-    }).then((greenData) => {
-        coreApi.get(`/widgets/generateWidgetScript`, {
-            params: {
-                dispatch,
-                entity_type: 'group',
-                id: groupId,
-                selected_value: 'medium',
-                uxCritical: true,
-            },
-        }).then((blueData) => {
-            fsa.payload = {
-                blue: blueData,
-                green: greenData,
-            };
+    }).then((result) => {
+        if (!_isEmpty(result)) {
+            const formattedWidgetScript = {};
+            formattedWidgetScript.large = result[0].large;
+            formattedWidgetScript.medium = result[1].medium;
+            formattedWidgetScript.simple = result[2].simple;
+            fsa.payload = formattedWidgetScript;
             dispatch(fsa);
-        });
+        }
     });
 };
 

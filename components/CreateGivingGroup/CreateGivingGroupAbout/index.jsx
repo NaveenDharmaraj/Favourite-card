@@ -326,8 +326,8 @@ class CreateGivingGroupAbout extends React.Component {
                                                 condition={!isWhiteSpace}
                                                 errorMessage="This field should not be empty space"
                                             />
-                                            <div className='fieldInfoWrap'>
-                                                <div class="field-info">{short.length} {formatMessage('ofText')} 300</div>
+                                            <div className='fieldInfoWrap create_description_count'>
+                                                <div class="field-info">{short.length}/300</div>
                                             </div>
                                         </div>)
                                         :
@@ -344,7 +344,7 @@ class CreateGivingGroupAbout extends React.Component {
                                 </div>
                                 <div className='createnewSec'>
                                     <Header className='sectionHeader'>{formatMessage('createGivingGroupAbout.additionAboutDescriptionHeader')}
-                                        <span className='optional'>&nbsp;{formatMessage('createGivingGroupAbout.additionAboutDescriptionHeaderOptional')}</span></Header>
+                                    </Header>
                                     <p>{formatMessage('createGivingGroupAbout.additionAboutDescriptionDescriptionLabel')}</p>
                                     {!_isEmpty(groupPurposeDescriptions)
                                         &&

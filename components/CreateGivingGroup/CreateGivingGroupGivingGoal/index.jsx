@@ -109,9 +109,9 @@ const CreateGivingGroupGivingGoal = ({
     let hasFeaturedCharities = false;
     let isCampaignLocked = false;
     const groupDetails = useSelector((state) => state.group.groupDetails);
-    if (fromCreate) {
-        hasFeaturedCharities = (!_isEmpty(isFromCampaignObj) && !_isEmpty(isFromCampaignObj.featuredCharities));
-        isCampaignLocked = (!_isEmpty(isFromCampaignObj) && (isFromCampaignObj.isLocked));
+    if (fromCreate && !_isEmpty(isFromCampaignObj)) {
+        hasFeaturedCharities = (!_isEmpty(isFromCampaignObj.featuredCharities));
+        isCampaignLocked = ((isFromCampaignObj.isLocked));
     } else {
         isCampaignLocked = (!_isEmpty(groupDetails) && (groupDetails.attributes.moneyManage === 'Campaign Admin'));
     }
@@ -230,7 +230,7 @@ const CreateGivingGroupGivingGoal = ({
                 if (!_isEmpty(isFromCampaignObj) && isFromCampaignObj.isFromCampaign) {
                     createGivingGroupObject.attributes.campaignId = isFromCampaignObj.campaignId;
                 }
-                dispatch(createGivingGroupApiCall(createGivingGroupObject))
+                dispatch(createGivingGroupApiCall(createGivingGroupObject, isCampaignLocked))
                     .then(({ data }) => {
                         dispatch({
                             payload: {
@@ -349,7 +349,12 @@ const CreateGivingGroupGivingGoal = ({
         const {
             result,
         } = data;
-        if (_isEmpty(beneficiaryItems) || (beneficiaryItems && beneficiaryItems.length < 5)) {
+        let isSelected = false;
+        if (!_isEmpty(beneficiaryItems)) {
+            isSelected = beneficiaryItems.filter((obj) => obj.name.includes(result.title));
+            isSelected = (!_isEmpty(isSelected));
+        }
+        if ((_isEmpty(beneficiaryItems) || (beneficiaryItems && beneficiaryItems.length < 5)) && !isSelected) {
             const newvalue = result;
             const beneficiaryItem = {
                 avatar: newvalue.avatar,
@@ -459,7 +464,7 @@ const CreateGivingGroupGivingGoal = ({
     };
     const renderSelectedCharities = () => beneficiaryItems.map((item) => (
         <div className="charity">
-            {!hasFeaturedCharities && !isCampaignLocked
+            {!isCampaignLocked
             && (
                 <Icon className="remove" onClick={() => handleRemoveCharity(item.id)} />
             )}
@@ -467,6 +472,7 @@ const CreateGivingGroupGivingGoal = ({
             <Header>{item.name}</Header>
         </div>
     ));
+
     const renderEditModalContentComponent = () => (
         <EditGivingGoal
             formatMessage={formatMessage}
@@ -517,10 +523,6 @@ const CreateGivingGroupGivingGoal = ({
                                             <div className={`createnewSec ${fromCreate ? 'bottom_space' : 'no_border'}`}>
                                                 <Header className="sectionHeader">
                                                     {formatMessage('createGivingGroupGivingGoal.givingGoalTitle')}
-                                                    <span className="optional">
-&nbsp;
-                                                        {formatMessage('optional')}
-                                                    </span>
                                                 </Header>
                                                 {fromCreate
                                                 && (
@@ -562,13 +564,6 @@ const CreateGivingGroupGivingGoal = ({
                                     <div className={`createnewSec ${!fromCreate ? 'no_border' : ''}`}>
                                         <Header className={`sectionHeader ${!fromCreate ? 'gifts_bottom_border' : ''}`}>
                                             {formatMessage('createGivingGroupGivingGoal.charitiesToSupport')}
-                                            {!hasFeaturedCharities
-                                            && (
-                                                <span className="optional">
-&nbsp;
-                                                    {formatMessage('optional')}
-                                                </span>
-                                            )}
                                         </Header>
                                         <Fragment>
                                             {hasFeaturedCharities
@@ -615,7 +610,7 @@ const CreateGivingGroupGivingGoal = ({
                                                 )}
                                         </Fragment>
                                         <div className="searchBox charitysearch">
-                                            {(!hasFeaturedCharities && !isCampaignLocked)
+                                            {(!isCampaignLocked)
                                             && (
                                                 <Fragment>
                                                     {(_isEmpty(beneficiaryItems) || (!_isEmpty(beneficiaryItems) && beneficiaryItems.length < 5))
