@@ -24,13 +24,7 @@ function ModalContent(props) {
     return (
         <Form>
             <Form.Field inline>
-                {showLabel && <label>
-My
-                    {' '}
-                    {currentYear}
-                    {' '}
-Goal is
-                </label>}
+                {showLabel && <label>My {currentYear} Goal is</label>}
                 <Form.Field
                     control={Input}
                     id="givingGoal"
@@ -40,14 +34,13 @@ Goal is
                     onChange={handleInputChange}
                     onBlur={handleInputOnBlurGivingGoal}
                     placeholder={!_isEmpty(placeholder) ? placeholder : 'Amount'}
-                    className="input_field_amount"
                     fluid
                     icon={showDollarIcon && (
                         <Icon
-                            name="dollar sign"
+                            name='dollar sign'
                         />
                     )}
-                    iconPosition={showDollarIcon && 'left'}
+                    iconPosition={showDollarIcon && "left"}
                 />
             </Form.Field>
             <FormValidationErrorMessage
@@ -58,7 +51,7 @@ Goal is
                 condition={validity.doesAmountExist && !validity.isAmountMoreThanOneDollor}
                 errorMessage="Please input a value more than 1$"
             /> */}
-            <FormValidationErrorMessage
+             <FormValidationErrorMessage
                 condition={!validity.isValidPositiveNumber}
                 errorMessage="Please input a valid amount"
             />
@@ -72,10 +65,10 @@ Goal is
             /> */}
         </Form>
     );
-}
+};
 
 ModalContent.defaultProps = {
     showLabel: true,
-    showDollarIcon: true,
-};
+    showDollarIcon: true
+}
 export default ModalContent;
