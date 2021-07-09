@@ -222,9 +222,6 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     };
 
     const handlePicsVideoOnContinue = () => {
-        if (videoUrl !== '' && !validateVideoUrl) {
-            return;
-        };
         dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
         Router.pushRoute(createGivingGroupFlowSteps.stepFour);
     }
