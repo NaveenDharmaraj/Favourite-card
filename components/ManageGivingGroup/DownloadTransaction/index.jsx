@@ -31,19 +31,22 @@ const DownloadTransaction = () => {
 
     return (
         <div className="basicsettings">
-            <Header className="titleHeader transaction">
-                <Responsive minWidth={320} maxWidth={767}>
-                    <span>
-                        <i
-                            aria-hidden="true"
-                            className="back_to_menu icon"
-                            onClick={resetPageViewStatus}
-                        />
-                    </span>
-                </Responsive>
+            <div className="heading_transaction_data">
+                <Header className="transaction_data_titleHeader">
+                    <Responsive minWidth={320} maxWidth={767}>
+                        <span>
+                            <i
+                                aria-hidden="true"
+                                className="back_to_menu icon"
+                                onClick={resetPageViewStatus}
+                            />
+                        </span>
+                    </Responsive>
                 Download transaction data
+
+                </Header>
                 <p className="SubHeader">Download transaction data and donor information</p>
-            </Header>
+            </div>
             <Form>
                 <div className="TransactionText">
                     <p className="Transactioncontent">

@@ -343,6 +343,12 @@
       font-size: 17px;
       color: #263238;
       margin: 5px 0 10px;
+      border-bottom: 1px solid #EEEEEE;
+      padding-bottom: 30px;
+      display: flex;
+      @media only screen and (max-width: 767px){
+        padding-top: 30px;
+      }
       &.gifts_bottom_border{
         border-bottom: 1px solid #EEEEEE;
         padding-bottom: 30px;
@@ -366,7 +372,7 @@
       width: 100%;
     }
     .about-group,.pics-video{
-      max-width: 760px;
+      max-width: 792px;
       width: 100%;
     }
     .givingGoal{
@@ -870,6 +876,9 @@
         margin-bottom: 8px;
       }
     }
+  }
+  @media only screen and (max-width:767px){
+    max-width: 100%;
   }
   @media only screen and (max-width: 525px){
     .createNewGrpheader h2.ui.header{
@@ -1416,7 +1425,7 @@ body{
             width: 95%;
             p{
               &.Transactioncontent{
-                margin-bottom: 30px;
+                margin: 30px 0px;
               }
             }
             .transactionBtn{
@@ -1446,6 +1455,7 @@ body{
             }
           }
           .GetDonation{
+            margin-top: 30px;
             h3{
               &.ui{
                 &.header{
@@ -1798,6 +1808,9 @@ body{
               padding-right: 0px;
               width: 350px;
               margin-right: 32px;
+              @media only screen and (max-width: 991px){
+                width: 220px;
+              }
             }
           }
           .Shared_ShareProfile{
@@ -2252,6 +2265,11 @@ body{
     width: 100%;
     &.edit_goal_modal{
       margin-top: 0px !important;
+      .input_field_amount{
+        .ui.fluid.left.icon.input{
+          width: 100% !important;
+        }
+      }
     }
     .ui.input{
       margin-top: 10px;
@@ -2519,7 +2537,15 @@ body{
       background-position: center !important;
       background-size: contain !important;
       background-repeat: no-repeat !important;
+      transform: rotate(90deg);
     }
     }
+  }
+}
+.heading_transaction_data{
+  padding: 20px 0;
+  border-bottom: 1px solid #EEEEEE;
+  .transaction_data_titleHeader{
+    display: flex;
   }
 }

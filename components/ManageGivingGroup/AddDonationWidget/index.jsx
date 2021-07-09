@@ -61,21 +61,24 @@ const AddDonationWidget = () => {
 
     return (
         <div className="basicsettings">
-            <Header className="titleHeader transaction">
-                <Responsive minWidth={320} maxWidth={767}>
-                    <span>
-                        <i
-                            aria-hidden="true"
-                            className="back_to_menu icon"
-                            onClick={resetPageViewStatus}
-                        />
-                    </span>
-                </Responsive>
+            <div className="heading_transaction_data">
+                <Header className="transaction_data_titleHeader">
+                    <Responsive minWidth={320} maxWidth={767}>
+                        <span>
+                            <i
+                                aria-hidden="true"
+                                className="back_to_menu icon"
+                                onClick={resetPageViewStatus}
+                            />
+                        </span>
+                    </Responsive>
                 Add donation button
+                </Header>
                 <p className="SubHeader">
                     You can add a donation button to your website to accept credit card donations through Charitable Impact.
                 </p>
-            </Header>
+            </div>
+
             <Form>
                 <div className="GetDonation">
                     <Header as="h3">Get the donation button</Header>

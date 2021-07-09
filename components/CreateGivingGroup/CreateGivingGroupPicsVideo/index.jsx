@@ -267,7 +267,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                 }
                 <div className='mainContent'>
                     <div className='pics-video'>
-                        <Header>
+                        <Header className="titleHeader">
                             {!fromCreate
                             && (
                                 <Responsive minWidth={320} maxWidth={767}>
