@@ -12,6 +12,7 @@ import {
     List,
     Image,
     Grid,
+    Responsive,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -117,9 +118,34 @@ const EmailGroupMembers = () => {
         });
     };
 
+    const resetPageViewStatus = () => {
+        dispatch({
+            payload: {
+                pageStatus: {
+                    menuView: true,
+                    pageView: false,
+                },
+            },
+            type: 'SET_MANAGE_PAGE_STATUS',
+        });
+    };
+
     return (
         <div className="basicsettings">
-            <Header className="titleHeader">Email</Header>
+            <Header
+                className="titleHeader"
+            >
+                <Responsive minWidth={320} maxWidth={767}>
+                    <span>
+                        <i
+                            aria-hidden="true"
+                            className="back_to_menu icon"
+                            onClick={resetPageViewStatus}
+                        />
+                    </span>
+                </Responsive>
+                Email
+            </Header>
             <Form>
                 <div className="GroupMembers">
                     <Header as="h3">Send an email to all group members</Header>

@@ -9,6 +9,7 @@ import {
     Icon,
     Dimmer,
     Loader,
+    Responsive,
 } from 'semantic-ui-react';
 import {
     PropTypes,
@@ -17,7 +18,13 @@ import _isEmpty from 'lodash/isEmpty';
 import _cloneDeep from 'lodash/cloneDeep';
 import dynamic from 'next/dynamic';
 
-import { createGivingGroupBreadCrum, createGivingGroupFlowSteps, intializeCreateGivingGroup, youTubeVimeoValidator } from '../../../helpers/createGrouputils';
+import {
+    createGivingGroupBreadCrum,
+    createGivingGroupFlowSteps,
+    intializeCreateGivingGroup,
+    youTubeVimeoValidator,
+    parseVimeoUrl,
+} from '../../../helpers/createGrouputils';
 import { Router } from '../../../routes';
 import { withTranslation } from '../../../i18n';
 import '../../../static/less/create_manage_group.less';
@@ -58,32 +65,45 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     } = createGivingGroupObject;
 
     const [videoUrlState, setVideoUrlState] = useState(videoUrl);
-    const [validateVideoUrl, setValidateVideoUrl] = useState(false);
+    const [validateVideoUrl, setValidateVideoUrl] = useState(true);
+    const [insertStatus, setinsertStatus] = useState(false);
     const handleOnChange = (event, data) => {
         let {
             name,
             value,
         } = data || event.target;
         setVideoUrlState(value);
-        setValidateVideoUrl(false);
+        setinsertStatus(false);
     };
 
     const handleUrlOnBlur = () => {
-        let formattedUrl = videoUrlState;
-        if (formattedUrl.startsWith("https://youtu.be")) {
-            formattedUrl = formattedUrl.replace("https://youtu.be/", "https://www.youtube.com/embed/");
-        }
-        if (formattedUrl.startsWith("https://www.youtube.com")) {
-            formattedUrl = formattedUrl.replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/");
-        }
-        if (!_isEmpty(formattedUrl) && formattedUrl.includes("&t=")) {
-            formattedUrl = formattedUrl.split("&t=")[0];
-        }
-        const isValidUrl = !youTubeVimeoValidator(formattedUrl);
-        setValidateVideoUrl(isValidUrl);
+        const isValidUrl = youTubeVimeoValidator(videoUrlState);
         if (isValidUrl) {
+            let formattedUrl = videoUrlState;
+
+            if (formattedUrl.startsWith("https://youtu.be")) {
+                formattedUrl = formattedUrl.replace("https://youtu.be/", "https://www.youtube.com/embed/");
+            }
+            if (formattedUrl.startsWith("https://www.youtube.com")) {
+                formattedUrl = formattedUrl.replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/");
+            }
+            if (!_isEmpty(formattedUrl) && formattedUrl.includes("&t=")) {
+                formattedUrl = formattedUrl.split("&t=")[0];
+            }
+            if (!_isEmpty(formattedUrl) && formattedUrl.includes("vimeo.com")) {
+                formattedUrl = parseVimeoUrl(formattedUrl);
+            }
             setVideoUrlState(formattedUrl);
+        } else {
+            fromCreate && setCreateGivingGroupObject({
+                ...createGivingGroupObject,
+                attributes: {
+                    ...createGivingGroupObject.attributes,
+                    'videoUrl': ''
+                },
+            });
         }
+        setValidateVideoUrl(isValidUrl);
     };
 
     useEffect(() => {
@@ -104,10 +124,12 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     * @returns {void} set the value of createGivingGroupObject state video url attribute .
     */
     const handleOnVideoClick = (mode = '') => {
-        if (mode === 'add' && videoUrlState !== '' && !youTubeVimeoValidator(videoUrlState)) {
-            setValidateVideoUrl(true);
-            return;
-        };
+        if (mode === 'add' && videoUrlState !== '' && validateVideoUrl) {
+            setinsertStatus(true);
+        } else if (mode === 'remove') {
+            setVideoUrlState('');
+            setinsertStatus(false);
+        }
         fromCreate && setCreateGivingGroupObject({
             ...createGivingGroupObject,
             attributes: {
@@ -200,10 +222,6 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     };
 
     const handlePicsVideoOnContinue = () => {
-        if (videoUrl !== '' && !youTubeVimeoValidator(videoUrl)) {
-            setValidateVideoUrl(true);
-            return;
-        };
         dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
         Router.pushRoute(createGivingGroupFlowSteps.stepFour);
     }
@@ -226,6 +244,18 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
             newGalleryImages.push(galleryImageObject);
         }
     });
+
+    const resetPageViewStatus = () => {
+        dispatch({
+            payload: {
+                pageStatus: {
+                    menuView: true,
+                    pageView: false,
+                },
+            },
+            type: 'SET_MANAGE_PAGE_STATUS',
+        });
+    };
     return (
         <Container>
             <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
@@ -237,7 +267,21 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                 }
                 <div className='mainContent'>
                     <div className='pics-video'>
-                        <Header>{formatMessage('createGivingGroupPicsVideo.header')}</Header>
+                        <Header>
+                            {!fromCreate
+                            && (
+                                <Responsive minWidth={320} maxWidth={767}>
+                                    <span>
+                                        <i
+                                            aria-hidden="true"
+                                            className="back_to_menu icon"
+                                            onClick={resetPageViewStatus}
+                                        />
+                                    </span>
+                                </Responsive>
+                            )}
+                            {formatMessage('createGivingGroupPicsVideo.header')}
+                        </Header>
                         <p>If you'd like, you can add photos and video to your group page.</p>
                         <Form>
                             {fromCreate &&
@@ -287,44 +331,36 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                             onBlur={handleUrlOnBlur}
                                             value={videoUrlState || ''}
                                             name='videoUrl'
-                                            error={validateVideoUrl}
+                                            error={!validateVideoUrl}
                                         />
                                         <Button
                                             className='success-btn-rounded-def'
                                             onClick={() => { handleOnVideoClick('add') }}
-                                            disabled={_isEmpty(videoUrlState)}
+                                            disabled={_isEmpty(videoUrlState) || !validateVideoUrl}
                                         >
                                             {formatMessage('createGivingGroupPicsVideo.uploadVideoButton')}
                                         </Button>
                                     </div>
-                                </div>
-                                {(!_isEmpty(videoUrl) && videoUrl === videoUrlState && !validateVideoUrl) &&
+                                    {((fromCreate && !_isEmpty(videoUrlState) && insertStatus)
+                                    || (!_isEmpty(videoUrl) && videoUrl === videoUrlState ))
+                                && (
                                     <div className='videoWrap'>
                                         <Icon
                                             className='remove'
                                             onClick={() => { handleOnVideoClick('remove') }}
                                         />
-                                        {/* <iframe width="100%" height="415"
-                                            src={videoUrl}>
-                                        </iframe> */}
-                                        <embed
-                                            // width="100%"
-                                            // height="415"
-                                            // controls
-                                            title="video"
-                                            src={videoUrl}
-                                            className="responsiveVideo"
-                                        >
-                                            {/* <source src={videoUrl} type="video"></source> */}
-                                            </embed>
+                                        <iframe width="100%" height="415"
+                                            src={videoUrlState}>
+                                        </iframe>
                                     </div>
-                                }
-                                {validateVideoUrl &&
-                                    <p className="error-message">
-                                        <Icon name="exclamation circle" />
-                                        Enter a valid url
-                                    </p>
-                                }
+                                    )}
+                                    {!validateVideoUrl &&
+                                        <p className="error-message mt-1">
+                                            <Icon name="exclamation circle" />
+                                            Enter a valid url
+                                        </p>
+                                    }
+                                </div>
                             </div>
                             <div className='createnewSec'>
                                 <Header className='sectionHeader'> {formatMessage('createGivingGroupPicsVideo.photoGallery')}
@@ -390,7 +426,6 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                 </Button>
                                 <Button
                                     className='blue-btn-rounded-def'
-                                    disabled={validateVideoUrl}
                                     onClick={handlePicsVideoOnContinue}
                                 >
                                     {formatMessage('continueButton')}

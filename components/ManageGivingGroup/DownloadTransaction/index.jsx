@@ -1,19 +1,46 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import {
+    useDispatch,
+    useSelector,
+} from 'react-redux';
 import {
     Header,
     Form,
     Button,
     Icon,
     Popup,
+    Responsive,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
 const DownloadTransaction = () => {
     const groupDetails = useSelector((state) => state.group.groupDetails);
+    const dispatch = useDispatch();
+
+    const resetPageViewStatus = () => {
+        dispatch({
+            payload: {
+                pageStatus: {
+                    menuView: true,
+                    pageView: false,
+                },
+            },
+            type: 'SET_MANAGE_PAGE_STATUS',
+        });
+    };
+
     return (
         <div className="basicsettings">
             <Header className="titleHeader transaction">
+                <Responsive minWidth={320} maxWidth={767}>
+                    <span>
+                        <i
+                            aria-hidden="true"
+                            className="back_to_menu icon"
+                            onClick={resetPageViewStatus}
+                        />
+                    </span>
+                </Responsive>
                 Download transaction data
                 <p className="SubHeader">Download transaction data and donor information</p>
             </Header>

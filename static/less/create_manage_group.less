@@ -1980,7 +1980,7 @@ body{
     .menuContentWrap{
       padding-bottom: 50px !important;
       >.column{
-        display: none !important;
+        // display: none !important;
         &.active{
           display: block !important;
         }
@@ -2501,6 +2501,25 @@ body{
         background-position: center !important;
         background-size: contain !important;
         background-repeat: no-repeat !important;
+    }
+  }
+}
+.icon{
+  &.back_to_menu{
+    @media only screen and (max-width: 767px){
+      position: relative;
+      &::before{
+      content: '';
+      position: absolute;
+      top: 5px !important;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-image: url("@{img_url}/images/icons/icon-arrow-down.svg") !important;
+      background-position: center !important;
+      background-size: contain !important;
+      background-repeat: no-repeat !important;
+    }
     }
   }
 }

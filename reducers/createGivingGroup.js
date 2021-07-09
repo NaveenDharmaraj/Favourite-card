@@ -143,6 +143,12 @@ const createGivingGroup = (state = {}, action) => {
                 isFromCampaignObj: action.payload.fromCampaignObj,
             };
             break;
+        case 'SET_MANAGE_PAGE_STATUS':
+            newState = {
+                ...state,
+                pageViewStatus: action.payload.pageStatus,
+            };
+            break;
         default:
             break;
     }

@@ -13,6 +13,7 @@ import {
     Loader,
     Search,
     Label,
+    Responsive,
 } from 'semantic-ui-react';
 import {
     PropTypes,
@@ -494,6 +495,19 @@ const CreateGivingGroupGivingGoal = ({
         }
         return <Label className={`charities_label ${!_isEmpty(isSelected) ? 'disabled' : ''}`} content={event.title} />;
     };
+
+    const resetPageViewStatus = () => {
+        dispatch({
+            payload: {
+                pageStatus: {
+                    menuView: true,
+                    pageView: false,
+                },
+            },
+            type: 'SET_MANAGE_PAGE_STATUS',
+        });
+    };
+
     return (
         <Container>
             <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
@@ -522,6 +536,18 @@ const CreateGivingGroupGivingGoal = ({
                                         {fromCreate || Number(editGivingGroupStoreFlowObject.attributes.fundraisingGoal) <= 0 ? (
                                             <div className={`createnewSec ${fromCreate ? 'bottom_space' : 'no_border'}`}>
                                                 <Header className="sectionHeader">
+                                                    {!fromCreate
+                                                    && (
+                                                        <Responsive minWidth={320} maxWidth={767}>
+                                                            <span>
+                                                                <i
+                                                                    aria-hidden="true"
+                                                                    className="back_to_menu icon"
+                                                                    onClick={resetPageViewStatus}
+                                                                />
+                                                            </span>
+                                                        </Responsive>
+                                                    )}
                                                     {formatMessage('createGivingGroupGivingGoal.givingGoalTitle')}
                                                 </Header>
                                                 {fromCreate
@@ -562,7 +588,21 @@ const CreateGivingGroupGivingGoal = ({
                                 {showCharity
                                 && (
                                     <div className={`createnewSec ${!fromCreate ? 'no_border' : ''}`}>
-                                        <Header className={`sectionHeader ${!fromCreate ? 'gifts_bottom_border' : ''}`}>
+                                        <Header
+                                            className={`sectionHeader ${!fromCreate ? 'gifts_bottom_border' : ''}`}
+                                        >
+                                            {!fromCreate
+                                            && (
+                                                <Responsive minWidth={320} maxWidth={767}>
+                                                    <span>
+                                                        <i
+                                                            aria-hidden="true"
+                                                            className="back_to_menu icon"
+                                                            onClick={resetPageViewStatus}
+                                                        />
+                                                    </span>
+                                                </Responsive>
+                                            )}
                                             {formatMessage('createGivingGroupGivingGoal.charitiesToSupport')}
                                         </Header>
                                         <Fragment>

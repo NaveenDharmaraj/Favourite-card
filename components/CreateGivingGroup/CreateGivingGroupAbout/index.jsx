@@ -6,6 +6,7 @@ import {
     Form,
     TextArea,
     Icon,
+    Responsive,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
@@ -270,6 +271,21 @@ class CreateGivingGroupAbout extends React.Component {
         dispatch(updateCreateGivingGroupObj(this.state.createGivingGroupObjectState));
         Router.pushRoute(createGivingGroupFlowSteps.stepThree);
     };
+
+    resetPageViewStatus = () => {
+        const {
+            dispatch,
+        } = this.props;
+        dispatch({
+            payload: {
+                pageStatus: {
+                    menuView: true,
+                    pageView: false,
+                },
+            },
+            type: 'SET_MANAGE_PAGE_STATUS',
+        });
+    };
     render() {
         const {
             addModalSectionObject,
@@ -302,7 +318,23 @@ class CreateGivingGroupAbout extends React.Component {
                     }
                     <div className='mainContent'>
                         <div className='about-group'>
-                            <Header className='titleHeader'>{formatMessage('createGivingGroupAbout.aboutHeader')}</Header>
+                            <Header
+                                className='titleHeader'
+                            >
+                                {!fromCreate
+                                && (
+                                    <Responsive minWidth={320} maxWidth={767}>
+                                        <span>
+                                            <i
+                                                aria-hidden="true"
+                                                className="back_to_menu icon"
+                                                onClick={this.resetPageViewStatus}
+                                            />
+                                        </span>
+                                    </Responsive>
+                                )}
+                                {formatMessage('createGivingGroupAbout.aboutHeader')}
+                            </Header>
                             <Form>
                                 <div className={`createnewSec ${fromCreate ? 'bottom_space' : ''}`}>
                                     <label className={`describe ${!fromCreate ? 'Describe_about' : ''}`}>{formatMessage('createGivingGroupAbout.aboutDescriptionLabel')}</label>

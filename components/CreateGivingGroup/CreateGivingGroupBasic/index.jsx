@@ -1,6 +1,7 @@
 import React, {
     useState,
     useEffect,
+    Fragment,
 } from 'react';
 import _every from 'lodash/every';
 import _isEmpty from 'lodash/isEmpty';
@@ -14,6 +15,7 @@ import {
     Select,
     Icon,
     Checkbox,
+    Responsive,
 } from 'semantic-ui-react';
 import {
     useDispatch,
@@ -265,6 +267,18 @@ const CreateGivingGroupBasic = ({
                 // handle error
             });
     };
+    const resetPageViewStatus = () => {
+        dispatch({
+            payload: {
+                pageStatus: {
+                    menuView: true,
+                    pageView: false,
+                },
+            },
+            type: 'SET_MANAGE_PAGE_STATUS',
+        });
+    };
+
     return (
         <Container>
             <div className={fromCreate ? 'createNewGroupWrap' : 'manageGroupWrap createNewGroupWrap'}>
@@ -282,6 +296,18 @@ const CreateGivingGroupBasic = ({
                         {showBasic
                         && (
                             <Header className="titleHeader">
+                                {!fromCreate
+                                && (
+                                    <Responsive minWidth={320} maxWidth={767}>
+                                        <span>
+                                            <i
+                                                aria-hidden="true"
+                                                className="back_to_menu icon"
+                                                onClick={resetPageViewStatus}
+                                            />
+                                        </span>
+                                    </Responsive>
+                                )}
                                 {formatMessage('createGivingGroupBasic.basicHeader')}
                             </Header>
                         )
@@ -410,7 +436,23 @@ const CreateGivingGroupBasic = ({
                             {showMonthly
                             && (
                                 <div className={`createnewSec ${!fromCreate ? 'full_width' : ''}`}>
-                                    <Header className={`sectionHeader ${!fromCreate ? 'gifts_bottom_border' : ''}`}>{formatMessage('createGivingGroupBasic.monthlyGiftsHeader')}</Header>
+                                    <Header
+                                        className={`sectionHeader ${!fromCreate ? 'gifts_bottom_border' : ''}`}
+                                    >
+                                        {!fromCreate
+                                        && (
+                                            <Responsive minWidth={320} maxWidth={767}>
+                                                <span>
+                                                    <i
+                                                        aria-hidden="true"
+                                                        className="back_to_menu icon"
+                                                        onClick={resetPageViewStatus}
+                                                    />
+                                                </span>
+                                            </Responsive>
+                                        )}
+                                        {formatMessage('createGivingGroupBasic.monthlyGiftsHeader')}
+                                    </Header>
                                     <p>{formatMessage('createGivingGroupBasic.monthlyGiftsDescription')}</p>
                                     <Checkbox
                                         checked={prefersRecurringEnabled === '1'}
