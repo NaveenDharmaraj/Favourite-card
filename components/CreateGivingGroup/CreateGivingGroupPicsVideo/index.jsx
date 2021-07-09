@@ -94,6 +94,14 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                 formattedUrl = parseVimeoUrl(formattedUrl);
             }
             setVideoUrlState(formattedUrl);
+        } else {
+            fromCreate && setCreateGivingGroupObject({
+                ...createGivingGroupObject,
+                attributes: {
+                    ...createGivingGroupObject.attributes,
+                    'videoUrl': ''
+                },
+            });
         }
         setValidateVideoUrl(isValidUrl);
     };
@@ -117,9 +125,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     */
     const handleOnVideoClick = (mode = '') => {
         if (mode === 'add' && videoUrlState !== '' && validateVideoUrl) {
-            setValidateVideoUrl(true);
             setinsertStatus(true);
-            return;
         } else if (mode === 'remove') {
             setVideoUrlState('');
             setinsertStatus(false);
@@ -216,8 +222,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     };
 
     const handlePicsVideoOnContinue = () => {
-        if (videoUrl !== '' && !youTubeVimeoValidator(videoUrl)) {
-            setValidateVideoUrl(true);
+        if (videoUrl !== '' && !validateVideoUrl) {
             return;
         };
         dispatch(updateCreateGivingGroupObj(createGivingGroupObject));
@@ -334,13 +339,13 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                         <Button
                                             className='success-btn-rounded-def'
                                             onClick={() => { handleOnVideoClick('add') }}
-                                            disabled={_isEmpty(videoUrlState)}
+                                            disabled={_isEmpty(videoUrlState) || !validateVideoUrl}
                                         >
                                             {formatMessage('createGivingGroupPicsVideo.uploadVideoButton')}
                                         </Button>
                                     </div>
                                     {((fromCreate && !_isEmpty(videoUrlState) && insertStatus)
-                                    || (!fromCreate && !_isEmpty(videoUrl) && videoUrl === videoUrlState ))
+                                    || (!_isEmpty(videoUrl) && videoUrl === videoUrlState ))
                                 && (
                                     <div className='videoWrap'>
                                         <Icon
@@ -424,7 +429,6 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                 </Button>
                                 <Button
                                     className='blue-btn-rounded-def'
-                                    disabled={validateVideoUrl}
                                     onClick={handlePicsVideoOnContinue}
                                 >
                                     {formatMessage('continueButton')}
