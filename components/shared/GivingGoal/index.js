@@ -211,7 +211,7 @@ const GivingGoal = ({
                                             <span>{endDate ? formatDateForGivingTools(endDate) : null}</span>
                                         </div>
                                     </div>
-                                    {(!isGoalExpired || hasNonExpireGoal)
+                                    {(!_isEmpty(givingGoalReachedDate) && (!isGoalExpired || hasNonExpireGoal))
                                     && (
                                         <Popup
                                         context={contextRef}
