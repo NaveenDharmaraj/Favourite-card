@@ -307,13 +307,12 @@ const Manage = () => {
                                                         </p>
                                                     </div>
                                                 )}
-                                        <div className="Emailmembers">
+                                        <div className="Emailmembers" onClick={() => updateMenu(4, 'email_members')}>
                                             <p>
                                                 <span>
                                                     <i
                                                         aria-hidden="true"
                                                         className="icon icon-mail"
-                                                        onClick={() => updateMenu(4, 'email_members')}
                                                     />
                                                 </span>
                                                 Email members
