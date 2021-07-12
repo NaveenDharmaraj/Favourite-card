@@ -52,6 +52,7 @@ const ManageGivingGroupAccordian = ({
         pageView: false,
     };
     const pageViewStatus = useSelector((state) => state.createGivingGroup.pageViewStatus || defaultPageViewStatus);
+    const updatedMenuIndex = useSelector((state) => state.createGivingGroup.groupManageMenuIndex || {});
 
     useEffect(() => {
         dispatch({
@@ -70,6 +71,31 @@ const ManageGivingGroupAccordian = ({
     } else if (_isEmpty(currentComponentSelectedState) && activeAccordionIndexValue !== null) {
         setCurrentComponentSelectedState(manageGivingGroupAccordianOptions[step]);
     }
+
+    useEffect(() => {
+        if (!_isEmpty(updatedMenuIndex) && (activeAccordionIndex !== updatedMenuIndex.index)) {
+            setActiveAccordionIndex(updatedMenuIndex.index);
+            dispatch({
+                payload: {
+                    pageStatus: {
+                        menuView: false,
+                        pageView: true,
+                    },
+                },
+                type: 'SET_MANAGE_PAGE_STATUS',
+            });
+            setCurrentComponentSelectedState(manageGivingGroupAccordianOptions[updatedMenuIndex.menu]);
+            Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions[updatedMenuIndex.menu].route}`, { shallow: true });
+            dispatch({
+                payload: {
+                    menuDetails: {},
+                },
+                type: 'UPDATE_MANAGE_GROUP_MENU_ITEM',
+            });
+        }
+    }, [
+        updatedMenuIndex,
+    ]);
 
     const handleAccordionClick = (e, titleProps) => {
         const {

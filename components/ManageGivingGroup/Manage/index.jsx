@@ -148,13 +148,21 @@ const Manage = () => {
         dispatch(searchMember(groupDetails.id, searchText));
     };
 
-    const handleEmailClick = () => {
-        Router.pushRoute(`/groups/${groupDetails.attributes.slug}/email_members`);
-    };
-
     const handleClearSearch = () => {
         setsearchText('');
         dispatch(getGroupMembers(groupDetails.id));
+    };
+
+    const updateMenu = (index, menu) => {
+        dispatch({
+            payload: {
+                menuDetails: {
+                    index,
+                    menu,
+                },
+            },
+            type: 'UPDATE_MANAGE_GROUP_MENU_ITEM',
+        });
     };
 
     const resetPageViewStatus = () => {
@@ -267,9 +275,12 @@ const Manage = () => {
                                     </div>
                                     <div className="ManageNoDataRightText">
                                         <Header as="h4">Invite friends to join your group</Header>
-                                        <Link className="lnkChange" route={`/groups/${groupDetails.attributes.slug}/invites`}>
-                                            <Button className="success-btn-rounded-def">Invite friends</Button>
-                                        </Link>
+                                        <Button
+                                            className="success-btn-rounded-def"
+                                            onClick={() => updateMenu(3, 'invites')}
+                                        >
+                                            Invite friends
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -297,18 +308,16 @@ const Manage = () => {
                                                     </div>
                                                 )}
                                         <div className="Emailmembers">
-                                            {/* <Link route={`/groups/${groupDetails.attributes.slug}/email_members`}> */}
                                             <p>
                                                 <span>
                                                     <i
                                                         aria-hidden="true"
                                                         className="icon icon-mail"
-                                                        onClick={handleEmailClick}
+                                                        onClick={() => updateMenu(4, 'email_members')}
                                                     />
                                                 </span>
                                                 Email members
                                             </p>
-                                            {/* </Link> */}
                                         </div>
                                     </div>
                                     {groupMemberPlaceholderStatus

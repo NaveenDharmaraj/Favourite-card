@@ -149,6 +149,12 @@ const createGivingGroup = (state = {}, action) => {
                 pageViewStatus: action.payload.pageStatus,
             };
             break;
+        case 'UPDATE_MANAGE_GROUP_MENU_ITEM':
+            newState = {
+                ...state,
+                groupManageMenuIndex: action.payload.menuDetails,
+            };
+            break;
         default:
             break;
     }
