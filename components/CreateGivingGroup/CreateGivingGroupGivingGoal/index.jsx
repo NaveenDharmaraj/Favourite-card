@@ -609,12 +609,12 @@ const CreateGivingGroupGivingGoal = ({
                                             {hasFeaturedCharities
                                                 ? (
                                                     <Fragment>
+                                                        <p>
+                                                            These charities will be displayed on your group to show visitors whom you plan to support.
+                                                        </p>
                                                         {!isCampaignLocked
                                                         && (
-                                                            <p>
-                                                            These charities will be displayed on your group to show visitors whom you plan to support.
-                                                            Don't worry, you can change these at any time.
-                                                            </p>
+                                                            <p>Don't worry, you can change these at any time.</p>
                                                         )}
                                                     </Fragment>
                                                 )
