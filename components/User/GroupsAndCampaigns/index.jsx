@@ -234,23 +234,23 @@ class GroupsAndCampaigns extends React.Component {
                         <div className="grpcampBannerContainer">
                             <div className="grpcampBannerTxt">
                                 <Header as="h3" icon>
-                                    Give together
+                                    Give together</Header>
                                     <Header.Subheader>
-                                        With a Giving Group, multiple people can combine forces, pool or raise money together.
+                                        With a <span className="semi_Giving"> Giving Group</span>, multiple people can combine forces, pool or raise money together.
                                     </Header.Subheader>
-                                    <p>
-                                        Money raised in a Giving Group goes towards supporting one or more registered Canadian charities of your choice.
+                                    <p className="registered">
+                                        Money raised in a Giving Group goes towards supporting one or more <span className="semi_Giving"> registered Canadian charities </span>of your choice.
                                     </p>
-                                </Header>
-                                <Fragment>
+                                
+                                <div className="Create_wrapper">
                                     <Link route={createGivingGroupFlowSteps.stepOne}>
                                         <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
                                     </Link>
-                                    <p>
-                                    Or,
+                                    <p className="how_Giving_Groups_work">
+                                    Or,&nbsp;
                                         <a href={`${HELP_CENTRE_URL}article/147-what-is-a-giving-group`}>
                                             learn more
-                                        </a>
+                                        </a>&nbsp;
                                         about how Giving Groups work
                                     </p>
                                     {/* {showInitialButton ? (
@@ -263,7 +263,7 @@ class GroupsAndCampaigns extends React.Component {
                                         </Link>
                                     )
                                     } */}
-                                </Fragment>
+                                </div>
 
                             </div>
                         </div>
