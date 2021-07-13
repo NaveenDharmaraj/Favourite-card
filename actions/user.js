@@ -1415,9 +1415,7 @@ export const handleInvitationAccepts = (reqParams, currentUserId, type = 'logged
         };
         const inviteObject = {
             payload: {
-                groupInviteDetails: {
-                    attributes: {},
-                },
+                groupInviteDetails: {},
             },
             type: actionTypes.GROUP_INVITE_DETAILS,
         };

@@ -401,8 +401,12 @@ const invitationParameters = {
     get reqParameters() {
         const invitationType = storage.get('invitationType', 'local');
         const sourceId = storage.get('sourceId', 'local');
+        const signupSource = storage.get('signupSource', 'local');
+        const signupSourceId = storage.get('signupSourceId', 'local');
         return {
             invitationType,
+            signupSource,
+            signupSourceId,
             sourceId,
         };
     },
@@ -418,15 +422,23 @@ const invitationParameters = {
     set reqParameters(invObj) {
         let invitationType;
         let sourceId;
+        let signupSource;
+        let signupSourceId;
         if (invObj && invObj.invitationType && invObj.sourceId) {
             invitationType = storage.set('invitationType', invObj.invitationType, 'local');
             sourceId = storage.set('sourceId', invObj.sourceId, 'local');
+            signupSource = storage.set('signupSource', 'group', 'local');
+            signupSourceId = storage.set('signupSourceId', invObj.signUpSourceId, 'local');
         } else {
             invitationType = storage.unset('invitationType', 'local');
             sourceId = storage.unset('sourceId', 'local');
+            signupSource = storage.unset('signupSource', 'local');
+            signupSourceId = storage.unset('signupSourceId', 'local');
         }
         return {
             invitationType,
+            signupSource,
+            signupSourceId,
             sourceId,
         };
     },

@@ -43,10 +43,16 @@ class Members extends React.Component {
         const {
             dispatch,
             groupDetails: {
+                attributes: {
+                    isMember,
+                    isPrivate,
+                },
                 id: groupId,
             },
         } = this.props;
-        dispatch(getDetails(groupId, 'members'));
+        if (isMember || !isPrivate) {
+            dispatch(getDetails(groupId, 'members'));
+        }
     }
 
     componentDidUpdate() {
@@ -211,6 +217,8 @@ Members.propTypes = {
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
             isAdmin: bool,
+            isMember: bool,
+            isPrivate: bool,
             slug: string,
         }),
         id: number,

@@ -22,7 +22,12 @@ const {
 
 const NonAuthHeader = () => {
     const groupInviteDetails = useSelector((state) => state.group.groupInviteDetails);
-    const loginUrl = !_isEmpty(groupInviteDetails) ? `/users/login?invitationType=groupInvite&sourceId=${groupInviteDetails.attributes.claimToken}` : `/users/login`;
+    const groupDetails = useSelector((state) => state.group.groupDetails);
+
+    const loginUrl = !_isEmpty(groupInviteDetails) ? `/users/login?invitationType=groupInvite&sourceId=${groupInviteDetails.claim_token}&signUpSourceId=${groupDetails.id}` : `/users/login`;
+    
+    const signUpUrl = !_isEmpty(groupInviteDetails) ? `/users/new?invitationType=groupInvite&sourceId=${groupInviteDetails.claim_token}&signUpSourceId=${groupDetails.id}` : `/users/new`;
+    
     return (
         <Fragment>
             <Menu.Menu className="left-menu">
@@ -65,7 +70,7 @@ const NonAuthHeader = () => {
                         Login
                     </Menu.Item>
                 </Link>
-                <Link route="/users/new">
+                <Link route={signUpUrl}>
                     <Menu.Item className="signup">
                         <Button primary>Sign Up</Button>
                     </Menu.Item>

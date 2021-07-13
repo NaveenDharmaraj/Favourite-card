@@ -29,13 +29,17 @@ class GroupAdmins extends React.Component {
         const {
             dispatch,
             groupDetails: {
+                attributes: {
+                    isMember,
+                    isPrivate,
+                },
                 id: groupId,
             },
             groupAdminsDetails: {
                 data: adminData,
             },
         } = this.props;
-        if (_isEmpty(adminData)) {
+        if (_isEmpty(adminData) && (isMember || !isPrivate)) {
             dispatch(getDetails(groupId, 'admins'));
         }
     }
@@ -92,6 +96,10 @@ GroupAdmins.propTypes = {
         totalCount: number,
     }),
     groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            isMember: bool,
+            isPrivate: bool,
+        }),
         id: string,
     }),
     t: func,
