@@ -44,10 +44,14 @@ class CharitySupport extends React.Component {
                 data: beneficiariesData,
             },
             groupDetails: {
+                attributes: {
+                    isMember,
+                    isPrivate,
+                },
                 id: groupId,
             },
         } = this.props;
-        if (_isEmpty(beneficiariesData)) {
+        if (_isEmpty(beneficiariesData) && (isMember || !isPrivate)) {
             dispatch(getDetails(groupId, 'charitySupport'));
         }
     }
@@ -216,7 +220,7 @@ class CharitySupport extends React.Component {
 }
 
 CharitySupport.defaultProps = {
-    charityLoader: true,
+    charityLoader: false,
     dispatch: () => { },
     groupBeneficiaries: {
         data: [],

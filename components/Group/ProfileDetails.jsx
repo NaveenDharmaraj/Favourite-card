@@ -70,11 +70,17 @@ class ProfileDetails extends React.Component {
             groupMatchingHistory: {
                 data: matchHistory,
             },
+            groupDetails: {
+                attributes: {
+                    isMember,
+                    isPrivate,
+                },
+            },
             isAuthenticated,
             updatedActiveIndex,
         } = this.props;
         let panes = [];
-        if (isAuthenticated) {
+        if (isAuthenticated && (isMember || !isPrivate)) {
             panes = [
                 {
                     id: 'Activity',
@@ -169,6 +175,8 @@ ProfileDetails.propTypes = {
             formattedHelping: string,
             formattedImpact: string,
             formattedShort: string,
+            isMember: bool,
+            isPrivate: bool,
             videoPlayerLink: string,
         }),
     }),

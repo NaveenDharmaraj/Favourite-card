@@ -20,7 +20,6 @@ import { withTranslation } from '../i18n';
 import {
     actionTypes,
     getGroupFromSlug,
-    getGroupInviteDetails,
     getImageGallery,
     getMatchingHistory,
 } from '../actions/group';
@@ -52,7 +51,7 @@ class GroupProfile extends React.Component {
         if (typeof window === 'undefined') {
             auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
         }
-        await reduxStore.dispatch(getGroupFromSlug(query.slug, auth0AccessToken, false));
+        await reduxStore.dispatch(getGroupFromSlug(query.slug, auth0AccessToken, false, query.step));
         return {
             namespacesRequired: [
                 'common',
@@ -71,8 +70,8 @@ class GroupProfile extends React.Component {
             groupDetails: {
                 attributes: {
                     isCampaign,
-                    isAdmin,
                     isMember,
+                    isPrivate,
                 },
                 id: groupId,
                 relationships: {
@@ -87,10 +86,7 @@ class GroupProfile extends React.Component {
             redirectToDashboard,
             step,
         } = this.props;
-        if (step && !isMember && !_isEmpty(groupId)) {
-            dispatch(getGroupInviteDetails(groupId, step));
-        }
-        if (!_isEmpty(groupId)) {
+        if (!_isEmpty(groupId) && (isMember || !isPrivate)) {
             dispatch(getMatchingHistory(groupId));
         }
         if (isCampaign) {
@@ -105,7 +101,7 @@ class GroupProfile extends React.Component {
         if (currentUser && currentUser.id) {
             getGroupsAndCampaigns(dispatch, `/users/${currentUser.id}/groupsWithOnlyMemberships?sort=-id`, 'groupsWithMemberships', false);
         }
-        if (!_isEmpty(related)) {
+        if (!_isEmpty(related) && (isMember || !isPrivate)) {
             dispatch(getImageGallery(related));
         }
     }
@@ -244,6 +240,7 @@ GroupProfile.propTypes = {
             description: string,
             isCampaign: bool,
             isMember: bool,
+            isPrivate: bool,
             location: string,
             name: string,
             slug: string,

@@ -38,7 +38,7 @@ export const actionTypes = {
 };
 
 
-export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async (dispatch) => {
+export const getGroupFromSlug = (slug, token = null, fromEdit = false, claimToken) => async (dispatch) => {
     if (slug !== ':slug') {
         const fsa = {
             payload: {
@@ -60,6 +60,7 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
         });
         const fullParams = {
             params: {
+                claim_token: claimToken,
                 dispatch,
                 findBySlug: true,
                 load_full_profile: true,
@@ -79,6 +80,14 @@ export const getGroupFromSlug = (slug, token = null, fromEdit = false) => async 
                 if (result && !_isEmpty(result.data)) {
                     fsa.payload.groupDetails = result.data;
                     dispatch(fsa);
+                    if (result.data.attributes.inviteSenderDetails) {
+                        dispatch({
+                            payload: {
+                                groupInviteDetails: result.data.attributes.inviteSenderDetails || {},
+                            },
+                            type: actionTypes.GROUP_INVITE_DETAILS,
+                        });
+                    }
                     if (fromEdit) {
                         const galleryImages = [];
                         if (result.data.attributes.galleryImagesList) {
@@ -733,25 +742,4 @@ export const getMatchingHistory = (groupId) => (dispatch) => {
             dispatch(fsa);
         }
     }).catch().finally();
-};
-
-export const getGroupInviteDetails = (groupId, claimToken) => (dispatch) => {
-    const fsa = {
-        payload: {
-            groupInviteDetails: {},
-        },
-        type: actionTypes.GROUP_INVITE_DETAILS,
-    };
-    return coreApi.get(`/groups/${groupId}/pendingGroupInvites`, {
-        params: {
-            dispatch,
-            'filter[claimToken]': claimToken,
-            uxCritical: true,
-        },
-    }).then((result) => {
-        if (result && result.data && result.data.length > 0) {
-            fsa.payload.groupInviteDetails = result.data[0] || {};
-            dispatch(fsa);
-        }
-    });
 };

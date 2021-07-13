@@ -88,6 +88,8 @@ class GroupProfileWrapper extends Component {
                     activeMatch,
                     avatar,
                     causes,
+                    isMember,
+                    isPrivate,
                     liked,
                     location,
                     name,
@@ -98,12 +100,9 @@ class GroupProfileWrapper extends Component {
                 type,
             },
             groupInviteDetails: {
-                attributes: {
-                    senderAvatar,
-                    senderDisplayName,
-                    senderFullName,
-                },
-                id,
+                    sender_avatar: senderAvatar,
+                    sender_display_name: senderDisplayName,
+                    sender_full_name: senderFullName,
             },
             groupMatchingHistory: {
                 data: matchHistory,
@@ -114,6 +113,7 @@ class GroupProfileWrapper extends Component {
         const beneficiariesCount = !_isEmpty(data) ? data : null;
         const {
             groupDetails,
+            groupInviteDetails
         } = this.props;
         const pathArr = [
             'Explore',
@@ -122,7 +122,7 @@ class GroupProfileWrapper extends Component {
         ];
         return (
             <Fragment>
-                {!_isEmpty(id) && (
+                {!_isEmpty(groupInviteDetails) && (
                     <div className="giving_group_top">
                         <Container>
                             <Segment className="box_color">
@@ -194,10 +194,15 @@ class GroupProfileWrapper extends Component {
                                                 />
                                             </Responsive>
                                         </Grid.Column>
-                                        <Divider className="mt-2 mobile_border" />
-                                        <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
-                                            <GroupAdmins />
-                                        </Grid.Column>
+                                        
+                                        {(isMember || !isPrivate) && (
+                                            <Fragment>
+                                                <Divider className="mt-2 mobile_border" />
+                                                <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
+                                                    <GroupAdmins />
+                                                </Grid.Column>
+                                            </Fragment>
+                                        )}
                                         <Divider />
                                     </Grid.Row>
                                     <AboutGroup />
@@ -243,10 +248,7 @@ GroupProfileWrapper.defaultProps = {
         id: '',
         type: '',
     },
-    groupInviteDetails: {
-        attributes: {},
-        id: '',
-    },
+    groupInviteDetails: {},
     groupMatchingHistory: {
         data: [],
     },
@@ -274,10 +276,7 @@ GroupProfileWrapper.propTypes = {
         id: string,
         type: string,
     }),
-    groupInviteDetails: PropTypes.shape({
-        attributes: PropTypes.shape({}),
-        id: string,
-    }),
+    groupInviteDetails: PropTypes.shape({}),
     groupMatchingHistory: PropTypes.shape({
         data: array,
     }),

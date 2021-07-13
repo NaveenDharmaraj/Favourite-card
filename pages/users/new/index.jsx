@@ -30,6 +30,7 @@ class Login extends React.Component {
             reqParams: {
                 invitationType: query.invitationType,
                 sourceId: query.sourceId,
+                signUpSourceId:query.signUpSourceId,
             },
         };
     }
@@ -228,6 +229,11 @@ class Login extends React.Component {
                 };
                 userDetails.claimToken = storage.getLocalStorageWithExpiry('claimToken','local');
                 userDetails.referrer = document.referrer;
+                const reqPar = invitationParameters.reqParameters;
+                if(reqPar && reqPar.invitationType === 'groupInvite'){
+                    userDetails.signupSource = reqPar.signupSource;
+                    userDetails.signupSourceId = reqPar.signupSourceId;
+                }
                 saveUser(dispatch, userDetails);
             }
             if (stepIndex !== 3) {

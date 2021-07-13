@@ -44,7 +44,7 @@ export const saveUser = (dispatch, userDetails) => {
             reqParameters: reqPar,
         } = invitationParameters;
 
-        if (reqPar.invitationType && reqPar.sourceId) {
+        if (reqPar && reqPar.invitationType && reqPar.sourceId && reqPar.invitationType !== 'groupInvite') {
             dispatch(handleInvitationAccepts(
                 reqPar,
                 result.user_id,
