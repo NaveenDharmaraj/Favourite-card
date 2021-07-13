@@ -236,20 +236,33 @@ class GroupsAndCampaigns extends React.Component {
                                 <Header as="h3" icon>
                                     Give together
                                     <Header.Subheader>
-                                        With a Giving Group, multiple people can combine forces, pool or raise money, and support one or more charities together.
+                                        With a Giving Group, multiple people can combine forces, pool or raise money together.
                                     </Header.Subheader>
+                                    <p>
+                                        Money raised in a Giving Group goes towards supporting one or more registered Canadian charities of your choice.
+                                    </p>
                                 </Header>
                                 <Fragment>
-                                    {showInitialButton ? (
+                                    <Link route={createGivingGroupFlowSteps.stepOne}>
+                                        <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
+                                    </Link>
+                                    <p>
+                                    Or,
+                                        <a href={`${HELP_CENTRE_URL}article/147-what-is-a-giving-group`}>
+                                            learn more
+                                        </a>
+                                        about how Giving Groups work
+                                    </p>
+                                    {/* {showInitialButton ? (
                                         <a href={`${HELP_CENTRE_URL}article/147-what-is-a-giving-group`}>
                                             <Button fluid className="success-btn-rounded-def">Learn how to start a Giving Group</Button>
                                         </a>
                                     ) : (
-                                            <Link route={createGivingGroupFlowSteps.stepOne}>
-                                                <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
-                                            </Link>
-                                        )
-                                    }
+                                        <Link route={createGivingGroupFlowSteps.stepOne}>
+                                            <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
+                                        </Link>
+                                    )
+                                    } */}
                                 </Fragment>
 
                             </div>
