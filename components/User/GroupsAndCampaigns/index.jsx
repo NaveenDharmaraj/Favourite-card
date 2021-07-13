@@ -231,7 +231,7 @@ class GroupsAndCampaigns extends React.Component {
             <Container>
                 <div className="grpcampHeader">
                     <div className="grpcampBanner">
-                        <div className="grpcampBannerContainer">
+                        <div className="grpcampBannerContainer"> 
                             <div className="grpcampBannerTxt">
                                 <Header as="h3" icon>
                                     Give together</Header>
