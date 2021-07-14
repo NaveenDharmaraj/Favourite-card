@@ -10111,3 +10111,102 @@ body{
     }
   }
 }
+.cardwrap{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    // justify-content: space-between;
+    margin-right: -10px;
+    margin-left: -10px;
+    .ui.card{
+      max-width: 390px;
+      margin: 0 10px 20px 10px;
+      flex: auto;
+      height: 145px;
+      .content{
+        padding: 10px;
+        display: flex;
+        align-items: flex-start;
+        .cardPrflImg{
+          // min-width: 85px;
+          // max-width: 85px;
+          width: 23%;
+          border-radius: 5px;
+          overflow: hidden;
+          
+        }
+        .cardcontentWrap{
+          margin: 0 0 0 14px;
+          width: 77%;
+          h6{
+            font-size: 10px;
+            margin: 0 0 5px;
+            text-transform: uppercase;
+            &.groupClr{
+              color: #009EA2;
+            }
+            &.charityClr{
+              color: #ED803B;
+            }
+          }
+          h4{
+            font-size: 14px;
+            color: @font-color;
+            margin: 0 0 2px;
+            line-height: 22px;
+            cursor: pointer;
+            display: block;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            +p{
+              display: block;
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+          p{
+            margin-bottom: 2px;
+            color: #263238;
+          }
+        }
+        .ui.placeholder{
+          width: 100%;
+          .image.header {
+            .line{
+              margin-left: 6em;
+              padding-top: 20px;
+              &:first-child{
+                padding-top: 0px;
+              }
+            }
+            &::after{
+              height: 0px;
+            }
+          }  
+        }
+      }
+      .edit{
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        text-transform: capitalize;
+        .primeFont-semi-bold();
+        color:@blueButton;
+        font-size: 14px;
+      }
+      .heart.icon{
+        position: absolute;
+        right: 10px;
+        top: 6px;
+        color: red;
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+  }
