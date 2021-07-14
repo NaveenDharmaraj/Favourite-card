@@ -1,8 +1,6 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import _ from 'lodash';
 import {
-    Grid,
-    Icon,
     Button,
 } from 'semantic-ui-react';
 
@@ -10,9 +8,11 @@ import {
     getGroupsAndCampaigns,
     leaveGroup,
 } from '../../../actions/user';
+import {
+    getLocation,
+} from '../../../helpers/profiles/utils';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
-
-import GroupsAndCampaignsCard from './GroupAndCampaingsCard';
+import ProfileCard from '../../shared/ProfileCard';
 
 class GroupsAndCampaignsList extends React.Component {
     constructor(props) {
@@ -30,6 +30,44 @@ class GroupsAndCampaignsList extends React.Component {
                 loader: false,
             });
         }
+    }
+
+    getGroupsAndCampaignsList() {
+        const {
+            listingType,
+            displayData,
+            leaveButtonLoader,
+            errorMessage,
+            closeLeaveModal,
+        } = this.props;
+        const groupsAndCampaignsList = [];
+        if (displayData && displayData.data && _.size(displayData.data) > 0) {
+            displayData.data.map((group) => {
+                groupsAndCampaignsList.push(
+                    <ProfileCard
+                        avatar={group.attributes.avatar}
+                        type={listingType === ('administeredCampaigns') ? 'Campaign' : 'Giving Group'}
+                        name={group.attributes.name}
+                        causes={group.attributes.groupType}
+                        isMyProfile
+                        isCampaign={listingType === ('administeredCampaigns')}
+                        Profiletype="group"
+                        location={getLocation(group.attributes.city, group.attributes.province)}
+                        slug={group.attributes.slug}
+                        isPreviewMode={false}
+                        canEdit={listingType !== 'groupsWithMemberships'}
+                        totalMoneyRaised={group.attributes.totalMoneyRaised}
+                        showLeave={listingType === 'groupsWithMemberships'}
+                        entityId={group.id}
+                        callLeaveGroup={this.callLeaveGroup}
+                        leaveButtonLoader={leaveButtonLoader}
+                        errorMessage={errorMessage}
+                        closeLeaveModal={closeLeaveModal}
+                    />,
+                );
+            });
+        }
+        return groupsAndCampaignsList;
     }
 
     callLeaveGroup(deleteId) {
@@ -97,38 +135,17 @@ class GroupsAndCampaignsList extends React.Component {
     render() {
         const {
             listingType,
-            displayData,
-            errorMessage,
-            leaveButtonLoader,
-            closeLeaveModal,
         } = this.props;
-        let groupsAndCampaignsList = 'No Data';
-        if (displayData && displayData.data && _.size(displayData.data) > 0) {
-            groupsAndCampaignsList = displayData.data.map((group, index) => {
-                return (
-                    <GroupsAndCampaignsCard
-                        listingType={listingType}
-                        data={group}
-                        errorMessage={errorMessage}
-                        leaveButtonLoader={leaveButtonLoader}
-                        closeLeaveModal={closeLeaveModal}
-                        parentLeaveGroup={this.callLeaveGroup}
-                    />
-                );
-            });
-        }
         return (
-            <div className="pb-1">
-                <Grid stackable doubling columns={3}>
-                    <Grid.Row>
-                        {groupsAndCampaignsList}
-                    </Grid.Row>
-                </Grid>
+            <Fragment>
+                <div className="cardwrap">
+                    {this.getGroupsAndCampaignsList()}
+                </div>
                 <div className="text-center mt-2-xs">
                     {this.renderSeeMore(listingType)}
                     {this.renderCount()}
                 </div>
-            </div>
+            </Fragment>
 
         );
     }

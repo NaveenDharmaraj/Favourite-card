@@ -24,10 +24,10 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 import noDataImgCampain from '../../../static/images/campaignprofile_nodata_illustration.png';
 import noDataggManage from '../../../static/images/givinggroupsyoumanage_nodata_illustration.png';
 import noDataggJoin from '../../../static/images/givinggroupsyoujoined_nodata_illustration.png';
+import { createGivingGroupFlowSteps } from '../../../helpers/createGrouputils';
+import PrivacySetting from '../../shared/Privacy';
 
 import GroupsAndCampaignsList from './GroupsAndCampaignsList';
-import PrivacySetting from '../../shared/Privacy';
-import { createGivingGroupFlowSteps } from '../../../helpers/createGrouputils';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -234,13 +234,22 @@ class GroupsAndCampaigns extends React.Component {
                         <div className="grpcampBannerContainer"> 
                             <div className="grpcampBannerTxt">
                                 <Header as="h3" icon>
-                                    Give together</Header>
-                                    <Header.Subheader>
-                                        With a <span className="semi_Giving"> Giving Group</span>, multiple people can combine forces, pool or raise money together.
-                                    </Header.Subheader>
-                                    <p className="registered">
-                                        Money raised in a Giving Group goes towards supporting one or more <span className="semi_Giving"> registered Canadian charities </span>of your choice.
-                                    </p>
+                                    Give together
+                                </Header>
+                                <Header.Subheader>
+                                        With a
+                                    <span className="semi_Giving"> Giving Group</span>
+                                        , multiple people can combine forces, pool or raise money together.
+                                </Header.Subheader>
+                                <p className="registered">
+                                        Money raised in a Giving Group goes towards supporting one or more
+                                        &nbsp;
+                                    <span className="semi_Giving">
+                                        registered Canadian charities
+                                    </span>
+                                    &nbsp;
+                                    of your choice.
+                                </p>
                                 
                                 <div className="Create_wrapper">
                                     <Link route={createGivingGroupFlowSteps.stepOne}>
@@ -250,19 +259,10 @@ class GroupsAndCampaigns extends React.Component {
                                     Or,&nbsp;
                                         <a href={`${HELP_CENTRE_URL}article/147-what-is-a-giving-group`}>
                                             learn more
-                                        </a>&nbsp;
+                                        </a>
+                                        &nbsp;
                                         about how Giving Groups work
                                     </p>
-                                    {/* {showInitialButton ? (
-                                        <a href={`${HELP_CENTRE_URL}article/147-what-is-a-giving-group`}>
-                                            <Button fluid className="success-btn-rounded-def">Learn how to start a Giving Group</Button>
-                                        </a>
-                                    ) : (
-                                        <Link route={createGivingGroupFlowSteps.stepOne}>
-                                            <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
-                                        </Link>
-                                    )
-                                    } */}
                                 </div>
 
                             </div>
