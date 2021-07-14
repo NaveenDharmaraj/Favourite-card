@@ -6966,7 +6966,11 @@ body{
     display: -webkit-flex;
     display: flex;
     align-items: center;
-    justify-content: center;
+    margin-left: 0px;
+    @media only screen and (max-width:580px) {
+      max-height: 350px !important;
+      min-height: 350px !important;
+    }
     &::before{
       content: '';
       position: absolute;
@@ -6977,13 +6981,73 @@ body{
       width: 287px;
       background-size: cover;
       background-repeat: no-repeat;
+      @media only screen and (max-width:580px) {
+        top: 255px !important;
+        width: 120px !important;
+      }
     }
     .grpcampBannerContainer{
-      width: 290px;
+      margin-left: auto;
+      width: 65%;
+      @media only screen and (max-width:991px) and (min-width:768px){
+        width: 68%;
+      }
       .grpcampBannerTxt{
-        text-align: center;
+        text-align: left;
         position: relative;
+        width: 540px;
         z-index: 9;
+        @media only screen and (max-width:991px) and (min-width:768px){
+          width:auto;
+        }
+        h3{
+          font-size: 24px !important
+        }
+        .semi_Giving{
+          .primeFont-semi-bold();
+        }
+        @media only screen and (max-width:767px) {
+          width:100%;
+          text-align: center;
+        }
+      }
+      .registered{
+        padding-right: 45px; 
+        margin-top:8px;
+        @media only screen and (max-width:767px) {
+          padding: 0px;
+        }
+      }
+      .how_Giving_Groups_work{
+        margin-left: 15px;
+        font-size: 12px;
+        @media only screen and (max-width:580px) {
+          margin-left:0px;
+          margin-top: 15px;
+        }
+        a{
+          .primeFont-semi-bold();
+        }
+      }
+      .Create_wrapper{
+        display: flex;
+        align-items: center;
+        @media only screen and (max-width:767px) {
+          justify-content: center;
+        }
+        @media only screen and (max-width:580px) {
+          display: block;
+        }
+        .ui {
+          &.button{
+            &.success-btn-rounded-def{
+              width: auto;
+              @media only screen and (max-width:580px) {
+                margin: auto;
+              }
+            }
+          }
+        }
       }
     }
     .header{
@@ -7040,17 +7104,21 @@ body{
 @media only screen and (max-width:767px) {
   .grpcampHeader{
     .grpcampBanner{
+      min-height: 300px;
+      max-height: 300px;
       &::before{
         opacity: 1;
         left: 0;
         right: 0;
-        top: 152px;
+        top: 190px;
         width: 145px;
         margin: auto;
         background-size: contain;
       }
       .grpcampBannerContainer{
-        padding-bottom: 120px;
+        padding-bottom: 100px;
+        margin-left:unset;
+        width: 100%;
       }
     }
   }
