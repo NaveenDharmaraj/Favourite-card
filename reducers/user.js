@@ -261,6 +261,24 @@ const user = (state = {}, action) => {
                 showScheduleGiftLoader: action.payload.status,
             };
             break;
+        case 'SHOW_GROUP_ADMINS_LOADER':
+            newState = {
+                ...state,
+                showloaderForAdministeredGroups: action.payload.showLoader,
+            };
+            break;
+        case 'SHOW_GROUP_MEMBERS_LOADER':
+            newState = {
+                ...state,
+                showloaderForMemberGroups: action.payload.showLoader,
+            };
+            break;
+        case 'SHOW_CAMPAIGN_MEMBERS_LOADER':
+            newState = {
+                ...state,
+                showloaderForCampaignsAdmins: action.payload.showLoader,
+            };
+            break;
         default:
             break;
     }
