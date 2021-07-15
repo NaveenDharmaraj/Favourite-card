@@ -124,6 +124,19 @@ const GivingGoal = ({
         setCreateGivingGroupObject(editGivingGroupStoreFlowObjectClone);
         setShowEditModal(true);
     };
+
+    const resetPageViewStatus = () => {
+        dispatch({
+            payload: {
+                pageStatus: {
+                    menuView: true,
+                    pageView: false,
+                },
+            },
+            type: 'SET_MANAGE_PAGE_STATUS',
+        });
+    };
+
     return (
         <Fragment>
             {showEditModal ?
@@ -140,8 +153,14 @@ const GivingGoal = ({
                 /> :
                 <div className='basicsettings'>
                     <Header className='titleHeader'>
-                        <Responsive maxWidth={767}>
-                            <Icon name='back'></Icon>
+                        <Responsive minWidth={320} maxWidth={767}>
+                        <span>
+                            <i
+                                aria-hidden="true"
+                                className="back_to_menu icon"
+                                onClick={resetPageViewStatus}
+                            />
+                        </span>
                         </Responsive>
                 Giving Goal
             </Header>
