@@ -12,6 +12,9 @@ import {
     connect,
 } from 'react-redux';
 import getConfig from 'next/config';
+import {
+    bool,
+} from 'prop-types';
 
 import {
     getInitalGivingGroupsAndCampaigns,
@@ -25,7 +28,7 @@ import noDataImgCampain from '../../../static/images/campaignprofile_nodata_illu
 import noDataggManage from '../../../static/images/givinggroupsyoumanage_nodata_illustration.png';
 import noDataggJoin from '../../../static/images/givinggroupsyoujoined_nodata_illustration.png';
 import { createGivingGroupFlowSteps } from '../../../helpers/createGrouputils';
-import PrivacySetting from '../../shared/Privacy';
+import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 
 import GroupsAndCampaignsList from './GroupsAndCampaignsList';
 
@@ -36,17 +39,6 @@ const {
 } = publicRuntimeConfig;
 
 class GroupsAndCampaigns extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            showloaderForAdministeredGroups: !props.administeredGroups,
-            showloaderForCampaigns: !props.administeredCampaigns,
-            showloaderForMemberGroups: !props.groupsWithMemberships,
-            showInitialButton: (_.isEmpty(props.administeredGroups) || (!_.isEmpty(props.administeredGroups) && _.isEmpty(props.administeredGroups.data))),
-        };
-    }
-
     componentDidMount() {
         const {
             currentUser,
@@ -54,38 +46,6 @@ class GroupsAndCampaigns extends React.Component {
         } = this.props;
         getInitalGivingGroupsAndCampaigns(dispatch, currentUser.id);
         getUserProfileBasic(dispatch, currentUser.attributes.email, currentUser.id, currentUser.id);
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
-            administeredCampaigns,
-            administeredGroups,
-            groupsWithMemberships,
-        } = this.props;
-        let {
-            showloaderForAdministeredGroups,
-            showloaderForCampaigns,
-            showloaderForMemberGroups,
-            showInitialButton,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(administeredCampaigns, prevProps.administeredCampaigns)) {
-                showloaderForCampaigns = false;
-            }
-            if (!_.isEqual(administeredGroups, prevProps.administeredGroups)) {
-                showInitialButton = !(!_.isEmpty(administeredGroups) && !_.isEmpty(administeredGroups.data));
-                showloaderForAdministeredGroups = false;
-            }
-            if (!_.isEqual(groupsWithMemberships, prevProps.groupsWithMemberships)) {
-                showloaderForMemberGroups = false;
-            }
-            this.setState({
-                showloaderForAdministeredGroups,
-                showloaderForCampaigns,
-                showloaderForMemberGroups,
-                showInitialButton,
-            });
-        }
     }
 
     renderList(showLoader, type, typeData) {
@@ -208,16 +168,13 @@ class GroupsAndCampaigns extends React.Component {
 
     render() {
         const {
-            showloaderForCampaigns,
-            showloaderForAdministeredGroups,
-            showloaderForMemberGroups,
-            showInitialButton,
-        } = this.state;
-        const {
             administeredGroups,
             administeredCampaigns,
             groupsWithMemberships,
             userProfileBasicData,
+            showloaderForAdministeredGroups,
+            showloaderForMemberGroups,
+            showloaderForCampaignsAdmins,
         } = this.props;
         let givingGroupsMemberVisible = 0;
         let givingGroupsManageVisible = 0;
@@ -274,35 +231,23 @@ class GroupsAndCampaigns extends React.Component {
                         </div>
                     </div> */}
                 </div>
-                <div className="pt-2 pb-2">
-                    <p
-                        className="bold font-s-16"
-                    >
-                        Giving Groups you manage
-                        <span className="font-w-normal">
-                            <PrivacySetting
-                                columnName={managePrivacyColumn}
-                                columnValue={givingGroupsManageVisible}
-                            />
-                        </span>
-                    </p>
+                <div className=" mt-2 pb-2 tabHeader">
+                    <Header>Giving Groups you manage</Header>
+                    <ProfilePrivacySettings
+                        columnName={managePrivacyColumn}
+                        columnValue={givingGroupsManageVisible}
+                    />
                 </div>
                 <div className="pt-1 pb-3">
                     {this.renderList(showloaderForAdministeredGroups, 'administeredGroups', administeredGroups)}
                 </div>
                 <Divider />
-                <div className="pt-2 pb-2">
-                    <p
-                        className="bold font-s-16"
-                    >
-                        Giving Groups you have joined
-                        <span className="font-w-normal">
-                            <PrivacySetting
-                                columnName={memberPrivacyColumn}
-                                columnValue={givingGroupsMemberVisible}
-                            />
-                        </span>
-                    </p>
+                <div className=" mt-2 pb-2 tabHeader">
+                    <Header>Giving Groups you have joined</Header>
+                    <ProfilePrivacySettings
+                        columnName={memberPrivacyColumn}
+                        columnValue={givingGroupsMemberVisible}
+                    />
                 </div>
                 <div className="pt-1 pb-3">
                     {this.renderList(showloaderForMemberGroups, 'groupsWithMemberships', groupsWithMemberships)}
@@ -315,7 +260,7 @@ class GroupsAndCampaigns extends React.Component {
                                 <p className="bold font-s-16">Campaigns you manage</p>
                             </div>
                             <div className="pt-1 pb-3">
-                                {this.renderList(showloaderForCampaigns, 'administeredCampaigns', administeredCampaigns)}
+                                {this.renderList(showloaderForCampaignsAdmins, 'administeredCampaigns', administeredCampaigns)}
                             </div>
                         </Fragment>
                     ) : null)
@@ -324,6 +269,18 @@ class GroupsAndCampaigns extends React.Component {
         );
     }
 }
+
+GroupsAndCampaigns.defaultProps = {
+    showloaderForAdministeredGroups: true,
+    showloaderForCampaignsAdmins: true,
+    showloaderForMemberGroups: true,
+};
+
+GroupsAndCampaigns.propTypes = {
+    showloaderForAdministeredGroups: bool,
+    showloaderForCampaignsAdmins: bool,
+    showloaderForMemberGroups: bool,
+};
 
 function mapStateToProps(state) {
     return {
@@ -334,6 +291,9 @@ function mapStateToProps(state) {
         displayError: state.user.leaveErrorMessage,
         groupsWithMemberships: state.user.groupsWithMemberships,
         leaveButtonLoader: state.user.leaveButtonLoader,
+        showloaderForAdministeredGroups: state.user.showloaderForAdministeredGroups,
+        showloaderForCampaignsAdmins: state.user.showloaderForCampaignsAdmins,
+        showloaderForMemberGroups: state.user.showloaderForMemberGroups,
         userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }

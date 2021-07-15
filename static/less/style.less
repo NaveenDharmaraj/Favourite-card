@@ -10284,6 +10284,11 @@ body{
     // justify-content: space-between;
     margin-right: -10px;
     margin-left: -10px;
+    &.group_campaign_card{
+      .ui.card{
+        max-width: 362px;
+      }
+    }
     .ui.card{
       max-width: 390px;
       margin: 0 10px 20px 10px;
@@ -10373,6 +10378,145 @@ body{
         color: red;
         font-size: 14px;
         margin: 0;
+      }
+    }
+  }
+  .tabHeader{
+    display: flex;
+    align-items: center;
+    padding: 0px 0 32px;
+    .ui.header{
+      font-size: 20px;
+      margin-right: 13px;
+      margin-bottom: 0;
+      color: @font-color;
+    }
+    +.ui.grid{
+      .cardwrap{
+        margin-top: 1rem;
+      }
+    }
+  }
+  .privacySettingIcon{
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .icon{
+      &:first-child{
+        filter: invert(16%) sepia(80%) saturate(5747%) hue-rotate(213deg) brightness(101%) contrast(96%);
+        margin-right: 4px;
+        font-size: 18px;
+        position: relative;
+        &::before{
+          content: '' !important;
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background-position: center !important;
+          background-size: contain !important;
+          background-repeat: no-repeat !important;
+        }
+        &.globe{
+          &::before{
+            background-image: url("@{img_url}/images/icons/icon_globe.svg") !important;
+          }
+        }
+        &.users{
+          &::before{
+            background-image: url("@{img_url}/images/icons/group.svg") !important;
+          }
+        }
+        &.lock{
+          &::before{
+            background-image: url("@{img_url}/images/icons/privacy.svg") !important;
+          }
+        } 
+      }
+      &.down{
+        font-size: 10px;
+        margin-top: 2px;
+        transition: 0.5s;
+        transform-origin: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    &.active{
+      .icon.down{
+        transform: rotateZ(180deg);
+        margin-top: 0px;
+      }
+    }
+  }
+  .privacySetting-popup{
+    &.ui.popup{
+      min-width: 200px;
+      padding: 0;
+      z-index: 2;
+      >.header{
+        padding: 10px 15px;
+        font-size: 14px;
+        color:@font-color;
+        border-bottom: 1px solid rgba(34,36,38,.15);;
+      }
+      .content{
+        padding-top: 0px;
+        .selectable-tick-list{
+          .item{
+            padding: 10px 15px;
+            a.header{
+              display: flex;
+              align-items: center;
+              font-size: 14px;
+              .primeFont();
+            .icon{
+              font-size: 18px;
+              margin-right: 15px;
+              position: relative;
+              &::before{
+                content: '' !important;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-position: center !important;
+                background-size: contain !important;
+                background-repeat: no-repeat !important;
+              }
+              &.globe{
+                &::before{
+                  background-image: url("@{img_url}/images/icons/icon_globe.svg") !important;
+                }
+              }
+              &.users{
+                &::before{
+                  background-image: url("@{img_url}/images/icons/group.svg") !important;
+                }
+              }
+              &.lock{
+                &::before{
+                  background-image: url("@{img_url}/images/icons/privacy.svg") !important;
+                }
+              } 
+            }
+          } 
+          &:hover,&.active{
+            a.header{
+            color:@purple !important;
+            .primeFont-semi-bold();
+            }
+            .icon{
+              filter: invert(36%) sepia(13%) saturate(2607%) hue-rotate(246deg) brightness(92%) contrast(92%);
+            }
+          }
+          }
+        }
       }
     }
   }

@@ -656,7 +656,7 @@ export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, pr
     if (appendData) {
         dataArray = previousData;
     }
-    coreApi.get(
+    return coreApi.get(
         url, {
             params: {
                 dispatch,
@@ -741,9 +741,51 @@ export const leaveGroup = (dispatch, group, allData, type) => {
 };
 
 export const getInitalGivingGroupsAndCampaigns = (dispatch, userId) => {
-    getGroupsAndCampaigns(dispatch, `/users/${userId}/administeredGroups?page[size]=9&sort=-id`, 'administeredGroups', false);
-    getGroupsAndCampaigns(dispatch, `/users/${userId}/administeredCampaigns?page[size]=9&sort=-id`, 'administeredCampaigns', false);
-    getGroupsAndCampaigns(dispatch, `/users/${userId}/groupsWithOnlyMemberships?page[size]=9&sort=-id`, 'groupsWithMemberships', false);
+    dispatch({
+        payload: {
+            showLoader: true,
+        },
+        type: 'SHOW_GROUP_ADMINS_LOADER',
+    });
+    dispatch({
+        payload: {
+            showLoader: true,
+        },
+        type: 'SHOW_GROUP_MEMBERS_LOADER',
+    });
+    dispatch({
+        payload: {
+            showLoader: true,
+        },
+        type: 'SHOW_CAMPAIGN_MEMBERS_LOADER',
+    });
+    getGroupsAndCampaigns(dispatch, `/users/${userId}/administeredGroups?page[size]=9&sort=-id`, 'administeredGroups', false)
+        .finally(() => {
+            dispatch({
+                payload: {
+                    showLoader: false,
+                },
+                type: 'SHOW_GROUP_ADMINS_LOADER',
+            });
+        });
+    getGroupsAndCampaigns(dispatch, `/users/${userId}/administeredCampaigns?page[size]=9&sort=-id`, 'administeredCampaigns', false)
+        .finally(() => {
+            dispatch({
+                payload: {
+                    showLoader: false,
+                },
+                type: 'SHOW_GROUP_MEMBERS_LOADER',
+            });
+        });
+    getGroupsAndCampaigns(dispatch, `/users/${userId}/groupsWithOnlyMemberships?page[size]=9&sort=-id`, 'groupsWithMemberships', false)
+        .finally(() => {
+            dispatch({
+                payload: {
+                    showLoader: false,
+                },
+                type: 'SHOW_CAMPAIGN_MEMBERS_LOADER',
+            });
+        });
 };
 
 export const getUserGivingGoal = (dispatch, userId) => {

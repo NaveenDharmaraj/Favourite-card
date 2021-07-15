@@ -138,7 +138,7 @@ class GroupsAndCampaignsList extends React.Component {
         } = this.props;
         return (
             <Fragment>
-                <div className="cardwrap">
+                <div className="cardwrap group_campaign_card">
                     {this.getGroupsAndCampaignsList()}
                 </div>
                 <div className="text-center mt-2-xs">
