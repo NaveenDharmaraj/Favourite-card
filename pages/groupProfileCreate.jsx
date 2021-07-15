@@ -61,10 +61,12 @@ const GroupProfileCreate = (props) => {
             });
             if(!_isEmpty(campaignDetails) && (campaignDetails.attributes.slug === slug)) {
                 fromCampaignObj = {
+                    avatar: campaignDetails.attributes.avatar,
                     campaignId: campaignDetails.id,
                     featuredCharities: campaignDetails.attributes.featuredCharities,
                     isLocked: (campaignDetails.attributes.moneyManage === "Campaign Admin"),
                     isFromCampaign: true,
+                    name: campaignDetails.attributes.name
                 }
                 dispatch({
                     payload: {
@@ -91,10 +93,12 @@ const GroupProfileCreate = (props) => {
         let fromCampaignObj = {};
         if (!_isEmpty(campaignDetails) && (campaignDetails.attributes.slug === slug)) {
             fromCampaignObj = {
+                avatar: campaignDetails.attributes.avatar,
                 campaignId: campaignDetails.id,
                 featuredCharities: campaignDetails.attributes.featuredCharities,
                 isLocked: (campaignDetails.attributes.moneyManage === "Campaign Admin"),
                 isFromCampaign: true,
+                name: campaignDetails.attributes.name
             }
             dispatch({
                 payload: {
