@@ -146,6 +146,10 @@ const CreateGivingGroupBasic = ({
         if (!_isEmpty(isFromCampaignObj)) {
             setCreateGivingGroupObject({
                 ...createGivingGroupObject,
+                attributes: {
+                    ...createGivingGroupObject.attributes,
+                    videoUrl: isFromCampaignObj.videoUrl,
+                },
                 beneficiaryItems: [
                     ...(!_isEmpty(isFromCampaignObj.featuredCharities)
                         ? isFromCampaignObj.featuredCharities

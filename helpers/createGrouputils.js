@@ -24,7 +24,7 @@ export const createGivingGroupBreadCrum = (formatMessage) => {
 }
 // initialzing constant value for limits for the words
 export const aboutDescriptionLimit = 300;
-export const addModalDescriptionLimit = 10000;
+export const addModalDescriptionLimit = "10000";
 //intializing the validation object
 export const intializeValidity = {
     doesNameExist: true,
