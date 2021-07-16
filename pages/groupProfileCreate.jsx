@@ -66,7 +66,8 @@ const GroupProfileCreate = (props) => {
                     featuredCharities: campaignDetails.attributes.featuredCharities,
                     isLocked: (campaignDetails.attributes.moneyManage === "Campaign Admin"),
                     isFromCampaign: true,
-                    name: campaignDetails.attributes.name
+                    name: campaignDetails.attributes.name,
+                    videoUrl: campaignDetails.attributes.videoPlayerLink
                 }
                 dispatch({
                     payload: {
@@ -98,7 +99,8 @@ const GroupProfileCreate = (props) => {
                 featuredCharities: campaignDetails.attributes.featuredCharities,
                 isLocked: (campaignDetails.attributes.moneyManage === "Campaign Admin"),
                 isFromCampaign: true,
-                name: campaignDetails.attributes.name
+                name: campaignDetails.attributes.name,
+                videoUrl: campaignDetails.attributes.videoPlayerLink
             }
             dispatch({
                 payload: {

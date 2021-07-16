@@ -52,7 +52,6 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     const groupGalleryLoader = useSelector((state) => state.createGivingGroup.groupGalleryLoader);
     const uploadLogoImageRef = useRef(null);
     const uploadGalleryImageRef = useRef(null);
-
     const dispatch = useDispatch();
 
     const [createGivingGroupObject, setCreateGivingGroupObject] = useState(givingGroupObject);
@@ -67,6 +66,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     const [videoUrlState, setVideoUrlState] = useState(videoUrl);
     const [validateVideoUrl, setValidateVideoUrl] = useState(true);
     const [insertStatus, setinsertStatus] = useState(false);
+    const [initialButtonState, setinitialButtonState] = useState(true);
     const handleOnChange = (event, data) => {
         let {
             name,
@@ -74,6 +74,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
         } = data || event.target;
         setVideoUrlState(value);
         setinsertStatus(false);
+        setinitialButtonState(false);
     };
 
     const handleUrlOnBlur = () => {
@@ -126,6 +127,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
     const handleOnVideoClick = (mode = '') => {
         if (mode === 'add' && videoUrlState !== '' && validateVideoUrl) {
             setinsertStatus(true);
+            setinitialButtonState(true);
         } else if (mode === 'remove') {
             setVideoUrlState('');
             setinsertStatus(false);
@@ -336,7 +338,7 @@ const CreateGivingGroupPicsVideo = ({ createGivingGroupStoreFlowObject, editGivi
                                         <Button
                                             className='success-btn-rounded-def'
                                             onClick={() => { handleOnVideoClick('add') }}
-                                            disabled={_isEmpty(videoUrlState) || !validateVideoUrl}
+                                            disabled={_isEmpty(videoUrlState) || !validateVideoUrl || initialButtonState}
                                         >
                                             {formatMessage('createGivingGroupPicsVideo.uploadVideoButton')}
                                         </Button>
