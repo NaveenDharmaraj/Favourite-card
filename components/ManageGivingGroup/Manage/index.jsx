@@ -288,75 +288,73 @@ const Manage = () => {
                     ) : (
                         <Fragment>
                             {(!_isEmpty(memberList) || (groupMemberPlaceholderStatus))
-                            && (
-                                <Fragment>
-                                    <div className="invite-heading">
-                                        <h3>
-                                        Members
-                                        </h3>
-                                    </div>
-                                    <div className="memberswapper">
-                                        {(memberCount > 1)
+                                ? (
+                                    <Fragment>
+                                        <div className="invite-heading">
+                                            <h3>
+                                            Members
+                                            </h3>
+                                        </div>
+                                        <div className="memberswapper">
+                                            {(memberCount >= 1)
                                                 && (
                                                     <div className="membersadmin">
                                                         <p>
                                                             <span>
                                                                 <i aria-hidden="true" className="users icon" />
                                                             </span>
-                                                            {`${memberCount} members`}
+                                                            {`${memberCount} ${(memberCount === 1) ? 'member' : 'members'}`}
                                                         </p>
                                                     </div>
                                                 )}
-                                        <div className="Emailmembers" onClick={() => updateMenu(4, 'email_members')}>
-                                            <p>
-                                                <span>
-                                                    <i
-                                                        aria-hidden="true"
-                                                        className="icon icon-mail"
-                                                    />
-                                                </span>
-                                                Email members
-                                            </p>
+                                            <div className="Emailmembers" onClick={() => updateMenu(4, 'email_members')}>
+                                                <p>
+                                                    <span>
+                                                        <i
+                                                            aria-hidden="true"
+                                                            className="icon icon-mail"
+                                                        />
+                                                    </span>
+                                                    Email members
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    {groupMemberPlaceholderStatus
-                                        ? (
-                                            <Grid className="no-margin">
-                                                <Grid.Row>
-                                                    <Grid.Column width={16}>
-                                                        <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
-                                                    </Grid.Column>
-                                                </Grid.Row>
-                                            </Grid>
-                                        )
-                                        : (
-                                            <Fragment>
-                                                <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
-                                                    <Table.Body>
-                                                        {!_isEmpty(memberList)
-                                                            ? memberList
-                                                            : (
-                                                                <p> No Members Found</p>
-                                                            )}
-                                                    </Table.Body>
-                                                </Table>
-                                                <div className="paginationWraper group_pagination">
-                                                    <div className="db-pagination">
-                                                        {
-                                                            !_isEmpty(memberList) && memberPageCount > 1 && (
-                                                                <Pagination
-                                                                    activePage={currentActivePage}
-                                                                    totalPages={memberPageCount}
-                                                                    onPageChanged={onPageChanged}
-                                                                />
-                                                            )
-                                                        }
+                                        {groupMemberPlaceholderStatus
+                                            ? (
+                                                <Grid className="no-margin">
+                                                    <Grid.Row>
+                                                        <Grid.Column width={16}>
+                                                            <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                </Grid>
+                                            )
+                                            : (
+                                                <Fragment>
+                                                    <Table basic="very" unstackable className="ManageTable Topborder Bottomborder">
+                                                        <Table.Body>
+                                                            {!_isEmpty(memberList) && memberList}
+                                                        </Table.Body>
+                                                    </Table>
+                                                    <div className="paginationWraper group_pagination">
+                                                        <div className="db-pagination">
+                                                            {
+                                                                !_isEmpty(memberList) && memberPageCount > 1 && (
+                                                                    <Pagination
+                                                                        activePage={currentActivePage}
+                                                                        totalPages={memberPageCount}
+                                                                        onPageChanged={onPageChanged}
+                                                                    />
+                                                                )
+                                                            }
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </Fragment>
-                                        )}
-                                </Fragment>
-                            )}
+                                                </Fragment>
+                                            )}
+                                    </Fragment>
+                                ) : (
+                                    <p> No Members Found</p>
+                                )}
                         </Fragment>
                     )}
             </Fragment>
