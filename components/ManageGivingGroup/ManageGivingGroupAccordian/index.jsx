@@ -101,18 +101,21 @@ const ManageGivingGroupAccordian = ({
         const {
             accordionIndex,
             stepValue,
+            showMenu,
         } = titleProps;
         const newAccordionIndex = activeAccordionIndex === accordionIndex ? -1 : accordionIndex;
         setActiveAccordionIndex(newAccordionIndex);
-        dispatch({
-            payload: {
-                pageStatus: {
-                    menuView: false,
-                    pageView: true,
+        if (showMenu) {
+            dispatch({
+                payload: {
+                    pageStatus: {
+                        menuView: false,
+                        pageView: true,
+                    },
                 },
-            },
-            type: 'SET_MANAGE_PAGE_STATUS',
-        });
+                type: 'SET_MANAGE_PAGE_STATUS',
+            });
+        }
         setStepState(stepValue);
         setCurrentComponentSelectedState(manageGivingGroupAccordianOptions[stepValue]);
         Router.pushRoute(`/groups/${slug}/${manageGivingGroupAccordianOptions[stepValue].route}`, { shallow: true });
@@ -146,6 +149,7 @@ const ManageGivingGroupAccordian = ({
                     accordionIndex={0}
                     stepValue={manageGivingGroupAccordianOptions.edit.key}
                     onClick={handleAccordionClick}
+                    showMenu={false}
                 >
                     <Icon name="edit" />
                     {manageGivingGroupAccordianOptions.edit.text}
@@ -215,6 +219,7 @@ const ManageGivingGroupAccordian = ({
                     accordionIndex={1}
                     stepValue={manageGivingGroupAccordianOptions.members.key}
                     onClick={handleAccordionClick}
+                    showMenu={false}
                 >
                     <Icon name="users" />
                     {manageGivingGroupAccordianOptions.members.text}
@@ -226,6 +231,7 @@ const ManageGivingGroupAccordian = ({
                         active={activeAccordionIndex === manageGivingGroupAccordianOptions.manage.value
                             || activeAccordionIndex === manageGivingGroupAccordianOptions.members.value}
                         onClick={handleAccordionClick}
+                        showMenu
                     >
                         {manageGivingGroupAccordianOptions.manage.text}
                     </Menu.Item>
@@ -234,6 +240,7 @@ const ManageGivingGroupAccordian = ({
                         stepValue={manageGivingGroupAccordianOptions.invites.key}
                         active={activeAccordionIndex === manageGivingGroupAccordianOptions.invites.value}
                         onClick={handleAccordionClick}
+                        showMenu
                     >
                         {manageGivingGroupAccordianOptions.invites.text}
                     </Menu.Item>
@@ -242,6 +249,7 @@ const ManageGivingGroupAccordian = ({
                         stepValue={manageGivingGroupAccordianOptions.email_members.key}
                         active={activeAccordionIndex === manageGivingGroupAccordianOptions.email_members.value}
                         onClick={handleAccordionClick}
+                        showMenu
                     >
                         {manageGivingGroupAccordianOptions.email_members.text}
                     </Menu.Item>
@@ -252,6 +260,7 @@ const ManageGivingGroupAccordian = ({
                 stepValue={manageGivingGroupAccordianOptions.downloaddonation.key}
                 active={activeAccordionIndex === manageGivingGroupAccordianOptions.downloaddonation.value}
                 onClick={handleAccordionClick}
+                showMenu
             >
                 <Icon name="donation" />
                 {manageGivingGroupAccordianOptions.downloaddonation.text}
@@ -261,6 +270,7 @@ const ManageGivingGroupAccordian = ({
                 stepValue={manageGivingGroupAccordianOptions.widget.key}
                 active={activeAccordionIndex === manageGivingGroupAccordianOptions.widget.value}
                 onClick={handleAccordionClick}
+                showMenu
             >
                 <Icon name="landing" />
                 {manageGivingGroupAccordianOptions.widget.text}
