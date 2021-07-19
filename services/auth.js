@@ -16,6 +16,7 @@ import {
 import {
     chimpLogin,
     getUser,
+    handleInvitationAccepts,
 } from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
 import { addToDataLayer } from '../helpers/users/googleTagManager';
@@ -395,6 +396,53 @@ const auth0 = {
             : storage.unset('auth0UserId', 'local');
     },
 };
+const invitationParameters = {
+
+    get reqParameters() {
+        const invitationType = storage.get('invitationType', 'local');
+        const sourceId = storage.get('sourceId', 'local');
+        const signupSource = storage.get('signupSource', 'local');
+        const signupSourceId = storage.get('signupSourceId', 'local');
+        return {
+            invitationType,
+            signupSource,
+            signupSourceId,
+            sourceId,
+        };
+    },
+    /**
+     * ⚠️ When this value needs to be "read" within the same process tick, use `await` (possibly
+     * with try/catch) to avoid a race condition.
+     * @param {object} invObj - The object to cache.
+     * @return {promise} - The promise returned by Storage.
+     *
+     * @example
+     * await (auth0.reqParameters = reqParameters);
+     */
+    set reqParameters(invObj) {
+        let invitationType;
+        let sourceId;
+        let signupSource;
+        let signupSourceId;
+        if (invObj && invObj.invitationType && invObj.sourceId) {
+            invitationType = storage.set('invitationType', invObj.invitationType, 'local');
+            sourceId = storage.set('sourceId', invObj.sourceId, 'local');
+            signupSource = storage.set('signupSource', 'group', 'local');
+            signupSourceId = storage.set('signupSourceId', invObj.signUpSourceId, 'local');
+        } else {
+            invitationType = storage.unset('invitationType', 'local');
+            sourceId = storage.unset('sourceId', 'local');
+            signupSource = storage.unset('signupSource', 'local');
+            signupSourceId = storage.unset('signupSourceId', 'local');
+        }
+        return {
+            invitationType,
+            signupSource,
+            signupSourceId,
+            sourceId,
+        };
+    },
+};
 
 const _logLabel = () => {
     let label = '[Auth]';
@@ -442,6 +490,7 @@ const _handleLockSuccess = async ({
         await (auth0.accessToken = accessToken);
         await (storage.set('chimpUserId', userId, 'cookie'));
         const dispatch = auth0.storeDispatch;
+        const reqPar = invitationParameters.reqParameters;
         await (getUser(dispatch, userId));
         const tagManagerArgs = {
             dataLayer: {
@@ -450,6 +499,17 @@ const _handleLockSuccess = async ({
             dataLayerName: 'dataLayer',
         };
         addToDataLayer(tagManagerArgs);
+        if (reqPar.invitationType && reqPar.sourceId) {
+            let reqType = 'loggedIn';
+            if (reqPar.invitationType === 'groupInvite') {
+                reqType = 'loggedOut';
+            }
+            dispatch(handleInvitationAccepts(
+                reqPar,
+                userId,
+                reqType,
+            ));
+        }
         if (beneficiarySlug) {
             await (storage.unset('claimToken','local'));
             await (storage.unset('signup_source_id','local'));
@@ -626,5 +686,6 @@ function resendVerificationEmail(event) {
 export {
     auth0 as default,
     activateUserEmail,
+    invitationParameters,
     resendVerificationEmail,
 };

@@ -44,8 +44,8 @@
     "notApplicable": "N/A",
     "reviewGiftAmount": "Gift amount:",
     "reviewP2pSendDate": "Send date",
-    "reviewP2pGiftStartDate": "Gift start date",
     "reviewP2pFrequency":"Frequency",
+    "reviewP2pGiftStartDate": "Gift start date",
     "reviewP2pReasonToGive": "Reason to give",
     "givingGroups": {
         "privacyShareGiftAndName": "Partager mon nom et le montant du don",

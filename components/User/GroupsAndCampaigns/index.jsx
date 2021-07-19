@@ -12,6 +12,9 @@ import {
     connect,
 } from 'react-redux';
 import getConfig from 'next/config';
+import {
+    bool,
+} from 'prop-types';
 
 import {
     getInitalGivingGroupsAndCampaigns,
@@ -24,29 +27,18 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 import noDataImgCampain from '../../../static/images/campaignprofile_nodata_illustration.png';
 import noDataggManage from '../../../static/images/givinggroupsyoumanage_nodata_illustration.png';
 import noDataggJoin from '../../../static/images/givinggroupsyoujoined_nodata_illustration.png';
+import { createGivingGroupFlowSteps } from '../../../helpers/createGrouputils';
+import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 
 import GroupsAndCampaignsList from './GroupsAndCampaignsList';
-import PrivacySetting from '../../shared/Privacy';
 
 const { publicRuntimeConfig } = getConfig();
 
 const {
     HELP_CENTRE_URL,
-    RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
 class GroupsAndCampaigns extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            showloaderForAdministeredGroups: !props.administeredGroups,
-            showloaderForCampaigns: !props.administeredCampaigns,
-            showloaderForMemberGroups: !props.groupsWithMemberships,
-            showInitialButton: (_.isEmpty(props.administeredGroups) || (!_.isEmpty(props.administeredGroups) && _.isEmpty(props.administeredGroups.data))),
-        };
-    }
-
     componentDidMount() {
         const {
             currentUser,
@@ -54,38 +46,6 @@ class GroupsAndCampaigns extends React.Component {
         } = this.props;
         getInitalGivingGroupsAndCampaigns(dispatch, currentUser.id);
         getUserProfileBasic(dispatch, currentUser.attributes.email, currentUser.id, currentUser.id);
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
-            administeredCampaigns,
-            administeredGroups,
-            groupsWithMemberships,
-        } = this.props;
-        let {
-            showloaderForAdministeredGroups,
-            showloaderForCampaigns,
-            showloaderForMemberGroups,
-            showInitialButton,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(administeredCampaigns, prevProps.administeredCampaigns)) {
-                showloaderForCampaigns = false;
-            }
-            if (!_.isEqual(administeredGroups, prevProps.administeredGroups)) {
-                showInitialButton = !(!_.isEmpty(administeredGroups) && !_.isEmpty(administeredGroups.data));
-                showloaderForAdministeredGroups = false;
-            }
-            if (!_.isEqual(groupsWithMemberships, prevProps.groupsWithMemberships)) {
-                showloaderForMemberGroups = false;
-            }
-            this.setState({
-                showloaderForAdministeredGroups,
-                showloaderForCampaigns,
-                showloaderForMemberGroups,
-                showInitialButton,
-            });
-        }
     }
 
     renderList(showLoader, type, typeData) {
@@ -100,7 +60,7 @@ class GroupsAndCampaigns extends React.Component {
                 <PlaceholderGrid row={2} column={3} />
             );
         } if (!_.isEmpty(typeData) && !_.isEmpty(typeData.data)
-                    && typeData.data.length > 0) {
+            && typeData.data.length > 0) {
             return (
                 <GroupsAndCampaignsList
                     listingType={type}
@@ -120,19 +80,19 @@ class GroupsAndCampaigns extends React.Component {
                             <Grid verticalAlign="middle">
                                 <Grid.Row>
                                     <Grid.Column mobile={16} tablet={8} computer={8}>
-                                        <Image src={noDataggManage} className="noDataLeftImg"/>
+                                        <Image src={noDataggManage} className="noDataLeftImg" />
                                     </Grid.Column>
                                     <Grid.Column mobile={16} tablet={8} computer={8}>
                                         <div className="givingGroupNoDataContent">
                                             <Header as="h4">
                                                 <Header.Content>
-                                                Groups you manage will appear here
+                                                    Groups you manage will appear here
                                                 </Header.Content>
                                             </Header>
                                             <div>
-                                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}>
+                                                <Link route={`/groups/step/one`}>
                                                     <Button className="success-btn-rounded-def">Create a Giving Group</Button>
-                                                </a>
+                                                </Link>
                                             </div>
                                         </div>
                                     </Grid.Column>
@@ -153,7 +113,7 @@ class GroupsAndCampaigns extends React.Component {
                                         <div className="givingGroupNoDataContent">
                                             <Header as="h4">
                                                 <Header.Content>
-                                                Groups you've joined will appear here
+                                                    Groups you've joined will appear here
                                                 </Header.Content>
                                             </Header>
                                             <div>
@@ -182,14 +142,14 @@ class GroupsAndCampaigns extends React.Component {
                                                 <Header.Content>
                                                     Support this Campaign by creating a Giving Group
                                                     <Header.Subheader>
-                                                    A Giving Group is like a fundraising page where multiple people can combine forces, pool or raise money, and support causes together.
+                                                        A Giving Group is like a fundraising page where multiple people can combine forces, pool or raise money, and support causes together.
                                                     </Header.Subheader>
                                                 </Header.Content>
                                             </Header>
                                             <div>
-                                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}>
+                                                <Link route={`/groups/step/one`}>
                                                     <Button className="success-btn-rounded-def">Create a Giving Group</Button>
-                                                </a>
+                                                </Link>
                                             </div>
                                         </div>
                                     </Grid.Column>
@@ -208,16 +168,13 @@ class GroupsAndCampaigns extends React.Component {
 
     render() {
         const {
-            showloaderForCampaigns,
-            showloaderForAdministeredGroups,
-            showloaderForMemberGroups,
-            showInitialButton,
-        } = this.state;
-        const {
             administeredGroups,
             administeredCampaigns,
             groupsWithMemberships,
             userProfileBasicData,
+            showloaderForAdministeredGroups,
+            showloaderForMemberGroups,
+            showloaderForCampaignsAdmins,
         } = this.props;
         let givingGroupsMemberVisible = 0;
         let givingGroupsManageVisible = 0;
@@ -231,26 +188,39 @@ class GroupsAndCampaigns extends React.Component {
             <Container>
                 <div className="grpcampHeader">
                     <div className="grpcampBanner">
-                        <div className="grpcampBannerContainer">
+                        <div className="grpcampBannerContainer"> 
                             <div className="grpcampBannerTxt">
                                 <Header as="h3" icon>
                                     Give together
-                                    <Header.Subheader>
-                                        With a Giving Group, multiple people can combine forces, pool or raise money, and support one or more charities together.
-                                    </Header.Subheader>
                                 </Header>
-                                <Fragment>
-                                    { showInitialButton ? (
+                                <Header.Subheader>
+                                        With a
+                                    <span className="semi_Giving"> Giving Group</span>
+                                        , multiple people can combine forces, pool or raise money together.
+                                </Header.Subheader>
+                                <p className="registered">
+                                        Money raised in a Giving Group goes towards supporting one or more
+                                        &nbsp;
+                                    <span className="semi_Giving">
+                                        registered Canadian charities
+                                    </span>
+                                    &nbsp;
+                                    of your choice.
+                                </p>
+                                
+                                <div className="Create_wrapper">
+                                    <Link route={createGivingGroupFlowSteps.stepOne}>
+                                        <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
+                                    </Link>
+                                    <p className="how_Giving_Groups_work">
+                                    Or,&nbsp;
                                         <a href={`${HELP_CENTRE_URL}article/147-what-is-a-giving-group`}>
-                                            <Button fluid className="success-btn-rounded-def">Learn how to start a Giving Group</Button>
+                                            learn more
                                         </a>
-                                        ) : (
-                                        <a href={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}>
-                                            <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
-                                        </a>
-                                    )
-                                    }
-                                </Fragment>
+                                        &nbsp;
+                                        about how Giving Groups work
+                                    </p>
+                                </div>
 
                             </div>
                         </div>
@@ -261,35 +231,23 @@ class GroupsAndCampaigns extends React.Component {
                         </div>
                     </div> */}
                 </div>
-                <div className="pt-2 pb-2">
-                    <p
-                        className="bold font-s-16"
-                    >
-                        Giving Groups you manage
-                        <span className="font-w-normal">
-                            <PrivacySetting
-                                columnName={managePrivacyColumn}
-                                columnValue={givingGroupsManageVisible}
-                            />
-                        </span>
-                    </p>
+                <div className=" mt-2 pb-2 tabHeader">
+                    <Header>Giving Groups you manage</Header>
+                    <ProfilePrivacySettings
+                        columnName={managePrivacyColumn}
+                        columnValue={givingGroupsManageVisible}
+                    />
                 </div>
                 <div className="pt-1 pb-3">
                     {this.renderList(showloaderForAdministeredGroups, 'administeredGroups', administeredGroups)}
                 </div>
                 <Divider />
-                <div className="pt-2 pb-2">
-                    <p
-                        className="bold font-s-16"
-                    >
-                        Giving Groups you have joined
-                        <span className="font-w-normal">
-                            <PrivacySetting
-                                columnName={memberPrivacyColumn}
-                                columnValue={givingGroupsMemberVisible}
-                            />
-                        </span>
-                    </p>
+                <div className=" mt-2 pb-2 tabHeader">
+                    <Header>Giving Groups you have joined</Header>
+                    <ProfilePrivacySettings
+                        columnName={memberPrivacyColumn}
+                        columnValue={givingGroupsMemberVisible}
+                    />
                 </div>
                 <div className="pt-1 pb-3">
                     {this.renderList(showloaderForMemberGroups, 'groupsWithMemberships', groupsWithMemberships)}
@@ -302,7 +260,7 @@ class GroupsAndCampaigns extends React.Component {
                                 <p className="bold font-s-16">Campaigns you manage</p>
                             </div>
                             <div className="pt-1 pb-3">
-                                {this.renderList(showloaderForCampaigns, 'administeredCampaigns', administeredCampaigns)}
+                                {this.renderList(showloaderForCampaignsAdmins, 'administeredCampaigns', administeredCampaigns)}
                             </div>
                         </Fragment>
                     ) : null)
@@ -311,6 +269,18 @@ class GroupsAndCampaigns extends React.Component {
         );
     }
 }
+
+GroupsAndCampaigns.defaultProps = {
+    showloaderForAdministeredGroups: true,
+    showloaderForCampaignsAdmins: true,
+    showloaderForMemberGroups: true,
+};
+
+GroupsAndCampaigns.propTypes = {
+    showloaderForAdministeredGroups: bool,
+    showloaderForCampaignsAdmins: bool,
+    showloaderForMemberGroups: bool,
+};
 
 function mapStateToProps(state) {
     return {
@@ -321,6 +291,9 @@ function mapStateToProps(state) {
         displayError: state.user.leaveErrorMessage,
         groupsWithMemberships: state.user.groupsWithMemberships,
         leaveButtonLoader: state.user.leaveButtonLoader,
+        showloaderForAdministeredGroups: state.user.showloaderForAdministeredGroups,
+        showloaderForCampaignsAdmins: state.user.showloaderForCampaignsAdmins,
+        showloaderForMemberGroups: state.user.showloaderForMemberGroups,
         userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }

@@ -7,6 +7,9 @@ import {
     Button,
 } from "semantic-ui-react";
 import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
+import { connect } from "react-redux";
+
 import storage from '../../../../helpers/storage';
 import { Link } from '../../../../routes';
 import logo from '../../../../static/images/CharitableImpact.png';
@@ -43,6 +46,7 @@ class MobileHeader extends React.Component {
     render() {
         const {
         children,
+        groupInviteDetails,
         // onPusherClick,
         // onToggle,
         // visible
@@ -55,6 +59,9 @@ class MobileHeader extends React.Component {
         if (typeof Storage !== 'undefined') {
             claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
         }
+        const loginUrl = !_isEmpty(groupInviteDetails) ? `/users/login?invitationType=groupInvite&sourceId=${groupInviteDetails.claim_token}&signUpSourceId=${groupDetails.id}` : `/users/login`;
+        let signUpUrl = !_isEmpty(groupInviteDetails) ? `/users/new?invitationType=groupInvite&sourceId=${groupInviteDetails.claim_token}&signUpSourceId=${groupDetails.id}` : `/users/new`;
+        if(claimCharityAccessCode) signUpUrl = `/users/new?isClaimCharity=${true}`;
         return (
             <Sidebar.Pushable className="c-m-default-header">
                 <Sidebar
@@ -65,10 +72,10 @@ class MobileHeader extends React.Component {
                     direction="right"
                 >
                     <Menu.Item className="twoBtnWraper" >
-                        <Link route="/users/login" >
+                        <Link route={loginUrl} >
                             <Button as="a" basic color="blue" onClick={this.handleToggle}>Login</Button>
                         </Link>
-                        <Link route={claimCharityAccessCode ? `/users/new?isClaimCharity=${true}` : '/users/new'}>
+                        <Link route={signUpUrl}>
                             <Button as="a" color="blue"  onClick={this.handleToggle}>Sign up</Button>
                         </Link>
                     </Menu.Item>
@@ -161,5 +168,9 @@ class MobileHeader extends React.Component {
     }
   
 }
-
-export default MobileHeader;
+function mapStateToProps(state){
+    return {
+        groupInviteDetails:state.group.groupInviteDetails,
+    }
+}
+export default connect(mapStateToProps)(MobileHeader);

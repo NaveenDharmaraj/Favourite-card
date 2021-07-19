@@ -21,12 +21,17 @@ import SecondStep from '../../../components/New/SecondStep';
 import CausesSelection from '../../../components/New/CausesSelection';
 import FinalStep from '../../../components/New/FinalStep';
 import ClaimCharityFirstStep from '../../../components/New/ClaimCharityFirstStep';
-
+import { invitationParameters } from '../../../services/auth';
 class Login extends React.Component {
 
     static async getInitialProps({ query }) {
         return {
             isClaimCharity: query.isClaimCharity,
+            reqParams: {
+                invitationType: query.invitationType,
+                sourceId: query.sourceId,
+                signUpSourceId:query.signUpSourceId,
+            },
         };
     }
 
@@ -54,8 +59,12 @@ class Login extends React.Component {
     componentDidMount() {
         const {
             dispatch,
+            reqParams,
         } = this.props;
         getUserCauses(dispatch);
+        if(reqParams && reqParams.invitationType, reqParams.sourceId){
+            invitationParameters.reqParameters = reqParams;
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -220,6 +229,11 @@ class Login extends React.Component {
                 };
                 userDetails.claimToken = storage.getLocalStorageWithExpiry('claimToken','local');
                 userDetails.referrer = document.referrer;
+                const reqPar = invitationParameters.reqParameters;
+                if(reqPar && reqPar.invitationType === 'groupInvite'){
+                    userDetails.signupSource = reqPar.signupSource;
+                    userDetails.signupSourceId = reqPar.signupSourceId;
+                }
                 saveUser(dispatch, userDetails);
             }
             if (stepIndex !== 3) {
@@ -297,7 +311,7 @@ class Login extends React.Component {
             causesList,
             userExists,
             apiValidating,
-            isClaimCharity
+            isClaimCharity,
         } = this.props;
         const lineBgClass = (stepIndex === 3) ? "linebg signup-last-step" : "linebg";
 

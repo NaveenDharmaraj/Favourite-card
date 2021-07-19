@@ -14,6 +14,7 @@ import {
     PropTypes,
 } from 'prop-types';
 import _isEqual from 'lodash/isEqual';
+import _isEmpty from 'lodash/isEmpty';
 
 import { withTranslation } from '../../../i18n';
 import {
@@ -39,11 +40,19 @@ class ProfilePrivacySettings extends React.Component {
         const {
             userFriendProfileData,
             columnName,
+            columnValue,
         } = this.props;
-        if (!_isEqual(prevProps.userFriendProfileData.attributes[columnName],
-            userFriendProfileData.attributes[columnName])) {
+        if (!_isEmpty(userFriendProfileData)) {
+            if (!_isEqual(prevProps.userFriendProfileData.attributes[columnName],
+                userFriendProfileData.attributes[columnName])) {
+                this.setState({
+                    privacyType: getPrivacyType(userFriendProfileData.attributes[columnName]),
+                });
+            }
+        }
+        if (!_isEqual(prevProps.columnValue, columnValue) && _isEmpty(userFriendProfileData.attributes)) {
             this.setState({
-                privacyType: getPrivacyType(userFriendProfileData.attributes[columnName]),
+                privacyType: getPrivacyType(columnValue),
             });
         }
     }

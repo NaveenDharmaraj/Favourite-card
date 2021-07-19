@@ -175,6 +175,11 @@ const p2pScheduleOptions = {
     yearly: 'Annually',
 };
 
+const adminActionType = {
+    make_admin: 'make_admin',
+    remove_admin: 'remove_admin',
+};
+
 export {
     countryOptions,
     countryOptionsFrench,
@@ -183,5 +188,6 @@ export {
     usStateOptions,
     usStateOptionsFrench,
     testCardList,
-    p2pScheduleOptions
+    p2pScheduleOptions,
+    adminActionType
 };

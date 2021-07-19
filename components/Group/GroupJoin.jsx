@@ -22,6 +22,9 @@ import {
     joinGroup,
     leaveGroup,
 } from '../../actions/group';
+import {
+    handleInvitationAccepts,
+} from '../../actions/user';
 import LeaveModal from '../shared/LeaveModal';
 
 class GroupJoin extends React.Component {
@@ -39,6 +42,11 @@ class GroupJoin extends React.Component {
 
     handleUserJoin() {
         const {
+            currentUser: {
+                attributes: {
+                    email,
+                },
+            },
             dispatch,
             groupDetails: {
                 attributes: {
@@ -46,17 +54,32 @@ class GroupJoin extends React.Component {
                 },
                 id: groupId,
             },
+            groupInviteDetails,
             groupMembersDetails,
+            inviteToken,
         } = this.props;
         const loadMembers = !_isEmpty(groupMembersDetails);
         this.setState({
             joinClicked: true,
         });
-        dispatch(joinGroup(slug, groupId, loadMembers)).then(() => {
-            this.setState({
-                joinClicked: false,
+        if (inviteToken && !_isEmpty(groupInviteDetails)) {
+            const reqObj = {
+                groupId,
+                invitationType: 'groupInvite',
+                sourceId: inviteToken,
+            };
+            dispatch(handleInvitationAccepts(reqObj, email, 'loggedIn', loadMembers)).then(()=>{
+                this.setState({
+                    joinClicked: false,
+                });
             });
-        });
+        } else {
+            dispatch(joinGroup(slug, groupId, loadMembers)).then(() => {
+                this.setState({
+                    joinClicked: false,
+                });
+            });
+        }
     }
 
     handleLeaveGroup() {
@@ -102,7 +125,9 @@ class GroupJoin extends React.Component {
                     slug,
                 },
             },
+            groupInviteDetails,
             isAuthenticated,
+            inviteToken,
             t: formatMessage,
         } = this.props;
         const {
@@ -167,9 +192,10 @@ class GroupJoin extends React.Component {
                 );
             }
         } else {
+            const linkRoute = inviteToken && !_isEmpty(groupInviteDetails) ? `/users/login?returnTo=/groups/${slug}&invitationType=groupInvite&sourceId=${inviteToken}` : `/users/login?returnTo=/groups/${slug}`;
             joinButton = (
                 <Fragment>
-                    <Link route={`/users/login?returnTo=/groups/${slug}`}>
+                    <Link route={linkRoute}>
                         <Button
                             className="blue-bordr-btn-round-def"
                         >
@@ -215,6 +241,7 @@ GroupJoin.defaultProps = {
         id: '',
     },
     groupMembersDetails: {},
+    inviteToken: '',
     isAuthenticated: false,
     t: () => {},
 };
@@ -241,6 +268,7 @@ GroupJoin.propTypes = {
         id: string,
     }),
     groupMembersDetails: PropTypes.shape({}),
+    inviteToken: string,
     isAuthenticated: bool,
     t: func,
 };
@@ -251,6 +279,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         errorMessage: state.group.errorMessage,
         groupDetails: state.group.groupDetails,
+        groupInviteDetails: state.group.groupInviteDetails,
         groupMembersDetails: state.group.groupMembersDetails,
         isAuthenticated: state.auth.isAuthenticated,
     };

@@ -157,8 +157,8 @@ class FriendsList extends React.Component {
                             <Link route={`/users/profile/${data.attributes.user_id}`} passHref>
                                 <Image
                                     className="pointer friends-lazyLoad"
-                                    src={''}
-                                    data-src={data.attributes.avatar}
+                                    src={data.attributes.avatar}
+                                    // data-src={data.attributes.avatar}
                                     circular
                                 />
                             </Link>

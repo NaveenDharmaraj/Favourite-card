@@ -10,12 +10,10 @@ import {
     string,
     func,
 } from 'prop-types';
-import getConfig from 'next/config';
 
-const { publicRuntimeConfig } = getConfig();
-const {
-    RAILS_APP_URL_ORIGIN,
-} = publicRuntimeConfig;
+import {
+    Link,
+} from '../../../routes';
 
 class LeaveModal extends React.Component {
     render() {
@@ -66,13 +64,13 @@ class LeaveModal extends React.Component {
                     <div className="btn-wraper pt-3 text-right">
                         { (showError && showMangeGroups)
                             ? (
-                                <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`)}>
+                                <Link route={`/groups/${slug}/edit`}>
                                     <Button
                                         className="blue-btn-rounded-def c-small"
                                     >
                                         Manage Groups
                                     </Button>
-                                </a>
+                                </Link>
                             )
                             : (
                                 <Button

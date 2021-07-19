@@ -4,6 +4,9 @@ import _isEmpty from 'lodash/isEmpty';
 import coreApi from '../services/coreApi';
 import graphApi from '../services/graphApi';
 import eventApi from '../services/eventApi';
+import { intializeCreateGivingGroup } from '../helpers/createGrouputils';
+
+import { upadateEditGivingGroupObj } from './createGivingGroup';
 
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
@@ -19,6 +22,7 @@ export const actionTypes = {
     GET_GROUP_GALLERY_IMAGES: 'GET_GROUP_GALLERY_IMAGES',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
+    GROUP_INVITE_DETAILS: 'GROUP_INVITE_DETAILS',
     GROUP_MATCHING_HISTORY: 'GROUP_MATCHING_HISTORY',
     GROUP_MEMBER_UPDATE_FRIEND_STATUS: 'GROUP_MEMBER_UPDATE_FRIEND_STATUS',
     GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
@@ -29,11 +33,13 @@ export const actionTypes = {
     MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
     POST_NEW_COMMENT: 'POST_NEW_COMMENT',
+    RESET_GROUP_STATES: 'RESET_GROUP_STATES',
     TOGGLE_TRANSACTION_VISIBILITY: 'TOGGLE_TRANSACTION_VISIBILITY',
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
 };
 
-export const getGroupFromSlug = (slug, token = null) => async (dispatch) => {
+
+export const getGroupFromSlug = (slug, token = null, fromEdit = false, claimToken) => async (dispatch) => {
     if (slug !== ':slug') {
         const fsa = {
             payload: {
@@ -55,6 +61,7 @@ export const getGroupFromSlug = (slug, token = null) => async (dispatch) => {
         });
         const fullParams = {
             params: {
+                claim_token: claimToken,
                 dispatch,
                 findBySlug: true,
                 load_full_profile: true,
@@ -70,10 +77,75 @@ export const getGroupFromSlug = (slug, token = null) => async (dispatch) => {
         await coreApi.get('/groups/find_by_slug', {
             ...fullParams,
         }).then(
-            (result) => {
+            async (result) => {
                 if (result && !_isEmpty(result.data)) {
                     fsa.payload.groupDetails = result.data;
                     dispatch(fsa);
+                    if (result.data.attributes.inviteSenderDetails) {
+                        dispatch({
+                            payload: {
+                                groupInviteDetails: result.data.attributes.inviteSenderDetails || {},
+                            },
+                            type: actionTypes.GROUP_INVITE_DETAILS,
+                        });
+                    }
+                    if (fromEdit) {
+                        const galleryImages = [];
+                        if (result.data.attributes.galleryImagesList) {
+                            result.data.attributes.galleryImagesList.map(({
+                                display, assetId,
+                            }) => {
+                                const imgObj = {
+                                    assetId,
+                                    display,
+                                };
+                                galleryImages.push(imgObj);
+                            });
+                        }
+                        const groupDescriptions = [];
+                        if (result.data.attributes.groupDescriptionsValues) {
+                            result.data.attributes.groupDescriptionsValues.map((item) => {
+                                groupDescriptions.push({
+                                    ...item,
+                                    id: `${item.purpose}${result.data.attributes.groupDescriptionsValues.length}`,
+                                });
+                            });
+                        }
+                        await dispatch(upadateEditGivingGroupObj({
+                            ...intializeCreateGivingGroup,
+                            attributes: {
+                                ...intializeCreateGivingGroup.attributes,
+                                avatar: result.data.attributes.avatar,
+                                causes: result.data.attributes.causes,
+                                city: result.data.attributes.city,
+                                fundraisingCreated: result.data.attributes.fundraisingStartDate,
+                                fundraisingDate: result.data.attributes.fundraisingEndDate,
+                                fundraisingDaysRemaining: result.data.attributes.fundraisingDaysRemaining,
+                                fundraisingGoal: result.data.attributes.goal,
+                                fundraisingPercentage: result.data.attributes.fundraisingPercentage,
+                                goalAmountRaised: result.data.attributes.goalAmountRaised,
+                                givingGoalReachedDate: result.data.attributes.givingGoalReachedDate,
+                                isAvatarUploadedByUser: result.data.attributes.isAvatarUploadedByUser,
+                                location: result.data.attributes.location,
+                                logo: result.data.attributes.avatar,
+                                name: result.data.attributes.name,
+                                prefersInviteOnly: result.data.attributes.isPrivate ? '1' : '0',
+                                prefersRecurringEnabled: result.data.attributes.recurringEnabled ? '1' : '0',
+                                province: result.data.attributes.province,
+                                short: result.data.attributes.description,
+                                slug: result.data.attributes.slug,
+                                videoUrl: result.data.attributes.videoPlayerLink,
+                            },
+                            beneficiaryItems: result.data.attributes.groupCharities,
+                            galleryImages: [
+                                ...galleryImages,
+                            ],
+                            groupPurposeDescriptions: [
+                                ...groupDescriptions,
+                            ],
+                            id: result.data.id,
+                        }));
+                    }
                 }
             },
         ).catch((error) => {
@@ -149,7 +221,7 @@ export const getDetails = (id, type, pageNumber = 1) => (dispatch) => {
             break;
     }
     dispatch(placeholderfsa);
-    return coreApi.get(newUrl, {
+    const GetDetailsPromise = coreApi.get(newUrl, {
         params: {
             dispatch,
             ignore401: true,
@@ -157,7 +229,8 @@ export const getDetails = (id, type, pageNumber = 1) => (dispatch) => {
             'page[size]': 10,
             uxCritical: true,
         },
-    }).then((result) => {
+    })
+    GetDetailsPromise.then((result) => {
         if (result && !_isEmpty(result.data)) {
             fsa.payload.data = result.data;
             fsa.payload.totalCount = result.meta.recordCount;
@@ -184,6 +257,7 @@ export const getDetails = (id, type, pageNumber = 1) => (dispatch) => {
         }
         dispatch(placeholderfsa);
     });
+    return GetDetailsPromise;
 };
 
 export const getTransactionDetails = (id, type, pageNumber = 1) => async (dispatch) => {
@@ -295,11 +369,11 @@ export const postActivity = (id, msg) => (dispatch) => {
                 type: 'comments',
             },
         }, {
-            params: {
-                dispatch,
-                ignore401: true,
-            },
-        }).then((result) => {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then((result) => {
         if (result && !_isEmpty(result.data)) {
             dispatch(getGroupActivities(id, url, true));
         }
@@ -324,11 +398,11 @@ export const postComment = (groupId, eventId, msg, user) => (dispatch) => {
                 type: 'comments',
             },
         }, {
-            params: {
-                dispatch,
-                ignore401: true,
-            },
-        }).then((result) => {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then((result) => {
         if (result && !_isEmpty(result.data)) {
             fsa.payload.groupComments = [
                 {
@@ -367,11 +441,11 @@ export const likeActivity = (eventId, groupId, userId) => (dispatch) => {
                 user_id: Number(userId),
             },
         }, {
-            params: {
-                dispatch,
-                ignore401: true,
-            },
-        }).then((result) => {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then((result) => {
         if (result && !_isEmpty(result.data)) {
             fsa.payload.activityStatus = true;
             fsa.payload.eventId = eventId;
@@ -401,11 +475,11 @@ export const unlikeActivity = (eventId, groupId, userId) => (dispatch) => {
                 },
             },
         }, {
-            params: {
-                dispatch,
-                ignore401: true,
-            },
-        }).then((result) => {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then((result) => {
         if (result && !_isEmpty(result.data)) {
             fsa.payload.activityStatus = false;
             fsa.payload.eventId = eventId;
@@ -514,12 +588,12 @@ export const getGroupBeneficiariesCount = (url) => (dispatch) => {
                 uxCritical: true,
             },
         }).then((result) => {
-        if (result && !_isEmpty(result.data)) {
-            fsa.payload.groupBeneficiariesCount = result.data;
-        }
-    }).catch().finally(() => {
-        dispatch(fsa);
-    });
+            if (result && !_isEmpty(result.data)) {
+                fsa.payload.groupBeneficiariesCount = result.data;
+            }
+        }).catch().finally(() => {
+            dispatch(fsa);
+        });
 };
 
 const checkForOnlyOneAdmin = (error) => {
@@ -528,7 +602,7 @@ const checkForOnlyOneAdmin = (error) => {
         if (!_isEmpty(checkForAdminError.meta)
             && !_isEmpty(checkForAdminError.meta.validationCode)
             && (checkForAdminError.meta.validationCode === '1329'
-            || checkForAdminError.meta.validationCode === 1329)) {
+                || checkForAdminError.meta.validationCode === 1329)) {
             return true;
         }
     }
@@ -606,14 +680,14 @@ export const toggleTransactionVisibility = (transactionId, type) => (dispatch) =
                 uxCritical: true,
             },
         }).then(
-        (result) => {
-            if (result && !_isEmpty(result.data)) {
-                fsa.payload.data = result.data;
-                fsa.payload.transactionId = transactionId;
-                dispatch(fsa);
-            }
-        },
-    ).catch().finally();
+            (result) => {
+                if (result && !_isEmpty(result.data)) {
+                    fsa.payload.data = result.data;
+                    fsa.payload.transactionId = transactionId;
+                    dispatch(fsa);
+                }
+            },
+        ).catch().finally();
 };
 
 export const addFriendRequest = (user) => (dispatch) => {

@@ -28,16 +28,9 @@ import {
     displayRecordCount,
     displaySeeMoreButton,
 } from '../../../helpers/profiles/utils';
-import getConfig from 'next/config';
 import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import NoDataManagedGroup_Image from '../../../static/images/givinggroupsyoumanage_nodata_illustration.png';
 import NoDataState from '../NoDataState';
-
-const { publicRuntimeConfig } = getConfig();
-
-const {
-    RAILS_APP_URL_ORIGIN,
-} = publicRuntimeConfig;
 
 class UserAdminGroupList extends React.Component {
     constructor(props) {
@@ -164,8 +157,8 @@ class UserAdminGroupList extends React.Component {
                     className="ggManage noData"
                     image={NoDataManagedGroup_Image}
                     content="Groups you manage will appear here"
-                    route={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}
-                    ror={true}
+                    route={`/groups/step/one`}
+                    ror={false}
                     btnClass="success-btn-rounded-def"
                     btnTitle="Create a Giving Group"
                 />
