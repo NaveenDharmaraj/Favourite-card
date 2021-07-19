@@ -6,6 +6,7 @@ import searchApi from '../services/searchApi';
 import coreApi from '../services/coreApi';
 import { dateFormatConverter } from '../helpers/createGrouputils';
 import { adminActionType } from '../helpers/constants';
+import { triggerUxCritialErrors } from './error';
 
 export const actionTypes = {
     GET_PROVINCE_LIST: 'GET_PROVINCE_LIST',
@@ -535,23 +536,60 @@ export const emailMembers = (groupId, data) => (dispatch) => {
 
 export const sendEmailInvite = (data) => (dispatch) => {
     const toastMessageProps = {
-        message: 'Your invitation has been sent.',
+        message: '',
         type: 'success',
     };
-    return coreApi.post(`/members`, data, {
-        params: {
-            dispatch,
-            uxCritical: true,
-        },
-    }).then(() => {
-        dispatch({
-            payload: {
-                errors: [
-                    toastMessageProps,
-                ],
-            },
-            type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
-        });
+    return coreApi.post(`/members`, data).then((result) => {
+        if (!_isEmpty(result.data)) {
+            toastMessageProps.message = result.data.attributes.created_emails;
+            dispatch({
+                payload: {
+                    errors: [
+                        toastMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+        }
+    }).catch((error) => {
+        if (!_isEmpty(error.data) && !_isEmpty(error.data.attributes)) {
+            if (error.data.attributes.created_emails !== 'none') {
+                toastMessageProps.message = error.data.attributes.created_emails;
+                dispatch({
+                    payload: {
+                        errors: [
+                            toastMessageProps,
+                        ],
+                    },
+                    type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+                });
+            }
+            if (error.data.attributes.invalid_emails !== 'none') {
+                toastMessageProps.message = error.data.attributes.invalid_emails;
+                toastMessageProps.type = 'error';
+                dispatch({
+                    payload: {
+                        errors: [
+                            toastMessageProps,
+                        ],
+                    },
+                    type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+                });
+            }
+
+            if (error.data.attributes.skipped_emails !== 'none') {
+                toastMessageProps.message = error.data.attributes.skipped_emails;
+                toastMessageProps.type = 'error';
+                dispatch({
+                    payload: {
+                        errors: [
+                            toastMessageProps,
+                        ],
+                    },
+                    type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+                });
+            }
+        }
     });
 };
 
