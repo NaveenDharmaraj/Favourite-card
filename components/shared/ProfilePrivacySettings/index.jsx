@@ -42,11 +42,13 @@ class ProfilePrivacySettings extends React.Component {
             columnName,
             columnValue,
         } = this.props;
-        if (!_isEqual(prevProps.userFriendProfileData.attributes[columnName],
-            userFriendProfileData.attributes[columnName])) {
-            this.setState({
-                privacyType: getPrivacyType(userFriendProfileData.attributes[columnName]),
-            });
+        if (!_isEmpty(userFriendProfileData)) {
+            if (!_isEqual(prevProps.userFriendProfileData.attributes[columnName],
+                userFriendProfileData.attributes[columnName])) {
+                this.setState({
+                    privacyType: getPrivacyType(userFriendProfileData.attributes[columnName]),
+                });
+            }
         }
         if (!_isEqual(prevProps.columnValue, columnValue) && _isEmpty(userFriendProfileData.attributes)) {
             this.setState({
