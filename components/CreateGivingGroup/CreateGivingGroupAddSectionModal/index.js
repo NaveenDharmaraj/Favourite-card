@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Button, Form, Icon, Input, Modal, TextArea } from "semantic-ui-react";
+
 import {
     addModalDescriptionLimit,
     initializeAddSectionModalObject,
     intializeValidity,
     validateCreateGivingGroup,
     isValidText,
-} from "../../../helpers/createGrouputils";
-import _isEmpty from 'lodash/isEmpty';
-
+} from '../../../helpers/createGrouputils';
+import TextAreaWithInfo from '../../shared/TextAreaWithInfo';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 const CreateGivingGroupAddSectionModal = ({
@@ -118,13 +118,14 @@ const CreateGivingGroupAddSectionModal = ({
                     <div className='requiredfield field'>
                         <label>{formatMessage('createGivingGroupAbout.addSectionModalSectionDescription')}</label>
                         <Form.Field
-                            control={TextArea}
+                            control={TextAreaWithInfo}
                             value={addModalObj.description}
                             name='description'
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
                             error={!validity.doesDescriptionNotExist}
                             maxLength={addModalDescriptionLimit}
+                            info={`${addModalObj.description.length}/10,000`}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.doesDescriptionNotExist}
@@ -134,9 +135,6 @@ const CreateGivingGroupAddSectionModal = ({
                             condition={!validity.isSectionNotEmpty}
                             errorMessage='The field should not be empty space'
                         />
-                        <div className='fieldInfoWrap'>
-                            <div class="field-info">{addModalObj.description.length}/10,000</div>
-                        </div>
                     </div>
                     <div className='buttonsWrap'>
                         <Button
