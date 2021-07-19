@@ -6,7 +6,6 @@ import searchApi from '../services/searchApi';
 import coreApi from '../services/coreApi';
 import { dateFormatConverter } from '../helpers/createGrouputils';
 import { adminActionType } from '../helpers/constants';
-import { triggerUxCritialErrors } from './error';
 
 export const actionTypes = {
     GET_PROVINCE_LIST: 'GET_PROVINCE_LIST',
