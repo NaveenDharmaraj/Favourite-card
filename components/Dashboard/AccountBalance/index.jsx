@@ -25,6 +25,7 @@ class AccountBalance extends React.Component {
             },
         } = this.props;
         const amount = formatCurrency(currentUser.attributes.balance, language, 'USD');
+        // const amount = currentUser.attributes.balance
         return (
             <div>
                 <div className="c-db-header">

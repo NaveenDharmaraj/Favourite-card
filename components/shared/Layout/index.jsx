@@ -270,7 +270,10 @@ class Layout extends React.Component {
 
         const showHeader = !addCauses;
         return (
-            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader)
+            <>
+            {console.log(authRequired)}
+            {this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader)}
+            </>
         );
     }
 };

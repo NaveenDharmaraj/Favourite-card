@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import _ from 'lodash';
 import {
     Header,
@@ -36,6 +36,7 @@ import { dismissAllUxCritialErrors } from '../../../actions/error';
 import { renderTextByCharacter } from '../../../helpers/utils';
 import noDataggFavourites from '../../../static/images/favourites_nodata_illustration.png';
 import PrivacySetting from '../../shared/Privacy';
+import ProfileCard from '../../shared/ProfileCard';
 
 class Favorites extends React.Component {
     static changeButtonState(event) {
@@ -127,7 +128,7 @@ class Favorites extends React.Component {
                                 <div className="givingGroupNoDataContent">
                                     <Header as="h4">
                                         <Header.Content>
-                                        Charities or Giving Groups you favourite will appear here
+                                            Charities or Giving Groups you favourite will appear here
                                         </Header.Content>
                                     </Header>
                                     <div>
@@ -173,49 +174,32 @@ class Favorites extends React.Component {
                     location = province;
                 }
                 return (
-                    <Grid.Column key={index}>
-                        <Card className="left-img-card" fluid>
-                            <Card.Header>
-                                <Grid>
-                                    <Grid.Column width={6}>
-                                        <Image src={displayAvatar} />
-                                    </Grid.Column>
-                                    <Grid.Column width={10}>
-                                        <div className="">
-                                            <Header as="h4">
+                    <Grid.Column>
+                        <div className="cardwrap">
+                            <Card>
+                                <Link className="lnkChange" route={`/${route}/${slug}`} passHref>
+                                    <Card.Content>
+                                        <Fragment>
+                                            <div className="cardPrflImg">
+                                                <Image src={displayAvatar} />
+                                            </div>
+                                            <div className="cardcontentWrap">
+                                                <Header as="h6" className={`${(type === 'group' ? 'groupClr' : 'charityClr')}`}>
+                                                    {heading}
+                                                    <span className="more-icon">
+                                                        <Icon name="heart" disabled={this.props.disableFavorites} onClick={() => this.callRemoveFav(entityId, type)} />
+                                                    </span>
+                                                </Header>
+                                                <Header as="h4">{name}</Header>
                                                 <Header.Content>
-                                                    <Header.Subheader className={`chimp-lbl ${type}`}>
-                                                        {heading}
-                                                        <span className="more-icon">
-                                                            <Icon name="heart" disabled={this.props.disableFavorites} onClick={() => this.callRemoveFav(entityId, type)} />
-                                                        </span>
-                                                    </Header.Subheader>
-                                                    {shortName}
-                                                    {
-                                                        (location) && (
-                                                            <React.Fragment>
-                                                                <br />
-                                                                <span className="location">
-                                                                    {location}
-                                                                </span>
-                                                            </React.Fragment>
-                                                        )}
-
+                                                    <p>{location}</p>
                                                 </Header.Content>
-                                            </Header>
-                                            <Link className="lnkChange" route={`/${route}/${slug}`} passHref>
-                                                <Button
-                                                    className="btn-small-white-border"
-                                                    onClick={Favorites.changeButtonState}
-                                                >
-                                                    View
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    </Grid.Column>
-                                </Grid>
-                            </Card.Header>
-                        </Card>
+                                            </div>
+                                        </Fragment>
+                                    </Card.Content>
+                                </Link>
+                            </Card>
+                        </div>
                     </Grid.Column>
                 );
             });
@@ -226,6 +210,7 @@ class Favorites extends React.Component {
                     </Grid.Row>
                 </Grid>
             );
+
         }
 
         return favoritesList;
@@ -317,7 +302,7 @@ class Favorites extends React.Component {
                         </p>
                     </div>
                     <div className="pt-2 favourite">
-                        { (favoritesLoader) ? <PlaceholderGrid row={2} column={3} /> : (
+                        {(favoritesLoader) ? <PlaceholderGrid row={2} column={3} /> : (
                             this.showFavorites()
                         )}
                         <div className="seeMore bigBtn mt-2-sm mt-2-xs">
@@ -349,15 +334,15 @@ Favorites.propTypes = {
     }),
     dispatch: func,
     favorites: PropTypes.shape({
-        dataCount : oneOfType([
+        dataCount: oneOfType([
             number,
             string,
         ]),
-        pageCount : oneOfType([
+        pageCount: oneOfType([
             number,
             string,
         ]),
-        currentPageNumber : oneOfType([
+        currentPageNumber: oneOfType([
             number,
             string,
         ]),

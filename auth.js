@@ -4,7 +4,7 @@ import _ from 'lodash';
 import jwt from 'jwt-decode';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
-
+​
 import logger from '../helpers/logger';
 import { Router } from '../routes';
 import storage from '../helpers/storage';
@@ -12,7 +12,7 @@ import chimpLogo from '../static/images/chimp-logo-new.png';
 import {
     validateAuth0Failure,
 } from '../actions/auth';
-
+​
 import {
     chimpLogin,
     getUser,
@@ -20,11 +20,11 @@ import {
 } from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
 import { addToDataLayer } from '../helpers/users/googleTagManager';
-
+​
 import coreApi from './coreApi';
-
+​
 const { publicRuntimeConfig } = getConfig();
-
+​
 const {
     APP_URL_ORIGIN,
     AUTH0_CONFIGURATION_BASE_URL,
@@ -33,12 +33,12 @@ const {
     AUTH0_WEB_AUDIENCE,
     BRANCH_IO_KEY,
 } = publicRuntimeConfig;
-
+​
 /**
  * @var {object} _auth0lockConfig - The static configuration options used for the Lock widget.
  * @see https://github.com/auth0/lock#customization
  */
-
+​
 const _auth0lockConfig = {
     allowPasswordAutocomplete: true,
     allowShowPassword: true,
@@ -120,10 +120,10 @@ let _auth0lockInitialScreen = '';
  * @namespace auth0
  * @type {object}
  */
-
+​
 let storeDispatch;
 const auth0 = {
-
+​
     /**
      * @property {string} accessToken - Auth0 access token
      */
@@ -139,19 +139,19 @@ const auth0 = {
      * @example
      * await (auth0.accessToken = token);
      */
-
+​
     set accessToken(token) {
         return token ? storage.set('auth0AccessToken', token, 'cookie', this.getRemainingSessionTime(token) / 1000) : storage.unset('auth0AccessToken', 'cookie');
     },
-
+​
     set wpAccessToken(token) {
         document.cookie = "wpAccessToken" + "=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000 + ";domain=.charitableimpact.com;path=/";
     },
-
+​
     set wpUserId(userId) {
         document.cookie = "wpUserId" + "=" + userId + ";domain=.charitableimpact.com;path=/";
     },
-
+​
     /**
      * Erase Auth0 data from local
      * @method empty
@@ -162,16 +162,16 @@ const auth0 = {
         this.userEmail = null;
         this.userId = null;
         this.wpAccessToken = null;
-
+​
         return null;
     },
-
+​
     /**
      * IEEE Std 1003.1: "Seconds Since the Epoch"
      * @typedef {integer} NumericDate
      * @see http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16
      */
-
+​
     /**
      * Retrieves the id token from storage, decodes it, extracts the expiry, and instantiates it as
      * a Date.
@@ -186,15 +186,15 @@ const auth0 = {
     getJwtExp(token) /* istanbul ignore next */ {
         try { // jwt-decode throws an error for a malformed token
             const { exp } = jwt(token);
-
+​
             if (exp) { return exp; }
-
+​
             console.error('[JWT] Expiry time is missing.');
         } catch (e) { console.error(e); }
-
+​
         return null;
     },
-
+​
     /**
      * @method getRemainingSessionTime
      * @param {string} token - The JSON Web Token
@@ -203,7 +203,7 @@ const auth0 = {
     getRemainingSessionTime(token) {
         const exp = this.getJwtExp(token);
         if (!exp) { return 0; }
-
+​
         const expiry = new Date(exp * 1000); // seconds --> milliseconds
         const now = new Date();
         return (expiry > now)
@@ -222,7 +222,7 @@ const auth0 = {
     get initialScreen() {
         if (_auth0lockInitialScreen) {
             const cache = _auth0lockInitialScreen;
-
+​
             _auth0lockInitialScreen = '';
             return cache;
         }
@@ -241,12 +241,12 @@ const auth0 = {
     },
     get lock() {
         if (_auth0lock) { return _auth0lock; }
-
+​
         return _makeLock(); // eslint-disable-line no-use-before-define
         // this is a catch-0.22: this needs to reference _makeLock,
         // which needs to make references to other props on auth0
     },
-
+​
     /**
      * @property {boolean} auth0.resendEmail - Whether the email address verification should be
      * re-sent.
@@ -268,7 +268,7 @@ const auth0 = {
             ? storage.set('auth0ResendEmail', email, 'local')
             : storage.unset('auth0ResendEmail', 'local');
     },
-
+​
     /**
      * @property {string} auth0.returnProps - Where to return after Auth0 authentication redirect.
      */
@@ -290,7 +290,7 @@ const auth0 = {
                 returnProps.signupSource = 'homepage';
             }
         }
-
+​
         return returnProps;
     },
     /**
@@ -306,22 +306,22 @@ const auth0 = {
         if (_.isEmpty(val)) {
             return storage.unset('auth0ReturnProps', 'local');
         }
-
+​
         if (val.return_to) {
             val.returnTo = val.return_to;
             delete val.return_to;
         }
-
+​
         if (val.signup_source) {
             val.signupSource = val.signup_source;
             delete val.signup_source;
         }
-
+​
         if (val.signup_source_id) {
             val.signupSourceId = val.signup_source_id;
             delete val.signup_source_id;
         }
-
+​
         const chimpLogin = [
             'beneficiaryClaimToken',
             'claimGift',
@@ -344,7 +344,7 @@ const auth0 = {
     get storeDispatch() {
         return storeDispatch;
     },
-
+​
     /**
     * This module is helper function hence we cant connect to store in order to dispatch an action,
     * we are setting this value in  Oatuh callback and using  dispatch fn
@@ -353,7 +353,7 @@ const auth0 = {
     set storeDispatch(dispatch) {
         storeDispatch = dispatch;
     },
-
+​
     /**
      * @property {string} auth0.userEmail - The email address of user registered with Auth0.
      */
@@ -374,7 +374,7 @@ const auth0 = {
             ? storage.set('auth0UserEmail', email, 'local')
             : storage.unset('auth0UserEmail', 'local');
     },
-
+​
     /**
      * @property {string} auth0.userId - The id assigned by Auth0 to the user.
      */
@@ -382,311 +382,3 @@ const auth0 = {
         return storage.get('auth0UserId', 'local');
     },
     /**
-     * ⚠️ When this value needs to be "read" within the same process tick, use `await` (possibly
-     * with try/catch) to avoid a race condition.
-     * @param {string} id - The user id to cache.
-     * @return {promise} - The promise returned by Storage.
-     *
-     * @example
-     * await (auth0.userId = userId);
-     */
-    set userId(id) {
-        return id
-            ? storage.set('auth0UserId', id, 'local')
-            : storage.unset('auth0UserId', 'local');
-    },
-};
-const invitationParameters = {
-
-    get reqParameters() {
-        const invitationType = storage.get('invitationType', 'local');
-        const sourceId = storage.get('sourceId', 'local');
-        const signupSource = storage.get('signupSource', 'local');
-        const signupSourceId = storage.get('signupSourceId', 'local');
-        return {
-            invitationType,
-            signupSource,
-            signupSourceId,
-            sourceId,
-        };
-    },
-    /**
-     * ⚠️ When this value needs to be "read" within the same process tick, use `await` (possibly
-     * with try/catch) to avoid a race condition.
-     * @param {object} invObj - The object to cache.
-     * @return {promise} - The promise returned by Storage.
-     *
-     * @example
-     * await (auth0.reqParameters = reqParameters);
-     */
-    set reqParameters(invObj) {
-        let invitationType;
-        let sourceId;
-        let signupSource;
-        let signupSourceId;
-        if (invObj && invObj.invitationType && invObj.sourceId) {
-            invitationType = storage.set('invitationType', invObj.invitationType, 'local');
-            sourceId = storage.set('sourceId', invObj.sourceId, 'local');
-            signupSource = storage.set('signupSource', 'group', 'local');
-            signupSourceId = storage.set('signupSourceId', invObj.signUpSourceId, 'local');
-        } else {
-            invitationType = storage.unset('invitationType', 'local');
-            sourceId = storage.unset('sourceId', 'local');
-            signupSource = storage.unset('signupSource', 'local');
-            signupSourceId = storage.unset('signupSourceId', 'local');
-        }
-        return {
-            invitationType,
-            signupSource,
-            signupSourceId,
-            sourceId,
-        };
-    },
-};
-
-const _logLabel = () => {
-    let label = '[Auth]';
-    if (auth0.userId) {
-        label = `[Auth UID: ${auth0.userId}]`;
-    }
-    return label;
-};
-
-/**
- * When everything for login checks out.
- *
- * @param {object} authResult - The object returned by auth0lock.
- * @param {string} authResult.accessToken - The Auth0 access token.
- * @param {string} authResult.idToken - The Auth0 session ID token.
- * @see https://auth0.com/docs/libraries/lock/v11/api#on-
- * @return {Promise} - The promise returned by login.
- */
-const _handleLockSuccess = async ({
-    accessToken,
-    idToken,
-} = {}) => {
-    let { returnProps } = auth0;
-    const {
-        returnTo,
-    } = returnProps;
-    if (!accessToken || !idToken) { return null(); }
-    // Sets access token and expiry time in cookies
-    // chimpLogin(accessToken, returnProps).then(async ({ currentUser, beneficiarySlug }) => {
-    //     const userId = parseInt(currentUser, 10);
-    const userId=888000;
-        if (document) {
-            // console.log('setting wp access token');
-            await (auth0.wpAccessToken = accessToken);
-            await (auth0.wpUserId = userId);
-        }
-        // Intializing Branch io functionalities to window object
-        if (branch) {
-            branch.init(BRANCH_IO_KEY, (_err, data) => {
-                if (data) {
-                    branch.setIdentity(userId);
-                }
-            });
-        }
-        await (auth0.returnProps = null);
-        await (auth0.accessToken = accessToken);
-        await (storage.set('chimpUserId', userId, 'cookie'));
-        const dispatch = auth0.storeDispatch;
-        const reqPar = invitationParameters.reqParameters;
-        await (getUser(dispatch, userId));
-        const tagManagerArgs = {
-            dataLayer: {
-                userId,
-            },
-            dataLayerName: 'dataLayer',
-        };
-        addToDataLayer(tagManagerArgs);
-        if (reqPar.invitationType && reqPar.sourceId) {
-            let reqType = 'loggedIn';
-            if (reqPar.invitationType === 'groupInvite') {
-                reqType = 'loggedOut';
-            }
-            dispatch(handleInvitationAccepts(
-                reqPar,
-                userId,
-                reqType,
-            ));
-        }
-        // if (beneficiarySlug) {
-        //     await (storage.unset('claimToken','local'));
-        //     await (storage.unset('signup_source_id','local'));
-        //     await (storage.unset('signup_source','local'));
-        //     Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug}`);
-        // } else {
-            Router.pushRoute(returnTo);
-        // }
-    // })
-    //     .catch(() => {
-    //         let route = '/users/login';
-    //         if (!_isEmpty(returnTo)) {
-    //             route += `?returnTo=${returnTo}`;
-    //         }
-    //         Router.pushRoute(route);
-    //     });
-    // After successfull login redirecting to home
-    // return null;
-};
-
-/**
- * The Auth0Lock widget handles most failures. This particular case is a custom rule where we throw
- * an unauthorised error when the user has not verified her/his email address.
- * @param  {string} options.errorDescription - 302 does not support a response body, so this CF is
- * added to the Location header's URL as a query string.
- * @return {void}
- */
-const _handleLockFailure = async (result) => {
-    const {
-        errorDescription,
-    } = result;
-    if (errorDescription) {
-        logger.error(`[Auth0] Login failed: ${JSON.stringify(errorDescription)}`);
-    }
-    if (!_.includes(errorDescription, 'Please verify your email before logging in')) {
-        if (errorDescription) {
-            console.error(errorDescription);
-            console.error(`${_logLabel()} Lock received an authentication failure that it doesn't handle natively. Hang on /callback condition met.`);
-        }
-        return;
-    }
-
-    const [
-        ,
-        auth0UserId,
-        auth0UserEmail,
-    ] = _.split(errorDescription, '__user_details=', 3);
-    const dispatch = auth0.storeDispatch;
-    await (auth0.userEmail = auth0UserEmail);
-    await (auth0.userId = auth0UserId);
-    await (validateAuth0Failure(dispatch, auth0UserEmail, auth0UserId));
-    Router.push('/users/email-verification');
-};
-
-/**
- * Instantiate an instance of the Auth0Lock widget (stand-alone react app to be embedded).
- * Reference: https://auth0.com/docs/custom-domains/additional-configuration#embedded-lock
- * **Note** It is safe to instantiate a new instance without a container existing as long as
- * `lock.show()` is not called before the container exists (the container cannot be changed after
- * instantiation).
- * @return {auth0lock} - The auth0lock instance.
- */
-function _makeLock() {
-    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _.merge(_auth0lockConfig, {
-        auth: {
-            audience: `${AUTH0_WEB_AUDIENCE}`,
-            redirectUrl: `${APP_URL_ORIGIN}/auth/callback`,
-        },
-    }))
-        .on('authenticated', _handleLockSuccess)
-        .on('authorization_error', _handleLockFailure);
-    return _auth0lock;
-}
-
-/**
- * Trigger the instant activation of user email when the system is in development mode.
- * @return {Promise} - The promise returned by the Comms utility.
- */
-function activateUserEmail() {
-    const fsa = {
-        payload: {
-            emailActivated: false,
-        },
-        type: 'USER_EMAIL_ACTIVATED',
-    };
-    // const {
-    //     appUrlOrigin,
-    // } = getState('/config/endpoints');
-    // const branch = getBranch({
-    //     actions: types,
-    //     branchPath: '/users/current',
-    // });
-
-    /**
-     * @param {string} activateEmailUrl The absolute URL for the API endpoint (must be absolute
-     * to avoid Comms automatically building a URL for the rails app).
-     */
-
-    return coreApi.post('/api/users/activate', {
-        data: {
-            email: auth0.userEmail,
-            user_id: auth0.userId,
-        },
-    })
-        .then(() => {
-            fsa.payload.emailActivated = true;
-            // branch.dispatch(fsa);
-            // redirect({
-            //     pathname: '/users/login',
-            //     search: `?${querystring.stringify(auth0.returnProps)}`,
-            // });
-            Router.push('/users/login');
-        })
-        .catch((error) => {
-            fsa.error = true;
-            fsa.payload = error;
-            // branch.dispatch(fsa);
-        });
-}
-
-/**
- * @param {Object} event The event passed to the function from onClick action
- * Trigger the email verification message to be re-sent. This can be accessed after signup when the
- * user tries to login with an unverified email address.
- * @return {Promise} - The promise returned by the Comms utility.
- */
-function resendVerificationEmail(event) {
-    event.preventDefault();
-    const fsa = {
-        payload: {
-            resendEmail: false,
-        },
-        type: 'RESEND_USER_EMAIL',
-    };
-    // const {
-    //     appUrlOrigin,
-    // } = getState('/config/endpoints');
-    /**
-     * @var {string} The absolute URL for the API endpoint (must be absolute to avoid Comms
-     * automatically building a URL for the rails app).
-     */
-    // const resendMailApiUrl = (new URL('/api/users/verification/resend', appUrlOrigin)).href;
-
-    return coreApi.post('/users/verification/resend', {
-        data: {
-            user_id: auth0.userId,
-        },
-        // uxCritical: true,
-    })
-        .then((result) => {
-            // Coercion is required in order to find failure responses
-            // Auth0 respond back with http status code 200
-            // eslint-disable-next-line eqeqeq
-            if (result.statusCode && result.statusCode != '200') {
-                fsa.error = true;
-                fsa.payload = result;
-            } else {
-                fsa.payload.resendEmail = true;
-            }
-        })
-        .catch((error) => {
-            fsa.error = true;
-            fsa.payload = error;
-        });
-    // .finally(() => {
-    //     getBranch({
-    //         actions: types,
-    //         branchPath: '/users/current',
-    //     }).dispatch(fsa);
-    // });
-}
-
-
-export {
-    auth0 as default,
-    activateUserEmail,
-    invitationParameters,
-    resendVerificationEmail,
-};

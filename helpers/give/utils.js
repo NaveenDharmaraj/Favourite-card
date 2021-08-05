@@ -44,11 +44,13 @@ const isCreditCardBlank = (giveData) => (_.isEmpty(giveData.creditCard) || giveD
 const isFieldBlank = (field) => (_.isEmpty(field) || field.value === null || field.value === 0);
 
 const formatCurrency = (value = 0, language, currencyType) => {
+    
     const currencyFormat = {
         currency: currencyType,
         currencyDisplay: 'symbol',
         style: 'currency',
     };
+    
     return _.replace(new Intl.NumberFormat(
         language,
         currencyFormat,

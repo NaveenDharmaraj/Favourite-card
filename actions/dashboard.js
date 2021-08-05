@@ -49,7 +49,7 @@ const getDashBoardData = (dispatch, type, userId, pageNumber) => {
         out: 'moneyTransfersOutNew',
     };
     const apiType = (_.isEmpty(type)) ? 'all' : type;
-    getPaginatedData(`/users/${userId}/${apiTypeUrl[apiType]}?page[number]=${pageNumber}&page[size]=10`, apiType, dispatch);
+    getPaginatedData(`/users/${userId}/${apiTypeUrl[apiType]}?page[number]=${pageNumber}&page[size]=20`, apiType, dispatch);
 };
 
 const getFriendsList = (dispatch, email) => {
